@@ -22,7 +22,8 @@ var manifest = {
 }
 
 // You can generate a pseudo 'client' for it
-var Client = new ResourceMapper(manifest).build()
+var Client = new Mappersmith.Mapper(manifest, Mappersmith.VanillaRequest).build()
+// var Client = new Mappersmith.Mapper(manifest, Mappersmith.JQueryRequest).build()
 
 // and then call your api
 
@@ -43,4 +44,18 @@ Client.Book.all({category: 'test'})
 Client.Photo.byCategory({category: "animals"})
 
 // <ContextName>.<Resource>.<method>(<params, optional>, <callback>)
+```
+
+# Build from the source
+
+## Install the dependencies
+
+```sh
+npm install
+```
+
+## Build
+
+```sh
+npm run build
 ```
