@@ -1,8 +1,9 @@
 var HttpGateway = require('./httpGateway');
+var VanillaRequest = require('./transport/vanillaRequest');
 
 var Mapper = function(manifest, transport) {
   this.manifest = manifest;
-  this.gateway = new HttpGateway(transport);
+  this.gateway = new HttpGateway(transport || VanillaRequest);
   this.host = this.manifest.host;
 }
 

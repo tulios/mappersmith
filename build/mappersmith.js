@@ -1,9 +1,13 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Mappersmith=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var Mapper = require('./src/mapper.js');
+
 module.exports = {
-  Mapper: require('./src/mapper.js'),
   Request: require('./src/request'),
   VanillaRequest: require('./src/transport/vanillaRequest'),
-  JQueryRequest: require('./src/transport/jqueryRequest')
+  JQueryRequest: require('./src/transport/jqueryRequest'),
+  forge: function(manifest, transport) {
+    return new Mapper(manifest, transport).build();
+  }
 }
 
 },{"./src/mapper.js":3,"./src/request":4,"./src/transport/jqueryRequest":5,"./src/transport/vanillaRequest":6}],2:[function(require,module,exports){
@@ -29,10 +33,11 @@ module.exports = HttpGateway;
 
 },{}],3:[function(require,module,exports){
 var HttpGateway = require('./httpGateway');
+var VanillaRequest = require('./transport/vanillaRequest');
 
 var Mapper = function(manifest, transport) {
   this.manifest = manifest;
-  this.gateway = new HttpGateway(transport);
+  this.gateway = new HttpGateway(transport || VanillaRequest);
   this.host = this.manifest.host;
 }
 
@@ -93,7 +98,7 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./httpGateway":2}],4:[function(require,module,exports){
+},{"./httpGateway":2,"./transport/vanillaRequest":6}],4:[function(require,module,exports){
 var Utils = require('./utils');
 
 var Request = function(url, callback) {

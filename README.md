@@ -22,8 +22,13 @@ var manifest = {
 }
 
 // You can generate a pseudo 'client' for it
-var Client = new Mappersmith.Mapper(manifest, Mappersmith.VanillaRequest).build()
-// var Client = new Mappersmith.Mapper(manifest, Mappersmith.JQueryRequest).build()
+var Client = new Mappersmith.forge(manifest)
+
+// Mappersmith has a transport layer using vanilla javascript and jquery, to change it
+// just pass the implementation as the second argument to the forge method
+
+// Ex:
+// var Client = new Mappersmith.Mapper(manifest, Mappersmith.JQueryRequest)
 
 // and then call your api
 

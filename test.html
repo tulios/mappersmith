@@ -29,7 +29,7 @@
     console.log(manifest)
 
     console.log('\nvar Client = new ResourceMapper(manifest).build()')
-    var Client = new Mappersmith.Mapper(manifest, Mappersmith.Request).build()
+    var Client = new Mappersmith.forge(manifest, Mappersmith.Request)
 
     console.log('\nClient.Book.byId({id: 3})')
     Client.Book.all(function() { console.log(['success', arguments]) }).
