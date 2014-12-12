@@ -28,7 +28,7 @@ var Client = new Mappersmith.forge(manifest)
 // just pass the implementation as the second argument to the forge method
 
 // Ex:
-// var Client = new Mappersmith.Mapper(manifest, Mappersmith.JQueryRequest)
+// var Client = new Mappersmith.forge(manifest, Mappersmith.JQueryRequest)
 
 // and then call your api
 
