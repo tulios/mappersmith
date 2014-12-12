@@ -1,28 +1,12 @@
-var HttpGateway = function(transport) {
-  this.RequestObject = transport;
-}
+var HttpGateway = require('./httpGateway');
 
-HttpGateway.prototype = {
-  get: function(urlGenerator, path) {
-    return function(params, callback) {
-      if (typeof params === 'function') {
-        callback = params;
-        params = undefined;
-      }
-
-      var url = urlGenerator(path, params);
-      return new this.RequestObject(url, callback);
-    }.bind(this);
-  }
-}
-
-var ResourceMapper = function(manifest, transport) {
+var Mapper = function(manifest, transport) {
   this.manifest = manifest;
-  this.gateway = new HttpGateway(transport || Request);
+  this.gateway = new HttpGateway(transport);
   this.host = this.manifest.host;
 }
 
-ResourceMapper.prototype = {
+Mapper.prototype = {
 
   build: function() {
     return Object.keys(this.manifest.resources).
@@ -76,3 +60,5 @@ ResourceMapper.prototype = {
   }
 
 }
+
+module.exports = Mapper;

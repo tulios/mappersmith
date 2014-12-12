@@ -1,6 +1,6 @@
 **Under heavy development, it is not yet ready for production**
 
-# Resource Mapper
+# Mappersmith
 
 It is a lightweight rest client mapper for javascript.
 

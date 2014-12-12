@@ -4,8 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <script src="libs/jquery.min.js"></script>
-  <script src="src/request.js"></script>
-  <script src="src/resourceMapper.js"></script>
+  <script src="build/mappersmith.js"></script>
   <script charset="utf-8">
     var manifest = {
       host: 'http://localhost:4000',
@@ -30,7 +29,7 @@
     console.log(manifest)
 
     console.log('\nvar Client = new ResourceMapper(manifest).build()')
-    var Client = new ResourceMapper(manifest, JQueryRequest).build()
+    var Client = new Mappersmith.Mapper(manifest, Mappersmith.Request).build()
 
     console.log('\nClient.Book.byId({id: 3})')
     Client.Book.all(function() { console.log(['success', arguments]) }).
