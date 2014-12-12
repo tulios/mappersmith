@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <script src="libs/jquery.min.js"></script>
+  <script src="src/request.js"></script>
   <script src="src/resourceMapper.js"></script>
   <script charset="utf-8">
     var manifest = {
@@ -29,10 +30,13 @@
     console.log(manifest)
 
     console.log('\nvar Client = new ResourceMapper(manifest).build()')
-    var Client = new ResourceMapper(manifest).build()
+    var Client = new ResourceMapper(manifest, JQueryRequest).build()
 
     console.log('\nClient.Book.byId({id: 3})')
-    Client.Book.byId({id: 3})
+    Client.Book.all(function() { console.log(['success', arguments]) }).
+      fail(function() { console.log('fail') }).
+      complete(function() { console.log('complete') });
+
     Client.Book.byId({id: 3}, $.noop)
     Client.Book.byId({id: 3, showMetadata: true})
     Client.Book.byId({id: 3, showMetadata: true}, $.noop)

@@ -1,4 +1,8 @@
-var JqueryHttpGateway = {
+var HttpGateway = function(transport) {
+  this.RequestObject = transport;
+}
+
+HttpGateway.prototype = {
   get: function(urlGenerator, path) {
     return function(params, callback) {
       if (typeof params === 'function') {
@@ -6,15 +10,15 @@ var JqueryHttpGateway = {
         params = undefined;
       }
 
-      console.log(urlGenerator(path, params))
-      // request
-    }
+      var url = urlGenerator(path, params);
+      return new this.RequestObject(url, callback);
+    }.bind(this);
   }
 }
 
-var ResourceMapper = function(manifest, httpGateway) {
+var ResourceMapper = function(manifest, transport) {
   this.manifest = manifest;
-  this.gateway = httpGateway || JqueryHttpGateway;
+  this.gateway = new HttpGateway(transport || Request);
   this.host = this.manifest.host;
 }
 
