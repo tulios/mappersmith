@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <script src="libs/jquery.min.js"></script>
+  <script src="src/resourceMapper.js"></script>
+  <script charset="utf-8">
+    var manifest = {
+      host: 'http://localhost:4000',
+      resources: {
+        Book: {
+
+          // Rules:
+          // - the attribute 'method' is optional, default equals to 'get'
+          // - the path can start with slash (/) or not
+
+          'all': {method: 'GET', path: 'v1/books.json'},
+          'byId': {path: '/v1/books/{id}.json'}
+        },
+
+        Photo: {
+          'byCategory': {method: 'GET', path: '/v1/photos/{category}/all.json'}
+        }
+      }
+    }
+
+    console.log('manifest:')
+    console.log(manifest)
+
+    console.log('\nvar Client = new ResourceMapper(manifest).build()')
+    var Client = new ResourceMapper(manifest).build()
+
+    console.log('\nClient.Book.byId({id: 3})')
+    Client.Book.byId({id: 3})
+    Client.Book.byId({id: 3}, $.noop)
+    Client.Book.byId({id: 3, showMetadata: true})
+    Client.Book.byId({id: 3, showMetadata: true}, $.noop)
+
+    console.log('\nClient.Book.all()')
+    Client.Book.all()
+    Client.Book.all({category: 'test'})
+    Client.Book.all({category: 'test'}, $.noop)
+
+    console.log('\nClient.Photo.byCategory({category: "animals"})')
+    Client.Photo.byCategory({category: 'animals'})
+  </script>
+</head>
+<body>
+  Look at the source and developer tools ;)
+</body>
+</html>
