@@ -9,7 +9,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "browserify index.js --standalone Mappersmith --outfile build/mappersmith.js"
   },
   "repository": {
     "type": "git",
@@ -27,9 +27,6 @@
   },
   "homepage": "https://github.com/tulios/mappersmith",
   "devDependencies": {
-    "browserify": "^7.0.0"
-  },
-  "scripts": {
-    "build": "browserify index.js --standalone Mappersmith --outfile build/mappersmith.js"
+    "browserify": "^7.0.1"
   }
 }
