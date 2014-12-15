@@ -1,15 +1,13 @@
-var VanillaGateway = require('./gateway/vanilla-gateway');
-
 var Mapper = function(manifest, gateway) {
   this.manifest = manifest;
-  this.gateway = gateway || VanillaGateway;
+  this.gateway = gateway;
   this.host = this.manifest.host;
 }
 
 Mapper.prototype = {
 
   build: function() {
-    return Object.keys(this.manifest.resources).
+    return Object.keys(this.manifest.resources || {}).
       map(function(name) { return this.buildResource(name) }.bind(this)).
       reduce(function(context, resource) {
         context[resource.name] = resource.methods;

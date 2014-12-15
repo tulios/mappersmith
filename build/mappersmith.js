@@ -1,13 +1,15 @@
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Mappersmith=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Mapper = require('./src/mapper.js');
-
 module.exports = {
   Utils: require('./src/utils'),
   Gateway: require('./src/gateway'),
+  Mapper: require('./src/mapper.js'),
   VanillaGateway: require('./src/gateway/vanilla-gateway'),
   JQueryGateway: require('./src/gateway/jquery-gateway'),
   forge: function(manifest, gateway) {
-    return new Mapper(manifest, gateway).build();
+    return new Mappersmith.Mapper(
+      manifest,
+      gateway || Mappersmith.VanillaGateway
+    ).build();
   }
 }
 
@@ -125,18 +127,16 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 module.exports = VanillaGateway;
 
 },{"../gateway":2,"../utils":6}],5:[function(require,module,exports){
-var VanillaGateway = require('./gateway/vanilla-gateway');
-
 var Mapper = function(manifest, gateway) {
   this.manifest = manifest;
-  this.gateway = gateway || VanillaGateway;
+  this.gateway = gateway;
   this.host = this.manifest.host;
 }
 
 Mapper.prototype = {
 
   build: function() {
-    return Object.keys(this.manifest.resources).
+    return Object.keys(this.manifest.resources || {}).
       map(function(name) { return this.buildResource(name) }.bind(this)).
       reduce(function(context, resource) {
         context[resource.name] = resource.methods;
@@ -203,7 +203,7 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./gateway/vanilla-gateway":4}],6:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var Utils = module.exports = {
   noop: function() {},
 
