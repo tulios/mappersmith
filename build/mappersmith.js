@@ -187,14 +187,14 @@ Mapper.prototype = {
     return this.host + normalizedPath + paramsString;
   },
 
-  newGatewayRequest: function(method, urlGenerator, path) {
+  newGatewayRequest: function(method, path) {
     return function(params, callback) {
       if (typeof params === 'function') {
         callback = params;
         params = undefined;
       }
 
-      var url = urlGenerator(path, params);
+      var url = this.urlFor(path, params);
       return new this.gateway(url, method, callback);
     }.bind(this);
   }
