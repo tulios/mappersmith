@@ -61,4 +61,51 @@ describe('Mapper', function() {
     });
   });
 
+  describe('#urlFor', function() {
+    describe('without params and query string', function() {
+      describe('host and path with "/"', function() {
+        it('returns host and path', function() {
+          mapper.host = mapper.host + '/';
+          expect(mapper.urlFor('/path')).to.equals('http://full-url/path');
+        });
+      });
+
+      describe('host and path without "/"', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('path')).to.equals('http://full-url/path');
+        });
+      });
+
+      describe('host with "/" and path without', function() {
+        it('returns host and path', function() {
+          mapper.host = mapper.host + '/';
+          expect(mapper.urlFor('path')).to.equals('http://full-url/path');
+        });
+      });
+
+      describe('host without "/" and path with', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('/path')).to.equals('http://full-url/path');
+        });
+      });
+    });
+
+    describe('with params in the path', function() {
+      it('replaces params and returns host and path', function() {
+        expect(mapper.urlFor('{a}/{b}', {a: 1, b: 2})).to.equals('http://full-url/1/2');
+      });
+    });
+
+    describe('with query string in the path', function() {
+      it('includes query string and returns host and path', function() {
+        expect(mapper.urlFor('path', {a: 1, b: 2})).to.equals('http://full-url/path?a=1&b=2');
+      });
+    });
+
+    describe('with query string and params in the path', function() {
+      it('includes query string, replaces params and returns host and path', function() {
+        expect(mapper.urlFor('{a}', {a: 1, b: 2})).to.equals('http://full-url/1?b=2');
+      });
+    });
+  });
 });

@@ -34,6 +34,7 @@ Mapper.prototype = {
   },
 
   urlFor: function(path, urlParams) {
+    var host = this.host.replace(/\/$/, '');
     var params = urlParams || {};
     var normalizedPath = /^\//.test(path) ? path : '/' + path;
 
@@ -55,7 +56,7 @@ Mapper.prototype = {
     if (paramsString.length !== 0)
       paramsString = '?' + paramsString;
 
-    return this.host + normalizedPath + paramsString;
+    return host + normalizedPath + paramsString;
   },
 
   newGatewayRequest: function(method, path) {
