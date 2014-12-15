@@ -153,7 +153,6 @@ Mapper.prototype = {
 
       context.methods[methodName] = this.newGatewayRequest(
         httpMethod,
-        this.urlFor.bind(this),
         descriptor.path
       );
 

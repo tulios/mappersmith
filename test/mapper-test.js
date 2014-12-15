@@ -122,4 +122,76 @@ describe('Mapper', function() {
       });
     });
   });
+
+  describe('#build', function() {
+    var result;
+
+    beforeEach(function() {
+      result = mapper.build();
+    });
+
+    it('returns an object', function() {
+      expect(result).to.be.a('object');
+    });
+
+    it('creates the namespaces', function() {
+      expect(result.Book).to.be.a('object');
+      expect(result.Photo).to.be.a('object');
+    });
+
+    it('creates configured methods for each namespace', function() {
+      expect(result.Book.all).to.be.a('function');
+      expect(result.Book.byId).to.be.a('function');
+      expect(result.Photo.byCategory).to.be.a('function');
+    });
+
+    describe('when calling the created methods', function() {
+      var callback, method;
+
+      beforeEach(function() {
+        callback = function() {};
+        method = 'get';
+      });
+
+      describe('without params', function() {
+        it('calls the gateway with the configured values', function() {
+          var path = manifest.resources.Book.all.path;
+          var url = mapper.urlFor(path);
+
+          result.Book.all(callback);
+          expect(gateway).to.have.been.calledWith(url, method, callback);
+        });
+      });
+
+      describe('with query string', function() {
+        it('calls the gateway with the configured values', function() {
+          var path = manifest.resources.Book.all.path;
+          var url = mapper.urlFor(path, {b: 2});
+
+          result.Book.all({b: 2}, callback);
+          expect(gateway).to.have.been.calledWith(url, method, callback);
+        });
+      });
+
+      describe('with params', function() {
+        it('calls the gateway with the configured values', function() {
+          var path = manifest.resources.Book.byId.path;
+          var url = mapper.urlFor(path, {id: 3});
+
+          result.Book.byId({id: 3}, callback);
+          expect(gateway).to.have.been.calledWith(url, method, callback);
+        });
+      });
+
+      describe('with params and query string', function() {
+        it('calls the gateway with the configured values', function() {
+          var path = manifest.resources.Book.byId.path;
+          var url = mapper.urlFor(path, {id: 3, d: 4});
+
+          result.Book.byId({id: 3, d: 4}, callback);
+          expect(gateway).to.have.been.calledWith(url, method, callback);
+        });
+      });
+    });
+  });
 });
