@@ -24,6 +24,20 @@ describe('Mapper', function() {
     mapper = new Mapper(manifest, gateway);
   });
 
+  describe('contructor', function() {
+    it('holds a reference to manifest', function() {
+      expect(mapper).to.have.property('manifest', manifest);
+    });
+
+    it('holds a reference to gateway', function() {
+      expect(mapper).to.have.property('gateway', gateway);
+    });
+
+    it('holds a reference to host', function() {
+      expect(mapper).to.have.property('host', manifest.host);
+    });
+  });
+
   describe('#newGatewayRequest', function() {
     var method,
         fullUrl,
