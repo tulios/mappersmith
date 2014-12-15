@@ -15,7 +15,8 @@ describe('Mapper', function() {
           'byId': {path: '/v1/books/{id}.json'}
         },
         Photo: {
-          'byCategory': {path: '/v1/photos/{category}/all.json'}
+          'byCategory': {path: '/v1/photos/{category}/all.json'},
+          'add': {method: 'post', path: '/v1/photos/create.json'}
         }
       }
     }
@@ -189,6 +190,17 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path, {id: 3, d: 4});
 
           result.Book.byId({id: 3, d: 4}, callback);
+          expect(gateway).to.have.been.calledWith(url, method, callback);
+        });
+      });
+
+      describe('with non-default method', function() {
+        it('calls the gateway with the configured values', function() {
+          var path = manifest.resources.Photo.add.path;
+          var url = mapper.urlFor(path);
+          method = 'post';
+
+          result.Photo.add(callback);
           expect(gateway).to.have.been.calledWith(url, method, callback);
         });
       });
