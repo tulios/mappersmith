@@ -3,42 +3,133 @@ var Mapper = require('./src/mapper.js');
 
 module.exports = {
   Utils: require('./src/utils'),
-  Request: require('./src/request'),
-  VanillaRequest: require('./src/transport/vanilla-request'),
-  JQueryRequest: require('./src/transport/jquery-request'),
-  forge: function(manifest, transport) {
-    return new Mapper(manifest, transport).build();
+  Gateway: require('./src/gateway'),
+  VanillaGateway: require('./src/gateway/vanilla-gateway'),
+  JQueryGateway: require('./src/gateway/jquery-gateway'),
+  forge: function(manifest, gateway) {
+    return new Mapper(manifest, gateway).build();
   }
 }
 
-},{"./src/mapper.js":3,"./src/request":4,"./src/transport/jquery-request":5,"./src/transport/vanilla-request":6,"./src/utils":7}],2:[function(require,module,exports){
-var HttpGateway = function(transport) {
-  this.RequestObject = transport;
+},{"./src/gateway":2,"./src/gateway/jquery-gateway":3,"./src/gateway/vanilla-gateway":4,"./src/mapper.js":5,"./src/utils":6}],2:[function(require,module,exports){
+var Utils = require('./utils');
+
+var Gateway = function(url, method, callback) {
+  this.successCallback = callback || Utils.noop;
+  this.failCallback = Utils.noop;
+  this.completeCallback = Utils.noop;
+  return this[method](url);
 }
 
-HttpGateway.prototype = {
-  get: function(urlGenerator, path) {
-    return function(params, callback) {
-      if (typeof params === 'function') {
-        callback = params;
-        params = undefined;
+Gateway.prototype = {
+
+  fail: function(callback) {
+    this.failCallback = callback;
+    return this;
+  },
+
+  complete: function(callback) {
+    this.completeCallback = callback;
+    return this;
+  },
+
+  get: function(url) {
+    throw new Utils.Exception('Request#get not implemented');
+  },
+
+  post: function(url) {
+    throw new Utils.Exception('Request#post not implemented');
+  },
+
+  put: function(url) {
+    throw new Utils.Exception('Request#put not implemented');
+  },
+
+  delete: function(url) {
+    throw new Utils.Exception('Request#delete not implemented');
+  },
+
+  patch: function(url) {
+    throw new Utils.Exception('Request#patch not implemented');
+  }
+
+}
+
+module.exports = Gateway;
+
+},{"./utils":6}],3:[function(require,module,exports){
+var Utils = require('../utils');
+var Gateway = require('../gateway');
+
+var JQueryGateway = function() {
+  return Gateway.apply(this, arguments);
+}
+
+JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
+
+  get: function(url) {
+    $.getJSON(url, function() {
+      this.successCallback.apply(this, arguments);
+    }.bind(this)).
+    fail(function() {
+      this.failCallback.apply(this, arguments)
+    }.bind(this)).
+    always(function() {
+      this.completeCallback.apply(this, arguments)
+    }.bind(this));
+
+    return this;
+  }
+
+});
+
+module.exports = JQueryGateway;
+
+},{"../gateway":2,"../utils":6}],4:[function(require,module,exports){
+var Utils = require('../utils');
+var Gateway = require('../gateway');
+
+var VanillaGateway = function() {
+  return Gateway.apply(this, arguments);
+}
+
+VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
+
+  get: function(url) {
+    request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400){
+        data = JSON.parse(request.responseText);
+        this.successCallback(data);
+
+      } else {
+        this.failCallback(request);
       }
 
-      var url = urlGenerator(path, params);
-      return new this.RequestObject(url, callback);
+      this.completeCallback(data);
+
     }.bind(this);
+
+    request.onerror = function() {
+      this.failCallback.apply(this, arguments);
+      this.completeCallback.apply(this, arguments);
+    }.bind(this);
+
+    request.send();
   }
-}
 
-module.exports = HttpGateway;
+});
 
-},{}],3:[function(require,module,exports){
-var HttpGateway = require('./http-gateway');
-var VanillaRequest = require('./transport/vanilla-request');
+module.exports = VanillaGateway;
 
-var Mapper = function(manifest, transport) {
+},{"../gateway":2,"../utils":6}],5:[function(require,module,exports){
+var VanillaGateway = require('./gateway/vanilla-gateway');
+
+var Mapper = function(manifest, gateway) {
   this.manifest = manifest;
-  this.gateway = new HttpGateway(transport || VanillaRequest);
+  this.gateway = gateway || VanillaGateway;
   this.host = this.manifest.host;
 }
 
@@ -60,7 +151,8 @@ Mapper.prototype = {
       var descriptor = methods[methodName];
       var httpMethod = (descriptor.method || 'get').toLowerCase();
 
-      context.methods[methodName] = this.gateway[httpMethod](
+      context.methods[methodName] = this.newGatewayRequest(
+        httpMethod,
         this.urlFor.bind(this),
         descriptor.path
       );
@@ -93,110 +185,25 @@ Mapper.prototype = {
       paramsString = '?' + paramsString;
 
     return this.host + normalizedPath + paramsString;
+  },
+
+  newGatewayRequest: function(method, urlGenerator, path) {
+    return function(params, callback) {
+      if (typeof params === 'function') {
+        callback = params;
+        params = undefined;
+      }
+
+      var url = urlGenerator(path, params);
+      return new this.gateway(url, method, callback);
+    }.bind(this);
   }
 
 }
 
 module.exports = Mapper;
 
-},{"./http-gateway":2,"./transport/vanilla-request":6}],4:[function(require,module,exports){
-var Utils = require('./utils');
-
-var Request = function(url, callback) {
-  this.successCallback = callback || Utils.noop;
-  this.failCallback = Utils.noop;
-  this.completeCallback = Utils.noop;
-  return this.ajax(url);
-}
-
-Request.prototype = {
-
-  fail: function(callback) {
-    this.failCallback = callback;
-    return this;
-  },
-
-  complete: function(callback) {
-    this.completeCallback = callback;
-    return this;
-  },
-
-  ajax: function(url) {
-    throw new Utils.Exception('Request#ajax not implemented');
-  }
-
-}
-
-module.exports = Request;
-
-},{"./utils":7}],5:[function(require,module,exports){
-var Utils = require('../utils');
-var Request = require('../request');
-
-var JQueryRequest = function() {
-  return Request.apply(this, arguments);
-}
-
-JQueryRequest.prototype = Utils.extend({}, Request.prototype, {
-
-  ajax: function(url) {
-    $.getJSON(url, function() {
-      this.successCallback.apply(this, arguments);
-    }.bind(this)).
-    fail(function() {
-      this.failCallback.apply(this, arguments)
-    }.bind(this)).
-    always(function() {
-      this.completeCallback.apply(this, arguments)
-    }.bind(this));
-
-    return this;
-  }
-
-});
-
-module.exports = JQueryRequest;
-
-},{"../request":4,"../utils":7}],6:[function(require,module,exports){
-var Utils = require('../utils');
-var Request = require('../request');
-
-var VanillaRequest = function() {
-  return Request.apply(this, arguments);
-}
-
-VanillaRequest.prototype = Utils.extend({}, Request.prototype, {
-
-  ajax: function(url) {
-    request = new XMLHttpRequest();
-    request.open('GET', url, true);
-
-    request.onload = function() {
-      if (request.status >= 200 && request.status < 400){
-        data = JSON.parse(request.responseText);
-        this.successCallback(data);
-
-      } else {
-        this.failCallback(request);
-      }
-
-      this.completeCallback(data);
-
-    }.bind(this);
-
-    request.onerror = function() {
-      this.failCallback.apply(this, arguments);
-      this.completeCallback.apply(this, arguments);
-    }.bind(this);
-
-    request.send();
-  }
-
-});
-
-module.exports = VanillaRequest;
-
-},{"../request":4,"../utils":7}],7:[function(require,module,exports){
+},{"./gateway/vanilla-gateway":4}],6:[function(require,module,exports){
 var Utils = module.exports = {
   noop: function() {},
 

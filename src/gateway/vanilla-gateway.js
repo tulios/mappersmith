@@ -1,13 +1,13 @@
 var Utils = require('../utils');
-var Request = require('../request');
+var Gateway = require('../gateway');
 
-var VanillaRequest = function() {
-  return Request.apply(this, arguments);
+var VanillaGateway = function() {
+  return Gateway.apply(this, arguments);
 }
 
-VanillaRequest.prototype = Utils.extend({}, Request.prototype, {
+VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
-  ajax: function(url) {
+  get: function(url) {
     request = new XMLHttpRequest();
     request.open('GET', url, true);
 
@@ -34,4 +34,4 @@ VanillaRequest.prototype = Utils.extend({}, Request.prototype, {
 
 });
 
-module.exports = VanillaRequest;
+module.exports = VanillaGateway;

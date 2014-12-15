@@ -1,13 +1,13 @@
 var Utils = require('../utils');
-var Request = require('../request');
+var Gateway = require('../gateway');
 
-var JQueryRequest = function() {
-  return Request.apply(this, arguments);
+var JQueryGateway = function() {
+  return Gateway.apply(this, arguments);
 }
 
-JQueryRequest.prototype = Utils.extend({}, Request.prototype, {
+JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
-  ajax: function(url) {
+  get: function(url) {
     $.getJSON(url, function() {
       this.successCallback.apply(this, arguments);
     }.bind(this)).
@@ -23,4 +23,4 @@ JQueryRequest.prototype = Utils.extend({}, Request.prototype, {
 
 });
 
-module.exports = JQueryRequest;
+module.exports = JQueryGateway;

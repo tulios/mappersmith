@@ -1,9 +1,8 @@
-var HttpGateway = require('./http-gateway');
-var VanillaRequest = require('./transport/vanilla-request');
+var VanillaGateway = require('./gateway/vanilla-gateway');
 
-var Mapper = function(manifest, transport) {
+var Mapper = function(manifest, gateway) {
   this.manifest = manifest;
-  this.gateway = new HttpGateway(transport || VanillaRequest);
+  this.gateway = gateway || VanillaGateway;
   this.host = this.manifest.host;
 }
 
@@ -25,7 +24,8 @@ Mapper.prototype = {
       var descriptor = methods[methodName];
       var httpMethod = (descriptor.method || 'get').toLowerCase();
 
-      context.methods[methodName] = this.gateway[httpMethod](
+      context.methods[methodName] = this.newGatewayRequest(
+        httpMethod,
         this.urlFor.bind(this),
         descriptor.path
       );
@@ -58,6 +58,18 @@ Mapper.prototype = {
       paramsString = '?' + paramsString;
 
     return this.host + normalizedPath + paramsString;
+  },
+
+  newGatewayRequest: function(method, urlGenerator, path) {
+    return function(params, callback) {
+      if (typeof params === 'function') {
+        callback = params;
+        params = undefined;
+      }
+
+      var url = urlGenerator(path, params);
+      return new this.gateway(url, method, callback);
+    }.bind(this);
   }
 
 }
