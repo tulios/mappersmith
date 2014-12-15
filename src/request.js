@@ -20,12 +20,7 @@ Request.prototype = {
   },
 
   ajax: function(url) {
-    setTimeout(function() {
-      true ? this.successCallback() : this.failCallback();
-      this.completeCallback();
-    }.bind(this), 0);
-
-    return this;
+    throw new Utils.Exception('Request#ajax not implemented');
   }
 
 }

@@ -1,5 +1,5 @@
-var HttpGateway = require('./httpGateway');
-var VanillaRequest = require('./transport/vanillaRequest');
+var HttpGateway = require('./http-gateway');
+var VanillaRequest = require('./transport/vanilla-request');
 
 var Mapper = function(manifest, transport) {
   this.manifest = manifest;

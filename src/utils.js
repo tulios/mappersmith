@@ -1,5 +1,6 @@
 var Utils = module.exports = {
   noop: function() {},
+
   extend: function(out) {
     out = out || {};
 
@@ -14,5 +15,10 @@ var Utils = module.exports = {
     }
 
     return out;
+  },
+
+  Exception: function(message) {
+    this.message = message;
+    this.toString = function() { return '[Mappersmith] ' + this.message; }
   }
 }

@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/tulios/mappersmith",
   "devDependencies": {
-    "browserify": "^7.0.1"
+    "browserify": "^7.0.1",
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1"
   }
 }

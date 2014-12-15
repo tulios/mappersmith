@@ -2,15 +2,16 @@
 var Mapper = require('./src/mapper.js');
 
 module.exports = {
+  Utils: require('./src/utils'),
   Request: require('./src/request'),
-  VanillaRequest: require('./src/transport/vanillaRequest'),
-  JQueryRequest: require('./src/transport/jqueryRequest'),
+  VanillaRequest: require('./src/transport/vanilla-request'),
+  JQueryRequest: require('./src/transport/jquery-request'),
   forge: function(manifest, transport) {
     return new Mapper(manifest, transport).build();
   }
 }
 
-},{"./src/mapper.js":3,"./src/request":4,"./src/transport/jqueryRequest":5,"./src/transport/vanillaRequest":6}],2:[function(require,module,exports){
+},{"./src/mapper.js":3,"./src/request":4,"./src/transport/jquery-request":5,"./src/transport/vanilla-request":6,"./src/utils":7}],2:[function(require,module,exports){
 var HttpGateway = function(transport) {
   this.RequestObject = transport;
 }
@@ -32,8 +33,8 @@ HttpGateway.prototype = {
 module.exports = HttpGateway;
 
 },{}],3:[function(require,module,exports){
-var HttpGateway = require('./httpGateway');
-var VanillaRequest = require('./transport/vanillaRequest');
+var HttpGateway = require('./http-gateway');
+var VanillaRequest = require('./transport/vanilla-request');
 
 var Mapper = function(manifest, transport) {
   this.manifest = manifest;
@@ -98,7 +99,7 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./httpGateway":2,"./transport/vanillaRequest":6}],4:[function(require,module,exports){
+},{"./http-gateway":2,"./transport/vanilla-request":6}],4:[function(require,module,exports){
 var Utils = require('./utils');
 
 var Request = function(url, callback) {
@@ -121,12 +122,7 @@ Request.prototype = {
   },
 
   ajax: function(url) {
-    setTimeout(function() {
-      true ? this.successCallback() : this.failCallback();
-      this.completeCallback();
-    }.bind(this), 0);
-
-    return this;
+    throw new Utils.Exception('Request#ajax not implemented');
   }
 
 }
@@ -203,6 +199,7 @@ module.exports = VanillaRequest;
 },{"../request":4,"../utils":7}],7:[function(require,module,exports){
 var Utils = module.exports = {
   noop: function() {},
+
   extend: function(out) {
     out = out || {};
 
@@ -217,6 +214,11 @@ var Utils = module.exports = {
     }
 
     return out;
+  },
+
+  Exception: function(message) {
+    this.message = message;
+    this.toString = function() { return '[Mappersmith] ' + this.message; }
   }
 }
 
