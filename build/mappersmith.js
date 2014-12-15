@@ -34,23 +34,23 @@ Gateway.prototype = {
   },
 
   get: function(url) {
-    throw new Utils.Exception('Request#get not implemented');
+    throw new Utils.Exception('Gateway#get not implemented');
   },
 
   post: function(url) {
-    throw new Utils.Exception('Request#post not implemented');
+    throw new Utils.Exception('Gateway#post not implemented');
   },
 
   put: function(url) {
-    throw new Utils.Exception('Request#put not implemented');
+    throw new Utils.Exception('Gateway#put not implemented');
   },
 
   delete: function(url) {
-    throw new Utils.Exception('Request#delete not implemented');
+    throw new Utils.Exception('Gateway#delete not implemented');
   },
 
   patch: function(url) {
-    throw new Utils.Exception('Request#patch not implemented');
+    throw new Utils.Exception('Gateway#patch not implemented');
   }
 
 }
