@@ -2,7 +2,7 @@
 
 # Mappersmith
 
-It is a lightweight rest client mapper for javascript.
+It is a lightweight, dependency free, rest client mapper for javascript.
 
 # Usage
 
