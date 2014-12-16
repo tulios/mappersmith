@@ -86,7 +86,14 @@ JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
     var defaults = {dataType: "json", url: this.url};
     var config = Utils.extend(defaults, this.opts);
 
-    $.ajax(config).
+    if (window.jQuery === undefined) {
+      throw new Utils.Exception(
+        'JQueryGateway#get requires jQuery but it was not found! ' +
+        'Change the gateway implementation or add jQuery on the page'
+      );
+    }
+
+    jQuery.ajax(config).
     done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
     fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
     always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
