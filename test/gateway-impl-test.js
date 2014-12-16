@@ -1,64 +1,63 @@
 var expect = chai.expect;
+var Utils = Mappersmith.Utils;
 
 describe('Gateway implementations', function() {
-  [
+  var fakeServer,
+      url,
+      method,
+      data,
+      success,
+      fail,
+      complete;
 
-    ['VanillaGateway', Mappersmith.VanillaGateway],
-    ['JQueryGateway', Mappersmith.JQueryGateway]
+  beforeEach(function() {
+    fakeServer = sinon.fakeServer.create();
 
-  ].forEach(function(arg) {
-    var name = arg[0];
-    var GatewayImpl = arg[1];
+    url = 'http://full-url/';
+    method = 'get';
+    success = sinon.spy(function(){});
+    fail = sinon.spy(function(){});
+    complete = sinon.spy(function(){});
+    data = {id: 1, enable: false};
+  });
 
-    describe(name, function() {
-      var gateway,
-          fakeServer,
-          url,
-          method,
-          data,
-          success,
-          fail,
-          complete;
+  afterEach(function() {
+    fakeServer.restore();
+  });
 
-      function requestWithGateway(status, rawData) {
-        rawData = rawData || '';
-        fakeServer.respondWith(
-          method,
-          url,
-          [status, {'Content-Type': 'application/json'}, rawData]
-        );
+  function requestWithGateway(status, rawData, GatewayImpl, opts) {
+    rawData = rawData || '';
+    fakeServer.respondWith(
+      method,
+      url,
+      [status, {'Content-Type': 'application/json'}, rawData]
+    );
 
-        new GatewayImpl(url, method).
-          success(success).
-          fail(fail).
-          complete(complete).
-          call();
+    new GatewayImpl(url, method, opts).
+      success(success).
+      fail(fail).
+      complete(complete).
+      call();
 
-        fakeServer.respond();
-      }
+    fakeServer.respond();
+  }
 
-      beforeEach(function() {
-        fakeServer = sinon.fakeServer.create();
-      });
+  describe('common behavior', function() {
+    [
 
-      afterEach(function() {
-        fakeServer.restore();
-      });
+      ['VanillaGateway', Mappersmith.VanillaGateway],
+      ['JQueryGateway', Mappersmith.JQueryGateway]
 
-      describe('#get', function() {
-        beforeEach(function(){
-          url = 'http://full-url/';
-          method = 'get';
-          success = sinon.spy(function(){});
-          fail = sinon.spy(function(){});
-          complete = sinon.spy(function(){});
-          data = {id: 1, enable: false};
-        });
+    ].forEach(function(arg) {
+      var name = arg[0];
+      var GatewayImpl = arg[1];
+
+      describe(name, function() {
 
         describe('success', function() {
           describe('with valid JSON', function() {
             beforeEach(function() {
-              requestWithGateway(200, JSON.stringify(data));
+              requestWithGateway(200, JSON.stringify(data), GatewayImpl);
             });
 
             it('calls success callback', function() {
@@ -76,7 +75,7 @@ describe('Gateway implementations', function() {
 
           describe('with invalid JSON', function() {
             beforeEach(function() {
-              requestWithGateway(200, '{');
+              requestWithGateway(200, '{', GatewayImpl);
             });
 
             it('does not call success callback', function() {
@@ -95,7 +94,7 @@ describe('Gateway implementations', function() {
 
         describe('fail', function() {
           beforeEach(function() {
-            requestWithGateway(503);
+            requestWithGateway(503, null, GatewayImpl);
           });
 
           it('calls fail callback', function() {
@@ -110,8 +109,70 @@ describe('Gateway implementations', function() {
             expect(success).to.not.have.been.called;
           });
         });
-      });
 
+      });
+    });
+  });
+
+  describe('VanillaGateway', function() {
+    var configure;
+
+    beforeEach(function() {
+      configure = sinon.spy(function() {});
+    });
+
+    describe('configure callback', function() {
+      it('calls the callback with the request object', function() {
+        requestWithGateway(
+          200,
+          JSON.stringify(data),
+          VanillaGateway,
+          {configure: configure}
+        );
+
+        var firstCallArgs = configure.args[0];
+        expect(configure).to.have.been.called;
+        expect(firstCallArgs[0]).to.be.an.instanceOf(XMLHttpRequest);
+      });
+    });
+  });
+
+  describe('JQueryGateway', function() {
+    var ajax;
+
+    beforeEach(function() {
+      ajax = {
+        done: function() {return this},
+        fail: function() {return this},
+        always: function() {return this}
+      };
+
+      sinon.spy(ajax, 'done');
+      sinon.spy(ajax, 'fail');
+      sinon.spy(ajax, 'always');
+
+      sinon.stub($, 'ajax').returns(ajax);
+    });
+
+    afterEach(function() {
+      $.ajax.restore();
+    });
+
+    describe('custom opts', function() {
+      it('merges opts with $.ajax defaults', function() {
+        var opts = {jsonp: true};
+        var defaults = {dataType: "json", url: url};
+        var config = Utils.extend(defaults, opts);
+
+        requestWithGateway(
+          200,
+          JSON.stringify(data),
+          JQueryGateway,
+          opts
+        );
+
+        expect($.ajax).to.have.been.calledWith(config);
+      });
     });
   });
 });
