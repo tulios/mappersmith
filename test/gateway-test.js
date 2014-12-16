@@ -24,17 +24,9 @@ describe('Gateway', function() {
   });
 
   describe('constructor', function() {
-    it('configures the successCallback', function() {
-      var callback = function() {};
-      gateway = new Gateway(url, verb, callback);
-      expect(gateway.successCallback).to.equals(callback);
-    });
-
-    describe('when the successCallback is undefined', function() {
-      it('configures with noop', function() {
-        gateway = new Gateway(url, verb);
-        expect(gateway.successCallback).to.equals(noop);
-      });
+    it('configures successCallback with noop', function() {
+      gateway = new Gateway(url, verb);
+      expect(gateway.successCallback).to.equals(noop);
     });
 
     it('configures failCallback with noop', function() {
@@ -46,10 +38,30 @@ describe('Gateway', function() {
       gateway = new Gateway(url, verb);
       expect(gateway.completeCallback).to.equals(noop);
     });
+  });
 
-    it('calls methodStub with the url', function() {
+  describe('#call', function() {
+    it('calls the configured method with the url', function() {
+      new Gateway(url, verb).call();
+      expect(methodStub).to.have.been.called;
+    });
+  });
+
+  describe('#success', function() {
+    var gateway;
+
+    beforeEach(function() {
       gateway = new Gateway(url, verb);
-      expect(methodStub).to.have.been.calledWith(url);
+    });
+
+    it('configures the successCallback', function() {
+      var success = function() {};
+      gateway.success(success);
+      expect(gateway.successCallback).to.equals(success);
+    });
+
+    it('return "this"', function() {
+      expect(gateway.success(function() {})).to.equals(gateway);
     });
   });
 
@@ -99,7 +111,7 @@ describe('Gateway', function() {
       });
 
       it('throws Utils.Exception with NotImplemented message', function() {
-        expect(function() { new Gateway(url, verb) }).to.throw(Utils.Exception, /not implemented/);
+        expect(function() { new Gateway(url, verb).call() }).to.throw(Utils.Exception, /not implemented/);
       });
     });
 

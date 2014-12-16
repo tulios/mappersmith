@@ -7,7 +7,7 @@ var VanillaGateway = function() {
 
 VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
-  get: function(url) {
+  get: function() {
     var request = new XMLHttpRequest();
 
     request.onload = function() {
@@ -35,7 +35,11 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
       this.completeCallback.apply(this, arguments);
     }.bind(this);
 
-    request.open('GET', url, true);
+    if (this.opts.configure) {
+      this.opts.configure(request);
+    }
+
+    request.open('GET', this.url, true);
     request.send();
   }
 

@@ -16,14 +16,27 @@ module.exports = {
 },{"./src/gateway":2,"./src/gateway/jquery-gateway":3,"./src/gateway/vanilla-gateway":4,"./src/mapper.js":5,"./src/utils":6}],2:[function(require,module,exports){
 var Utils = require('./utils');
 
-var Gateway = function(url, method, callback) {
-  this.successCallback = callback || Utils.noop;
+var Gateway = function(url, method, opts) {
+  this.url = url;
+  this.method = method;
+  this.opts = opts || {};
+
+  this.successCallback = Utils.noop;
   this.failCallback = Utils.noop;
   this.completeCallback = Utils.noop;
-  return this[method](url);
 }
 
 Gateway.prototype = {
+
+  call: function() {
+    this[this.method]();
+    return this;
+  },
+
+  success: function(callback) {
+    this.successCallback = callback;
+    return this;
+  },
 
   fail: function(callback) {
     this.failCallback = callback;
@@ -35,23 +48,23 @@ Gateway.prototype = {
     return this;
   },
 
-  get: function(url) {
+  get: function() {
     throw new Utils.Exception('Gateway#get not implemented');
   },
 
-  post: function(url) {
+  post: function() {
     throw new Utils.Exception('Gateway#post not implemented');
   },
 
-  put: function(url) {
+  put: function() {
     throw new Utils.Exception('Gateway#put not implemented');
   },
 
-  delete: function(url) {
+  delete: function() {
     throw new Utils.Exception('Gateway#delete not implemented');
   },
 
-  patch: function(url) {
+  patch: function() {
     throw new Utils.Exception('Gateway#patch not implemented');
   }
 
@@ -69,16 +82,14 @@ var JQueryGateway = function() {
 
 JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
-  get: function(url) {
-    $.getJSON(url, function() {
-      this.successCallback.apply(this, arguments);
-    }.bind(this)).
-    fail(function() {
-      this.failCallback.apply(this, arguments)
-    }.bind(this)).
-    always(function() {
-      this.completeCallback.apply(this, arguments)
-    }.bind(this));
+  get: function() {
+    var defaults = {dataType: "json", url: this.url};
+    var config = Utils.extend(defaults, this.opts);
+
+    $.ajax(config).
+    done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
+    fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
+    always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
 
     return this;
   }
@@ -97,7 +108,7 @@ var VanillaGateway = function() {
 
 VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
-  get: function(url) {
+  get: function() {
     var request = new XMLHttpRequest();
 
     request.onload = function() {
@@ -125,7 +136,11 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
       this.completeCallback.apply(this, arguments);
     }.bind(this);
 
-    request.open('GET', url, true);
+    if (this.opts.configure) {
+      this.opts.configure(request);
+    }
+
+    request.open('GET', this.url, true);
     request.send();
   }
 
@@ -134,9 +149,9 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 module.exports = VanillaGateway;
 
 },{"../gateway":2,"../utils":6}],5:[function(require,module,exports){
-var Mapper = function(manifest, gateway) {
+var Mapper = function(manifest, Gateway) {
   this.manifest = manifest;
-  this.gateway = gateway;
+  this.Gateway = Gateway;
   this.host = this.manifest.host;
 }
 
@@ -195,14 +210,17 @@ Mapper.prototype = {
   },
 
   newGatewayRequest: function(method, path) {
-    return function(params, callback) {
+    return function(params, callback, opts) {
       if (typeof params === 'function') {
         callback = params;
         params = undefined;
       }
 
       var url = this.urlFor(path, params);
-      return new this.gateway(url, method, callback);
+      return new this.Gateway(url, method, opts).
+        success(callback).
+        call();
+
     }.bind(this);
   }
 

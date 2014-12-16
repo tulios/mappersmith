@@ -4,6 +4,7 @@ var Mapper = Mappersmith.Mapper;
 describe('Mapper', function() {
   var mapper,
       manifest,
+      test,
       gateway;
 
   beforeEach(function() {
@@ -21,8 +22,26 @@ describe('Mapper', function() {
       }
     }
 
-    gateway = sinon.stub({get: function() {}}, 'get');
+    test = {};
+    test.gateway = function() {};
+    test.gateway.prototype.get = function() {return this};
+    test.gateway.prototype.success = function() {return this};
+    test.gateway.prototype.call = function() {return this};
+
+    sinon.spy(test, 'gateway');
+    sinon.spy(test.gateway.prototype, 'get');
+    sinon.spy(test.gateway.prototype, 'success');
+    sinon.spy(test.gateway.prototype, 'call');
+
+    gateway = test.gateway;
     mapper = new Mapper(manifest, gateway);
+  });
+
+  afterEach(function() {
+    test.gateway.restore();
+    test.gateway.prototype.get.restore();
+    test.gateway.prototype.success.restore();
+    test.gateway.prototype.call.restore();
   });
 
   describe('contructor', function() {
@@ -31,7 +50,7 @@ describe('Mapper', function() {
     });
 
     it('holds a reference to gateway', function() {
-      expect(mapper).to.have.property('gateway', gateway);
+      expect(mapper).to.have.property('Gateway', gateway);
     });
 
     it('holds a reference to host', function() {
@@ -63,7 +82,9 @@ describe('Mapper', function() {
       var request = mapper.newGatewayRequest(method, path);
 
       expect(request(params, callback)).to.be.an.instanceof(gateway);
-      expect(gateway).to.have.been.calledWith(fullUrl + '?a=true', method, callback);
+      expect(gateway.prototype.success).to.have.been.calledWith(callback);
+      expect(gateway.prototype.call).to.have.been.called;
+      expect(gateway).to.have.been.calledWith(fullUrl + '?a=true', method);
     });
 
     describe('without params', function() {
@@ -71,7 +92,9 @@ describe('Mapper', function() {
         var request = mapper.newGatewayRequest(method, path);
 
         expect(request(callback)).to.be.an.instanceof(gateway);
-        expect(gateway).to.have.been.calledWith(fullUrl, method, callback);
+        expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        expect(gateway.prototype.call).to.have.been.called;
+        expect(gateway).to.have.been.calledWith(fullUrl, method);
       });
     });
   });
@@ -160,7 +183,8 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path);
 
           result.Book.all(callback);
-          expect(gateway).to.have.been.calledWith(url, method, callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
 
@@ -170,7 +194,8 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path, {b: 2});
 
           result.Book.all({b: 2}, callback);
-          expect(gateway).to.have.been.calledWith(url, method, callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
 
@@ -180,7 +205,8 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path, {id: 3});
 
           result.Book.byId({id: 3}, callback);
-          expect(gateway).to.have.been.calledWith(url, method, callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
 
@@ -190,7 +216,8 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path, {id: 3, d: 4});
 
           result.Book.byId({id: 3, d: 4}, callback);
-          expect(gateway).to.have.been.calledWith(url, method, callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
 
@@ -201,7 +228,8 @@ describe('Mapper', function() {
           method = 'post';
 
           result.Photo.add(callback);
-          expect(gateway).to.have.been.calledWith(url, method, callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
     });

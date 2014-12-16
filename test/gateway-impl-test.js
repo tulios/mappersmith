@@ -28,7 +28,12 @@ describe('Gateway implementations', function() {
           [status, {'Content-Type': 'application/json'}, rawData]
         );
 
-        new GatewayImpl(url, method, success).fail(fail).complete(complete);
+        new GatewayImpl(url, method).
+          success(success).
+          fail(fail).
+          complete(complete).
+          call();
+
         fakeServer.respond();
       }
 

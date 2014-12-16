@@ -1,13 +1,26 @@
 var Utils = require('./utils');
 
-var Gateway = function(url, method, callback) {
-  this.successCallback = callback || Utils.noop;
+var Gateway = function(url, method, opts) {
+  this.url = url;
+  this.method = method;
+  this.opts = opts || {};
+
+  this.successCallback = Utils.noop;
   this.failCallback = Utils.noop;
   this.completeCallback = Utils.noop;
-  return this[method](url);
 }
 
 Gateway.prototype = {
+
+  call: function() {
+    this[this.method]();
+    return this;
+  },
+
+  success: function(callback) {
+    this.successCallback = callback;
+    return this;
+  },
 
   fail: function(callback) {
     this.failCallback = callback;
@@ -19,23 +32,23 @@ Gateway.prototype = {
     return this;
   },
 
-  get: function(url) {
+  get: function() {
     throw new Utils.Exception('Gateway#get not implemented');
   },
 
-  post: function(url) {
+  post: function() {
     throw new Utils.Exception('Gateway#post not implemented');
   },
 
-  put: function(url) {
+  put: function() {
     throw new Utils.Exception('Gateway#put not implemented');
   },
 
-  delete: function(url) {
+  delete: function() {
     throw new Utils.Exception('Gateway#delete not implemented');
   },
 
-  patch: function(url) {
+  patch: function() {
     throw new Utils.Exception('Gateway#patch not implemented');
   }
 

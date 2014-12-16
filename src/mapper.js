@@ -1,6 +1,6 @@
-var Mapper = function(manifest, gateway) {
+var Mapper = function(manifest, Gateway) {
   this.manifest = manifest;
-  this.gateway = gateway;
+  this.Gateway = Gateway;
   this.host = this.manifest.host;
 }
 
@@ -59,14 +59,17 @@ Mapper.prototype = {
   },
 
   newGatewayRequest: function(method, path) {
-    return function(params, callback) {
+    return function(params, callback, opts) {
       if (typeof params === 'function') {
         callback = params;
         params = undefined;
       }
 
       var url = this.urlFor(path, params);
-      return new this.gateway(url, method, callback);
+      return new this.Gateway(url, method, opts).
+        success(callback).
+        call();
+
     }.bind(this);
   }
 
