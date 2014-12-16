@@ -8,19 +8,25 @@ var VanillaGateway = function() {
 VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
   get: function(url) {
-    request = new XMLHttpRequest();
-    request.open('GET', url, true);
+    var request = new XMLHttpRequest();
 
     request.onload = function() {
-      if (request.status >= 200 && request.status < 400){
-        data = JSON.parse(request.responseText);
-        this.successCallback(data);
+      var data = null;
 
-      } else {
+      try {
+        if (request.status >= 200 && request.status < 400) {
+          data = JSON.parse(request.responseText);
+          this.successCallback(data);
+
+        } else {
+          this.failCallback(request);
+        }
+      } catch(e) {
         this.failCallback(request);
-      }
 
-      this.completeCallback(data);
+      } finally {
+        this.completeCallback(data);
+      }
 
     }.bind(this);
 
@@ -29,6 +35,7 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
       this.completeCallback.apply(this, arguments);
     }.bind(this);
 
+    request.open('GET', url, true);
     request.send();
   }
 
