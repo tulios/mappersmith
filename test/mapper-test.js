@@ -96,6 +96,18 @@ describe('Mapper', function() {
         expect(gateway.prototype.call).to.have.been.called;
         expect(gateway).to.have.been.calledWith(fullUrl, method);
       });
+
+      describe('with opts for gateway', function() {
+        it('considers opts as the second argument', function() {
+          var request = mapper.newGatewayRequest(method, path);
+          var opts = {jsonp: true};
+
+          expect(request(callback, opts)).to.be.an.instanceof(gateway);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+          expect(gateway.prototype.call).to.have.been.called;
+          expect(gateway).to.have.been.calledWith(fullUrl, method, opts);
+        });
+      });
     });
   });
 

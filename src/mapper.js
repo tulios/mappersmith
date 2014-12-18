@@ -61,6 +61,7 @@ Mapper.prototype = {
   newGatewayRequest: function(method, path) {
     return function(params, callback, opts) {
       if (typeof params === 'function') {
+        opts = callback;
         callback = params;
         params = undefined;
       }
