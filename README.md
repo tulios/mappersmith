@@ -1,6 +1,6 @@
 # Mappersmith
 
-It is a lightweight, dependency-free, rest client mapper for javascript. It helps you map your api into the client and give you all the flexibility you want to customize the requests or write your own gateways.
+**Mappersmith** is a lightweight, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client, giving you all the flexibility you want to customize requests or write your own gateways.
 
 # Install
 
@@ -30,7 +30,7 @@ npm run build
 
 # Usage
 
-To create a client for your API you will need to provide a simple manifest, it must have the `host` and the `resources`. Each resource has a name and a list of methods with its definitions, ex:
+To create a client for your API, you will need to provide a simple manifest, which must have `host` and `resources` keys. Each resource has a name and a list of methods with its definitions, like:
 
 ```javascript
 var manifest = {
@@ -47,13 +47,23 @@ var manifest = {
 }
 ```
 
-With the manifest in your hands, you are able to forge your client
+You can specify an HTTP method for every API call, but if you don't, `GET` will be used. For instance, let's say you can save a photo:
+
+```javascript
+...
+Photo: {
+      save: {method: 'POST', path: '/v1/photos/{category}/save'}
+    }
+...
+```
+
+With the manifest in your hands, you are able to forge your client:
 
 ```javascript
 var Client = new Mappersmith.forge(manifest)
 ```
 
-and then, use as defined by your manifest
+And then, use it as defined:
 
 ```javascript
 // without callbacks
@@ -70,13 +80,13 @@ Client.Book.byId({id: 3}, function(data) {
 ```
 
 #### Parameters
-If your method doesn't require any parameter, you can just call without them
+If your method doesn't require any parameter, you can just call it without them:
 
 ```javascript
 Client.Book.all() // http://my.api.com/v1/books.json
 ```
 
-Every parameter that doesn't match a pattern (`{name}`) in the url will be used as query strings
+Every parameter that doesn't match a pattern (`{parameter-name}`) in `path` will be sent as part of the query string:
 
 ```javascript
 Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
@@ -84,7 +94,7 @@ Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
 
 # Gateways
 
-Mappersmith allows you to customize the transport layer, you could use the default `Mappersmith.VanillaGateway`, the included `Mappersmith.JQueryGateway` or write your own version.
+**Mappersmith** allows you to customize the transport layer. You can use the default `Mappersmith.VanillaGateway`, the included `Mappersmith.JQueryGateway` or write your own version.
 
 #### How to write one?
 
@@ -106,7 +116,7 @@ MyGateway.prototype = Mappersmith.Utils.extend({},
 
 #### How to change the default?
 
-Just provide an implementation of `Mappersmith.Gateway` as the second argument of the method `forge`
+Just provide an implementation of `Mappersmith.Gateway` as the second argument of the method `forge`:
 
 ```javascript
 var Client = new Mappersmith.forge(manifest, Mappersmith.JQueryGateway)
@@ -114,13 +124,13 @@ var Client = new Mappersmith.forge(manifest, Mappersmith.JQueryGateway)
 
 #### Specifics of each gateway
 
-You can pass options for the gateway implementation that you are using, for example, if we are using the `Mappersmith.JQueryGateway` and we want that one of our methods uses `jsonp` we can call it like:
+You can pass options for the gateway implementation that you are using. For example, if we are using the `Mappersmith.JQueryGateway` and want one of our methods to use `jsonp`, we can call it like:
 
 ```javascript
 Client.Book.byId({id: 2}, function(data) {}, {jsonp: true})
 ```
 
-Every third argument is passed to the gateways as ```this.opts``` and the options varies by each implementation. The default gateway, ```Mappersmith.VanillaGateway```, accepts a `configure` callback, like:
+The third argument is passed to the gateway as `this.opts` and, of course, the accepted options vary by each implementation. The default gateway, `Mappersmith.VanillaGateway`, accepts a `configure` callback:
 
 ```javascript
 Client.Book.byId({id: 2}, function(data) {}, {
@@ -136,7 +146,7 @@ The gateways listed here are available through the `Mappersmith` namespace.
 
 ## VanillaGateway
 
-Default gateway, it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows to change the request object before it happens.
+The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used.
 
 #### Available methods:
 
@@ -148,7 +158,7 @@ Default gateway, it uses plain `XMLHttpRequest`. Accepts a `configure` callback 
 
 ## JQueryGateway
 
-It uses `$.ajax`. Accepts an object that will be merged with defaults. It doesn't include jquery, you will need to include that in your page.
+It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include **jquery**, so you will need to include that in your page.
 
 #### Available methods:
 
