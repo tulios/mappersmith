@@ -9,7 +9,8 @@
   ],
   "main": "index.js",
   "scripts": {
-    "build": "browserify index.js --standalone Mappersmith --outfile build/mappersmith.js"
+    "build": "./node_modules/.bin/browserify index.js --standalone Mappersmith --outfile build/mappersmith.js",
+    "release": "npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "browserify": "^7.0.1",
     "chai": "^1.10.0",
-    "mocha": "^2.0.1"
+    "mocha": "^2.0.1",
+    "uglify-js": "^2.4.16"
   }
 }
