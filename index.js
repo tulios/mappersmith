@@ -5,9 +5,9 @@ module.exports = {
   VanillaGateway: require('./src/gateway/vanilla-gateway'),
   JQueryGateway: require('./src/gateway/jquery-gateway'),
   forge: function(manifest, gateway) {
-    return new Mappersmith.Mapper(
+    return new this.Mapper(
       manifest,
-      gateway || Mappersmith.VanillaGateway
+      gateway || this.VanillaGateway
     ).build();
   }
 }
