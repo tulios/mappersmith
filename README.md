@@ -1,66 +1,168 @@
-**Under heavy development, it is not yet ready for production**
-
 # Mappersmith
 
-It is a lightweight, dependency free, rest client mapper for javascript.
+It is a lightweight, dependency-free, rest client mapper for javascript. It helps you map your api into the client and give you all the flexibility you want to customize the requests or write your own gateways.
 
-# Usage
+# Install
 
-```javascript
-// Given a manifest
-var manifest = {
-  host: 'http://localhost:4000',
-  resources: {
-    Book: {
-      'all':  {path: '/v1/books.json'},
-      'byId': {path: '/v1/books/{id}.json'}
-    },
-    Photo: {
-      'byCategory': {path: '/v1/photos/{category}/all.json'}
-    }
-  }
-}
+#### NPM
 
-// You can generate a pseudo 'client' for it
-var Client = new Mappersmith.forge(manifest)
-
-// Mappersmith has a transport layer using vanilla javascript and jquery, to change it
-// just pass the implementation as the second argument to the forge method
-
-// Ex:
-// var Client = new Mappersmith.forge(manifest, Mappersmith.JQueryRequest)
-
-// and then call your api
-
-// http://localhost:4000/v1/books/3.json
-Client.Book.byId({id: 3})
-Client.Book.byId({id: 3}, function(data) {})
-
-// http://localhost:4000/v1/books/3.json?showMetadata=true
-Client.Book.byId({id: 3, showMetadata: true}, function(data) {})
-
-// http://localhost:4000/v1/books.json
-Client.Book.all()
-
-// http://localhost:4000/v1/books.json?category=test
-Client.Book.all({category: 'test'})
-
-// http://localhost:4000/v1/photos/animals/all.json
-Client.Photo.byCategory({category: "animals"})
-
-// <ContextName>.<Resource>.<method>(<params, optional>, <callback>)
+```sh
+npm install mappersmith
 ```
 
-# Build from the source
+#### Browser
 
-## Install the dependencies
+Download the tag/latest version from the build folder.
+
+#### Build from the source
+
+Install the dependencies
 
 ```sh
 npm install
 ```
 
-## Build
+Build
 
 ```sh
 npm run build
 ```
+
+# Usage
+
+To create a client for your API you will need to provide a simple manifest, it must have the `host` and the `resources`. Each resource has a name and a list of methods with its definitions, ex:
+
+```javascript
+var manifest = {
+  host: 'http://my.api.com',
+  resources: {
+    Book: {
+      all:  {path: '/v1/books.json'},
+      byId: {path: '/v1/books/{id}.json'}
+    },
+    Photo: {
+      byCategory: {path: '/v1/photos/{category}/all.json'}
+    }
+  }
+}
+```
+
+With the manifest in your hands, you are able to forge your client
+
+```javascript
+var Client = new Mappersmith.forge(manifest)
+```
+
+and then, use as defined by your manifest
+
+```javascript
+// without callbacks
+Client.Book.byId({id: 3})
+
+// with all callbacks
+Client.Book.byId({id: 3}, function(data) {
+  // success callback
+}).fail(function() {
+  // fail callback
+}).complete(function() {
+  // complete callback, it will always be called
+})
+```
+
+#### Parameters
+If your method doesn't require any parameter, you can just call without them
+
+```javascript
+Client.Book.all() // http://my.api.com/v1/books.json
+```
+
+Every parameter that doesn't match a pattern (`{name}`) in the url will be used as query strings
+
+```javascript
+Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
+```
+
+# Gateways
+
+Mappersmith allows you to customize the transport layer, you could use the default `Mappersmith.VanillaGateway`, the included `Mappersmith.JQueryGateway` or write your own version.
+
+#### How to write one?
+
+```javascript
+var MyGateway = function() {
+  return Mappersmith.Gateway.apply(this, arguments);
+}
+
+MyGateway.prototype = Mappersmith.Utils.extend({},
+  Mappersmith.Gateway.prototype, {
+  get: function() {
+    // you will have `this.url` as the target url
+  },
+
+  post: function() {
+  }
+})
+```
+
+#### How to change the default?
+
+Just provide an implementation of `Mappersmith.Gateway` as the second argument of the method `forge`
+
+```javascript
+var Client = new Mappersmith.forge(manifest, Mappersmith.JQueryGateway)
+```
+
+#### Specifics of each gateway
+
+You can pass options for the gateway implementation that you are using, for example, if we are using the `Mappersmith.JQueryGateway` and we want that one of our methods uses `jsonp` we can call it like:
+
+```javascript
+Client.Book.byId({id: 2}, function(data) {}, {jsonp: true})
+```
+
+Every third argument is passed to the gateways as ```this.opts``` and the options varies by each implementation. The default gateway, ```Mappersmith.VanillaGateway```, accepts a `configure` callback, like:
+
+```javascript
+Client.Book.byId({id: 2}, function(data) {}, {
+  configure: function(request) {
+    // do whatever you want
+  }
+})
+```
+
+# Gateway Implementations
+
+The gateways listed here are available through the `Mappersmith` namespace.
+
+## VanillaGateway
+
+Default gateway, it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows to change the request object before it happens.
+
+#### Available methods:
+
+- :ok: GET
+- :x: POST
+- :x: PUT
+- :x: DELETE
+- :x: PATCH
+
+## JQueryGateway
+
+It uses `$.ajax`. Accepts an object that will be merged with defaults. It doesn't include jquery, you will need to include that in your page.
+
+#### Available methods:
+
+- :ok: GET
+- :x: POST
+- :x: PUT
+- :x: DELETE
+- :x: PATCH
+
+# Tests
+
+1. Build the source (`npm run build`)
+2. Open test.html
+
+# Licence
+
+See [LICENCE](https://github.com/tulios/mappersmith/blob/master/LICENSE) for more details.
