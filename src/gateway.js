@@ -36,6 +36,10 @@ Gateway.prototype = {
     throw new Utils.Exception('Gateway#get not implemented');
   },
 
+  head: function() {
+    throw new Utils.Exception('Gateway#head not implemented');
+  },
+
   post: function() {
     throw new Utils.Exception('Gateway#post not implemented');
   },
