@@ -115,11 +115,12 @@ If you find tiring having to map your API methods with hashes, you can use our i
 ```javascript
 ...
 Book: {
- all: 'get:/v1/books.json',  // The same as {method: 'GET', path: '/v1/books.json'}
- byId: '/v1/books/{id}.json' // The default is GET, as always
+  all: 'get:/v1/books.json',  // The same as {method: 'GET', path: '/v1/books.json'}
+  byId: '/v1/books/{id}.json' // The default is GET, as always
 },
 Photo: {
- save: 'post:/v1/photos/{category}/save' // The same as {method: 'POST', path: '/v1/photos/{category}/save.json'}
+  // The same as {method: 'POST', path: '/v1/photos/{category}/save.json'}
+  save: 'post:/v1/photos/{category}/save'
 }
 ...
 ```
