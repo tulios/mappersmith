@@ -73,11 +73,7 @@ Mapper.prototype = {
       }
     });
 
-    var paramsString = Object.keys(params).
-      filter(function(key) { return key !== undefined && key !== null }).
-      map(function(key){ return key + '=' + params[key] }).
-      join('&');
-
+    var paramsString = Utils.params(params);
     if (paramsString.length !== 0) {
       paramsString = '?' + paramsString;
     }

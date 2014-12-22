@@ -51,6 +51,12 @@ describe('Utils', function() {
         expect(Utils.params(params)).to.equal('a=some+big+string');
       });
 
+      describe('in blank', function() {
+        it('returns an empty string', function() {
+          expect(Utils.params({})).to.equal('');
+        });
+      });
+
       describe('with object values', function() {
         it('converts the keys to "key[another-key]" pattern', function() {
           var params = decodeURIComponent(Utils.params({a: {b: 1, c: 2}}));

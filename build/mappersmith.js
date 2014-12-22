@@ -172,14 +172,7 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
     request.open('GET', this.url, true);
     request.send();
-  }//,
-
-  // post: function() {
-  //   var request = new XMLHttpRequest();
-  //   request.open('POST', '/my/url', true);
-  //   request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-  //   request.send(data);
-  // }
+  }
 
 });
 
@@ -261,11 +254,7 @@ Mapper.prototype = {
       }
     });
 
-    var paramsString = Object.keys(params).
-      filter(function(key) { return key !== undefined && key !== null }).
-      map(function(key){ return key + '=' + params[key] }).
-      join('&');
-
+    var paramsString = Utils.params(params);
     if (paramsString.length !== 0) {
       paramsString = '?' + paramsString;
     }
