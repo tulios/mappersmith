@@ -1,9 +1,20 @@
 var Utils = require('./utils');
 
-var Gateway = function(url, method, opts) {
-  this.url = url;
-  this.method = method;
-  this.opts = opts || {};
+/**
+ * Gateway constructor
+ * @param args {Object} with url, method, params and opts
+ *
+ * * url: The full url of the resource, including host and query strings
+ * * method: The name of the HTTP method (get, head, post, put, delete and patch)
+ *           to be used, in lower case.
+ * * params: request params (query strings, url params and body)
+ * * opts: gateway implementation specific options
+ */
+var Gateway = function(args) {
+  this.url = args.url;
+  this.method = args.method;
+  this.params = args.params || {};
+  this.opts = args.opts || {};
 
   this.successCallback = Utils.noop;
   this.failCallback = Utils.noop;

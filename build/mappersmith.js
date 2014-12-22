@@ -16,10 +16,21 @@ module.exports = {
 },{"./src/gateway":2,"./src/gateway/jquery-gateway":3,"./src/gateway/vanilla-gateway":4,"./src/mapper.js":5,"./src/utils":6}],2:[function(require,module,exports){
 var Utils = require('./utils');
 
-var Gateway = function(url, method, opts) {
-  this.url = url;
-  this.method = method;
-  this.opts = opts || {};
+/**
+ * Gateway constructor
+ * @param args {Object} with url, method, params and opts
+ *
+ * * url: The full url of the resource, including host and query strings
+ * * method: The name of the HTTP method (get, head, post, put, delete and patch)
+ *           to be used, in lower case.
+ * * params: request params (query strings, url params and body)
+ * * opts: gateway implementation specific options
+ */
+var Gateway = function(args) {
+  this.url = args.url;
+  this.method = args.method;
+  this.params = args.params || {};
+  this.opts = args.opts || {};
 
   this.successCallback = Utils.noop;
   this.failCallback = Utils.noop;
@@ -160,6 +171,8 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 module.exports = VanillaGateway;
 
 },{"../gateway":2,"../utils":6}],5:[function(require,module,exports){
+var Utils = require('./utils');
+
 var Mapper = function(manifest, Gateway) {
   this.manifest = manifest;
   this.Gateway = Gateway;
@@ -206,9 +219,10 @@ Mapper.prototype = {
   },
 
   urlFor: function(path, urlParams) {
-    var host = this.host.replace(/\/$/, '');
-    var params = urlParams || {};
+    // using `Utils.extend` avoids undesired changes to `urlParams`
+    var params = Utils.extend({}, urlParams);
     var normalizedPath = /^\//.test(path) ? path : '/' + path;
+    var host = this.host.replace(/\/$/, '');
 
     Object.keys(params).forEach(function(key) {
       var value = params[key];
@@ -239,10 +253,14 @@ Mapper.prototype = {
         params = undefined;
       }
 
-      var url = this.urlFor(path, params);
-      return new this.Gateway(url, method, opts).
-        success(callback).
-        call();
+      var gateway = new this.Gateway({
+        url: this.urlFor(path, params),
+        method: method,
+        params: params,
+        opts: opts
+      });
+
+      return gateway.success(callback).call();
 
     }.bind(this);
   }
@@ -251,7 +269,7 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{}],6:[function(require,module,exports){
+},{"./utils":6}],6:[function(require,module,exports){
 var Utils = module.exports = {
   noop: function() {},
 

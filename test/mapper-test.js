@@ -86,7 +86,12 @@ describe('Mapper', function() {
       expect(request(params, callback)).to.be.an.instanceof(gateway);
       expect(gateway.prototype.success).to.have.been.calledWith(callback);
       expect(gateway.prototype.call).to.have.been.called;
-      expect(gateway).to.have.been.calledWith(fullUrl + '?a=true', method);
+      expect(gateway).to.have.been.calledWith({
+        url: fullUrl + '?a=true',
+        method: method,
+        params: params,
+        opts: undefined
+      });
     });
 
     describe('without params', function() {
@@ -96,7 +101,12 @@ describe('Mapper', function() {
         expect(request(callback)).to.be.an.instanceof(gateway);
         expect(gateway.prototype.success).to.have.been.calledWith(callback);
         expect(gateway.prototype.call).to.have.been.called;
-        expect(gateway).to.have.been.calledWith(fullUrl, method);
+        expect(gateway).to.have.been.calledWith({
+          url: fullUrl,
+          method: method,
+          params: undefined,
+          opts: undefined
+        });
       });
 
       describe('with opts for gateway', function() {
@@ -107,7 +117,12 @@ describe('Mapper', function() {
           expect(request(callback, opts)).to.be.an.instanceof(gateway);
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
           expect(gateway.prototype.call).to.have.been.called;
-          expect(gateway).to.have.been.calledWith(fullUrl, method, opts);
+          expect(gateway).to.have.been.calledWith({
+            url: fullUrl,
+            method: method,
+            params: undefined,
+            opts: opts
+          });
         });
       });
     });
@@ -198,7 +213,12 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path);
 
           result.Book.all(callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: undefined,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
@@ -206,32 +226,50 @@ describe('Mapper', function() {
       describe('with query string', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.all.path;
-          var url = mapper.urlFor(path, {b: 2});
+          var params = {b: 2};
+          var url = mapper.urlFor(path, params);
 
-          result.Book.all({b: 2}, callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          result.Book.all(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: params,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
 
-      describe('with params', function() {
+      describe('with params in the path', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.byId.path;
-          var url = mapper.urlFor(path, {id: 3});
+          var params = {id: 3};
+          var url = mapper.urlFor(path, params);
 
-          result.Book.byId({id: 3}, callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          result.Book.byId(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: params,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
 
-      describe('with params and query string', function() {
+      describe('with params in the path and query string', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.byId.path;
-          var url = mapper.urlFor(path, {id: 3, d: 4});
+          var params = {id: 3, d: 4};
+          var url = mapper.urlFor(path, params);
 
-          result.Book.byId({id: 3, d: 4}, callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          result.Book.byId(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: params,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
@@ -243,7 +281,12 @@ describe('Mapper', function() {
           method = 'post';
 
           result.Photo.add(callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: undefined,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
@@ -254,16 +297,27 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path);
 
           result.Book.archived(callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: undefined,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
 
         it('calls the gateway with query string', function() {
           var path = manifest.resources.Book.archived;
-          var url = mapper.urlFor(path, {author: 'Daniel'});
+          var params = {author: 'Daniel'};
+          var url = mapper.urlFor(path, params);
 
-          result.Book.archived({author: 'Daniel'}, callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          result.Book.archived(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: params,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
       });
@@ -271,10 +325,9 @@ describe('Mapper', function() {
       describe('resource definition compact syntax', function() {
 
         it('parses HTTP method and URL', function() {
-
           var compactDefinition = manifest.resources.Book.byCategory;
-          var definitionComponents = compactDefinition.split( ':' );
-          expect( definitionComponents ).to.have.length( 2 );
+          var definitionComponents = compactDefinition.split(':');
+          expect(definitionComponents).to.have.length(2);
 
           var method = definitionComponents[0];
           var path = definitionComponents[1];
@@ -282,9 +335,15 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path);
 
           result.Book.byCategory(callback);
-          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: undefined,
+            opts: undefined
+          });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
+
       });
     });
   });

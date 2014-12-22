@@ -25,7 +25,7 @@ describe('Gateway implementations', function() {
     fakeServer.restore();
   });
 
-  function requestWithGateway(status, rawData, GatewayImpl, opts) {
+  function requestWithGateway(status, rawData, GatewayImpl, params, opts) {
     rawData = rawData || '';
     fakeServer.respondWith(
       method,
@@ -33,7 +33,14 @@ describe('Gateway implementations', function() {
       [status, {'Content-Type': 'application/json'}, rawData]
     );
 
-    new GatewayImpl(url, method, opts).
+    var gateway = new GatewayImpl({
+      url: url,
+      method: method,
+      params: params,
+      opts: opts
+    });
+
+    gateway.
       success(success).
       fail(fail).
       complete(complete).
@@ -127,6 +134,7 @@ describe('Gateway implementations', function() {
           200,
           JSON.stringify(data),
           VanillaGateway,
+          undefined,
           {configure: configure}
         );
 
@@ -168,6 +176,7 @@ describe('Gateway implementations', function() {
           200,
           JSON.stringify(data),
           JQueryGateway,
+          undefined,
           opts
         );
 

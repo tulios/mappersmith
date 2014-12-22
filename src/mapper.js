@@ -1,3 +1,5 @@
+var Utils = require('./utils');
+
 var Mapper = function(manifest, Gateway) {
   this.manifest = manifest;
   this.Gateway = Gateway;
@@ -44,9 +46,10 @@ Mapper.prototype = {
   },
 
   urlFor: function(path, urlParams) {
-    var host = this.host.replace(/\/$/, '');
-    var params = urlParams || {};
+    // using `Utils.extend` avoids undesired changes to `urlParams`
+    var params = Utils.extend({}, urlParams);
     var normalizedPath = /^\//.test(path) ? path : '/' + path;
+    var host = this.host.replace(/\/$/, '');
 
     Object.keys(params).forEach(function(key) {
       var value = params[key];
@@ -77,10 +80,14 @@ Mapper.prototype = {
         params = undefined;
       }
 
-      var url = this.urlFor(path, params);
-      return new this.Gateway(url, method, opts).
-        success(callback).
-        call();
+      var gateway = new this.Gateway({
+        url: this.urlFor(path, params),
+        method: method,
+        params: params,
+        opts: opts
+      });
+
+      return gateway.success(callback).call();
 
     }.bind(this);
   }

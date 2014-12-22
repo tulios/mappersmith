@@ -25,24 +25,24 @@ describe('Gateway', function() {
 
   describe('constructor', function() {
     it('configures successCallback with noop', function() {
-      gateway = new Gateway(url, verb);
+      gateway = new Gateway({url: url, method: verb});
       expect(gateway.successCallback).to.equals(noop);
     });
 
     it('configures failCallback with noop', function() {
-      gateway = new Gateway(url, verb);
+      gateway = new Gateway({url: url, method: verb});
       expect(gateway.failCallback).to.equals(noop);
     });
 
     it('configures completeCallback with noop', function() {
-      gateway = new Gateway(url, verb);
+      gateway = new Gateway({url: url, method: verb});
       expect(gateway.completeCallback).to.equals(noop);
     });
   });
 
   describe('#call', function() {
     it('calls the configured method with the url', function() {
-      new Gateway(url, verb).call();
+      new Gateway({url: url, method: verb}).call();
       expect(methodStub).to.have.been.called;
     });
   });
@@ -51,7 +51,7 @@ describe('Gateway', function() {
     var gateway;
 
     beforeEach(function() {
-      gateway = new Gateway(url, verb);
+      gateway = new Gateway({url: url, method: verb});
     });
 
     it('configures the successCallback', function() {
@@ -69,7 +69,7 @@ describe('Gateway', function() {
     var gateway;
 
     beforeEach(function() {
-      gateway = new Gateway(url, verb);
+      gateway = new Gateway({url: url, method: verb});
     });
 
     it('configures the failCallback', function() {
@@ -87,7 +87,7 @@ describe('Gateway', function() {
     var gateway;
 
     beforeEach(function() {
-      gateway = new Gateway(url, verb);
+      gateway = new Gateway({url: url, method: verb});
     });
 
     it('configures the completeCallback', function() {
@@ -111,7 +111,7 @@ describe('Gateway', function() {
       });
 
       it('throws Utils.Exception with NotImplemented message', function() {
-        expect(function() { new Gateway(url, verb).call() }).to.throw(Utils.Exception, /not implemented/);
+        expect(function() { new Gateway({url: url, method: verb}).call() }).to.throw(Utils.Exception, /not implemented/);
       });
     });
 
