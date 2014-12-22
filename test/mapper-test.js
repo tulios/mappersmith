@@ -14,7 +14,8 @@ describe('Mapper', function() {
         Book: {
           all:  {path: '/v1/books.json'},
           byId: {path: '/v1/books/{id}.json'},
-          archived: '/v1/books/archived.json'
+          archived: '/v1/books/archived.json',
+          byCategory: 'get:/v1/books/{category}/all.json'
         },
         Photo: {
           byCategory: {path: '/v1/photos/{category}/all.json'},
@@ -251,7 +252,6 @@ describe('Mapper', function() {
         it('calls the gateway with method GET', function() {
           var path = manifest.resources.Book.archived;
           var url = mapper.urlFor(path);
-          console.log(url);
 
           result.Book.archived(callback);
           expect(gateway).to.have.been.calledWith(url, method);
@@ -263,6 +263,25 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path, {author: 'Daniel'});
 
           result.Book.archived({author: 'Daniel'}, callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        });
+      });
+
+      describe('resource definition compact syntax', function() {
+
+        it('parses HTTP method and URL', function() {
+
+          var compactDefinition = manifest.resources.Book.byCategory;
+          var definitionComponents = compactDefinition.split( ':' );
+          expect( definitionComponents ).to.have.length( 2 );
+
+          var method = definitionComponents[0];
+          var path = definitionComponents[1];
+
+          var url = mapper.urlFor(path);
+
+          result.Book.byCategory(callback);
           expect(gateway).to.have.been.calledWith(url, method);
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });

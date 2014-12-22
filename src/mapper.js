@@ -21,7 +21,14 @@ Mapper.prototype = {
 
       var descriptor = methods[methodName];
       if ( typeof(descriptor) === 'string' ) {
-        descriptor = {path: descriptor, method: 'get'};
+
+        var compactDefinitionMethod = descriptor.match( /^(get|head|post|delete|put|patch):(.*)/ )
+        if (compactDefinitionMethod != null) {
+          descriptor = {method: compactDefinitionMethod[1], path: compactDefinitionMethod[2]};
+
+        } else {
+          descriptor = {method: 'get', path: descriptor};
+        }
       }
 
       var httpMethod = (descriptor.method || 'get').toLowerCase();
