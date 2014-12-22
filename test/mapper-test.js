@@ -12,12 +12,13 @@ describe('Mapper', function() {
       host: 'http://full-url',
       resources: {
         Book: {
-          'all':  {path: '/v1/books.json'},
-          'byId': {path: '/v1/books/{id}.json'}
+          all:  {path: '/v1/books.json'},
+          byId: {path: '/v1/books/{id}.json'},
+          archived: '/v1/books/archived.json'
         },
         Photo: {
-          'byCategory': {path: '/v1/photos/{category}/all.json'},
-          'add': {method: 'post', path: '/v1/photos/create.json'}
+          byCategory: {path: '/v1/photos/{category}/all.json'},
+          add: {method: 'post', path: '/v1/photos/create.json'}
         }
       }
     }
@@ -178,6 +179,7 @@ describe('Mapper', function() {
     it('creates configured methods for each namespace', function() {
       expect(result.Book.all).to.be.a('function');
       expect(result.Book.byId).to.be.a('function');
+      expect(result.Book.archived).to.be.a('function');
       expect(result.Photo.byCategory).to.be.a('function');
     });
 
@@ -240,6 +242,27 @@ describe('Mapper', function() {
           method = 'post';
 
           result.Photo.add(callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        });
+      });
+
+      describe('with syntatic sugar for GET methods with no parameters', function() {
+        it('calls the gateway with method GET', function() {
+          var path = manifest.resources.Book.archived;
+          var url = mapper.urlFor(path);
+          console.log(url);
+
+          result.Book.archived(callback);
+          expect(gateway).to.have.been.calledWith(url, method);
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        });
+
+        it('calls the gateway with query string', function() {
+          var path = manifest.resources.Book.archived;
+          var url = mapper.urlFor(path, {author: 'Daniel'});
+
+          result.Book.archived({author: 'Daniel'}, callback);
           expect(gateway).to.have.been.calledWith(url, method);
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });

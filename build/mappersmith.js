@@ -178,6 +178,10 @@ Mapper.prototype = {
     return Object.keys(methods).reduce(function(context, methodName) {
 
       var descriptor = methods[methodName];
+      if ( typeof(descriptor) === 'string' ) {
+        descriptor = {path: descriptor, method: 'get'};
+      }
+
       var httpMethod = (descriptor.method || 'get').toLowerCase();
 
       context.methods[methodName] = this.newGatewayRequest(
