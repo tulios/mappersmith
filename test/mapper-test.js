@@ -384,8 +384,7 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: params,
-            processor: processor,
-            opts: undefined
+            processor: processor
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
