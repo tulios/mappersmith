@@ -19,7 +19,13 @@ describe('Mapper', function() {
         },
         Photo: {
           byCategory: {path: '/v1/photos/{category}/all.json'},
-          add: {method: 'post', path: '/v1/photos/create.json'}
+          add: {method: 'post', path: '/v1/photos/create.json'},
+          byId: {
+            path: '/v1/photos/{id}.json',
+            processor: function(data) {
+              return data.thumb;
+            }
+          }
         }
       }
     }
@@ -90,7 +96,8 @@ describe('Mapper', function() {
         url: fullUrl + '?a=true',
         method: method,
         params: params,
-        opts: undefined
+        opts: undefined,
+        processor: undefined
       });
     });
 
@@ -105,7 +112,8 @@ describe('Mapper', function() {
           url: fullUrl,
           method: method,
           params: undefined,
-          opts: undefined
+          opts: undefined,
+          processor: undefined
         });
       });
 
@@ -121,7 +129,8 @@ describe('Mapper', function() {
             url: fullUrl,
             method: method,
             params: undefined,
-            opts: opts
+            opts: opts,
+            processor: undefined
           });
         });
       });
@@ -217,7 +226,8 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: undefined,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -234,7 +244,8 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: params,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -251,7 +262,8 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: params,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -268,7 +280,8 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: params,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -285,7 +298,8 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: undefined,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -301,7 +315,8 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: undefined,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -316,7 +331,8 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: params,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -339,11 +355,31 @@ describe('Mapper', function() {
             url: url,
             method: method,
             params: undefined,
-            opts: undefined
+            opts: undefined,
+            processor: undefined
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
 
+      });
+
+      describe('processors', function() {
+        it('should be passed to gateway', function() {
+          var path = manifest.resources.Photo.byId.path;
+          var processor = manifest.resources.Photo.byId.processor;
+          var params = {id: 3};
+          var url = mapper.urlFor(path, params);
+
+          result.Photo.byId(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: params,
+            processor: processor,
+            opts: undefined
+          });
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        });
       });
     });
   });

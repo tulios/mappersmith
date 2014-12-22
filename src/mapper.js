@@ -37,7 +37,8 @@ Mapper.prototype = {
 
       context.methods[methodName] = this.newGatewayRequest(
         httpMethod,
-        descriptor.path
+        descriptor.path,
+        descriptor.processor
       );
 
       return context;
@@ -72,7 +73,7 @@ Mapper.prototype = {
     return host + normalizedPath + paramsString;
   },
 
-  newGatewayRequest: function(method, path) {
+  newGatewayRequest: function(method, path, processor) {
     return function(params, callback, opts) {
       if (typeof params === 'function') {
         opts = callback;
@@ -84,6 +85,7 @@ Mapper.prototype = {
         url: this.urlFor(path, params),
         method: method,
         params: params,
+        processor: processor,
         opts: opts
       });
 

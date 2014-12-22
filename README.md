@@ -92,6 +92,23 @@ Every parameter that doesn't match a pattern (`{parameter-name}`) in `path` will
 Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
 ```
 
+#### Processors
+
+You can specify functions to process returned data before they are passed to success callback:
+
+```javascript
+...
+Book: {
+  all:  {
+    path: '/v1/books.json',
+    processor: function(data) {
+      return data.result;
+    }
+  }
+}
+...
+```
+
 #### Compact Syntax
 If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax: 
 
@@ -106,6 +123,8 @@ Photo: {
 }
 ...
 ```
+
+**A downside is that you can't use processor functions with compact syntax.**
 
 # Gateways
 

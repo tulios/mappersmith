@@ -13,6 +13,7 @@ var Utils = require('./utils');
 var Gateway = function(args) {
   this.url = args.url;
   this.method = args.method;
+  this.processor = args.processor;
   this.params = args.params || {};
   this.opts = args.opts || {};
 
@@ -29,7 +30,13 @@ Gateway.prototype = {
   },
 
   success: function(callback) {
-    this.successCallback = callback;
+    if (this.processor != null) {
+      this.successCallback = function(data) {
+        callback(this.processor(data));
+      }
+    } else {
+      this.successCallback = callback;
+    }
     return this;
   },
 

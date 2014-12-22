@@ -29,6 +29,7 @@ var Utils = require('./utils');
 var Gateway = function(args) {
   this.url = args.url;
   this.method = args.method;
+  this.processor = args.processor;
   this.params = args.params || {};
   this.opts = args.opts || {};
 
@@ -45,7 +46,13 @@ Gateway.prototype = {
   },
 
   success: function(callback) {
-    this.successCallback = callback;
+    if ( this.processor != null ) {
+      this.successCallback = function(data) {
+        callback(this.processor(data));
+      }
+    } else {
+      this.successCallback = callback;
+    }
     return this;
   },
 
@@ -210,7 +217,8 @@ Mapper.prototype = {
 
       context.methods[methodName] = this.newGatewayRequest(
         httpMethod,
-        descriptor.path
+        descriptor.path,
+        descriptor.processor
       );
 
       return context;
@@ -245,7 +253,7 @@ Mapper.prototype = {
     return host + normalizedPath + paramsString;
   },
 
-  newGatewayRequest: function(method, path) {
+  newGatewayRequest: function(method, path, processor) {
     return function(params, callback, opts) {
       if (typeof params === 'function') {
         opts = callback;
@@ -257,6 +265,7 @@ Mapper.prototype = {
         url: this.urlFor(path, params),
         method: method,
         params: params,
+        processor: processor,
         opts: opts
       });
 
@@ -281,7 +290,7 @@ var Utils = module.exports = {
         continue;
 
       for (var key in arguments[i]) {
-        if (arguments[i].hasOwnProperty(key))
+        if (arguments[i].hasOwnProperty(key) && arguments[i][key] !== undefined)
           out[key] = arguments[i][key];
       }
     }

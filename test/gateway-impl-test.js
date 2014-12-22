@@ -8,7 +8,8 @@ describe('Gateway implementations', function() {
       data,
       success,
       fail,
-      complete;
+      complete,
+      processor;
 
   beforeEach(function() {
     fakeServer = sinon.fakeServer.create();
@@ -37,6 +38,7 @@ describe('Gateway implementations', function() {
       url: url,
       method: method,
       params: params,
+      processor: processor,
       opts: opts
     });
 
@@ -97,6 +99,25 @@ describe('Gateway implementations', function() {
               expect(fail).to.have.been.called;
             });
           });
+
+          describe('processor', function() {
+            beforeEach(function() {
+              processor = sinon.spy(function(){ return 'processed data'; });
+              requestWithGateway(200, JSON.stringify(data), GatewayImpl);
+            });
+
+            afterEach(function() {
+              processor = undefined;
+            });
+
+            it('is called on success', function() {
+              expect(processor).to.have.been.calledWith(data);
+            });
+
+            it('passes processed data to success callback', function() {
+              expect(success).to.have.been.calledWith('processed data');
+            });
+          });
         });
 
         describe('fail', function() {
@@ -115,8 +136,22 @@ describe('Gateway implementations', function() {
           it('does not call success callback', function() {
             expect(success).to.not.have.been.called;
           });
-        });
 
+          describe('processor', function(){
+            beforeEach(function() {
+              processor = sinon.spy(function(){ return 'processed data'; });
+              requestWithGateway(500, JSON.stringify(data), GatewayImpl);
+            });
+
+            afterEach(function() {
+              processor = undefined;
+            });
+
+            it('is not called on failure', function() {
+              expect(processor).to.not.have.been.called;
+            });
+          });
+        });
       });
     });
   });
