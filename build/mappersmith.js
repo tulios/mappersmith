@@ -31,6 +31,7 @@ var Gateway = function(args) {
   this.method = args.method;
   this.processor = args.processor;
   this.params = args.params || {};
+  this.body = args.body;
   this.opts = args.opts || {};
 
   this.successCallback = Utils.noop;
@@ -41,12 +42,12 @@ var Gateway = function(args) {
 Gateway.prototype = {
 
   call: function() {
-    this[this.method]();
+    this[this.method].apply(this, arguments);
     return this;
   },
 
   success: function(callback) {
-    if ( this.processor != null ) {
+    if (this.processor != null) {
       this.successCallback = function(data) {
         callback(this.processor(data));
       }
@@ -180,10 +181,18 @@ module.exports = VanillaGateway;
 },{"../gateway":2,"../utils":6}],5:[function(require,module,exports){
 var Utils = require('./utils');
 
-var Mapper = function(manifest, Gateway) {
+/**
+ * Mapper constructor
+ * @param manifest {Object} with host and resources
+ * @param gateway {Object} with an implementation of {Mappersmith.Gateway}
+ * @param bodyAttr {String}, name of the body attribute used for HTTP methods
+ *        such as POST and PUT. Default: 'body'
+ */
+var Mapper = function(manifest, Gateway, bodyAttr) {
   this.manifest = manifest;
-  this.Gateway = Gateway;
   this.host = this.manifest.host;
+  this.Gateway = Gateway;
+  this.bodyAttr = bodyAttr || 'body';
 }
 
 Mapper.prototype = {
@@ -232,6 +241,9 @@ Mapper.prototype = {
     var normalizedPath = /^\//.test(path) ? path : '/' + path;
     var host = this.host.replace(/\/$/, '');
 
+    // does not includes the body param into the URL
+    delete params[this.bodyAttr];
+
     Object.keys(params).forEach(function(key) {
       var value = params[key];
       var pattern = '\{' + key + '\}';
@@ -243,12 +255,13 @@ Mapper.prototype = {
     });
 
     var paramsString = Object.keys(params).
-      filter(function(key) { return key !== undefined && key !== null}).
-      map(function(key){ return key + '=' + params[key]}).
+      filter(function(key) { return key !== undefined && key !== null }).
+      map(function(key){ return key + '=' + params[key] }).
       join('&');
 
-    if (paramsString.length !== 0)
+    if (paramsString.length !== 0) {
       paramsString = '?' + paramsString;
+    }
 
     return host + normalizedPath + paramsString;
   },
@@ -261,15 +274,19 @@ Mapper.prototype = {
         params = undefined;
       }
 
-      var gateway = new this.Gateway({
+      var body = (params || {})[this.bodyAttr];
+      var gatewayOpts = Utils.extend({}, {
         url: this.urlFor(path, params),
         method: method,
-        params: params,
         processor: processor,
+        params: params,
+        body: body,
         opts: opts
-      });
+      })
 
-      return gateway.success(callback).call();
+      return new this.Gateway(gatewayOpts).
+        success(callback).
+        call();
 
     }.bind(this);
   }

@@ -38,6 +38,28 @@ describe('Gateway', function() {
       gateway = new Gateway({url: url, method: verb});
       expect(gateway.completeCallback).to.equals(noop);
     });
+
+    describe('exposed args values', function() {
+      var args;
+
+      beforeEach(function() {
+        args = {
+          url: url,
+          method: verb,
+          params: {a: 1},
+          body: 'some-value',
+          opts: {b: 2}
+        }
+
+        gateway = new Gateway(args);
+      });
+
+      ['url', 'method', 'params', 'body', 'opts'].forEach(function(attr) {
+        it(attr, function() {
+          expect(gateway[attr]).to.equal(args[attr]);
+        });
+      });
+    });
   });
 
   describe('#call', function() {

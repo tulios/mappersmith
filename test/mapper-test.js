@@ -64,6 +64,15 @@ describe('Mapper', function() {
     it('holds a reference to host', function() {
       expect(mapper).to.have.property('host', manifest.host);
     });
+
+    it('holds a reference to bodyAttr', function() {
+      mapper = new Mapper(manifest, gateway, 'data');
+      expect(mapper).to.have.property('bodyAttr', 'data');
+    });
+
+    it('has a default value for bodyAttr', function() {
+      expect(mapper).to.have.property('bodyAttr', 'body');
+    });
   });
 
   describe('#newGatewayRequest', function() {
@@ -95,9 +104,7 @@ describe('Mapper', function() {
       expect(gateway).to.have.been.calledWith({
         url: fullUrl + '?a=true',
         method: method,
-        params: params,
-        opts: undefined,
-        processor: undefined
+        params: params
       });
     });
 
@@ -110,10 +117,7 @@ describe('Mapper', function() {
         expect(gateway.prototype.call).to.have.been.called;
         expect(gateway).to.have.been.calledWith({
           url: fullUrl,
-          method: method,
-          params: undefined,
-          opts: undefined,
-          processor: undefined
+          method: method
         });
       });
 
@@ -128,11 +132,28 @@ describe('Mapper', function() {
           expect(gateway).to.have.been.calledWith({
             url: fullUrl,
             method: method,
-            params: undefined,
-            opts: opts,
-            processor: undefined
+            opts: opts
           });
         });
+      });
+    });
+
+    describe('with body param', function() {
+      it('includes the value defined by bodyAttr in the key "body"', function() {
+        params[mapper.bodyAttr] = 'some-value';
+        var request = mapper.newGatewayRequest(method, path);
+        var result = {
+          url: fullUrl + '?a=true',
+          method: method,
+          params: params
+        }
+
+        result[mapper.bodyAttr] = params[mapper.bodyAttr];
+
+        expect(request(params, callback)).to.be.an.instanceof(gateway);
+        expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        expect(gateway.prototype.call).to.have.been.called;
+        expect(gateway).to.have.been.calledWith(result);
       });
     });
   });
@@ -163,6 +184,14 @@ describe('Mapper', function() {
         it('returns host and path', function() {
           expect(mapper.urlFor('/path')).to.equals('http://full-url/path');
         });
+      });
+    });
+
+    describe('with bodyAttr in params', function() {
+      it('does not include into the URL', function() {
+        var params = {};
+        params[mapper.bodyAttr] = 'some-value';
+        expect(mapper.urlFor('/path', params)).to.equals('http://full-url/path');
       });
     });
 
@@ -224,10 +253,7 @@ describe('Mapper', function() {
           result.Book.all(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            method: method,
-            params: undefined,
-            opts: undefined,
-            processor: undefined
+            method: method
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -243,9 +269,7 @@ describe('Mapper', function() {
           expect(gateway).to.have.been.calledWith({
             url: url,
             method: method,
-            params: params,
-            opts: undefined,
-            processor: undefined
+            params: params
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -261,9 +285,7 @@ describe('Mapper', function() {
           expect(gateway).to.have.been.calledWith({
             url: url,
             method: method,
-            params: params,
-            opts: undefined,
-            processor: undefined
+            params: params
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -279,9 +301,7 @@ describe('Mapper', function() {
           expect(gateway).to.have.been.calledWith({
             url: url,
             method: method,
-            params: params,
-            opts: undefined,
-            processor: undefined
+            params: params
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -296,10 +316,7 @@ describe('Mapper', function() {
           result.Photo.add(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            method: method,
-            params: undefined,
-            opts: undefined,
-            processor: undefined
+            method: method
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -313,10 +330,7 @@ describe('Mapper', function() {
           result.Book.archived(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            method: method,
-            params: undefined,
-            opts: undefined,
-            processor: undefined
+            method: method
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -330,9 +344,7 @@ describe('Mapper', function() {
           expect(gateway).to.have.been.calledWith({
             url: url,
             method: method,
-            params: params,
-            opts: undefined,
-            processor: undefined
+            params: params
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
@@ -353,10 +365,7 @@ describe('Mapper', function() {
           result.Book.byCategory(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            method: method,
-            params: undefined,
-            opts: undefined,
-            processor: undefined
+            method: method
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });

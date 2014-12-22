@@ -15,6 +15,7 @@ var Gateway = function(args) {
   this.method = args.method;
   this.processor = args.processor;
   this.params = args.params || {};
+  this.body = args.body;
   this.opts = args.opts || {};
 
   this.successCallback = Utils.noop;
@@ -25,7 +26,7 @@ var Gateway = function(args) {
 Gateway.prototype = {
 
   call: function() {
-    this[this.method]();
+    this[this.method].apply(this, arguments);
     return this;
   },
 
