@@ -9,7 +9,7 @@ var Utils = module.exports = {
         continue;
 
       for (var key in arguments[i]) {
-        if (arguments[i].hasOwnProperty(key))
+        if (arguments[i].hasOwnProperty(key) && arguments[i][key] !== undefined)
           out[key] = arguments[i][key];
       }
     }

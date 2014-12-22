@@ -18,6 +18,14 @@ describe('Utils', function() {
       expect(result.b).to.equal(1);
       expect(result.c).to.equal(2);
     });
+
+    it('ignores undefined values', function() {
+      var objA = {a: 1, b: 2};
+      var objB = {b: 1, c: undefined};
+      var result = Utils.extend({}, objA, objB);
+
+      expect(result).to.deep.equal({a: 1, b: 1});
+    });
   });
 
   describe('#Exception', function() {
