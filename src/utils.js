@@ -1,4 +1,5 @@
 var Utils = module.exports = {
+  r20: /%20/g,
   noop: function() {},
 
   extend: function(out) {
@@ -15,6 +16,44 @@ var Utils = module.exports = {
     }
 
     return out;
+  },
+
+  params: function(entry) {
+    if (typeof entry !== 'object') {
+      return entry;
+    }
+
+    var validKeys = function(entry) {
+      return Object.keys(entry).
+        filter(function(key) {
+          return entry[key] !== undefined &&
+                 entry[key] !== null
+        });
+    }
+
+    var buildRecursive = function(key, value, suffix) {
+      suffix = suffix || '';
+      var isArray = Array.isArray(value);
+      var isObject = typeof value === 'object';
+
+      if (!isArray && !isObject) {
+        return encodeURIComponent(key + suffix) + '=' + encodeURIComponent(value);
+      }
+
+      if (isArray) {
+        return value.map(function(v) { return buildRecursive(key, v, suffix + '[]') }).
+        join('&');
+      }
+
+      return validKeys(value).
+        map(function(k) { return buildRecursive(key, value[k], suffix + '[' + k + ']') }).
+        join('&');
+    }
+
+    return validKeys(entry).
+      map(function(key) { return buildRecursive(key, entry[key]) }).
+      join('&').
+      replace(Utils.r20, '+');
   },
 
   Exception: function(message) {
