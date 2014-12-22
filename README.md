@@ -92,6 +92,24 @@ Every parameter that doesn't match a pattern (`{parameter-name}`) in `path` will
 Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
 ```
 
+#### Compact Syntax
+If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax: 
+
+```javascript
+var manifest = {
+  host: 'http://my.api.com',
+  resources: {
+    Book: {
+      all: 'get:/v1/books.json',  // The same as {method: 'GET', path: '/v1/books.json'}
+      byId: '/v1/books/{id}.json' // The default is GET, as always
+    },
+    Photo: {
+      save: 'post:/v1/photos/{category}/save' // The same as {method: 'POST', path: '/v1/photos/{category}/save.json'}
+    }
+  }
+}
+```
+
 # Gateways
 
 **Mappersmith** allows you to customize the transport layer. You can use the default `Mappersmith.VanillaGateway`, the included `Mappersmith.JQueryGateway` or write your own version.
@@ -151,6 +169,7 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 #### Available methods:
 
 - :ok: GET
+- :x: HEAD
 - :x: POST
 - :x: PUT
 - :x: DELETE
@@ -163,6 +182,7 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 #### Available methods:
 
 - :ok: GET
+- :x: HEAD
 - :x: POST
 - :x: PUT
 - :x: DELETE
