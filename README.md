@@ -96,18 +96,15 @@ Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
 If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax: 
 
 ```javascript
-var manifest = {
-  host: 'http://my.api.com',
-  resources: {
-    Book: {
-      all: 'get:/v1/books.json',  // The same as {method: 'GET', path: '/v1/books.json'}
-      byId: '/v1/books/{id}.json' // The default is GET, as always
-    },
-    Photo: {
-      save: 'post:/v1/photos/{category}/save' // The same as {method: 'POST', path: '/v1/photos/{category}/save.json'}
-    }
-  }
+...
+Book: {
+ all: 'get:/v1/books.json',  // The same as {method: 'GET', path: '/v1/books.json'}
+ byId: '/v1/books/{id}.json' // The default is GET, as always
+},
+Photo: {
+ save: 'post:/v1/photos/{category}/save' // The same as {method: 'POST', path: '/v1/photos/{category}/save.json'}
 }
+...
 ```
 
 # Gateways
