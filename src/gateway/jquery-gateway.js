@@ -14,15 +14,21 @@ var JQueryGateway = function() {
 
 JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
+  jQueryAjax: function(config) {
+    jQuery.ajax(Utils.extend({url: this.url}, config)).
+      done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
+      fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
+      always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
+  },
+
   get: function() {
-    var defaults = {dataType: "json", url: this.url};
-    var config = Utils.extend(defaults, this.opts);
+    this.jQueryAjax(this.opts);
+    return this;
+  },
 
-    jQuery.ajax(config).
-    done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
-    fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
-    always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
-
+  post: function() {
+    var defaults = {type: 'POST', data: Utils.params(this.body)};
+    this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
   }
 

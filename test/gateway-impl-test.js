@@ -1,4 +1,5 @@
 var expect = chai.expect;
+var shared = $shared;
 var Utils = Mappersmith.Utils;
 
 describe('Gateway implementations', function() {
@@ -6,6 +7,7 @@ describe('Gateway implementations', function() {
       url,
       method,
       data,
+      processedData,
       success,
       fail,
       complete,
@@ -13,34 +15,44 @@ describe('Gateway implementations', function() {
 
   beforeEach(function() {
     fakeServer = sinon.fakeServer.create();
+    fakeServer.lastRequest = function() {
+      return fakeServer.requests[fakeServer.requests.length - 1];
+    }
 
     url = 'http://full-url/';
-    method = 'get';
     success = sinon.spy(function(){});
     fail = sinon.spy(function(){});
     complete = sinon.spy(function(){});
+
     data = {id: 1, enable: false};
+    processedData = 'processed data';
   });
 
   afterEach(function() {
     fakeServer.restore();
   });
 
-  function requestWithGateway(status, rawData, GatewayImpl, params, opts) {
+  function newGateway(GatewayImpl, opts) {
+    opts = opts || {};
+    return new GatewayImpl(Utils.extend({
+      url: url,
+      method: method,
+      processor: processor
+    }, opts));
+  }
+
+  function requestWithGateway(status, rawData, gateway) {
     rawData = rawData || '';
+    var contentType = 'application/json';
+
+    try { JSON.parse(rawData) }
+    catch(e1) { contentType = 'text/plain' }
+
     fakeServer.respondWith(
       method,
       url,
-      [status, {'Content-Type': 'application/json'}, rawData]
+      [status, {'Content-Type': contentType}, rawData]
     );
-
-    var gateway = new GatewayImpl({
-      url: url,
-      method: method,
-      params: params,
-      processor: processor,
-      opts: opts
-    });
 
     gateway.
       success(success).
@@ -50,6 +62,94 @@ describe('Gateway implementations', function() {
 
     fakeServer.respond();
   }
+
+  shared.examplesFor('success JSON response', function(GatewayImpl) {
+    beforeEach(function() {
+      requestWithGateway(200, JSON.stringify(data), newGateway(GatewayImpl));
+    });
+
+    it('calls success callback', function() {
+      expect(success).to.have.been.calledWith(data);
+    });
+
+    it('calls complete callback', function() {
+      expect(complete).to.have.been.calledWith(data);
+    });
+
+    it('does not call fail callback', function() {
+      expect(fail).to.not.have.been.called;
+    });
+  });
+
+  shared.examplesFor('success with unexpected data', function(GatewayImpl) {
+    beforeEach(function() {
+      requestWithGateway(200, 'OK', newGateway(GatewayImpl));
+    });
+
+    it('calls success callback', function() {
+      expect(success).to.have.been.calledWith('OK');
+    });
+
+    it('calls complete callback', function() {
+      expect(complete).to.have.been.called;
+    });
+
+    it('does not call fail callback', function() {
+      expect(fail).to.not.have.been.called;
+    });
+  });
+
+  shared.examplesFor('success with processor', function(GatewayImpl) {
+    beforeEach(function() {
+      processor = sinon.spy(function() { return processedData; });
+      requestWithGateway(200, JSON.stringify(data), newGateway(GatewayImpl));
+    });
+
+    afterEach(function() {
+      processor = undefined;
+    });
+
+    it('is called on success', function() {
+      expect(processor).to.have.been.calledWith(data);
+    });
+
+    it('passes processed data to success callback', function() {
+      expect(success).to.have.been.calledWith(processedData);
+    });
+  });
+
+  shared.examplesFor('fail response', function(GatewayImpl) {
+    beforeEach(function() {
+      requestWithGateway(503, null, newGateway(GatewayImpl));
+    });
+
+    it('calls fail callback', function() {
+      expect(fail).to.have.been.called;
+    });
+
+    it('calls complete callback', function() {
+      expect(complete).to.have.been.called;
+    });
+
+    it('does not call success callback', function() {
+      expect(success).to.not.have.been.called;
+    });
+  });
+
+  shared.examplesFor('fail with processor', function(GatewayImpl) {
+    beforeEach(function() {
+      processor = sinon.spy(function(){ return 'processed data'; });
+      requestWithGateway(500, JSON.stringify(data), newGateway(GatewayImpl));
+    });
+
+    afterEach(function() {
+      processor = undefined;
+    });
+
+    it('is not called on failure', function() {
+      expect(processor).to.not.have.been.called;
+    });
+  });
 
   describe('common behavior', function() {
     [
@@ -63,93 +163,50 @@ describe('Gateway implementations', function() {
 
       describe(name, function() {
 
-        describe('success', function() {
-          describe('with valid JSON', function() {
-            beforeEach(function() {
-              requestWithGateway(200, JSON.stringify(data), GatewayImpl);
-            });
-
-            it('calls success callback', function() {
-              expect(success).to.have.been.calledWith(data);
-            });
-
-            it('calls complete callback', function() {
-              expect(complete).to.have.been.calledWith(data);
-            });
-
-            it('does not call fail callback', function() {
-              expect(fail).to.not.have.been.called;
-            });
+        describe('#get', function() {
+          beforeEach(function() {
+            method = 'get';
           });
 
-          describe('with invalid JSON', function() {
-            beforeEach(function() {
-              requestWithGateway(200, '{', GatewayImpl);
-            });
-
-            it('does not call success callback', function() {
-              expect(success).to.not.have.been.called;
-            });
-
-            it('calls complete callback', function() {
-              expect(complete).to.have.been.called;
-            });
-
-            it('calls fail callback', function() {
-              expect(fail).to.have.been.called;
-            });
+          describe('success', function() {
+            shared.shouldBehaveLike('success JSON response', GatewayImpl);
+            shared.shouldBehaveLike('success with unexpected data', GatewayImpl);
+            shared.shouldBehaveLike('success with processor', GatewayImpl);
           });
 
-          describe('processor', function() {
-            beforeEach(function() {
-              processor = sinon.spy(function(){ return 'processed data'; });
-              requestWithGateway(200, JSON.stringify(data), GatewayImpl);
-            });
-
-            afterEach(function() {
-              processor = undefined;
-            });
-
-            it('is called on success', function() {
-              expect(processor).to.have.been.calledWith(data);
-            });
-
-            it('passes processed data to success callback', function() {
-              expect(success).to.have.been.calledWith('processed data');
-            });
+          describe('fail', function() {
+            shared.shouldBehaveLike('fail response', GatewayImpl);
+            shared.shouldBehaveLike('fail with processor', GatewayImpl);
           });
         });
 
-        describe('fail', function() {
+        describe('#post', function() {
           beforeEach(function() {
-            requestWithGateway(503, null, GatewayImpl);
+            method = 'post';
           });
 
-          it('calls fail callback', function() {
-            expect(fail).to.have.been.called;
-          });
+          describe('success', function() {
+            shared.shouldBehaveLike('success JSON response', GatewayImpl);
+            shared.shouldBehaveLike('success with unexpected data', GatewayImpl);
+            shared.shouldBehaveLike('success with processor', GatewayImpl);
 
-          it('calls complete callback', function() {
-            expect(complete).to.have.been.called;
-          });
+            describe('with body data', function() {
+              var body;
 
-          it('does not call success callback', function() {
-            expect(success).to.not.have.been.called;
-          });
+              beforeEach(function() {
+                body = {val1: 1, val2: 2};
+                requestWithGateway(200, 'OK', newGateway(GatewayImpl, {body: body}));
+              });
 
-          describe('processor', function(){
-            beforeEach(function() {
-              processor = sinon.spy(function(){ return 'processed data'; });
-              requestWithGateway(500, JSON.stringify(data), GatewayImpl);
+              it('includes the formatted body to the request', function() {
+                expect(fakeServer.lastRequest().requestBody).to.equal(Utils.params(body));
+              });
             });
+          });
 
-            afterEach(function() {
-              processor = undefined;
-            });
-
-            it('is not called on failure', function() {
-              expect(processor).to.not.have.been.called;
-            });
+          describe('fail', function() {
+            shared.shouldBehaveLike('fail response', GatewayImpl);
+            shared.shouldBehaveLike('fail with processor', GatewayImpl);
           });
         });
       });
@@ -160,6 +217,7 @@ describe('Gateway implementations', function() {
     var configure;
 
     beforeEach(function() {
+      method = 'get';
       configure = sinon.spy(function() {});
     });
 
@@ -168,9 +226,7 @@ describe('Gateway implementations', function() {
         requestWithGateway(
           200,
           JSON.stringify(data),
-          VanillaGateway,
-          undefined,
-          {configure: configure}
+          newGateway(VanillaGateway, {opts: {configure: configure}})
         );
 
         var firstCallArgs = configure.args[0];
@@ -195,6 +251,7 @@ describe('Gateway implementations', function() {
       sinon.spy(ajax, 'always');
 
       sinon.stub($, 'ajax').returns(ajax);
+      method = 'get';
     });
 
     afterEach(function() {
@@ -204,15 +261,13 @@ describe('Gateway implementations', function() {
     describe('custom opts', function() {
       it('merges opts with $.ajax defaults', function() {
         var opts = {jsonp: true};
-        var defaults = {dataType: "json", url: url};
+        var defaults = {url: url};
         var config = Utils.extend(defaults, opts);
 
         requestWithGateway(
           200,
           JSON.stringify(data),
-          JQueryGateway,
-          undefined,
-          opts
+          newGateway(JQueryGateway, {opts: opts})
         );
 
         expect($.ajax).to.have.been.calledWith(config);

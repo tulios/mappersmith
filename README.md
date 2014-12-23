@@ -110,7 +110,7 @@ Book: {
 ```
 
 #### Compact Syntax
-If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax: 
+If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
 
 ```javascript
 ...
@@ -187,7 +187,7 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 
 - :ok: GET
 - :x: HEAD
-- :x: POST
+- :ok: POST
 - :x: PUT
 - :x: DELETE
 - :x: PATCH
@@ -200,7 +200,7 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 
 - :ok: GET
 - :x: HEAD
-- :x: POST
+- :ok: POST
 - :x: PUT
 - :x: DELETE
 - :x: PATCH
