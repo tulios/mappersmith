@@ -52,8 +52,8 @@ You can specify an HTTP method for every API call, but if you don't, `GET` will 
 ```javascript
 ...
 Photo: {
-      save: {method: 'POST', path: '/v1/photos/{category}/save'}
-    }
+  save: {method: 'POST', path: '/v1/photos/{category}/save'}
+}
 ...
 ```
 
@@ -186,7 +186,6 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 #### Available methods:
 
 - :ok: GET
-- :x: HEAD
 - :ok: POST
 - :ok: PUT
 - :x: DELETE
@@ -199,7 +198,6 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 #### Available methods:
 
 - :ok: GET
-- :x: HEAD
 - :ok: POST
 - :ok: PUT
 - :x: DELETE
@@ -207,8 +205,13 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 
 # Tests
 
-1. Build the source (`npm run build`)
+1. Build the source (`npm run build-test`)
 2. Open test.html
+
+# Compile and release
+
+* Compile: `npm run build`
+* Release (minified version): `npm run release`
 
 # Licence
 

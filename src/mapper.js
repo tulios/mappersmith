@@ -5,13 +5,13 @@ var Utils = require('./utils');
  * @param manifest {Object} with host and resources
  * @param gateway {Object} with an implementation of {Mappersmith.Gateway}
  * @param bodyAttr {String}, name of the body attribute used for HTTP methods
- *        such as POST and PUT. Default: 'body'
+ *        such as POST and PUT
  */
 var Mapper = function(manifest, Gateway, bodyAttr) {
   this.manifest = manifest;
   this.host = this.manifest.host;
   this.Gateway = Gateway;
-  this.bodyAttr = bodyAttr || 'body';
+  this.bodyAttr = bodyAttr;
 }
 
 Mapper.prototype = {

@@ -24,14 +24,21 @@ describe('#forge', function() {
   it('builds a new mapper with default gateway', function() {
     Mappersmith.forge(manifest);
 
-    expect(mapper).to.have.been.calledWith(manifest, VanillaGateway);
+    expect(mapper).to.have.been.calledWith(manifest, VanillaGateway, 'body');
     expect(build).to.have.been.called;
   });
 
   it('accepts a custom gateway', function() {
     Mappersmith.forge(manifest, JQueryGateway);
 
-    expect(mapper).to.have.been.calledWith(manifest, JQueryGateway);
+    expect(mapper).to.have.been.calledWith(manifest, JQueryGateway, 'body');
+    expect(build).to.have.been.called;
+  });
+
+  it('accepts a custom bodyAttr', function() {
+    Mappersmith.forge(manifest, VanillaGateway, 'data');
+
+    expect(mapper).to.have.been.calledWith(manifest, VanillaGateway, 'data');
     expect(build).to.have.been.called;
   });
 });

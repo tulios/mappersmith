@@ -69,10 +69,6 @@ describe('Mapper', function() {
       mapper = new Mapper(manifest, gateway, 'data');
       expect(mapper).to.have.property('bodyAttr', 'data');
     });
-
-    it('has a default value for bodyAttr', function() {
-      expect(mapper).to.have.property('bodyAttr', 'body');
-    });
   });
 
   describe('#newGatewayRequest', function() {
@@ -140,6 +136,7 @@ describe('Mapper', function() {
 
     describe('with body param', function() {
       it('includes the value defined by bodyAttr in the key "body"', function() {
+        mapper.bodyAttr = 'body';
         params[mapper.bodyAttr] = 'some-value';
         var request = mapper.newGatewayRequest(method, path);
         var result = {
