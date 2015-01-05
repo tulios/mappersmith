@@ -12,10 +12,11 @@ module.exports = {
 var Mapper = require('./mapper');
 var VanillaGateway = require('./gateway/vanilla-gateway');
 
-module.exports = function(manifest, gateway) {
+module.exports = function(manifest, gateway, bodyAttr) {
   return new Mapper(
     manifest,
-    gateway || VanillaGateway
+    gateway || VanillaGateway,
+    bodyAttr || 'body'
   ).build();
 }
 
@@ -131,13 +132,15 @@ JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
   },
 
   post: function() {
-    var defaults = {type: 'POST', data: Utils.params(this.body)};
-    this.jQueryAjax(Utils.extend(defaults, this.opts));
-    return this;
+    return this._requestSend('POST');
   },
 
   put: function() {
-    var defaults = {type: 'PUT', data: Utils.params(this.body)};
+    return this._requestSend('PUT');
+  },
+
+  _requestSend: function(method) {
+    var defaults = {type: method, data: Utils.params(this.body)};
     this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
   }
@@ -201,23 +204,17 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
   },
 
   post: function() {
-    var request = new XMLHttpRequest();
-    this.configureCallbacks(request);
-    request.open('POST', this.url, true);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-
-    var args = [];
-    if (this.body !== undefined) {
-      args.push(Utils.params(this.body));
-    }
-
-    request.send.apply(request, args);
+    this._requestSend('POST');
   },
 
   put: function() {
+    this._requestSend('PUT');
+  },
+
+  _requestSend: function(method) {
     var request = new XMLHttpRequest();
     this.configureCallbacks(request);
-    request.open('PUT', this.url, true);
+    request.open(method, this.url, true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
     var args = [];
@@ -240,13 +237,13 @@ var Utils = require('./utils');
  * @param manifest {Object} with host and resources
  * @param gateway {Object} with an implementation of {Mappersmith.Gateway}
  * @param bodyAttr {String}, name of the body attribute used for HTTP methods
- *        such as POST and PUT. Default: 'body'
+ *        such as POST and PUT
  */
 var Mapper = function(manifest, Gateway, bodyAttr) {
   this.manifest = manifest;
   this.host = this.manifest.host;
   this.Gateway = Gateway;
-  this.bodyAttr = bodyAttr || 'body';
+  this.bodyAttr = bodyAttr;
 }
 
 Mapper.prototype = {

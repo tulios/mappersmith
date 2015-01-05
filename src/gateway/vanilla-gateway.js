@@ -48,23 +48,17 @@ var VanillaGateway = module.exports = CreateGateway({
   },
 
   post: function() {
-    var request = new XMLHttpRequest();
-    this.configureCallbacks(request);
-    request.open('POST', this.url, true);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-
-    var args = [];
-    if (this.body !== undefined) {
-      args.push(Utils.params(this.body));
-    }
-
-    request.send.apply(request, args);
+    this._requestSend('POST');
   },
 
   put: function() {
+    this._requestSend('PUT');
+  },
+
+  _requestSend: function(method) {
     var request = new XMLHttpRequest();
     this.configureCallbacks(request);
-    request.open('PUT', this.url, true);
+    request.open(method, this.url, true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
     var args = [];
