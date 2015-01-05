@@ -25,14 +25,14 @@ var JQueryGateway = module.exports = CreateGateway({
   },
 
   post: function() {
-    return this._requestSend('POST');
+    return this._performRequest('POST');
   },
 
   put: function() {
-    return this._requestSend('PUT');
+    return this._performRequest('PUT');
   },
 
-  _requestSend: function(method) {
+  _performRequest: function(method) {
     var defaults = {type: method, data: Utils.params(this.body)};
     this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;

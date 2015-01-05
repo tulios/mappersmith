@@ -48,14 +48,14 @@ var VanillaGateway = module.exports = CreateGateway({
   },
 
   post: function() {
-    this._requestSend('POST');
+    this._performRequest('POST');
   },
 
   put: function() {
-    this._requestSend('PUT');
+    this._performRequest('PUT');
   },
 
-  _requestSend: function(method) {
+  _performRequest: function(method) {
     var request = new XMLHttpRequest();
     this.configureCallbacks(request);
     request.open(method, this.url, true);
