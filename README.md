@@ -154,18 +154,19 @@ Photo: {
 #### How to write one?
 
 ```javascript
-var MyGateway = function() {
-  return Mappersmith.Gateway.apply(this, arguments);
-}
-
-MyGateway.prototype = Mappersmith.Utils.extend({},
-  Mappersmith.Gateway.prototype, {
+var MyGateway = Mappersmith.createGateway({
   get: function() {
-    // you will have `this.url` as the target url
+    // you will have:
+    // - this.url
+    // - this.params
+    // - this.body
+    // - this.opts
   },
 
   post: function() {
   }
+
+  // and other HTTP methods
 })
 ```
 
