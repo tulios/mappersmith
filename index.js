@@ -4,5 +4,7 @@ module.exports = {
   Mapper: require('./src/mapper'),
   VanillaGateway: require('./src/gateway/vanilla-gateway'),
   JQueryGateway: require('./src/gateway/jquery-gateway'),
-  forge: require('./src/forge')
+
+  forge: require('./src/forge'),
+  createGateway: require('./src/create-gateway')
 }

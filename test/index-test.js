@@ -24,4 +24,8 @@ describe('Mappersmith', function() {
   it('exposes method forge', function() {
     expect(Mappersmith.forge).to.exist();
   });
+
+  it('exposes method createGateway', function() {
+    expect(Mappersmith.createGateway).to.exist();
+  });
 });

@@ -1,11 +1,7 @@
 var Utils = require('../utils');
-var Gateway = require('../gateway');
+var CreateGateway = require('../create-gateway');
 
-var VanillaGateway = function() {
-  return Gateway.apply(this, arguments);
-}
-
-VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
+var VanillaGateway = module.exports = CreateGateway({
 
   configureCallbacks: function(request) {
     request.onload = function() {
@@ -80,5 +76,3 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
   }
 
 });
-
-module.exports = VanillaGateway;

@@ -1,18 +1,16 @@
 var Utils = require('../utils');
-var Gateway = require('../gateway');
+var CreateGateway = require('../create-gateway');
 
-var JQueryGateway = function() {
-  if (window.jQuery === undefined) {
-    throw new Utils.Exception(
-      'JQueryGateway requires jQuery but it was not found! ' +
-      'Change the gateway implementation or add jQuery on the page'
-    );
-  }
+var JQueryGateway = module.exports = CreateGateway({
 
-  return Gateway.apply(this, arguments);
-}
-
-JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
+  init: function() {
+    if (window.jQuery === undefined) {
+      throw new Utils.Exception(
+        'JQueryGateway requires jQuery but it was not found! ' +
+        'Change the gateway implementation or add jQuery on the page'
+      );
+    }
+  },
 
   jQueryAjax: function(config) {
     jQuery.ajax(Utils.extend({url: this.url}, config)).
@@ -39,5 +37,3 @@ JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
   }
 
 });
-
-module.exports = JQueryGateway;
