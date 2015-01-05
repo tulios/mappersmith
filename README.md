@@ -2,7 +2,7 @@
 
 **Mappersmith** is a lightweight, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client, giving you all the flexibility you want to customize requests or write your own gateways.
 
-# Install
+## Install
 
 #### NPM
 
@@ -28,7 +28,7 @@ Build
 npm run build
 ```
 
-# Usage
+## Usage
 
 To create a client for your API, you will need to provide a simple manifest, which must have `host` and `resources` keys. Each resource has a name and a list of methods with its definitions, like:
 
@@ -80,6 +80,7 @@ Client.Book.byId({id: 3}, function(data) {
 ```
 
 #### Parameters
+
 If your method doesn't require any parameter, you can just call it without them:
 
 ```javascript
@@ -90,6 +91,25 @@ Every parameter that doesn't match a pattern (`{parameter-name}`) in `path` will
 
 ```javascript
 Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
+```
+
+#### Message Body
+
+To send values in the request body (usually for POST or PUT methods) you will use the special parameter `body`:
+
+```javascript
+Client.Photo.save({category: 'family', body: {year: 2015, tags: ['party', 'family']}})
+```
+
+It will create a urlencoded version of the object (year=2015&tags[]=party&tags[]=family), if the `body` used
+is not an object it will use the original value. If `body` is not possible as a special parameter
+for your API you can configure it with another value, just pass the new name as the third argument
+of method forge:
+
+```javascript
+var Client = new Mappersmith.forge(manifest, Mappersmith.VanillaGateway, 'bodyAttr')
+...
+Client.Photo.save({category: 'family', bodyAttr: {year: 2015, tags: ['party', 'family']}})
 ```
 
 #### Processors
@@ -127,7 +147,7 @@ Photo: {
 
 **A downside is that you can't use processor functions with compact syntax.**
 
-# Gateways
+## Gateways
 
 **Mappersmith** allows you to customize the transport layer. You can use the default `Mappersmith.VanillaGateway`, the included `Mappersmith.JQueryGateway` or write your own version.
 
@@ -175,11 +195,11 @@ Client.Book.byId({id: 2}, function(data) {}, {
 })
 ```
 
-# Gateway Implementations
+## Gateway Implementations
 
 The gateways listed here are available through the `Mappersmith` namespace.
 
-## VanillaGateway
+### VanillaGateway
 
 The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used.
 
@@ -191,7 +211,7 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 - :x: DELETE
 - :x: PATCH
 
-## JQueryGateway
+### JQueryGateway
 
 It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include **jquery**, so you will need to include that in your page.
 
@@ -203,16 +223,16 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 - :x: DELETE
 - :x: PATCH
 
-# Tests
+## Tests
 
 1. Build the source (`npm run build-test`)
 2. Open test.html
 
-# Compile and release
+## Compile and release
 
 * Compile: `npm run build`
 * Release (minified version): `npm run release`
 
-# Licence
+## Licence
 
 See [LICENCE](https://github.com/tulios/mappersmith/blob/master/LICENSE) for more details.
