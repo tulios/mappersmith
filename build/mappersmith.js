@@ -2,18 +2,24 @@
 module.exports = {
   Utils: require('./src/utils'),
   Gateway: require('./src/gateway'),
-  Mapper: require('./src/mapper.js'),
+  Mapper: require('./src/mapper'),
   VanillaGateway: require('./src/gateway/vanilla-gateway'),
   JQueryGateway: require('./src/gateway/jquery-gateway'),
-  forge: function(manifest, gateway) {
-    return new this.Mapper(
-      manifest,
-      gateway || this.VanillaGateway
-    ).build();
-  }
+  forge: require('./src/forge')
 }
 
-},{"./src/gateway":2,"./src/gateway/jquery-gateway":3,"./src/gateway/vanilla-gateway":4,"./src/mapper.js":5,"./src/utils":6}],2:[function(require,module,exports){
+},{"./src/forge":2,"./src/gateway":3,"./src/gateway/jquery-gateway":4,"./src/gateway/vanilla-gateway":5,"./src/mapper":6,"./src/utils":7}],2:[function(require,module,exports){
+var Mapper = require('./mapper');
+var VanillaGateway = require('./gateway/vanilla-gateway');
+
+module.exports = function(manifest, gateway) {
+  return new Mapper(
+    manifest,
+    gateway || VanillaGateway
+  ).build();
+}
+
+},{"./gateway/vanilla-gateway":5,"./mapper":6}],3:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -95,7 +101,7 @@ Gateway.prototype = {
 
 module.exports = Gateway;
 
-},{"./utils":6}],3:[function(require,module,exports){
+},{"./utils":7}],4:[function(require,module,exports){
 var Utils = require('../utils');
 var Gateway = require('../gateway');
 
@@ -140,7 +146,7 @@ JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
 module.exports = JQueryGateway;
 
-},{"../gateway":2,"../utils":6}],4:[function(require,module,exports){
+},{"../gateway":3,"../utils":7}],5:[function(require,module,exports){
 var Utils = require('../utils');
 var Gateway = require('../gateway');
 
@@ -226,7 +232,7 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
 module.exports = VanillaGateway;
 
-},{"../gateway":2,"../utils":6}],5:[function(require,module,exports){
+},{"../gateway":3,"../utils":7}],6:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -339,7 +345,7 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./utils":6}],6:[function(require,module,exports){
+},{"./utils":7}],7:[function(require,module,exports){
 var Utils = module.exports = {
   r20: /%20/g,
   noop: function() {},

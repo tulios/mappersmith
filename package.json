@@ -10,6 +10,7 @@
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/.bin/browserify index.js --standalone Mappersmith --outfile build/mappersmith.js",
+    "build-test": "./node_modules/.bin/browserify index.js --transform rewireify --standalone Mappersmith --outfile build/mappersmith.test.js",
     "release": "npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c"
   },
   "repository": {
@@ -31,6 +32,7 @@
     "browserify": "^7.0.1",
     "chai": "^1.10.0",
     "mocha": "^2.0.1",
+    "rewireify": "0.0.13",
     "shared-examples-for": "^0.1.3",
     "uglify-js": "^2.4.16"
   }
