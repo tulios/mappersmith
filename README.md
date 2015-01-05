@@ -101,15 +101,15 @@ To send values in the request body (usually for POST or PUT methods) you will us
 Client.Photo.save({category: 'family', body: {year: 2015, tags: ['party', 'family']}})
 ```
 
-It will create a urlencoded version of the object (year=2015&tags[]=party&tags[]=family), if the `body` used
+It will create a urlencoded version of the object (`year=2015&tags[]=party&tags[]=family`). If the `body` used
 is not an object it will use the original value. If `body` is not possible as a special parameter
 for your API you can configure it with another value, just pass the new name as the third argument
 of method forge:
 
 ```javascript
-var Client = new Mappersmith.forge(manifest, Mappersmith.VanillaGateway, 'bodyAttr')
+var Client = new Mappersmith.forge(manifest, Mappersmith.VanillaGateway, 'data')
 ...
-Client.Photo.save({category: 'family', bodyAttr: {year: 2015, tags: ['party', 'family']}})
+Client.Photo.save({category: 'family', data: {year: 2015, tags: ['party', 'family']}})
 ```
 
 #### Processors
