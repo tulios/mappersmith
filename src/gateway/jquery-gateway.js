@@ -30,6 +30,12 @@ JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
     var defaults = {type: 'POST', data: Utils.params(this.body)};
     this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
+  },
+
+  put: function() {
+    var defaults = {type: 'PUT', data: Utils.params(this.body)};
+    this.jQueryAjax(Utils.extend(defaults, this.opts));
+    return this;
   }
 
 });

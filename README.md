@@ -188,7 +188,7 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 - :ok: GET
 - :x: HEAD
 - :ok: POST
-- :x: PUT
+- :ok: PUT
 - :x: DELETE
 - :x: PATCH
 
@@ -201,7 +201,7 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 - :ok: GET
 - :x: HEAD
 - :ok: POST
-- :x: PUT
+- :ok: PUT
 - :x: DELETE
 - :x: PATCH
 

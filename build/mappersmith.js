@@ -128,6 +128,12 @@ JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
     var defaults = {type: 'POST', data: Utils.params(this.body)};
     this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
+  },
+
+  put: function() {
+    var defaults = {type: 'PUT', data: Utils.params(this.body)};
+    this.jQueryAjax(Utils.extend(defaults, this.opts));
+    return this;
   }
 
 });
@@ -192,6 +198,20 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
     var request = new XMLHttpRequest();
     this.configureCallbacks(request);
     request.open('POST', this.url, true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+    var args = [];
+    if (this.body !== undefined) {
+      args.push(Utils.params(this.body));
+    }
+
+    request.send.apply(request, args);
+  },
+
+  put: function() {
+    var request = new XMLHttpRequest();
+    this.configureCallbacks(request);
+    request.open('PUT', this.url, true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
     var args = [];

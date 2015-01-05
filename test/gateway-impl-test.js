@@ -209,6 +209,36 @@ describe('Gateway implementations', function() {
             shared.shouldBehaveLike('fail with processor', GatewayImpl);
           });
         });
+
+        describe('#put', function() {
+          beforeEach(function() {
+            method = 'put';
+          });
+
+          describe('success', function() {
+            shared.shouldBehaveLike('success JSON response', GatewayImpl);
+            shared.shouldBehaveLike('success with unexpected data', GatewayImpl);
+            shared.shouldBehaveLike('success with processor', GatewayImpl);
+
+            describe('with body data', function() {
+              var body;
+
+              beforeEach(function() {
+                body = {val1: 1, val2: 2};
+                requestWithGateway(200, 'OK', newGateway(GatewayImpl, {body: body}));
+              });
+
+              it('includes the formatted body to the request', function() {
+                expect(fakeServer.lastRequest().requestBody).to.equal(Utils.params(body));
+              });
+            });
+          });
+
+          describe('fail', function() {
+            shared.shouldBehaveLike('fail response', GatewayImpl);
+            shared.shouldBehaveLike('fail with processor', GatewayImpl);
+          });
+        });
       });
     });
   });

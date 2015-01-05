@@ -63,6 +63,20 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
     }
 
     request.send.apply(request, args);
+  },
+
+  put: function() {
+    var request = new XMLHttpRequest();
+    this.configureCallbacks(request);
+    request.open('PUT', this.url, true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+    var args = [];
+    if (this.body !== undefined) {
+      args.push(Utils.params(this.body));
+    }
+
+    request.send.apply(request, args);
   }
 
 });
