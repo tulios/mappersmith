@@ -8,6 +8,16 @@ describe('Utils', function() {
     });
   });
 
+  describe('#isObjEmpty', function() {
+    it('returns true for blank objects', function() {
+      expect(Utils.isObjEmpty({})).to.equal(true);
+    });
+
+    it('returns false for populated objects', function() {
+      expect(Utils.isObjEmpty({key: 'value'})).to.equal(false);
+    });
+  });
+
   describe('#extend', function() {
     it('extends the object attributes', function() {
       var objA = {a: 1, b: 2};

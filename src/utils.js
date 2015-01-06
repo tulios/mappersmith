@@ -2,6 +2,14 @@ var Utils = module.exports = {
   r20: /%20/g,
   noop: function() {},
 
+  isObjEmpty: function(obj) {
+    for(var key in obj) {
+      if(obj.hasOwnProperty(key)) return false;
+    }
+
+    return true;
+  },
+
   extend: function(out) {
     out = out || {};
 
