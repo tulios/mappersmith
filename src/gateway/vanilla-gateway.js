@@ -55,6 +55,14 @@ var VanillaGateway = module.exports = CreateGateway({
     this._performRequest('PUT');
   },
 
+  patch: function() {
+    this._performRequest('PATCH');
+  },
+
+  delete: function() {
+    this._performRequest('DELETE');
+  },
+
   _performRequest: function(method) {
     var request = new XMLHttpRequest();
     this.configureCallbacks(request);

@@ -31,6 +31,14 @@ var JQueryGateway = module.exports = CreateGateway({
   put: function() {
     return this._performRequest('PUT');
   },
+  
+  patch: function() {
+    return this._performRequest('PATCH');
+  },
+
+  delete: function() {
+    return this._performRequest('DELETE');
+  },
 
   _performRequest: function(method) {
     var defaults = {type: method, data: Utils.params(this.body)};

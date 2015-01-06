@@ -209,8 +209,8 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 - :ok: GET
 - :ok: POST
 - :ok: PUT
-- :x: DELETE
-- :x: PATCH
+- :ok: DELETE
+- :ok: PATCH
 
 ### JQueryGateway
 
@@ -221,8 +221,8 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 - :ok: GET
 - :ok: POST
 - :ok: PUT
-- :x: DELETE
-- :x: PATCH
+- :ok: DELETE
+- :ok: PATCH
 
 ## Tests
 
