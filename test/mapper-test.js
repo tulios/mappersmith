@@ -451,6 +451,30 @@ describe('Mapper', function() {
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
 
+        ['get', 'post', 'delete', 'put', 'patch'].forEach(function(methodName) {
+          describe('methods', function() {
+            beforeEach(function() {
+              manifest = {
+                host: 'http://full-url',
+                resources: {
+                  Book: {
+                    test: methodName + ':/v1/books.json'
+                  }
+                }
+              }
+              mapper = new Mapper(manifest, gateway);
+              result = mapper.build();
+            });
+
+            it('supports method ' + methodName , function() {
+              result.Book.test();
+              expect(gateway).to.have.been.calledWith({
+                url: mapper.urlFor('/v1/books.json'),
+                method: methodName
+              });
+            });
+          });
+        });
       });
 
       describe('processors', function() {

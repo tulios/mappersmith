@@ -94,10 +94,6 @@ Gateway.prototype = {
     throw new Utils.Exception('Gateway#get not implemented');
   },
 
-  head: function() {
-    throw new Utils.Exception('Gateway#head not implemented');
-  },
-
   post: function() {
     throw new Utils.Exception('Gateway#post not implemented');
   },
@@ -287,7 +283,7 @@ Mapper.prototype = {
       var descriptor = methods[methodName];
       if (typeof(descriptor) === 'string') {
 
-        var compactDefinitionMethod = descriptor.match(/^(get|head|post|delete|put|patch):(.*)/);
+        var compactDefinitionMethod = descriptor.match( /^(get|post|delete|put|patch):(.*)/ )
         if (compactDefinitionMethod != null) {
           descriptor = {method: compactDefinitionMethod[1], path: compactDefinitionMethod[2]};
 

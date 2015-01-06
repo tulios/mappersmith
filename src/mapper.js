@@ -33,7 +33,7 @@ Mapper.prototype = {
       var descriptor = methods[methodName];
       if (typeof(descriptor) === 'string') {
 
-        var compactDefinitionMethod = descriptor.match(/^(get|head|post|delete|put|patch):(.*)/);
+        var compactDefinitionMethod = descriptor.match( /^(get|post|delete|put|patch):(.*)/ )
         if (compactDefinitionMethod != null) {
           descriptor = {method: compactDefinitionMethod[1], path: compactDefinitionMethod[2]};
 
