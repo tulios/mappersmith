@@ -146,14 +146,22 @@ var JQueryGateway = module.exports = CreateGateway({
   },
 
   post: function() {
-    return this._requestSend('POST');
+    return this._performRequest('POST');
   },
 
   put: function() {
-    return this._requestSend('PUT');
+    return this._performRequest('PUT');
+  },
+  
+  patch: function() {
+    return this._performRequest('PATCH');
   },
 
-  _requestSend: function(method) {
+  delete: function() {
+    return this._performRequest('DELETE');
+  },
+
+  _performRequest: function(method) {
     var defaults = {type: method, data: Utils.params(this.body)};
     this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
@@ -212,14 +220,22 @@ var VanillaGateway = module.exports = CreateGateway({
   },
 
   post: function() {
-    this._requestSend('POST');
+    this._performRequest('POST');
   },
 
   put: function() {
-    this._requestSend('PUT');
+    this._performRequest('PUT');
   },
 
-  _requestSend: function(method) {
+  patch: function() {
+    this._performRequest('PATCH');
+  },
+
+  delete: function() {
+    this._performRequest('DELETE');
+  },
+
+  _performRequest: function(method) {
     var request = new XMLHttpRequest();
     this.configureCallbacks(request);
     request.open(method, this.url, true);
