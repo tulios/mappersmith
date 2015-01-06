@@ -10,6 +10,7 @@ var Utils = require('./utils');
 var Mapper = function(manifest, Gateway, bodyAttr) {
   this.manifest = manifest;
   this.host = this.manifest.host;
+  this.rules = this.manifest.rules || [];
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
 }
@@ -30,9 +31,9 @@ Mapper.prototype = {
     return Object.keys(methods).reduce(function(context, methodName) {
 
       var descriptor = methods[methodName];
-      if ( typeof(descriptor) === 'string' ) {
+      if (typeof(descriptor) === 'string') {
 
-        var compactDefinitionMethod = descriptor.match( /^(get|head|post|delete|put|patch):(.*)/ )
+        var compactDefinitionMethod = descriptor.match(/^(get|head|post|delete|put|patch):(.*)/);
         if (compactDefinitionMethod != null) {
           descriptor = {method: compactDefinitionMethod[1], path: compactDefinitionMethod[2]};
 
@@ -82,6 +83,15 @@ Mapper.prototype = {
   },
 
   newGatewayRequest: function(method, path, processor) {
+    var rules = this.rules.
+      filter(function(rule) { return rule.match === undefined || rule.match.test(path) }).
+      reduce(function(context, rule) {
+        var mergedGateway = Utils.extend(context.gateway, rule.values.gateway);
+        context = Utils.extend(context, rule.values);
+        context.gateway = mergedGateway;
+        return context;
+      }, {});
+
     return function(params, callback, opts) {
       if (typeof params === 'function') {
         opts = callback;
@@ -89,11 +99,14 @@ Mapper.prototype = {
         params = undefined;
       }
 
+      opts = Utils.extend({}, opts, rules.gateway);
+      if(Utils.isObjEmpty(opts)) opts = undefined;
+
       var body = (params || {})[this.bodyAttr];
       var gatewayOpts = Utils.extend({}, {
         url: this.urlFor(path, params),
         method: method,
-        processor: processor,
+        processor: processor || rules.processor,
         params: params,
         body: body,
         opts: opts

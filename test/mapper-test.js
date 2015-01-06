@@ -1,4 +1,6 @@
 var expect = chai.expect;
+var shared = $shared;
+var Utils = Mappersmith.Utils;
 var Mapper = Mappersmith.Mapper;
 
 describe('Mapper', function() {
@@ -69,6 +71,17 @@ describe('Mapper', function() {
       mapper = new Mapper(manifest, gateway, 'data');
       expect(mapper).to.have.property('bodyAttr', 'data');
     });
+
+    it('holds a reference to rules', function() {
+      manifest.rules = [];
+      mapper = new Mapper(manifest, gateway);
+      expect(mapper).to.have.property('rules', manifest.rules);
+    });
+
+    it('has a default value for rules', function() {
+      expect(manifest.rules).to.be.undefined;
+      expect(mapper.rules).to.eql([]);
+    });
   });
 
   describe('#newGatewayRequest', function() {
@@ -83,7 +96,7 @@ describe('Mapper', function() {
       fullUrl = 'http://full-url/path';
       path = 'path';
       params = {a: true};
-      callback = function() {};
+      callback = Utils.noop;
     });
 
     it('returns a function', function() {
@@ -151,6 +164,77 @@ describe('Mapper', function() {
         expect(gateway.prototype.success).to.have.been.calledWith(callback);
         expect(gateway.prototype.call).to.have.been.called;
         expect(gateway).to.have.been.calledWith(result);
+      });
+    });
+
+    describe('with configured rules', function() {
+      var opts;
+
+      beforeEach(function() {
+        path = manifest.resources.Book.all.path;
+        fullUrl = manifest.host + path;
+      });
+
+      shared.examplesFor('merged rules', function() {
+        it('always merge with gateway opts and processor', function() {
+          var request = mapper.newGatewayRequest(method, path);
+
+          expect(request(callback)).to.be.an.instanceof(gateway);
+          expect(gateway).to.have.been.calledWith({
+            url: fullUrl,
+            method: method,
+            opts: opts.gateway,
+            processor: opts.processor
+          });
+        });
+      });
+
+      describe('global', function() {
+        beforeEach(function() {
+          opts = {gateway: {global: true}, processor: Utils.noop};
+          manifest.rules = [{values: opts}];
+          mapper = new Mapper(manifest, gateway);
+        });
+
+        shared.shouldBehaveLike('merged rules');
+      });
+
+      describe('url match', function() {
+        beforeEach(function() {
+          opts = {gateway: {matchUrl: true}, processor: Utils.noop};
+          manifest.rules = [{match: /\/v1\/books/, values: opts}];
+          mapper = new Mapper(manifest, gateway);
+        });
+
+        shared.shouldBehaveLike('merged rules');
+      });
+
+      describe('mixed', function() {
+        var optsMatch;
+
+        beforeEach(function() {
+          opts = {gateway: {global: true}, processor: function globalMatch() {}};
+          optsMatch = {gateway: {matchUrl: true}, processor: function urlMatch() {}};
+
+          manifest.rules = [
+            {values: opts},
+            {match: /\/v1\/books/, values: optsMatch}
+          ];
+
+          mapper = new Mapper(manifest, gateway);
+        });
+
+        it('merges both rules, using natural precedence for prioritization', function() {
+          var request = mapper.newGatewayRequest(method, path);
+
+          expect(request(callback)).to.be.an.instanceof(gateway);
+          expect(gateway).to.have.been.calledWith({
+            url: fullUrl,
+            method: method,
+            opts: Utils.extend({}, opts.gateway, optsMatch.gateway),
+            processor: optsMatch.processor
+          });
+        });
       });
     });
   });

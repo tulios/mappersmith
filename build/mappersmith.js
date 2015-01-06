@@ -5,10 +5,26 @@ module.exports = {
   Mapper: require('./src/mapper'),
   VanillaGateway: require('./src/gateway/vanilla-gateway'),
   JQueryGateway: require('./src/gateway/jquery-gateway'),
-  forge: require('./src/forge')
+
+  forge: require('./src/forge'),
+  createGateway: require('./src/create-gateway')
 }
 
-},{"./src/forge":2,"./src/gateway":3,"./src/gateway/jquery-gateway":4,"./src/gateway/vanilla-gateway":5,"./src/mapper":6,"./src/utils":7}],2:[function(require,module,exports){
+},{"./src/create-gateway":2,"./src/forge":3,"./src/gateway":4,"./src/gateway/jquery-gateway":5,"./src/gateway/vanilla-gateway":6,"./src/mapper":7,"./src/utils":8}],2:[function(require,module,exports){
+var Utils = require('./utils');
+var Gateway = require('./gateway');
+
+module.exports = function(methods) {
+  var newGateway = function() {
+    this.init && this.init();
+    return Gateway.apply(this, arguments);
+  }
+
+  newGateway.prototype = Utils.extend({}, Gateway.prototype, methods);
+  return newGateway;
+}
+
+},{"./gateway":4,"./utils":8}],3:[function(require,module,exports){
 var Mapper = require('./mapper');
 var VanillaGateway = require('./gateway/vanilla-gateway');
 
@@ -20,7 +36,7 @@ module.exports = function(manifest, gateway, bodyAttr) {
   ).build();
 }
 
-},{"./gateway/vanilla-gateway":5,"./mapper":6}],3:[function(require,module,exports){
+},{"./gateway/vanilla-gateway":6,"./mapper":7}],4:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -102,22 +118,20 @@ Gateway.prototype = {
 
 module.exports = Gateway;
 
-},{"./utils":7}],4:[function(require,module,exports){
+},{"./utils":8}],5:[function(require,module,exports){
 var Utils = require('../utils');
-var Gateway = require('../gateway');
+var CreateGateway = require('../create-gateway');
 
-var JQueryGateway = function() {
-  if (window.jQuery === undefined) {
-    throw new Utils.Exception(
-      'JQueryGateway requires jQuery but it was not found! ' +
-      'Change the gateway implementation or add jQuery on the page'
-    );
-  }
+var JQueryGateway = module.exports = CreateGateway({
 
-  return Gateway.apply(this, arguments);
-}
-
-JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
+  init: function() {
+    if (window.jQuery === undefined) {
+      throw new Utils.Exception(
+        'JQueryGateway requires jQuery but it was not found! ' +
+        'Change the gateway implementation or add jQuery on the page'
+      );
+    }
+  },
 
   jQueryAjax: function(config) {
     jQuery.ajax(Utils.extend({url: this.url}, config)).
@@ -147,17 +161,11 @@ JQueryGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
 });
 
-module.exports = JQueryGateway;
-
-},{"../gateway":3,"../utils":7}],5:[function(require,module,exports){
+},{"../create-gateway":2,"../utils":8}],6:[function(require,module,exports){
 var Utils = require('../utils');
-var Gateway = require('../gateway');
+var CreateGateway = require('../create-gateway');
 
-var VanillaGateway = function() {
-  return Gateway.apply(this, arguments);
-}
-
-VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
+var VanillaGateway = module.exports = CreateGateway({
 
   configureCallbacks: function(request) {
     request.onload = function() {
@@ -227,9 +235,7 @@ VanillaGateway.prototype = Utils.extend({}, Gateway.prototype, {
 
 });
 
-module.exports = VanillaGateway;
-
-},{"../gateway":3,"../utils":7}],6:[function(require,module,exports){
+},{"../create-gateway":2,"../utils":8}],7:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -242,6 +248,7 @@ var Utils = require('./utils');
 var Mapper = function(manifest, Gateway, bodyAttr) {
   this.manifest = manifest;
   this.host = this.manifest.host;
+  this.rules = this.manifest.rules || [];
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
 }
@@ -262,9 +269,9 @@ Mapper.prototype = {
     return Object.keys(methods).reduce(function(context, methodName) {
 
       var descriptor = methods[methodName];
-      if ( typeof(descriptor) === 'string' ) {
+      if (typeof(descriptor) === 'string') {
 
-        var compactDefinitionMethod = descriptor.match( /^(get|head|post|delete|put|patch):(.*)/ )
+        var compactDefinitionMethod = descriptor.match(/^(get|head|post|delete|put|patch):(.*)/);
         if (compactDefinitionMethod != null) {
           descriptor = {method: compactDefinitionMethod[1], path: compactDefinitionMethod[2]};
 
@@ -314,6 +321,15 @@ Mapper.prototype = {
   },
 
   newGatewayRequest: function(method, path, processor) {
+    var rules = this.rules.
+      filter(function(rule) { return rule.match === undefined || rule.match.test(path) }).
+      reduce(function(context, rule) {
+        var mergedGateway = Utils.extend(context.gateway, rule.values.gateway);
+        context = Utils.extend(context, rule.values);
+        context.gateway = mergedGateway;
+        return context;
+      }, {});
+
     return function(params, callback, opts) {
       if (typeof params === 'function') {
         opts = callback;
@@ -321,11 +337,14 @@ Mapper.prototype = {
         params = undefined;
       }
 
+      opts = Utils.extend({}, opts, rules.gateway);
+      if(Utils.isObjEmpty(opts)) opts = undefined;
+
       var body = (params || {})[this.bodyAttr];
       var gatewayOpts = Utils.extend({}, {
         url: this.urlFor(path, params),
         method: method,
-        processor: processor,
+        processor: processor || rules.processor,
         params: params,
         body: body,
         opts: opts
@@ -342,10 +361,18 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./utils":7}],7:[function(require,module,exports){
+},{"./utils":8}],8:[function(require,module,exports){
 var Utils = module.exports = {
   r20: /%20/g,
   noop: function() {},
+
+  isObjEmpty: function(obj) {
+    for(var key in obj) {
+      if(obj.hasOwnProperty(key)) return false;
+    }
+
+    return true;
+  },
 
   extend: function(out) {
     out = out || {};
