@@ -123,7 +123,7 @@ describe('Gateway', function() {
     });
   });
 
-  ['get', 'head', 'post', 'put', 'delete', 'patch'].forEach(function(verb) {
+  ['get', 'post', 'put', 'delete', 'patch'].forEach(function(verb) {
 
     describe('#' + verb, function() {
       beforeEach(function() {
