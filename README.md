@@ -239,7 +239,7 @@ rules: [
     values: {headers: {'X-MY-HEADER': 'value'}}
   }
 ]
-..
+...
 ```
 
 Just keep in mind that the configurations and processors will be prioritized by their order, and the global configurations does not have a `match` key.
