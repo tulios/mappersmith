@@ -172,7 +172,7 @@ var MyGateway = Mappersmith.createGateway({
 
 #### How to change the default?
 
-Just provide an implementation of `Mappersmith.Gateway` as the second argument of the method `forge`:
+Just provide an object created with `Mappersmith.createGateway` as the second argument of the method `forge`:
 
 ```javascript
 var Client = new Mappersmith.forge(manifest, Mappersmith.JQueryGateway)
@@ -195,6 +195,54 @@ Client.Book.byId({id: 2}, function(data) {}, {
   }
 })
 ```
+
+#### Global configurations and URL matching
+
+Imagine that you are using `Mappersmith.JQueryGateway` and all of your methods must be called with `jsonp` or use a special header, it will be incredibly boring add those configurations every time. Global configurations allow you to configure gateway options and a processor that will be used for every method. Keep in mind that the processor configured in the resource will be prioritized instead to global, for example:
+
+```javascript
+var manifest = {
+  host: 'http://my.api.com',
+  rules: [
+    { // This is our global configuration
+      values: {
+        gateway: {jsonp: true},
+        processor: function(data) { return data.result }
+      }
+    }
+  ],
+  resources: {
+    Book: {
+      all:  {path: '/v1/books.json'},
+      byId: {path: '/v1/books/{id}.json'}
+    },
+    Photo: {
+      byCategory: {path: '/v1/photos/{category}/all.json'}
+    }
+  }
+}
+```
+
+It is possible to add some configurations based on matches in the URLs, let's include a header for every book URL:
+
+```javascript
+...
+rules: [
+  { // This is our global configuration
+    values: {
+      gateway: {jsonp: true},
+      processor: function(data) { return data.result }
+    }
+  },
+  { // This will only be applied when the URL matches the regexp
+    match: /\/v1\/books/,
+    values: {headers: {'X-MY-HEADER': 'value'}}
+  }
+]
+..
+```
+
+Just keep in mind that the configurations and processors will be prioritized by their order, and the global configurations does not have a `match` key.
 
 ## Gateway Implementations
 
