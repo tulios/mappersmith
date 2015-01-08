@@ -260,6 +260,11 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 - :ok: DELETE
 - :ok: PATCH
 
+#### Available options:
+
+- emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with requested method as value. (default `false`)
+
+
 ### JQueryGateway
 
 It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include **jquery**, so you will need to include that in your page.
@@ -271,6 +276,11 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 - :ok: PUT
 - :ok: DELETE
 - :ok: PATCH
+
+#### Available options:
+
+- emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
+
 
 ## Tests
 
