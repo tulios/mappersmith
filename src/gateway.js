@@ -51,6 +51,10 @@ Gateway.prototype = {
     return this;
   },
 
+  shouldEmulateHTTP: function(method) {
+    return !!(this.opts.emulateHTTP && /^(delete|put|patch)/i.test(method));
+  },
+
   get: function() {
     throw new Utils.Exception('Gateway#get not implemented');
   },

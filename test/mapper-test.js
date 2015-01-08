@@ -12,6 +12,7 @@ describe('Mapper', function() {
   beforeEach(function() {
     manifest = {
       host: 'http://full-url',
+      emulateHTTP: false,
       resources: {
         Book: {
           all:  {path: '/v1/books.json'},
@@ -70,6 +71,17 @@ describe('Mapper', function() {
     it('holds a reference to bodyAttr', function() {
       mapper = new Mapper(manifest, gateway, 'data');
       expect(mapper).to.have.property('bodyAttr', 'data');
+    });
+
+    it('holds a reference to rules', function() {
+      manifest.rules = [];
+      mapper = new Mapper(manifest, gateway);
+      expect(mapper).to.have.property('rules', manifest.rules);
+    });
+
+    it('has a default value for rules', function() {
+      expect(manifest.rules).to.be.undefined;
+      expect(mapper.rules).to.eql([]);
     });
 
     it('holds a reference to rules', function() {

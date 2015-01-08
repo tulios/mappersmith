@@ -212,6 +212,36 @@ describe('Gateway implementations', function() {
           });
         });
 
+        ['put', 'patch', 'delete'].forEach(function(methodName) {
+          describe('emulating HTTP method ' + methodName.toUpperCase(), function() {
+            var body;
+
+            beforeEach(function() {
+              method = 'post';
+            });
+
+            describe('with body empty', function() {
+              beforeEach(function() {
+                body = {_method: methodName.toUpperCase()};
+                var localGateway = newGateway(GatewayImpl, {method: methodName, opts: {emulateHTTP: true}});
+                requestWithGateway(200, 'OK', localGateway);
+              });
+
+              it('adds _method=' + methodName + ' to the body', function() {
+                expect(fakeServer.lastRequest().requestBody).to.equal(Utils.params(body));
+              });
+
+              it('adds header X-HTTP-Method-Override=' + methodName, function() {
+                var headerValue = fakeServer.lastRequest().requestHeaders['X-HTTP-Method-Override'];
+                expect(headerValue).to.equal(methodName.toUpperCase());
+              });
+
+              it('sends as POST', function() {
+                expect(fakeServer.lastRequest().method).to.equal('POST');
+              });
+            });
+          });
+        });
       });
     });
   });

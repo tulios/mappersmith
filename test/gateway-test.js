@@ -123,6 +123,57 @@ describe('Gateway', function() {
     });
   });
 
+  describe('#shouldEmulateHTTP', function() {
+    ['delete', 'put', 'patch'].forEach(function(method) {
+      describe('when method is ' + method, function() {
+        describe('and emulating HTTP methods is enable', function() {
+          beforeEach(function() {
+            gateway = new Gateway({url: url, method: method, opts: {emulateHTTP: true}});
+          });
+
+          it('returns true', function() {
+            expect(gateway.shouldEmulateHTTP(method)).to.be.true();
+          });
+        });
+
+        describe('and emulating HTTP methods is not enable', function() {
+          beforeEach(function() {
+            gateway = new Gateway({url: url, method: method, opts: {emulateHTTP: false}});
+          });
+
+          it('returns false', function() {
+            expect(gateway.shouldEmulateHTTP(method)).to.be.false();
+          });
+        });
+      });
+    });
+
+    ['post', 'get'].forEach(function(method) {
+      describe('when method is ' + method, function() {
+        describe('and emulating HTTP methods is enable', function() {
+          beforeEach(function() {
+            gateway = new Gateway({url: url, method: method, opts: {emulateHTTP: true}});
+          });
+
+          it('returns false', function() {
+            expect(gateway.shouldEmulateHTTP(method)).to.be.false();
+          });
+        });
+
+        describe('and emulating HTTP methods is not enable', function() {
+          beforeEach(function() {
+            gateway = new Gateway({url: url, method: method, opts: {emulateHTTP: false}});
+          });
+
+          it('returns false', function() {
+            expect(gateway.shouldEmulateHTTP(method)).to.be.false();
+          });
+        });
+      });
+    });
+
+  });
+
   ['get', 'post', 'put', 'delete', 'patch'].forEach(function(verb) {
 
     describe('#' + verb, function() {

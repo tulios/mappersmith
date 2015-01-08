@@ -41,7 +41,16 @@ var JQueryGateway = module.exports = CreateGateway({
   },
 
   _performRequest: function(method) {
-    var defaults = {type: method, data: Utils.params(this.body)};
+    var requestMethod = method;
+
+    if (this.shouldEmulateHTTP(method)) {
+      requestMethod = 'POST';
+      this.body = this.body || {};
+      if (typeof this.body === 'object') this.body._method = method;
+      this.opts.headers = Utils.extend(this.opts.header, {'X-HTTP-Method-Override': method});
+    }
+
+    var defaults = {type: requestMethod, data: Utils.params(this.body)};
     this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
   }
