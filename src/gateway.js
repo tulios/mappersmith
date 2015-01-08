@@ -31,7 +31,7 @@ Gateway.prototype = {
   },
 
   success: function(callback) {
-    if (this.processor != null) {
+    if (this.processor !== undefined) {
       this.successCallback = function(data) {
         callback(this.processor(data));
       }
