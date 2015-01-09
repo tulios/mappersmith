@@ -70,7 +70,7 @@ Gateway.prototype = {
   },
 
   success: function(callback) {
-    if (this.processor != null) {
+    if (this.processor !== undefined) {
       this.successCallback = function(data) {
         callback(this.processor(data));
       }
@@ -88,6 +88,10 @@ Gateway.prototype = {
   complete: function(callback) {
     this.completeCallback = callback;
     return this;
+  },
+
+  shouldEmulateHTTP: function(method) {
+    return !!(this.opts.emulateHTTP && /^(delete|put|patch)/i.test(method));
   },
 
   get: function() {
@@ -158,7 +162,16 @@ var JQueryGateway = module.exports = CreateGateway({
   },
 
   _performRequest: function(method) {
-    var defaults = {type: method, data: Utils.params(this.body)};
+    var requestMethod = method;
+
+    if (this.shouldEmulateHTTP(method)) {
+      requestMethod = 'POST';
+      this.body = this.body || {};
+      if (typeof this.body === 'object') this.body._method = method;
+      this.opts.headers = Utils.extend(this.opts.header, {'X-HTTP-Method-Override': method});
+    }
+
+    var defaults = {type: requestMethod, data: Utils.params(this.body)};
     this.jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
   }
@@ -232,9 +245,19 @@ var VanillaGateway = module.exports = CreateGateway({
   },
 
   _performRequest: function(method) {
+    var emulateHTTP = this.shouldEmulateHTTP(method);
+    var requestMethod = method;
     var request = new XMLHttpRequest();
     this.configureCallbacks(request);
-    request.open(method, this.url, true);
+
+    if (emulateHTTP) {
+      this.body = this.body || {};
+      if (typeof this.body === 'object') this.body._method = method;
+      requestMethod = 'POST';
+    }
+
+    request.open(requestMethod, this.url, true);
+    if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
     var args = [];
