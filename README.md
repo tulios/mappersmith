@@ -60,7 +60,7 @@ Photo: {
 With the manifest in your hands, you are able to forge your client:
 
 ```javascript
-var Client = new Mappersmith.forge(manifest)
+var Client = Mappersmith.forge(manifest)
 ```
 
 And then, use it as defined:
@@ -107,7 +107,7 @@ for your API you can configure it with another value, just pass the new name as 
 of method forge:
 
 ```javascript
-var Client = new Mappersmith.forge(manifest, Mappersmith.VanillaGateway, 'data')
+var Client = Mappersmith.forge(manifest, Mappersmith.VanillaGateway, 'data')
 ...
 Client.Photo.save({category: 'family', data: {year: 2015, tags: ['party', 'family']}})
 ```
@@ -175,7 +175,7 @@ var MyGateway = Mappersmith.createGateway({
 Just provide an object created with `Mappersmith.createGateway` as the second argument of the method `forge`:
 
 ```javascript
-var Client = new Mappersmith.forge(manifest, Mappersmith.JQueryGateway)
+var Client = Mappersmith.forge(manifest, Mappersmith.JQueryGateway)
 ```
 
 #### Specifics of each gateway
