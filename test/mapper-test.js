@@ -28,6 +28,10 @@ describe('Mapper', function() {
             processor: function(data) {
               return data.thumb;
             }
+          },
+          byYear: {
+            path: '/v1/photos/{year}.json',
+            params: {year: 2015, category: 'cats'}
           }
         }
       }
@@ -245,6 +249,44 @@ describe('Mapper', function() {
             method: method,
             opts: Utils.extend({}, opts.gateway, optsMatch.gateway),
             processor: optsMatch.processor
+          });
+        });
+      });
+
+      describe('with default params', function() {
+        var descriptor, request;
+
+        beforeEach(function() {
+          descriptor = manifest.resources.Photo.byYear;
+          descriptor.method = method;
+          request = mapper.newGatewayRequest(descriptor);
+        });
+
+        describe('without params in method call', function() {
+          it('uses the configured default parameters', function() {
+            fullUrl = mapper.urlFor(descriptor.path, descriptor.params);
+
+            expect(request(callback)).to.be.an.instanceof(gateway);
+            expect(gateway).to.have.been.calledWith({
+              url: fullUrl,
+              method: descriptor.method,
+              params: descriptor.params
+            });
+          });
+        });
+
+        describe('with params in method call', function() {
+          it('merges with the given params', function() {
+            var methodParams = {category: 'dogs'};
+            var mergedParams = Utils.extend({}, descriptor.params, methodParams);
+            fullUrl = mapper.urlFor(descriptor.path, mergedParams);
+
+            expect(request(methodParams, callback)).to.be.an.instanceof(gateway);
+            expect(gateway).to.have.been.calledWith({
+              url: fullUrl,
+              method: descriptor.method,
+              params: mergedParams
+            });
           });
         });
       });

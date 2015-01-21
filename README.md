@@ -93,6 +93,35 @@ Every parameter that doesn't match a pattern (`{parameter-name}`) in `path` will
 Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
 ```
 
+#### Default parameters
+
+It is possible to configure default parameters for your resources, just use the key `params` in the definition. It will replace params in the URL or include query strings, for example, imagine that our manifest has the method __byYear__ in the resource __Photo__:
+
+```javascript
+...
+Photo: {
+  byYear: {
+    path: '/v1/photos/{year}.json',
+    params: {year: new Date().getFullYear(), category: 'cats'}
+  }
+}
+...
+```
+
+If we call it without any params and `new Date().getFullYear()` is 2015, it will generate the following URL:
+
+```javascript
+Client.Photo.byYear();
+// http://my.api.com/v1/photos/2015.json?category=cats
+```
+
+And, of course, we can override the defaults:
+
+```javascript
+Client.Photo.byYear({category: 'dogs'});
+// http://my.api.com/v1/photos/2015.json?category=dogs
+```
+
 #### Message Body
 
 To send values in the request body (usually for POST or PUT methods) you will use the special parameter `body`:

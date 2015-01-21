@@ -96,6 +96,10 @@ Mapper.prototype = {
         params = undefined;
       }
 
+      if (!!descriptor.params) {
+        params = Utils.extend({}, descriptor.params, params);
+      }
+
       opts = Utils.extend({}, opts, rules.gateway);
       if(Utils.isObjEmpty(opts)) opts = undefined;
 
