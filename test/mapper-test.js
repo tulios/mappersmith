@@ -117,7 +117,7 @@ describe('Mapper', function() {
     });
 
     it('returns a configured gateway', function() {
-      var request = mapper.newGatewayRequest(method, path);
+      var request = mapper.newGatewayRequest({method: method, path: path});
 
       expect(request(params, callback)).to.be.an.instanceof(gateway);
       expect(gateway.prototype.success).to.have.been.calledWith(callback);
@@ -131,7 +131,7 @@ describe('Mapper', function() {
 
     describe('without params', function() {
       it('considers callback as the first argument', function() {
-        var request = mapper.newGatewayRequest(method, path);
+        var request = mapper.newGatewayRequest({method: method, path: path});
 
         expect(request(callback)).to.be.an.instanceof(gateway);
         expect(gateway.prototype.success).to.have.been.calledWith(callback);
@@ -144,7 +144,7 @@ describe('Mapper', function() {
 
       describe('with opts for gateway', function() {
         it('considers opts as the second argument', function() {
-          var request = mapper.newGatewayRequest(method, path);
+          var request = mapper.newGatewayRequest({method: method, path: path});
           var opts = {jsonp: true};
 
           expect(request(callback, opts)).to.be.an.instanceof(gateway);
@@ -163,7 +163,7 @@ describe('Mapper', function() {
       it('includes the value defined by bodyAttr in the key "body"', function() {
         mapper.bodyAttr = 'body';
         params[mapper.bodyAttr] = 'some-value';
-        var request = mapper.newGatewayRequest(method, path);
+        var request = mapper.newGatewayRequest({method: method, path: path});;
         var result = {
           url: fullUrl + '?a=true',
           method: method,
@@ -189,7 +189,7 @@ describe('Mapper', function() {
 
       shared.examplesFor('merged rules', function() {
         it('always merge with gateway opts and processor', function() {
-          var request = mapper.newGatewayRequest(method, path);
+          var request = mapper.newGatewayRequest({method: method, path: path});
 
           expect(request(callback)).to.be.an.instanceof(gateway);
           expect(gateway).to.have.been.calledWith({
@@ -237,7 +237,7 @@ describe('Mapper', function() {
         });
 
         it('merges both rules, using natural precedence for prioritization', function() {
-          var request = mapper.newGatewayRequest(method, path);
+          var request = mapper.newGatewayRequest({method: method, path: path});
 
           expect(request(callback)).to.be.an.instanceof(gateway);
           expect(gateway).to.have.been.calledWith({
