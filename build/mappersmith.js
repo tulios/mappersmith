@@ -304,9 +304,10 @@ Mapper.prototype = {
     return Object.keys(methods).reduce(function(context, methodName) {
 
       var descriptor = methods[methodName];
-      if (typeof(descriptor) === 'string') {
 
-        var compactDefinitionMethod = descriptor.match( /^(get|post|delete|put|patch):(.*)/ )
+      // Compact Syntax
+      if (typeof(descriptor) === 'string') {
+        var compactDefinitionMethod = descriptor.match(/^(get|post|delete|put|patch):(.*)/);
         if (compactDefinitionMethod != null) {
           descriptor = {method: compactDefinitionMethod[1], path: compactDefinitionMethod[2]};
 
@@ -315,14 +316,8 @@ Mapper.prototype = {
         }
       }
 
-      var httpMethod = (descriptor.method || 'get').toLowerCase();
-
-      context.methods[methodName] = this.newGatewayRequest(
-        httpMethod,
-        descriptor.path,
-        descriptor.processor
-      );
-
+      descriptor.method = (descriptor.method || 'get').toLowerCase();
+      context.methods[methodName] = this.newGatewayRequest(descriptor);
       return context;
 
     }.bind(this), {name: resourceName, methods: {}});
@@ -355,9 +350,11 @@ Mapper.prototype = {
     return host + normalizedPath + paramsString;
   },
 
-  newGatewayRequest: function(method, path, processor) {
+  newGatewayRequest: function(descriptor) {
     var rules = this.rules.
-      filter(function(rule) { return rule.match === undefined || rule.match.test(path) }).
+      filter(function(rule) {
+        return rule.match === undefined || rule.match.test(descriptor.path)
+      }).
       reduce(function(context, rule) {
         var mergedGateway = Utils.extend(context.gateway, rule.values.gateway);
         context = Utils.extend(context, rule.values);
@@ -372,14 +369,18 @@ Mapper.prototype = {
         params = undefined;
       }
 
+      if (!!descriptor.params) {
+        params = Utils.extend({}, descriptor.params, params);
+      }
+
       opts = Utils.extend({}, opts, rules.gateway);
       if(Utils.isObjEmpty(opts)) opts = undefined;
 
       var body = (params || {})[this.bodyAttr];
       var gatewayOpts = Utils.extend({}, {
-        url: this.urlFor(path, params),
-        method: method,
-        processor: processor || rules.processor,
+        url: this.urlFor(descriptor.path, params),
+        method: descriptor.method,
+        processor: descriptor.processor || rules.processor,
         params: params,
         body: body,
         opts: opts
