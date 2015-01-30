@@ -1,4 +1,4 @@
-var Utils = module.exports = {
+var Utils = {
   r20: /%20/g,
   noop: function() {},
 
@@ -69,3 +69,5 @@ var Utils = module.exports = {
     this.toString = function() { return '[Mappersmith] ' + this.message; }
   }
 }
+
+module.exports = Utils;
