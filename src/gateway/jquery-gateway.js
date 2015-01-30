@@ -1,7 +1,7 @@
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
-var JQueryGateway = module.exports = CreateGateway({
+var JQueryGateway = CreateGateway({
 
   init: function() {
     if (window.jQuery === undefined) {
@@ -12,15 +12,8 @@ var JQueryGateway = module.exports = CreateGateway({
     }
   },
 
-  jQueryAjax: function(config) {
-    jQuery.ajax(Utils.extend({url: this.url}, config)).
-      done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
-      fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
-      always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
-  },
-
   get: function() {
-    this.jQueryAjax(this.opts);
+    this._jQueryAjax(this.opts);
     return this;
   },
 
@@ -31,7 +24,7 @@ var JQueryGateway = module.exports = CreateGateway({
   put: function() {
     return this._performRequest('PUT');
   },
-  
+
   patch: function() {
     return this._performRequest('PATCH');
   },
@@ -51,8 +44,17 @@ var JQueryGateway = module.exports = CreateGateway({
     }
 
     var defaults = {type: requestMethod, data: Utils.params(this.body)};
-    this.jQueryAjax(Utils.extend(defaults, this.opts));
+    this._jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
+  },
+
+  _jQueryAjax: function(config) {
+    jQuery.ajax(Utils.extend({url: this.url}, config)).
+    done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
+    fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
+    always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
   }
 
 });
+
+module.exports = JQueryGateway;
