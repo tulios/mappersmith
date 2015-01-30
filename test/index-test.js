@@ -28,4 +28,8 @@ describe('Mappersmith', function() {
   it('exposes method createGateway', function() {
     expect(Mappersmith.createGateway).to.exist();
   });
+
+  it('don\'t expose "node" attribute', function() {
+    expect(Mappersmith.node).to.not.exist();
+  });
 });

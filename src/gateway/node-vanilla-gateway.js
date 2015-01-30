@@ -8,15 +8,33 @@ var NodeVanillaGateway = CreateGateway({
 
   performRequest: function(method) {
     var defaults = url.parse(this.url);
-    var opts = Utils.extend({method: method}, defaults, this.opts);
+    var emulateHTTP = this.shouldEmulateHTTP(method);
+
+    var requestMethod = emulateHTTP ? 'post' : method;
+    var opts = Utils.extend({method: requestMethod}, defaults, this.opts);
+    var canIncludeBody = !/get/i.test(method);
+
+    if (emulateHTTP) {
+      this.body = this.body || {};
+      if (typeof this.body === 'object') this.body._method = method;
+      opts.headers = Utils.extend({}, opts.headers, {
+        'X-HTTP-Method-Override': method
+      });
+    }
+
+    var body = this.body ? Utils.params(this.body) : '';
+
+    if (canIncludeBody) {
+      opts.headers = Utils.extend({}, opts.headers, {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': body.length
+      });
+    }
 
     var request = http.request(opts, this.onResponse.bind(this));
     request.on('error', this.onError.bind(this));
 
-    if (this.body !== undefined) {
-      request.write(Utils.params(this.body));
-    }
-
+    if (body) request.write(body);
     request.end();
   },
 
@@ -27,11 +45,16 @@ var NodeVanillaGateway = CreateGateway({
     response.on('end', function() {
 
       try {
-        if (this.isContentTypeJSON(response)) data = JSON.parse(data);
-        this.successCallback(data);
+        if (response.statusCode >= 200 && response.statusCode < 400) {
+          if (this.isContentTypeJSON(response)) data = JSON.parse(data);
+          this.successCallback(data);
+
+        } else {
+          this.failCallback(response);
+        }
 
       } catch(e) {
-        this.failCallback(e, response);
+        this.failCallback(response, e);
 
       } finally {
         this.completeCallback(data, response);
@@ -42,6 +65,7 @@ var NodeVanillaGateway = CreateGateway({
 
   onError: function() {
     this.failCallback.apply(this, arguments);
+    this.completeCallback.apply(this, arguments);
   },
 
   isContentTypeJSON: function(response) {
@@ -53,7 +77,19 @@ var NodeVanillaGateway = CreateGateway({
   },
 
   post: function() {
-    this.performRequest('POST')
+    this.performRequest('POST');
+  },
+
+  put: function() {
+    this.performRequest('PUT');
+  },
+
+  delete: function() {
+    this.performRequest('DELETE');
+  },
+
+  patch: function() {
+    this.performRequest('PATCH');
   }
 
 });
