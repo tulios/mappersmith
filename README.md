@@ -288,7 +288,7 @@ The gateways listed here are available through the `Mappersmith` namespace.
 
 __Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used.
 
-#### Available methods:
+Available methods:
 
 - :ok: GET
 - :ok: POST
@@ -296,7 +296,7 @@ __Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a
 - :ok: DELETE
 - :ok: PATCH
 
-#### Available options:
+Available options:
 
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with requested method as value. (default `false`)
 
@@ -305,7 +305,7 @@ __Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a
 
 __Client Only__. It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include **jquery**, so you will need to include that in your page.
 
-#### Available methods:
+Available methods:
 
 - :ok: GET
 - :ok: POST
@@ -313,7 +313,7 @@ __Client Only__. It uses `$.ajax` and accepts an object that will be merged with
 - :ok: DELETE
 - :ok: PATCH
 
-#### Available options:
+Available options:
 
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
 
@@ -321,14 +321,14 @@ __Client Only__. It uses `$.ajax` and accepts an object that will be merged with
 
 __Server Only__. It uses the module `http` and accepts an object that will be merged with `defaults`.
 
-#### How to access this gateway?
+How to access this gateway?
 
 ```javascript
 var Mappersmith = require('mappersmith/node');
 Mappersmith.node.NodeVanillaGateway;
 ```
 
-#### Available methods:
+Available methods:
 
 - :ok: GET
 - :ok: POST
@@ -336,7 +336,7 @@ Mappersmith.node.NodeVanillaGateway;
 - :ok: DELETE
 - :ok: PATCH
 
-#### Available options:
+Available options:
 
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
 
