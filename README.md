@@ -1,6 +1,6 @@
 # Mappersmith
 
-**Mappersmith** is a lightweight, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client, giving you all the flexibility you want to customize requests or write your own gateways.
+**Mappersmith** is a lightweight, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client and/or server, giving you all the flexibility you want to customize requests or write your own gateways.
 
 ## Install
 
@@ -26,6 +26,13 @@ Build
 
 ```sh
 npm run build
+npm run release # for minified version
+```
+
+## Requiring in Node.js
+
+```javascript
+var Mappersmith = require('mappersmith/node');
 ```
 
 ## Usage
@@ -178,7 +185,7 @@ Photo: {
 
 ## Gateways
 
-**Mappersmith** allows you to customize the transport layer. You can use the default `Mappersmith.VanillaGateway`, the included `Mappersmith.JQueryGateway` or write your own version.
+**Mappersmith** allows you to customize the transport layer. There are gateways for browser and server. You can use the default `Mappersmith.VanillaGateway` (client only), the included `Mappersmith.JQueryGateway` (client only), `NodeVanillaGateway` (server only) or write your own version. Check the list of [available gateways](#gateway-implementations) at the bottom of the readme.
 
 #### How to write one?
 
@@ -273,13 +280,13 @@ rules: [
 
 Just keep in mind that the configurations and processors will be prioritized by their order, and the global configurations does not have a `match` key.
 
-## Gateway Implementations
+## <a name="gateway-implementations"></a> Gateway Implementations
 
 The gateways listed here are available through the `Mappersmith` namespace.
 
 ### VanillaGateway
 
-The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used.
+__Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used.
 
 #### Available methods:
 
@@ -296,7 +303,7 @@ The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` call
 
 ### JQueryGateway
 
-It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include **jquery**, so you will need to include that in your page.
+__Client Only__. It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include **jquery**, so you will need to include that in your page.
 
 #### Available methods:
 
@@ -310,11 +317,45 @@ It uses `$.ajax` and accepts an object that will be merged with `defaults`. It d
 
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
 
+### NodeVanillaGateway
+
+__Server Only__. It uses the module `http` and accepts an object that will be merged with `defaults`.
+
+#### How to access this gateway?
+
+```javascript
+var Mappersmith = require('mappersmith/node');
+Mappersmith.node.NodeVanillaGateway;
+```
+
+#### Available methods:
+
+- :ok: GET
+- :ok: POST
+- :ok: PUT
+- :ok: DELETE
+- :ok: PATCH
+
+#### Available options:
+
+- emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
+
+## Extras
+
+For gateways with transparent cache functionalities and different cache stores, take a look at:
+
+[https://github.com/tulios/mappersmith-cached-gateway](https://github.com/tulios/mappersmith-cached-gateway)
 
 ## Tests
 
+### Client
+
 1. Build the source (`npm run build-test`)
 2. Open test.html
+
+### Server
+
+1. `npm run test`
 
 ## Compile and release
 
