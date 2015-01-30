@@ -122,7 +122,7 @@ module.exports = Gateway;
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
-var JQueryGateway = module.exports = CreateGateway({
+var JQueryGateway = CreateGateway({
 
   init: function() {
     if (window.jQuery === undefined) {
@@ -133,15 +133,8 @@ var JQueryGateway = module.exports = CreateGateway({
     }
   },
 
-  jQueryAjax: function(config) {
-    jQuery.ajax(Utils.extend({url: this.url}, config)).
-      done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
-      fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
-      always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
-  },
-
   get: function() {
-    this.jQueryAjax(this.opts);
+    this._jQueryAjax(this.opts);
     return this;
   },
 
@@ -152,7 +145,7 @@ var JQueryGateway = module.exports = CreateGateway({
   put: function() {
     return this._performRequest('PUT');
   },
-  
+
   patch: function() {
     return this._performRequest('PATCH');
   },
@@ -172,19 +165,75 @@ var JQueryGateway = module.exports = CreateGateway({
     }
 
     var defaults = {type: requestMethod, data: Utils.params(this.body)};
-    this.jQueryAjax(Utils.extend(defaults, this.opts));
+    this._jQueryAjax(Utils.extend(defaults, this.opts));
     return this;
+  },
+
+  _jQueryAjax: function(config) {
+    jQuery.ajax(Utils.extend({url: this.url}, config)).
+    done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
+    fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
+    always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
   }
 
 });
+
+module.exports = JQueryGateway;
 
 },{"../create-gateway":2,"../utils":8}],6:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
-var VanillaGateway = module.exports = CreateGateway({
+var VanillaGateway = CreateGateway({
 
-  configureCallbacks: function(request) {
+  get: function() {
+    var request = new XMLHttpRequest();
+    this._configureCallbacks(request);
+    request.open('GET', this.url, true);
+    request.send();
+  },
+
+  post: function() {
+    this._performRequest('POST');
+  },
+
+  put: function() {
+    this._performRequest('PUT');
+  },
+
+  patch: function() {
+    this._performRequest('PATCH');
+  },
+
+  delete: function() {
+    this._performRequest('DELETE');
+  },
+
+  _performRequest: function(method) {
+    var emulateHTTP = this.shouldEmulateHTTP(method);
+    var requestMethod = method;
+    var request = new XMLHttpRequest();
+    this._configureCallbacks(request);
+
+    if (emulateHTTP) {
+      this.body = this.body || {};
+      if (typeof this.body === 'object') this.body._method = method;
+      requestMethod = 'POST';
+    }
+
+    request.open(requestMethod, this.url, true);
+    if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+    var args = [];
+    if (this.body !== undefined) {
+      args.push(Utils.params(this.body));
+    }
+
+    request.send.apply(request, args);
+  },
+
+  _configureCallbacks: function(request) {
     request.onload = function() {
       var data = null;
 
@@ -219,56 +268,11 @@ var VanillaGateway = module.exports = CreateGateway({
     if (this.opts.configure) {
       this.opts.configure(request);
     }
-  },
-
-  get: function() {
-    var request = new XMLHttpRequest();
-    this.configureCallbacks(request);
-    request.open('GET', this.url, true);
-    request.send();
-  },
-
-  post: function() {
-    this._performRequest('POST');
-  },
-
-  put: function() {
-    this._performRequest('PUT');
-  },
-
-  patch: function() {
-    this._performRequest('PATCH');
-  },
-
-  delete: function() {
-    this._performRequest('DELETE');
-  },
-
-  _performRequest: function(method) {
-    var emulateHTTP = this.shouldEmulateHTTP(method);
-    var requestMethod = method;
-    var request = new XMLHttpRequest();
-    this.configureCallbacks(request);
-
-    if (emulateHTTP) {
-      this.body = this.body || {};
-      if (typeof this.body === 'object') this.body._method = method;
-      requestMethod = 'POST';
-    }
-
-    request.open(requestMethod, this.url, true);
-    if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-
-    var args = [];
-    if (this.body !== undefined) {
-      args.push(Utils.params(this.body));
-    }
-
-    request.send.apply(request, args);
   }
 
 });
+
+module.exports = VanillaGateway;
 
 },{"../create-gateway":2,"../utils":8}],7:[function(require,module,exports){
 var Utils = require('./utils');
@@ -398,7 +402,7 @@ Mapper.prototype = {
 module.exports = Mapper;
 
 },{"./utils":8}],8:[function(require,module,exports){
-var Utils = module.exports = {
+var Utils = {
   r20: /%20/g,
   noop: function() {},
 
@@ -469,6 +473,8 @@ var Utils = module.exports = {
     this.toString = function() { return '[Mappersmith] ' + this.message; }
   }
 }
+
+module.exports = Utils;
 
 },{}]},{},[1])(1)
 });

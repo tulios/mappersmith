@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "It is a lightweight rest client mapper for javascript",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
@@ -24,6 +24,7 @@
     "rest-client",
     "isomorphic",
     "browser",
+    "server",
     "data-mapper"
   ],
   "license": "MIT",
