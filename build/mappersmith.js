@@ -239,7 +239,7 @@ var VanillaGateway = CreateGateway({
 
       try {
         if (request.status >= 200 && request.status < 400) {
-          if (request.getResponseHeader('Content-Type') === 'application/json') {
+          if (this._isContentTypeJSON(request)) {
             data = JSON.parse(request.responseText);
 
           } else {
@@ -268,6 +268,10 @@ var VanillaGateway = CreateGateway({
     if (this.opts.configure) {
       this.opts.configure(request);
     }
+  },
+
+  _isContentTypeJSON: function(request) {
+    return /application\/json/.test(request.getResponseHeader('Content-Type'));
   }
 
 });
