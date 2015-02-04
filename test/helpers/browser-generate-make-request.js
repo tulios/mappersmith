@@ -14,7 +14,7 @@ function browserGenerateMakeRequest(context) {
 
   return function(opts, done) {
     opts.rawData = opts.rawData || '';
-    var contentType = 'application/json';
+    var contentType = 'application/json; charset=utf-8';
 
     try { JSON.parse(opts.rawData) }
     catch(e1) { contentType = 'text/plain' }
