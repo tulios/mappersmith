@@ -97,6 +97,7 @@ describe('Utils', function() {
     it('returns the same value as "performance.now()"', function() {
       sinon.stub(performance, 'now').returns(999);
       expect(Utils.performanceNow()).to.equal(999);
+      performance.now.restore();
     });
   });
 

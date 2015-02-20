@@ -18,6 +18,10 @@ var Gateway = function(args) {
   this.body = args.body;
   this.opts = args.opts || {};
 
+  this.timeStart = null;
+  this.timeEnd = null;
+  this.timeElapsed = null;
+
   this.successCallback = Utils.noop;
   this.failCallback = Utils.noop;
   this.completeCallback = Utils.noop;
@@ -26,17 +30,21 @@ var Gateway = function(args) {
 Gateway.prototype = {
 
   call: function() {
+    this.timeStart = Utils.performanceNow();
     this[this.method].apply(this, arguments);
     return this;
   },
 
   success: function(callback) {
-    if (this.processor !== undefined) {
-      this.successCallback = function(data) {
-        callback(this.processor(data));
-      }
-    } else {
-      this.successCallback = callback;
+    this.successCallback = function(data) {
+      this.timeEnd = Utils.performanceNow();
+      this.timeElapsed = this.timeEnd - this.timeStart;
+      if (this.processor) data = this.processor(data);
+
+      callback(data, {
+        timeElapsed: this.timeElapsed,
+        humanized: Utils.humanizeTimeElapsed(this.timeElapsed)
+      });
     }
     return this;
   },

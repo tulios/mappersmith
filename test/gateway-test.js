@@ -63,8 +63,23 @@ describe('Gateway', function() {
   });
 
   describe('#call', function() {
+    var gateway, performanceNowValue;
+
+    beforeEach(function() {
+      performanceNowValue = 88;
+      sinon.stub(Utils, 'performanceNow').returns(performanceNowValue);
+      gateway = new Gateway({url: url, method: verb}).call();
+    });
+
+    afterEach(function() {
+      Utils.performanceNow.restore();
+    });
+
+    it('records the start time', function() {
+      expect(gateway.timeStart).to.equal(performanceNowValue);
+    });
+
     it('calls the configured method with the url', function() {
-      new Gateway({url: url, method: verb}).call();
       expect(methodStub).to.have.been.called;
     });
   });
@@ -76,14 +91,57 @@ describe('Gateway', function() {
       gateway = new Gateway({url: url, method: verb});
     });
 
-    it('configures the successCallback', function() {
-      var success = function() {};
-      gateway.success(success);
-      expect(gateway.successCallback).to.equals(success);
-    });
-
     it('return "this"', function() {
       expect(gateway.success(function() {})).to.equals(gateway);
+    });
+
+    describe('when configuring successCallback with time measure wrapper', function() {
+      var success, performanceNowValue, data;
+
+      beforeEach(function() {
+        success = sinon.spy(function() {});
+        performanceNowValue = 88;
+        data = 'data';
+
+        gateway.timeStart = Utils.performanceNow();
+        sinon.stub(Utils, 'performanceNow').returns(gateway.timeStart + performanceNowValue);
+        gateway.success(success);
+      });
+
+      afterEach(function() {
+        Utils.performanceNow.restore();
+      });
+
+      it('records the end time', function() {
+        gateway.successCallback(data);
+        expect(gateway.timeEnd).to.equal(gateway.timeStart + performanceNowValue);
+      });
+
+      it('records the time elapsed time', function() {
+        gateway.successCallback(data);
+        expect(gateway.timeElapsed).to.equal(gateway.timeEnd - gateway.timeStart);
+      });
+
+      it('calls the callback with data and timeElapsed object (timeElapsed and humanized keys)', function() {
+        gateway.successCallback(data);
+        expect(success).to.have.been.deep.calledWith(data, {
+          timeElapsed: gateway.timeElapsed,
+          humanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
+        });
+      });
+
+      describe('with a configured processor', function() {
+        it('calls the callback with processed data and timeElapsed object (timeElapsed and humanized keys)', function() {
+          var processedData = 'new';
+          gateway.processor = function(data) { return processedData };
+          gateway.successCallback(data);
+          expect(success).to.have.been.deep.calledWith(processedData, {
+            timeElapsed: gateway.timeElapsed,
+            humanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
+          });
+        });
+      });
+
     });
   });
 
