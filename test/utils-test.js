@@ -93,6 +93,31 @@ describe('Utils', function() {
     });
   });
 
+  describe('#performanceNow', function() {
+    it('returns the same value as "performance.now()"', function() {
+      sinon.stub(performance, 'now').returns(999);
+      expect(Utils.performanceNow()).to.equal(999);
+    });
+  });
+
+  describe('#humanizeTimeElapsed', function() {
+    describe('with a time >= 1000 milliseconds', function() {
+      it('returns in seconds fixed with 2 decimals', function() {
+        expect(Utils.humanizeTimeElapsed(1000)).to.equal('1.00 s');
+        expect(Utils.humanizeTimeElapsed(1000.01)).to.equal('1.00 s');
+        expect(Utils.humanizeTimeElapsed(2500)).to.equal('2.50 s');
+      });
+    });
+
+    describe('with a time < 1000 milliseconds', function() {
+      it('returns in milliseconds fixed with 2 decimals', function() {
+        expect(Utils.humanizeTimeElapsed(999.99)).to.equal('999.99 ms');
+        expect(Utils.humanizeTimeElapsed(999)).to.equal('999.00 ms');
+        expect(Utils.humanizeTimeElapsed(30)).to.equal('30.00 ms');
+      });
+    });
+  });
+
   describe('#Exception', function() {
     var myError;
 

@@ -1,3 +1,28 @@
+if (typeof window !== 'undefined' && window !== null) {
+  window.performance = window.performance || {};
+  performance.now = (function() {
+    return performance.now       ||
+           performance.mozNow    ||
+           performance.msNow     ||
+           performance.oNow      ||
+           performance.webkitNow ||
+           function() { return new Date().getTime(); };
+  })();
+}
+
+var hasProcessHrtime = function() {
+  return (typeof process !== 'undefined' && process !== null) && process.hrtime;
+}
+
+var getNanoSeconds, loadTime;
+if (hasProcessHrtime()) {
+  getNanoSeconds = function() {
+    var hr = process.hrtime();
+    return hr[0] * 1e9 + hr[1];
+  }
+  loadTime = getNanoSeconds();
+}
+
 var Utils = {
   r20: /%20/g,
   noop: function() {},
@@ -62,6 +87,26 @@ var Utils = {
       map(function(key) { return buildRecursive(key, entry[key]) }).
       join('&').
       replace(Utils.r20, '+');
+  },
+
+  /*
+   * Gives time in miliseconds, but with sub-milisecond precision for Browser
+   * and Nodejs
+   */
+  performanceNow: function() {
+    if (hasProcessHrtime()) {
+      return (getNanoSeconds() - loadTime) / 1e6;
+    }
+
+    return performance.now();
+  },
+
+  humanizeTimeElapsed: function(timeElapsed) {
+    if (timeElapsed >= 1000.0) {
+     return (timeElapsed / 1000.0).toFixed(2) + ' s';
+   }
+
+   return timeElapsed.toFixed(2) + ' ms';
   },
 
   Exception: function(message) {
