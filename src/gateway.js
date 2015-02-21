@@ -47,7 +47,8 @@ Gateway.prototype = {
       }, extraStats);
 
       callback(data, stats);
-    }
+    }.bind(this);
+
     return this;
   },
 
