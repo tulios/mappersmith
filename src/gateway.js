@@ -36,15 +36,17 @@ Gateway.prototype = {
   },
 
   success: function(callback) {
-    this.successCallback = function(data) {
+    this.successCallback = function(data, extraStats) {
       this.timeEnd = Utils.performanceNow();
       this.timeElapsed = this.timeEnd - this.timeStart;
       if (this.processor) data = this.processor(data);
 
-      callback(data, {
+      var stats = Utils.extend({
         timeElapsed: this.timeElapsed,
-        humanized: Utils.humanizeTimeElapsed(this.timeElapsed)
-      });
+        timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
+      }, extraStats);
+
+      callback(data, stats);
     }
     return this;
   },
