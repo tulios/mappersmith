@@ -10,95 +10,7 @@ module.exports = {
   createGateway: require('./src/create-gateway')
 }
 
-},{"./src/create-gateway":3,"./src/forge":4,"./src/gateway":5,"./src/gateway/jquery-gateway":6,"./src/gateway/vanilla-gateway":7,"./src/mapper":8,"./src/utils":9}],2:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canMutationObserver = typeof window !== 'undefined'
-    && window.MutationObserver;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    var queue = [];
-
-    if (canMutationObserver) {
-        var hiddenDiv = document.createElement("div");
-        var observer = new MutationObserver(function () {
-            var queueList = queue.slice();
-            queue.length = 0;
-            queueList.forEach(function (fn) {
-                fn();
-            });
-        });
-
-        observer.observe(hiddenDiv, { attributes: true });
-
-        return function nextTick(fn) {
-            if (!queue.length) {
-                hiddenDiv.setAttribute('yes', 'no');
-            }
-            queue.push(fn);
-        };
-    }
-
-    if (canPost) {
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],3:[function(require,module,exports){
+},{"./src/create-gateway":2,"./src/forge":3,"./src/gateway":4,"./src/gateway/jquery-gateway":5,"./src/gateway/vanilla-gateway":6,"./src/mapper":7,"./src/utils":8}],2:[function(require,module,exports){
 var Utils = require('./utils');
 var Gateway = require('./gateway');
 
@@ -112,7 +24,7 @@ module.exports = function(methods) {
   return newGateway;
 }
 
-},{"./gateway":5,"./utils":9}],4:[function(require,module,exports){
+},{"./gateway":4,"./utils":8}],3:[function(require,module,exports){
 var Mapper = require('./mapper');
 var VanillaGateway = require('./gateway/vanilla-gateway');
 
@@ -124,7 +36,7 @@ module.exports = function(manifest, gateway, bodyAttr) {
   ).build();
 }
 
-},{"./gateway/vanilla-gateway":7,"./mapper":8}],5:[function(require,module,exports){
+},{"./gateway/vanilla-gateway":6,"./mapper":7}],4:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -217,7 +129,7 @@ Gateway.prototype = {
 
 module.exports = Gateway;
 
-},{"./utils":9}],6:[function(require,module,exports){
+},{"./utils":8}],5:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
@@ -279,7 +191,7 @@ var JQueryGateway = CreateGateway({
 
 module.exports = JQueryGateway;
 
-},{"../create-gateway":3,"../utils":9}],7:[function(require,module,exports){
+},{"../create-gateway":2,"../utils":8}],6:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
@@ -377,7 +289,7 @@ var VanillaGateway = CreateGateway({
 
 module.exports = VanillaGateway;
 
-},{"../create-gateway":3,"../utils":9}],8:[function(require,module,exports){
+},{"../create-gateway":2,"../utils":8}],7:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -504,7 +416,7 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./utils":9}],9:[function(require,module,exports){
+},{"./utils":8}],8:[function(require,module,exports){
 (function (process){
 if (typeof window !== 'undefined' && window !== null) {
   window.performance = window.performance || {};
@@ -626,5 +538,5 @@ var Utils = {
 module.exports = Utils;
 
 }).call(this,require('_process'))
-},{"_process":2}]},{},[1])(1)
+},{"_process":undefined}]},{},[1])(1)
 });
