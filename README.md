@@ -65,7 +65,7 @@ Photo: {
 ...
 ```
 
-With the manifest in your hands, you are able to forge your client:
+With the manifest in your hands, you are able to _forge_ your client:
 
 ```javascript
 var Client = Mappersmith.forge(manifest)
@@ -78,13 +78,28 @@ And then, use it as defined:
 Client.Book.byId({id: 3})
 
 // with all callbacks
-Client.Book.byId({id: 3}, function(data) {
+Client.Book.byId({id: 3}, function(data, stats) {
   // success callback
 }).fail(function() {
   // fail callback
 }).complete(function() {
   // complete callback, it will always be called
 })
+```
+
+#### Success callback arguments
+
+The success callback will receive two arguments: the _first one_ will be `data`, returned by your API; and the _second one_ will be a `stats` object. The stats object hold information of the request, like the elapsed time between your call and callback execution.
+
+Be aware that plugins hooked to Mappersmith can include more stats into this object, like [CachedGateway](https://github.com/tulios/mappersmith-cached-gateway) which includes if the call got an cache _hit_ or _miss_.
+
+The __default stats__ in the object are: `timeElapsed` and `timeElapsedHumanized`. Example:
+
+```javascript
+{
+  timeElapsed: 6.745000369846821,
+  timeElapsedHumanized: '6.75 ms'
+}
 ```
 
 #### Parameters
@@ -135,10 +150,13 @@ Client.Photo.byYear({category: 'dogs'});
 To send values in the request body (usually for POST or PUT methods) you will use the special parameter `body`:
 
 ```javascript
-Client.Photo.save({category: 'family', body: {year: 2015, tags: ['party', 'family']}})
+Client.Photo.save({
+  category: 'family',
+  body: {year: 2015, tags: ['party', 'family']}
+})
 ```
 
-It will create a urlencoded version of the object (`year=2015&tags[]=party&tags[]=family`). If the `body` used
+It will create a _urlencoded_ version of the object (`year=2015&tags[]=party&tags[]=family`). If the `body` used
 is not an object it will use the original value. If `body` is not possible as a special parameter
 for your API you can configure it with another value, just pass the new name as the third argument
 of method forge:
@@ -146,7 +164,10 @@ of method forge:
 ```javascript
 var Client = Mappersmith.forge(manifest, Mappersmith.VanillaGateway, 'data')
 ...
-Client.Photo.save({category: 'family', data: {year: 2015, tags: ['party', 'family']}})
+Client.Photo.save({
+  category: 'family',
+  data: {year: 2015, tags: ['party', 'family']}
+})
 ```
 
 #### Processors
@@ -186,7 +207,7 @@ Photo: {
 
 ## Gateways
 
-**Mappersmith** allows you to customize the transport layer. There are gateways for browser and server. You can use the default `Mappersmith.VanillaGateway` (client only), the included `Mappersmith.JQueryGateway` (client only), `NodeVanillaGateway` (server only) or write your own version. Check the list of [available gateways](#gateway-implementations) at the bottom of the readme.
+**Mappersmith** allows you to customize the transport layer. There are gateways for browser and server (Nodejs). You can use the default `Mappersmith.VanillaGateway` (client only), the included `Mappersmith.JQueryGateway` (client only), `NodeVanillaGateway` (server only) or write your own version. Check the list of [available gateways](#gateway-implementations) at the bottom of the readme.
 
 #### How to write one?
 
