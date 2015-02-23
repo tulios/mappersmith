@@ -10,7 +10,95 @@ module.exports = {
   createGateway: require('./src/create-gateway')
 }
 
-},{"./src/create-gateway":2,"./src/forge":3,"./src/gateway":4,"./src/gateway/jquery-gateway":5,"./src/gateway/vanilla-gateway":6,"./src/mapper":7,"./src/utils":8}],2:[function(require,module,exports){
+},{"./src/create-gateway":3,"./src/forge":4,"./src/gateway":5,"./src/gateway/jquery-gateway":6,"./src/gateway/vanilla-gateway":7,"./src/mapper":8,"./src/utils":9}],2:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canMutationObserver = typeof window !== 'undefined'
+    && window.MutationObserver;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    var queue = [];
+
+    if (canMutationObserver) {
+        var hiddenDiv = document.createElement("div");
+        var observer = new MutationObserver(function () {
+            var queueList = queue.slice();
+            queue.length = 0;
+            queueList.forEach(function (fn) {
+                fn();
+            });
+        });
+
+        observer.observe(hiddenDiv, { attributes: true });
+
+        return function nextTick(fn) {
+            if (!queue.length) {
+                hiddenDiv.setAttribute('yes', 'no');
+            }
+            queue.push(fn);
+        };
+    }
+
+    if (canPost) {
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],3:[function(require,module,exports){
 var Utils = require('./utils');
 var Gateway = require('./gateway');
 
@@ -24,7 +112,7 @@ module.exports = function(methods) {
   return newGateway;
 }
 
-},{"./gateway":4,"./utils":8}],3:[function(require,module,exports){
+},{"./gateway":5,"./utils":9}],4:[function(require,module,exports){
 var Mapper = require('./mapper');
 var VanillaGateway = require('./gateway/vanilla-gateway');
 
@@ -36,7 +124,7 @@ module.exports = function(manifest, gateway, bodyAttr) {
   ).build();
 }
 
-},{"./gateway/vanilla-gateway":6,"./mapper":7}],4:[function(require,module,exports){
+},{"./gateway/vanilla-gateway":7,"./mapper":8}],5:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -57,6 +145,10 @@ var Gateway = function(args) {
   this.body = args.body;
   this.opts = args.opts || {};
 
+  this.timeStart = null;
+  this.timeEnd = null;
+  this.timeElapsed = null;
+
   this.successCallback = Utils.noop;
   this.failCallback = Utils.noop;
   this.completeCallback = Utils.noop;
@@ -65,18 +157,25 @@ var Gateway = function(args) {
 Gateway.prototype = {
 
   call: function() {
+    this.timeStart = Utils.performanceNow();
     this[this.method].apply(this, arguments);
     return this;
   },
 
   success: function(callback) {
-    if (this.processor !== undefined) {
-      this.successCallback = function(data) {
-        callback(this.processor(data));
-      }
-    } else {
-      this.successCallback = callback;
-    }
+    this.successCallback = function(data, extraStats) {
+      this.timeEnd = Utils.performanceNow();
+      this.timeElapsed = this.timeEnd - this.timeStart;
+      if (this.processor) data = this.processor(data);
+
+      var stats = Utils.extend({
+        timeElapsed: this.timeElapsed,
+        timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
+      }, extraStats);
+
+      callback(data, stats);
+    }.bind(this);
+
     return this;
   },
 
@@ -118,7 +217,7 @@ Gateway.prototype = {
 
 module.exports = Gateway;
 
-},{"./utils":8}],5:[function(require,module,exports){
+},{"./utils":9}],6:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
@@ -171,16 +270,16 @@ var JQueryGateway = CreateGateway({
 
   _jQueryAjax: function(config) {
     jQuery.ajax(Utils.extend({url: this.url}, config)).
-    done(function() { this.successCallback.apply(this, arguments) }.bind(this)).
-    fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
-    always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
+      done(function() { this.successCallback(arguments[0]) }.bind(this)).
+      fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
+      always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
   }
 
 });
 
 module.exports = JQueryGateway;
 
-},{"../create-gateway":2,"../utils":8}],6:[function(require,module,exports){
+},{"../create-gateway":3,"../utils":9}],7:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
@@ -278,7 +377,7 @@ var VanillaGateway = CreateGateway({
 
 module.exports = VanillaGateway;
 
-},{"../create-gateway":2,"../utils":8}],7:[function(require,module,exports){
+},{"../create-gateway":3,"../utils":9}],8:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -405,7 +504,33 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./utils":8}],8:[function(require,module,exports){
+},{"./utils":9}],9:[function(require,module,exports){
+(function (process){
+if (typeof window !== 'undefined' && window !== null) {
+  window.performance = window.performance || {};
+  performance.now = (function() {
+    return performance.now       ||
+           performance.mozNow    ||
+           performance.msNow     ||
+           performance.oNow      ||
+           performance.webkitNow ||
+           function() { return new Date().getTime(); };
+  })();
+}
+
+var hasProcessHrtime = function() {
+  return (typeof process !== 'undefined' && process !== null) && process.hrtime;
+}
+
+var getNanoSeconds, loadTime;
+if (hasProcessHrtime()) {
+  getNanoSeconds = function() {
+    var hr = process.hrtime();
+    return hr[0] * 1e9 + hr[1];
+  }
+  loadTime = getNanoSeconds();
+}
+
 var Utils = {
   r20: /%20/g,
   noop: function() {},
@@ -472,6 +597,26 @@ var Utils = {
       replace(Utils.r20, '+');
   },
 
+  /*
+   * Gives time in miliseconds, but with sub-milisecond precision for Browser
+   * and Nodejs
+   */
+  performanceNow: function() {
+    if (hasProcessHrtime()) {
+      return (getNanoSeconds() - loadTime) / 1e6;
+    }
+
+    return performance.now();
+  },
+
+  humanizeTimeElapsed: function(timeElapsed) {
+    if (timeElapsed >= 1000.0) {
+     return (timeElapsed / 1000.0).toFixed(2) + ' s';
+   }
+
+   return timeElapsed.toFixed(2) + ' ms';
+  },
+
   Exception: function(message) {
     this.message = message;
     this.toString = function() { return '[Mappersmith] ' + this.message; }
@@ -480,5 +625,6 @@ var Utils = {
 
 module.exports = Utils;
 
-},{}]},{},[1])(1)
+}).call(this,require('_process'))
+},{"_process":2}]},{},[1])(1)
 });
