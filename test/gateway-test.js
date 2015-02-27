@@ -122,32 +122,35 @@ describe('Gateway', function() {
         expect(gateway.timeElapsed).to.equal(gateway.timeEnd - gateway.timeStart);
       });
 
-      it('calls the callback with data and stats object (with timeElapsed and timeElapsedHumanized keys)', function() {
+      it('calls the callback with data and stats object', function() {
         gateway.successCallback(data);
         expect(success).to.have.been.deep.calledWith(data, {
+          url: url,
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
         });
       });
 
-      it('merges extraStats with default stats (timeElapsed and timeElapsedHumanized)', function() {
+      it('merges extraStats with default stats', function() {
         var extraStats = {
           a: 1,
           b: true
         }
         gateway.successCallback(data, extraStats);
         expect(success).to.have.been.deep.calledWith(data, Utils.extend({
+          url: url,
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
         }, extraStats));
       });
 
       describe('with a configured processor', function() {
-        it('calls the callback with processed data and stats object (with timeElapsed and timeElapsedHumanized keys)', function() {
+        it('calls the callback with processed data and stats object', function() {
           var processedData = 'new';
           gateway.processor = function(data) { return processedData };
           gateway.successCallback(data);
           expect(success).to.have.been.deep.calledWith(processedData, {
+            url: url,
             timeElapsed: gateway.timeElapsed,
             timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
           });
