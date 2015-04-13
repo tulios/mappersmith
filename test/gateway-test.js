@@ -85,10 +85,11 @@ describe('Gateway', function() {
   });
 
   describe('#success', function() {
-    var gateway;
+    var gateway, params;
 
     beforeEach(function() {
-      gateway = new Gateway({url: url, method: verb});
+      params = {a: 1, b: false};
+      gateway = new Gateway({url: url, params: params, method: verb});
     });
 
     it('return "this"', function() {
@@ -126,6 +127,7 @@ describe('Gateway', function() {
         gateway.successCallback(data);
         expect(success).to.have.been.deep.calledWith(data, {
           url: url,
+          params: params,
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
         });
@@ -139,6 +141,7 @@ describe('Gateway', function() {
         gateway.successCallback(data, extraStats);
         expect(success).to.have.been.deep.calledWith(data, Utils.extend({
           url: url,
+          params: params,
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
         }, extraStats));
@@ -151,6 +154,7 @@ describe('Gateway', function() {
           gateway.successCallback(data);
           expect(success).to.have.been.deep.calledWith(processedData, {
             url: url,
+            params: params,
             timeElapsed: gateway.timeElapsed,
             timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
           });

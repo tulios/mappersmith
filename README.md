@@ -93,11 +93,12 @@ The success callback will receive two arguments: the _first one_ will be `data`,
 
 Be aware that plugins hooked to Mappersmith can include more stats into this object, like [CachedGateway](https://github.com/tulios/mappersmith-cached-gateway) which includes if the call got an cache _hit_ or _miss_.
 
-The __default stats__ in the object are: `url`, `timeElapsed` and `timeElapsedHumanized`. Example:
+The __default stats__ in the object are: `url`, `params`, `timeElapsed` and `timeElapsedHumanized`. Example:
 
 ```javascript
 {
   url: 'http://my.api.com/v1/books.json?language=en',
+  params: {language: 'en'},
   timeElapsed: 6.745000369846821,
   timeElapsedHumanized: '6.75 ms'
 }

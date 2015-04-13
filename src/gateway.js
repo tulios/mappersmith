@@ -43,6 +43,7 @@ Gateway.prototype = {
 
       var stats = Utils.extend({
         url: this.url,
+        params: this.params,
         timeElapsed: this.timeElapsed,
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
       }, extraStats);
