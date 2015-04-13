@@ -17,6 +17,8 @@ describe('Mapper', function() {
         Book: {
           all:  {path: '/v1/books.json'},
           byId: {path: '/v1/books/{id}.json'},
+          byUrl:  {path: '{url}', host: ''},
+          AltById:  {path: '/v1/books/{id}.json', host: 'http://alt-url'},
           archived: '/v1/books/archived.json',
           byCategory: 'get:/v1/books/{category}/all.json'
         },
@@ -320,6 +322,30 @@ describe('Mapper', function() {
           expect(mapper.urlFor('/path')).to.equals('http://full-url/path');
         });
       });
+
+      describe('explicit empty host with "/"', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('/path', null, '')).to.equals('/path');
+        });
+      });
+
+      describe('explicit empty host without "/"', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('path', null, '')).to.equals('path');
+        });
+      });
+
+      describe('explicit host with "/"', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('/path', null, 'http://alt-url')).to.equals('http://alt-url/path');
+        });
+      });
+
+      describe('explicit host without "/"', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('path', null, 'http://alt-url')).to.equals('http://alt-url/path');
+        });
+      });
     });
 
     describe('with bodyAttr in params', function() {
@@ -368,6 +394,8 @@ describe('Mapper', function() {
     it('creates configured methods for each namespace', function() {
       expect(result.Book.all).to.be.a('function');
       expect(result.Book.byId).to.be.a('function');
+      expect(result.Book.byUrl).to.be.a('function');
+      expect(result.Book.AltById).to.be.a('function');
       expect(result.Book.archived).to.be.a('function');
       expect(result.Photo.byCategory).to.be.a('function');
     });
@@ -433,6 +461,42 @@ describe('Mapper', function() {
           var url = mapper.urlFor(path, params);
 
           result.Book.byId(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: params
+          });
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        });
+      });
+
+
+      describe('with params in the path and query string and alternate empty host', function() {
+        it('calls the gateway with the configured values', function() {
+          var path = manifest.resources.Book.byUrl.path;
+          var host = manifest.resources.Book.byUrl.host;
+          var paramUrl = 'http://alt-full-url/v1/books/1.json';
+          var params = {url: paramUrl};
+          var url = mapper.urlFor(path, params, host);
+
+          result.Book.byUrl(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            method: method,
+            params: params
+          });
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        });
+      });
+
+      describe('with params in the path and query string and alternate host', function() {
+        it('calls the gateway with the configured values', function() {
+          var path = manifest.resources.Book.AltById.path;
+          var host = manifest.resources.Book.AltById.host;
+          var params = {id: 3, d: 4};
+          var url = mapper.urlFor(path, params, host);
+
+          result.Book.AltById(params, callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
             method: method,
