@@ -58,6 +58,10 @@ Mapper.prototype = {
     if (typeof host === "undefined" || host === null) {
       host = this.host;
     }
+    
+    if (host === false) {
+      host = '';
+    }
 
     host = host.replace(/\/$/, '');
 

@@ -335,6 +335,18 @@ describe('Mapper', function() {
         });
       });
 
+      describe('explicit empty host, specified by false, with "/"', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('/path', null, false)).to.equals('/path');
+        });
+      });
+
+      describe('explicit empty host, specified by false, without "/"', function() {
+        it('returns host and path', function() {
+          expect(mapper.urlFor('path', null, false)).to.equals('path');
+        });
+      });
+
       describe('explicit host with "/"', function() {
         it('returns host and path', function() {
           expect(mapper.urlFor('/path', null, 'http://alt-url')).to.equals('http://alt-url/path');
