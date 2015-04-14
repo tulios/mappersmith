@@ -189,6 +189,33 @@ Book: {
 ...
 ```
 
+#### Alternative host
+
+There are some cases where a resource method reside in another host, in those cases you can use the `host` key to configure a new host or to disable the resolution.
+
+```javascript
+var manifest = {
+  host: 'http://new-host.com/api/v2',
+  resources: {
+    MyResouce: {
+      all: {path: '/all.json'},
+      byId: {path: '/{id}.json', host: 'http://old-host.com/api/v1'},
+      other: {path: '{url}', host: false}
+    }
+  }
+}
+
+var Client = Mappersmith.forge(manifest);
+Client.MyResource.all()
+// http://new-host.com/api/v2/all.json
+
+Client.MyResource.byId({id: 1})
+// http://old-host.com/api/v1/1.json
+
+Client.MyResource.other({url: 'http://host.com/other/'})
+// http://host.com/other/
+```
+
 #### Compact Syntax
 If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
 
@@ -385,6 +412,12 @@ For gateways with transparent cache functionalities and different cache stores, 
 
 * Compile: `npm run build`
 * Release (minified version): `npm run release`
+
+## Contributors
+
+Check it out!
+
+https://github.com/tulios/mappersmith/graphs/contributors
 
 ## Licence
 

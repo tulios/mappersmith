@@ -55,20 +55,14 @@ Mapper.prototype = {
     var params = Utils.extend({}, urlParams);
     var normalizedPath = path;
 
-    if (typeof host === "undefined" || host === null) {
-      host = this.host;
-    }
-    
-    if (host === false) {
-      host = '';
-    }
-
+    if (typeof host === "undefined" || host === null) host = this.host;
+    if (host === false) host = '';
     host = host.replace(/\/$/, '');
 
     if (host !== '') {
       normalizedPath = /^\//.test(path) ? path : '/' + path;
     }
-    
+
     // does not includes the body param into the URL
     delete params[this.bodyAttr];
 
@@ -114,7 +108,7 @@ Mapper.prototype = {
       }
 
       opts = Utils.extend({}, opts, rules.gateway);
-      if(Utils.isObjEmpty(opts)) opts = undefined;
+      if (Utils.isObjEmpty(opts)) opts = undefined;
 
       var body = (params || {})[this.bodyAttr];
       var gatewayOpts = Utils.extend({}, {
