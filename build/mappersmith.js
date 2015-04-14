@@ -81,6 +81,8 @@ Gateway.prototype = {
       if (this.processor) data = this.processor(data);
 
       var stats = Utils.extend({
+        url: this.url,
+        params: this.params,
         timeElapsed: this.timeElapsed,
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
       }, extraStats);
@@ -342,11 +344,18 @@ Mapper.prototype = {
     }.bind(this), {name: resourceName, methods: {}});
   },
 
-  urlFor: function(path, urlParams) {
+  urlFor: function(path, urlParams, host) {
     // using `Utils.extend` avoids undesired changes to `urlParams`
     var params = Utils.extend({}, urlParams);
-    var normalizedPath = /^\//.test(path) ? path : '/' + path;
-    var host = this.host.replace(/\/$/, '');
+    var normalizedPath = path;
+
+    if (typeof host === "undefined" || host === null) host = this.host;
+    if (host === false) host = '';
+    host = host.replace(/\/$/, '');
+
+    if (host !== '') {
+      normalizedPath = /^\//.test(path) ? path : '/' + path;
+    }
 
     // does not includes the body param into the URL
     delete params[this.bodyAttr];
@@ -393,11 +402,11 @@ Mapper.prototype = {
       }
 
       opts = Utils.extend({}, opts, rules.gateway);
-      if(Utils.isObjEmpty(opts)) opts = undefined;
+      if (Utils.isObjEmpty(opts)) opts = undefined;
 
       var body = (params || {})[this.bodyAttr];
       var gatewayOpts = Utils.extend({}, {
-        url: this.urlFor(descriptor.path, params),
+        url: this.urlFor(descriptor.path, params, descriptor.host),
         method: descriptor.method,
         processor: descriptor.processor || rules.processor,
         params: params,

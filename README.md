@@ -1,7 +1,9 @@
 [![npm version](https://badge.fury.io/js/mappersmith.svg)](http://badge.fury.io/js/mappersmith)
 # Mappersmith
 
-**Mappersmith** is a lightweight, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client and/or server, giving you all the flexibility you want to customize requests or write your own gateways.
+**Mappersmith** is a lightweight, isomorphic, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client and/or server, giving you all the flexibility you want to customize requests or write your own gateways.
+
+https://www.npmjs.com/package/mappersmith
 
 ## Install
 
