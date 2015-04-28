@@ -9,7 +9,6 @@ var Utils = require('./utils');
  */
 var Mapper = function(manifest, Gateway, bodyAttr) {
   this.manifest = manifest;
-  this.host = this.manifest.host;
   this.rules = this.manifest.rules || [];
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
@@ -50,14 +49,10 @@ Mapper.prototype = {
     }.bind(this), {name: resourceName, methods: {}});
   },
 
-  urlFor: function(path, urlParams, host) {
+  urlFor: function(host, path, urlParams) {
     // using `Utils.extend` avoids undesired changes to `urlParams`
     var params = Utils.extend({}, urlParams);
     var normalizedPath = path;
-
-    if (typeof host === "undefined" || host === null) host = this.host;
-    if (host === false) host = '';
-    host = host.replace(/\/$/, '');
 
     if (host !== '') {
       normalizedPath = /^\//.test(path) ? path : '/' + path;
@@ -82,6 +77,12 @@ Mapper.prototype = {
     }
 
     return host + normalizedPath + paramsString;
+  },
+
+  host: function(value) {
+    if (typeof value === "undefined" || value === null) value = this.manifest.host;
+    if (value === false) value = '';
+    return value.replace(/\/$/, '');
   },
 
   newGatewayRequest: function(descriptor) {
@@ -110,15 +111,22 @@ Mapper.prototype = {
       opts = Utils.extend({}, opts, rules.gateway);
       if (Utils.isObjEmpty(opts)) opts = undefined;
 
+      var host = this.host(descriptor.host);
+      var fullUrl = this.urlFor(host, descriptor.path, params);
       var body = (params || {})[this.bodyAttr];
+
       var gatewayOpts = Utils.extend({}, {
-        url: this.urlFor(descriptor.path, params, descriptor.host),
-        method: descriptor.method,
-        processor: descriptor.processor || rules.processor,
+        url: fullUrl,
+        host: host,
+        path: descriptor.path,
         params: params,
+
         body: body,
+        method: descriptor.method,
+
+        processor: descriptor.processor || rules.processor,
         opts: opts
-      })
+      });
 
       return new this.Gateway(gatewayOpts).
         success(callback).
