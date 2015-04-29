@@ -1,4 +1,4 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Mappersmith=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Mappersmith = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = {
   Utils: require('./src/utils'),
   Gateway: require('./src/gateway'),
@@ -44,6 +44,8 @@ var Utils = require('./utils');
  * @param args {Object} with url, method, params and opts
  *
  * * url: The full url of the resource, including host and query strings
+ * * host: The resolved host
+ * * path: The resolved path (e.g. /path?a=true&b=3)
  * * method: The name of the HTTP method (get, head, post, put, delete and patch)
  *           to be used, in lower case.
  * * params: request params (query strings, url params and body)
@@ -51,10 +53,13 @@ var Utils = require('./utils');
  */
 var Gateway = function(args) {
   this.url = args.url;
-  this.method = args.method;
-  this.processor = args.processor;
+  this.host = args.host;
+  this.path = args.path;
   this.params = args.params || {};
+
+  this.method = args.method;
   this.body = args.body;
+  this.processor = args.processor;
   this.opts = args.opts || {};
 
   this.timeStart = null;
@@ -82,6 +87,8 @@ Gateway.prototype = {
 
       var stats = Utils.extend({
         url: this.url,
+        host: this.host,
+        path: this.path,
         params: this.params,
         timeElapsed: this.timeElapsed,
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
@@ -303,7 +310,6 @@ var Utils = require('./utils');
  */
 var Mapper = function(manifest, Gateway, bodyAttr) {
   this.manifest = manifest;
-  this.host = this.manifest.host;
   this.rules = this.manifest.rules || [];
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
@@ -344,18 +350,10 @@ Mapper.prototype = {
     }.bind(this), {name: resourceName, methods: {}});
   },
 
-  urlFor: function(path, urlParams, host) {
+  resolvePath: function(pathDefinition, urlParams) {
     // using `Utils.extend` avoids undesired changes to `urlParams`
     var params = Utils.extend({}, urlParams);
-    var normalizedPath = path;
-
-    if (typeof host === "undefined" || host === null) host = this.host;
-    if (host === false) host = '';
-    host = host.replace(/\/$/, '');
-
-    if (host !== '') {
-      normalizedPath = /^\//.test(path) ? path : '/' + path;
-    }
+    var resolvedPath = pathDefinition;
 
     // does not includes the body param into the URL
     delete params[this.bodyAttr];
@@ -364,8 +362,8 @@ Mapper.prototype = {
       var value = params[key];
       var pattern = '\{' + key + '\}';
 
-      if (new RegExp(pattern).test(normalizedPath)) {
-        normalizedPath = normalizedPath.replace('\{' + key + '\}', value);
+      if (new RegExp(pattern).test(resolvedPath)) {
+        resolvedPath = resolvedPath.replace('\{' + key + '\}', value);
         delete params[key];
       }
     });
@@ -375,7 +373,13 @@ Mapper.prototype = {
       paramsString = '?' + paramsString;
     }
 
-    return host + normalizedPath + paramsString;
+    return resolvedPath + paramsString;
+  },
+
+  resolveHost: function(value) {
+    if (typeof value === "undefined" || value === null) value = this.manifest.host;
+    if (value === false) value = '';
+    return value.replace(/\/$/, '');
   },
 
   newGatewayRequest: function(descriptor) {
@@ -404,15 +408,28 @@ Mapper.prototype = {
       opts = Utils.extend({}, opts, rules.gateway);
       if (Utils.isObjEmpty(opts)) opts = undefined;
 
+      var host = this.resolveHost(descriptor.host);
+      var path = this.resolvePath(descriptor.path, params);
+
+      if (host !== '') {
+        path = /^\//.test(path) ? path : '/' + path;
+      }
+
+      var fullUrl = host + path;
       var body = (params || {})[this.bodyAttr];
+
       var gatewayOpts = Utils.extend({}, {
-        url: this.urlFor(descriptor.path, params, descriptor.host),
-        method: descriptor.method,
-        processor: descriptor.processor || rules.processor,
+        url: fullUrl,
+        host: host,
+        path: path,
         params: params,
+
         body: body,
+        method: descriptor.method,
+
+        processor: descriptor.processor || rules.processor,
         opts: opts
-      })
+      });
 
       return new this.Gateway(gatewayOpts).
         success(callback).
