@@ -5,6 +5,8 @@ var Utils = require('./utils');
  * @param args {Object} with url, method, params and opts
  *
  * * url: The full url of the resource, including host and query strings
+ * * host: The resolved host
+ * * path: The resolved path (e.g. /path?a=true&b=3)
  * * method: The name of the HTTP method (get, head, post, put, delete and patch)
  *           to be used, in lower case.
  * * params: request params (query strings, url params and body)
@@ -12,10 +14,13 @@ var Utils = require('./utils');
  */
 var Gateway = function(args) {
   this.url = args.url;
-  this.method = args.method;
-  this.processor = args.processor;
+  this.host = args.host;
+  this.path = args.path;
   this.params = args.params || {};
+
+  this.method = args.method;
   this.body = args.body;
+  this.processor = args.processor;
   this.opts = args.opts || {};
 
   this.timeStart = null;
@@ -43,6 +48,8 @@ Gateway.prototype = {
 
       var stats = Utils.extend({
         url: this.url,
+        host: this.host,
+        path: this.path,
         params: this.params,
         timeElapsed: this.timeElapsed,
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)

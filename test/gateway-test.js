@@ -6,13 +6,17 @@ var Gateway = Mappersmith.Gateway;
 describe('Gateway', function() {
   var noop,
       gateway,
+      host,
+      path,
       url,
       verb,
       methodStub;
 
   beforeEach(function() {
     noop = Utils.noop;
-    url = 'http://url';
+    host = 'http://host';
+    path = '/path';
+    url = host + path;
     verb = 'get';
     methodStub = sinon.stub(Gateway.prototype, verb);
   });
@@ -45,8 +49,10 @@ describe('Gateway', function() {
       beforeEach(function() {
         args = {
           url: url,
-          method: verb,
+          host: host,
+          path: path,
           params: {a: 1},
+          method: verb,
           body: 'some-value',
           opts: {b: 2}
         }
@@ -54,7 +60,7 @@ describe('Gateway', function() {
         gateway = new Gateway(args);
       });
 
-      ['url', 'method', 'params', 'body', 'opts'].forEach(function(attr) {
+      ['url', 'host', 'path', 'params', 'method', 'body', 'opts'].forEach(function(attr) {
         it(attr, function() {
           expect(gateway[attr]).to.equal(args[attr]);
         });
@@ -89,7 +95,13 @@ describe('Gateway', function() {
 
     beforeEach(function() {
       params = {a: 1, b: false};
-      gateway = new Gateway({url: url, params: params, method: verb});
+      gateway = new Gateway({
+        url: url,
+        host: host,
+        path: path,
+        params: params,
+        method: verb
+      });
     });
 
     it('return "this"', function() {
@@ -127,6 +139,8 @@ describe('Gateway', function() {
         gateway.successCallback(data);
         expect(success).to.have.been.deep.calledWith(data, {
           url: url,
+          host: host,
+          path: path,
           params: params,
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
@@ -141,6 +155,8 @@ describe('Gateway', function() {
         gateway.successCallback(data, extraStats);
         expect(success).to.have.been.deep.calledWith(data, Utils.extend({
           url: url,
+          host: host,
+          path: path,
           params: params,
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
@@ -154,6 +170,8 @@ describe('Gateway', function() {
           gateway.successCallback(data);
           expect(success).to.have.been.deep.calledWith(processedData, {
             url: url,
+            host: host,
+            path: path,
             params: params,
             timeElapsed: gateway.timeElapsed,
             timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
