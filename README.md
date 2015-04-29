@@ -100,6 +100,8 @@ The __default stats__ in the object are: `url`, `params`, `timeElapsed` and `tim
 ```javascript
 {
   url: 'http://my.api.com/v1/books.json?language=en',
+  host: 'http://my.api.com',
+  path: '/v1/books.json?language=en',
   params: {language: 'en'},
   timeElapsed: 6.745000369846821,
   timeElapsedHumanized: '6.75 ms'
@@ -247,6 +249,8 @@ var MyGateway = Mappersmith.createGateway({
   get: function() {
     // you will have:
     // - this.url
+    // - this.host
+    // - this.path
     // - this.params
     // - this.body
     // - this.opts
@@ -408,7 +412,7 @@ For gateways with transparent cache functionalities and different cache stores, 
 
 ### Server
 
-1. `npm run test`
+1. `npm test`
 
 ## Compile and release
 

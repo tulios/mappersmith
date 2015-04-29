@@ -49,14 +49,10 @@ Mapper.prototype = {
     }.bind(this), {name: resourceName, methods: {}});
   },
 
-  urlFor: function(host, path, urlParams) {
+  path: function(pathDefinition, urlParams) {
     // using `Utils.extend` avoids undesired changes to `urlParams`
     var params = Utils.extend({}, urlParams);
-    var normalizedPath = path;
-
-    if (host !== '') {
-      normalizedPath = /^\//.test(path) ? path : '/' + path;
-    }
+    var resolvedPath = pathDefinition;
 
     // does not includes the body param into the URL
     delete params[this.bodyAttr];
@@ -65,8 +61,8 @@ Mapper.prototype = {
       var value = params[key];
       var pattern = '\{' + key + '\}';
 
-      if (new RegExp(pattern).test(normalizedPath)) {
-        normalizedPath = normalizedPath.replace('\{' + key + '\}', value);
+      if (new RegExp(pattern).test(resolvedPath)) {
+        resolvedPath = resolvedPath.replace('\{' + key + '\}', value);
         delete params[key];
       }
     });
@@ -76,7 +72,7 @@ Mapper.prototype = {
       paramsString = '?' + paramsString;
     }
 
-    return host + normalizedPath + paramsString;
+    return resolvedPath + paramsString;
   },
 
   host: function(value) {
@@ -112,13 +108,19 @@ Mapper.prototype = {
       if (Utils.isObjEmpty(opts)) opts = undefined;
 
       var host = this.host(descriptor.host);
-      var fullUrl = this.urlFor(host, descriptor.path, params);
+      var path = this.path(descriptor.path, params);
+
+      if (host !== '') {
+        path = /^\//.test(path) ? path : '/' + path;
+      }
+
+      var fullUrl = host + path;
       var body = (params || {})[this.bodyAttr];
 
       var gatewayOpts = Utils.extend({}, {
         url: fullUrl,
         host: host,
-        path: descriptor.path,
+        path: path,
         params: params,
 
         body: body,
