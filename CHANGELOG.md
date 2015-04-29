@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+  - Included host and path into stats object
+
 ## 0.6.0
 
   - Improved package size
