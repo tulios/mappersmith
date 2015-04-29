@@ -109,9 +109,9 @@ describe('Mapper', function() {
 
     beforeEach(function() {
       method = 'get';
-      host = mapper.host();
+      host = mapper.resolveHost();
       path = '/path';
-      resolvedPath = mapper.path(path, {a: true});
+      resolvedPath = mapper.resolvePath(path, {a: true});
       fullUrl =  host + path;
       params = {a: true};
       callback = Utils.noop;
@@ -328,8 +328,8 @@ describe('Mapper', function() {
           descriptor.method = method;
           request = mapper.newGatewayRequest(descriptor);
 
-          host = mapper.host(descriptor.host);
-          path = mapper.path(descriptor.path, descriptor.params);
+          host = mapper.resolveHost(descriptor.host);
+          path = mapper.resolvePath(descriptor.path, descriptor.params);
           fullUrl = host + path;
         });
 
@@ -350,7 +350,7 @@ describe('Mapper', function() {
           it('merges with the given params', function() {
             var methodParams = {category: 'dogs'};
             var mergedParams = Utils.extend({}, descriptor.params, methodParams);
-            path = mapper.path(descriptor.path, mergedParams);
+            path = mapper.resolvePath(descriptor.path, mergedParams);
             fullUrl = host + path;
 
             expect(request(methodParams, callback)).to.be.an.instanceof(gateway);
@@ -374,7 +374,7 @@ describe('Mapper', function() {
       });
 
       it('removes the trailing slash if configured', function() {
-        expect(mapper.host()).to.equals('http://some-host');
+        expect(mapper.resolveHost()).to.equals('http://some-host');
       });
     });
 
@@ -384,11 +384,11 @@ describe('Mapper', function() {
       });
 
       it('removes the trailing slash if configured', function() {
-        expect(mapper.host('http://other-host/')).to.equals('http://other-host');
+        expect(mapper.resolveHost('http://other-host/')).to.equals('http://other-host');
       });
 
       it('returns a blank string when value is "false"', function() {
-        expect(mapper.host(false)).to.equals('');
+        expect(mapper.resolveHost(false)).to.equals('');
       });
     });
   });
@@ -396,7 +396,7 @@ describe('Mapper', function() {
   describe('#path', function() {
     describe('without params and query string', function() {
       it('returns resolved path', function() {
-        expect(mapper.path('/path')).to.equals('/path');
+        expect(mapper.resolvePath('/path')).to.equals('/path');
       });
     });
 
@@ -404,25 +404,25 @@ describe('Mapper', function() {
       it('does not include into the resolved path', function() {
         var params = {};
         params[mapper.bodyAttr] = 'some-value';
-        expect(mapper.path('/path', params)).to.equals('/path');
+        expect(mapper.resolvePath('/path', params)).to.equals('/path');
       });
     });
 
     describe('with params in the definition', function() {
       it('replaces params and returns resolved path', function() {
-        expect(mapper.path('{a}/{b}', {a: 1, b: 2})).to.equals('1/2');
+        expect(mapper.resolvePath('{a}/{b}', {a: 1, b: 2})).to.equals('1/2');
       });
     });
 
     describe('with query string in the definition', function() {
       it('includes query string into the resolved path', function() {
-        expect(mapper.path('path', {a: 1, b: 2})).to.equals('path?a=1&b=2');
+        expect(mapper.resolvePath('path', {a: 1, b: 2})).to.equals('path?a=1&b=2');
       });
     });
 
     describe('with query string and params in the definition', function() {
       it('includes query string and replaces params into the resolved path', function() {
-        expect(mapper.path('{a}', {a: 1, b: 2})).to.equals('1?b=2');
+        expect(mapper.resolvePath('{a}', {a: 1, b: 2})).to.equals('1?b=2');
       });
     });
   });
@@ -463,12 +463,12 @@ describe('Mapper', function() {
       describe('without params', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.all.path;
-          var url = mapper.host() + path;
+          var url = mapper.resolveHost() + path;
 
           result.Book.all(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: path,
             method: method
           });
@@ -480,13 +480,13 @@ describe('Mapper', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.all.path;
           var params = {b: 2};
-          var resolvedPath = mapper.path(path, params);
-          var url = mapper.host() + resolvedPath;
+          var resolvedPath = mapper.resolvePath(path, params);
+          var url = mapper.resolveHost() + resolvedPath;
 
           result.Book.all(params, callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: resolvedPath,
             params: params,
             method: method
@@ -499,13 +499,13 @@ describe('Mapper', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.byId.path;
           var params = {id: 3};
-          var resolvedPath = mapper.path(path, params);
-          var url = mapper.host() + resolvedPath;
+          var resolvedPath = mapper.resolvePath(path, params);
+          var url = mapper.resolveHost() + resolvedPath;
 
           result.Book.byId(params, callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: resolvedPath,
             params: params,
             method: method
@@ -518,13 +518,13 @@ describe('Mapper', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.byId.path;
           var params = {id: 3, d: 4};
-          var resolvedPath = mapper.path(path, params);
-          var url = mapper.host() + resolvedPath;
+          var resolvedPath = mapper.resolvePath(path, params);
+          var url = mapper.resolveHost() + resolvedPath;
 
           result.Book.byId(params, callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: resolvedPath,
             params: params,
             method: method
@@ -541,8 +541,8 @@ describe('Mapper', function() {
           var paramUrl = 'http://alt-full-url/v1/books/1.json';
           var params = {url: paramUrl};
 
-          var resolvedHost = mapper.host(host);
-          var resolvedPath = mapper.path(path, params);
+          var resolvedHost = mapper.resolveHost(host);
+          var resolvedPath = mapper.resolvePath(path, params);
           var url = resolvedHost + resolvedPath;
 
           result.Book.byUrl(params, callback);
@@ -563,8 +563,8 @@ describe('Mapper', function() {
           var host = manifest.resources.Book.AltById.host;
           var params = {id: 3, d: 4};
 
-          var resolvedHost = mapper.host(host);
-          var resolvedPath = mapper.path(path, params);
+          var resolvedHost = mapper.resolveHost(host);
+          var resolvedPath = mapper.resolvePath(path, params);
           var url = resolvedHost + resolvedPath;
 
           result.Book.AltById(params, callback);
@@ -582,13 +582,13 @@ describe('Mapper', function() {
       describe('with non-default method', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Photo.add.path;
-          var url = mapper.host() + path;
+          var url = mapper.resolveHost() + path;
           method = 'post';
 
           result.Photo.add(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: path,
             method: method
           });
@@ -599,12 +599,12 @@ describe('Mapper', function() {
       describe('with syntatic sugar for GET methods with no parameters', function() {
         it('calls the gateway with method GET', function() {
           var path = manifest.resources.Book.archived;
-          var url = mapper.host() + path;
+          var url = mapper.resolveHost() + path;
 
           result.Book.archived(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: path,
             method: method
           });
@@ -614,13 +614,13 @@ describe('Mapper', function() {
         it('calls the gateway with query string', function() {
           var path = manifest.resources.Book.archived;
           var params = {author: 'Daniel'};
-          var resolvedPath = mapper.path(path, params);
-          var url = mapper.host() + resolvedPath;
+          var resolvedPath = mapper.resolvePath(path, params);
+          var url = mapper.resolveHost() + resolvedPath;
 
           result.Book.archived(params, callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: resolvedPath,
             params: params,
             method: method
@@ -638,12 +638,12 @@ describe('Mapper', function() {
           var method = definitionComponents[0];
           var path = definitionComponents[1];
 
-          var url = mapper.host() + path;
+          var url = mapper.resolveHost() + path;
 
           result.Book.byCategory(callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: path,
             method: method
           });
@@ -669,8 +669,8 @@ describe('Mapper', function() {
               result.Book.test();
               var path = '/v1/books.json';
               expect(gateway).to.have.been.calledWith({
-                url: mapper.host() + path,
-                host: mapper.host(),
+                url: mapper.resolveHost() + path,
+                host: mapper.resolveHost(),
                 path: path,
                 method: methodName
               });
@@ -684,13 +684,13 @@ describe('Mapper', function() {
           var path = manifest.resources.Photo.byId.path;
           var processor = manifest.resources.Photo.byId.processor;
           var params = {id: 3};
-          var resolvedPath = mapper.path(path, params);
-          var url = mapper.host() + resolvedPath;
+          var resolvedPath = mapper.resolvePath(path, params);
+          var url = mapper.resolveHost() + resolvedPath;
 
           result.Photo.byId(params, callback);
           expect(gateway).to.have.been.calledWith({
             url: url,
-            host: mapper.host(),
+            host: mapper.resolveHost(),
             path: resolvedPath,
             params: params,
             method: method,

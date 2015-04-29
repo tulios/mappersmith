@@ -49,7 +49,7 @@ Mapper.prototype = {
     }.bind(this), {name: resourceName, methods: {}});
   },
 
-  path: function(pathDefinition, urlParams) {
+  resolvePath: function(pathDefinition, urlParams) {
     // using `Utils.extend` avoids undesired changes to `urlParams`
     var params = Utils.extend({}, urlParams);
     var resolvedPath = pathDefinition;
@@ -75,7 +75,7 @@ Mapper.prototype = {
     return resolvedPath + paramsString;
   },
 
-  host: function(value) {
+  resolveHost: function(value) {
     if (typeof value === "undefined" || value === null) value = this.manifest.host;
     if (value === false) value = '';
     return value.replace(/\/$/, '');
@@ -107,8 +107,8 @@ Mapper.prototype = {
       opts = Utils.extend({}, opts, rules.gateway);
       if (Utils.isObjEmpty(opts)) opts = undefined;
 
-      var host = this.host(descriptor.host);
-      var path = this.path(descriptor.path, params);
+      var host = this.resolveHost(descriptor.host);
+      var path = this.resolvePath(descriptor.path, params);
 
       if (host !== '') {
         path = /^\//.test(path) ? path : '/' + path;
