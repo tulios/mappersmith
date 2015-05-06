@@ -17,18 +17,18 @@ var NodeVanillaGateway = CreateGateway({
     if (emulateHTTP) {
       this.body = this.body || {};
       if (typeof this.body === 'object') this.body._method = method;
-      opts.headers = Utils.extend({}, opts.headers, {
+      opts.headers = Utils.extend({}, {
         'X-HTTP-Method-Override': method
-      });
+      }, opts.headers);
     }
 
     var body = this.body ? Utils.params(this.body) : '';
 
     if (canIncludeBody) {
-      opts.headers = Utils.extend({}, opts.headers, {
+      opts.headers = Utils.extend({}, {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': body.length
-      });
+      }, opts.headers);
     }
 
     var request = http.request(opts, this.onResponse.bind(this));
