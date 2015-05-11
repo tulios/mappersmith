@@ -183,16 +183,32 @@ describe('Gateway', function() {
   });
 
   describe('#fail', function() {
-    var gateway;
+    var gateway, params;
 
     beforeEach(function() {
-      gateway = new Gateway({url: url, method: verb});
+      params = {a: 1, b: false};
+      gateway = new Gateway({
+        url: url,
+        host: host,
+        path: path,
+        params: params,
+        method: verb
+      });
     });
 
-    it('configures the failCallback', function() {
-      var fail = function() {};
+    it('calls failCallback with requested resource object and errors', function() {
+      var error1 = 'error1';
+      var error2 = 'error2';
+      var fail = sinon.spy(function() {});
+
       gateway.fail(fail);
-      expect(gateway.failCallback).to.equals(fail);
+      gateway.failCallback(error1, error2);
+      expect(fail).to.have.been.deep.calledWith({
+        url: url,
+        host: host,
+        path: path,
+        params: params,
+      }, error1, error2);
     });
 
     it('return "this"', function() {
@@ -204,7 +220,12 @@ describe('Gateway', function() {
     var gateway;
 
     beforeEach(function() {
-      gateway = new Gateway({url: url, method: verb});
+      gateway = new Gateway({
+        url: url,
+        host: host,
+        path: path,
+        method: verb
+      });
     });
 
     it('configures the completeCallback', function() {
@@ -223,7 +244,13 @@ describe('Gateway', function() {
       describe('when method is ' + method, function() {
         describe('and emulating HTTP methods is enable', function() {
           beforeEach(function() {
-            gateway = new Gateway({url: url, method: method, opts: {emulateHTTP: true}});
+            gateway = new Gateway({
+              url: url,
+              host: host,
+              path: path,
+              method: method,
+              opts: {emulateHTTP: true}
+            });
           });
 
           it('returns true', function() {

@@ -40,8 +40,7 @@ var JQueryGateway = CreateGateway({
       requestMethod = 'POST';
       this.body = this.body || {};
       if (typeof this.body === 'object') this.body._method = method;
-      this.opts.headers = Utils.extend({'X-HTTP-Method-Override': method}, 
-        this.opts.headers);
+      this.opts.headers = Utils.extend({'X-HTTP-Method-Override': method}, this.opts.headers);
     }
 
     var defaults = {type: requestMethod, data: Utils.params(this.body)};

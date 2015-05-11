@@ -45,15 +45,12 @@ Gateway.prototype = {
       this.timeEnd = Utils.performanceNow();
       this.timeElapsed = this.timeEnd - this.timeStart;
       if (this.processor) data = this.processor(data);
+      var requestedResource = this.getRequestedResource();
 
       var stats = Utils.extend({
-        url: this.url,
-        host: this.host,
-        path: this.path,
-        params: this.params,
         timeElapsed: this.timeElapsed,
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
-      }, extraStats);
+      }, requestedResource, extraStats);
 
       callback(data, stats);
     }.bind(this);
@@ -62,13 +59,32 @@ Gateway.prototype = {
   },
 
   fail: function(callback) {
-    this.failCallback = callback;
+    this.failCallback = function() {
+      var args = [this.getRequestedResource()];
+
+      // remember, `arguments` isn't an array
+      for (var i = 0; i < arguments.length; i++) {
+        args.push(arguments[i]);
+      }
+
+      callback.apply(this, args);
+    }.bind(this);
+
     return this;
   },
 
   complete: function(callback) {
     this.completeCallback = callback;
     return this;
+  },
+
+  getRequestedResource: function() {
+    return {
+      url: this.url,
+      host: this.host,
+      path: this.path,
+      params: this.params
+    }
   },
 
   shouldEmulateHTTP: function(method) {
