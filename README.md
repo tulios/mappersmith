@@ -82,7 +82,7 @@ Client.Book.byId({id: 3})
 // with all callbacks
 Client.Book.byId({id: 3}, function(data, stats) {
   // success callback
-}).fail(function() {
+}).fail(function(request, err) {
   // fail callback
 }).complete(function() {
   // complete callback, it will always be called
@@ -106,6 +106,18 @@ The __default stats__ in the object are: `url`, `params`, `timeElapsed` and `tim
   timeElapsed: 6.745000369846821,
   timeElapsedHumanized: '6.75 ms'
 }
+```
+
+#### Fail callback arguments
+
+The fail callback will receive in the first argument the requested resource, which is an object that contains the requested URL, host, path and params. From the second argument and beyond it will receive the error objects from the specific gateway implementations.
+
+```javascript
+...
+fail(function(request, err) {
+  console.log(request.url) // 'http://my.api.com/v1/books/3.json'
+  console.log(request.params) // {id: 3}
+});
 ```
 
 #### Parameters
