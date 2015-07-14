@@ -90,6 +90,78 @@ describe('Gateway', function() {
     });
   });
 
+  describe('#promisify', function() {
+    var gateway, data, params;
+
+    beforeEach(function() {
+      gateway = new Gateway({
+        url: url,
+        host: host,
+        path: path,
+        params: params,
+        method: verb
+      });
+
+      data = 'data';
+      params = {a: 1, b: false};
+    });
+
+    it('returns a Promise', function() {
+      expect(gateway.promisify()).to.be.an.instanceof(Promise);
+    });
+
+    describe('when success is called', function() {
+      it('resolves with {data, stats}', function(done) {
+        gateway.promisify().then(function(result) {
+
+          expect(result.data).to.eql(data);
+          expect(result.stats).to.eql({
+            url: url,
+            host: host,
+            path: path,
+            params: params,
+            timeElapsed: gateway.timeElapsed,
+            timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
+          });
+          done();
+
+        }).catch(function(err) {
+          done(err);
+        });
+
+        gateway.successCallback(data);
+      });
+    });
+
+    describe('when fail is called', function() {
+      it('rejects with {request, err}', function(done) {
+        var error1 = 'error1';
+        var error2 = 'error2';
+
+        gateway.promisify().then(function() {
+          done(new Error('should have called "catch"'));
+
+        }).catch(function(err) {
+          try {
+            expect(err.request).to.eql({
+              url: url,
+              host: host,
+              path: path,
+              params: params,
+            });
+
+            expect(err.err).to.eql([error1, error2]);
+            done();
+          } catch(e) {
+            done(e);
+          }
+        });
+
+        gateway.failCallback(error1, error2);
+      });
+    });
+  });
+
   describe('#success', function() {
     var gateway, params;
 

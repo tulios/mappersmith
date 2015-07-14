@@ -40,6 +40,25 @@ Gateway.prototype = {
     return this;
   },
 
+  promisify: function() {
+    return new Promise(function(resolve, reject) {
+      this.success(function(data, stats) {
+        resolve({data: data, stats: stats});
+      });
+      this.fail(function() {
+        var args = [];
+        for (var i = 0; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+
+        var request = args.shift();
+        reject({request: request, err: args});
+      });
+
+      this.call();
+    }.bind(this));
+  },
+
   success: function(callback) {
     this.successCallback = function(data, extraStats) {
       this.timeEnd = Utils.performanceNow();

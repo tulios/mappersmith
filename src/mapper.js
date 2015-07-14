@@ -1,4 +1,5 @@
 var Utils = require('./utils');
+var Env = require('./env');
 
 /**
  * Mapper constructor
@@ -130,9 +131,9 @@ Mapper.prototype = {
         opts: opts
       });
 
-      return new this.Gateway(gatewayOpts).
-        success(callback).
-        call();
+      var gateway = new this.Gateway(gatewayOpts);
+      if (Env.USE_PROMISES) return gateway.promisify();
+      return gateway.success(callback).call();
 
     }.bind(this);
   }

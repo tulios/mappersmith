@@ -89,6 +89,8 @@ Client.Book.byId({id: 3}, function(data, stats) {
 })
 ```
 
+__Mappersmith supports Promises, check how to enable in a section bellow__
+
 #### Success callback arguments
 
 The success callback will receive two arguments: the _first one_ will be `data`, returned by your API; and the _second one_ will be a `stats` object. The stats object hold information of the request, like the elapsed time between your call and callback execution.
@@ -249,6 +251,40 @@ Photo: {
 ```
 
 **A downside is that you can't use processor functions with compact syntax.**
+
+#### Using with Promises
+
+To disable the callback API and enable Promises you must turn on the flag `USE_PROMISES`.
+
+```javascript
+Mappersmith.Env.USE_PROMISES = true;
+```
+
+After that, you can forge your client and assume that every method will return a promise.
+
+```javascript
+var Client = Mappersmith.forge(manifest);
+
+Client.Book.byId({id: 3}).then(function(response) {
+  console.log(response.data);
+  console.log(response.stats);
+
+}).catch(function(err) {
+  console.log(err.response);
+  console.log(err.err);
+});
+
+// other example
+
+Client.Book.all().then(function(response) {
+  return response.data;
+
+}).then(function(data) {
+  console.log(data);
+})
+```
+
+It is important to note that Mappersmith __does not apply__ any polyfills. If you are using this with a browser that doesn't support Promises, please apply the polyfill first. One option can be [then/promises](https://github.com/then/promise)
 
 ## Gateways
 

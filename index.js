@@ -1,4 +1,5 @@
 module.exports = {
+  Env: require('./src/env'),
   Utils: require('./src/utils'),
   Gateway: require('./src/gateway'),
   Mapper: require('./src/mapper'),

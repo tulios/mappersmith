@@ -44,11 +44,13 @@ describe('Mapper', function() {
     test.gateway.prototype.get = function() {return this};
     test.gateway.prototype.success = function() {return this};
     test.gateway.prototype.call = function() {return this};
+    test.gateway.prototype.promisify = function() {return Promise.resolve(true)};
 
     sinon.spy(test, 'gateway');
     sinon.spy(test.gateway.prototype, 'get');
     sinon.spy(test.gateway.prototype, 'success');
     sinon.spy(test.gateway.prototype, 'call');
+    sinon.spy(test.gateway.prototype, 'promisify');
 
     gateway = test.gateway;
     mapper = new Mapper(manifest, gateway);
@@ -59,6 +61,7 @@ describe('Mapper', function() {
     test.gateway.prototype.get.restore();
     test.gateway.prototype.success.restore();
     test.gateway.prototype.call.restore();
+    test.gateway.prototype.promisify.restore();
   });
 
   describe('contructor', function() {
@@ -701,4 +704,37 @@ describe('Mapper', function() {
       });
     });
   });
+
+  describe('with promises enabled', function() {
+    var method,
+        host,
+        fullUrl,
+        path,
+        resolvedPath,
+        params,
+        callback;
+
+    beforeEach(function() {
+      Mappersmith.Env.USE_PROMISES = true;
+
+      method = 'get';
+      host = mapper.resolveHost();
+      path = '/path';
+      resolvedPath = mapper.resolvePath(path, {a: true});
+      fullUrl =  host + path;
+      params = {a: true};
+      callback = Utils.noop;
+    });
+
+    afterEach(function() {
+      Mappersmith.Env.USE_PROMISES = false;
+    });
+
+    it('calls promisify to generate a promise', function() {
+      var request = mapper.newGatewayRequest(method, path);
+      request(params, callback);
+      expect(gateway.prototype.promisify).to.have.been.called;
+    });
+
+  })
 });
