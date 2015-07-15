@@ -10,14 +10,18 @@ if (typeof window !== 'undefined' && window !== null) {
   })();
 }
 
+// avoid browserify shim
+var _process;
+try {_process = eval("process")} catch (e) {}
+
 var hasProcessHrtime = function() {
-  return (typeof process !== 'undefined' && process !== null) && process.hrtime;
+  return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime;
 }
 
 var getNanoSeconds, loadTime;
 if (hasProcessHrtime()) {
   getNanoSeconds = function() {
-    var hr = process.hrtime();
+    var hr = _process.hrtime();
     return hr[0] * 1e9 + hr[1];
   }
   loadTime = getNanoSeconds();
