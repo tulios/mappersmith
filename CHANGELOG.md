@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+  - Support for Promises
+  - bugfix: made headers from options higher priority than built-in headers
+  - Fail callback now receives the requested resource (url, host, path and params). This change breaks the API for fail callback, the original error objects will be available from the second argument and beyond
+
 ## 0.7.0
 
   - Included host and path into stats object
