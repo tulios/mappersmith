@@ -1,5 +1,10 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Mappersmith = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*!
+ * Mappersmith 0.8.0
+ * https://github.com/tulios/mappersmith
+ */
 module.exports = {
+  Env: require('./src/env'),
   Utils: require('./src/utils'),
   Gateway: require('./src/gateway'),
   Mapper: require('./src/mapper'),
@@ -10,7 +15,7 @@ module.exports = {
   createGateway: require('./src/create-gateway')
 }
 
-},{"./src/create-gateway":2,"./src/forge":3,"./src/gateway":4,"./src/gateway/jquery-gateway":5,"./src/gateway/vanilla-gateway":6,"./src/mapper":7,"./src/utils":8}],2:[function(require,module,exports){
+},{"./src/create-gateway":2,"./src/env":3,"./src/forge":4,"./src/gateway":5,"./src/gateway/jquery-gateway":6,"./src/gateway/vanilla-gateway":7,"./src/mapper":8,"./src/utils":9}],2:[function(require,module,exports){
 var Utils = require('./utils');
 var Gateway = require('./gateway');
 
@@ -24,7 +29,12 @@ module.exports = function(methods) {
   return newGateway;
 }
 
-},{"./gateway":4,"./utils":8}],3:[function(require,module,exports){
+},{"./gateway":5,"./utils":9}],3:[function(require,module,exports){
+module.exports = {
+  USE_PROMISES: false
+}
+
+},{}],4:[function(require,module,exports){
 var Mapper = require('./mapper');
 var VanillaGateway = require('./gateway/vanilla-gateway');
 
@@ -36,7 +46,7 @@ module.exports = function(manifest, gateway, bodyAttr) {
   ).build();
 }
 
-},{"./gateway/vanilla-gateway":6,"./mapper":7}],4:[function(require,module,exports){
+},{"./gateway/vanilla-gateway":7,"./mapper":8}],5:[function(require,module,exports){
 var Utils = require('./utils');
 
 /**
@@ -79,20 +89,39 @@ Gateway.prototype = {
     return this;
   },
 
+  promisify: function(thenCallback) {
+    var promise = new Promise(function(resolve, reject) {
+      this.success(function(data, stats) {
+        resolve({data: data, stats: stats});
+      });
+      this.fail(function() {
+        var args = [];
+        for (var i = 0; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+
+        var request = args.shift();
+        reject({request: request, err: args});
+      });
+
+      this.call();
+    }.bind(this));
+
+    if (thenCallback !== undefined) return promise.then(thenCallback);
+    return promise;
+  },
+
   success: function(callback) {
     this.successCallback = function(data, extraStats) {
       this.timeEnd = Utils.performanceNow();
       this.timeElapsed = this.timeEnd - this.timeStart;
       if (this.processor) data = this.processor(data);
+      var requestedResource = this.getRequestedResource();
 
       var stats = Utils.extend({
-        url: this.url,
-        host: this.host,
-        path: this.path,
-        params: this.params,
         timeElapsed: this.timeElapsed,
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
-      }, extraStats);
+      }, requestedResource, extraStats);
 
       callback(data, stats);
     }.bind(this);
@@ -101,13 +130,32 @@ Gateway.prototype = {
   },
 
   fail: function(callback) {
-    this.failCallback = callback;
+    this.failCallback = function() {
+      var args = [this.getRequestedResource()];
+
+      // remember, `arguments` isn't an array
+      for (var i = 0; i < arguments.length; i++) {
+        args.push(arguments[i]);
+      }
+
+      callback.apply(this, args);
+    }.bind(this);
+
     return this;
   },
 
   complete: function(callback) {
     this.completeCallback = callback;
     return this;
+  },
+
+  getRequestedResource: function() {
+    return {
+      url: this.url,
+      host: this.host,
+      path: this.path,
+      params: this.params
+    }
   },
 
   shouldEmulateHTTP: function(method) {
@@ -138,7 +186,7 @@ Gateway.prototype = {
 
 module.exports = Gateway;
 
-},{"./utils":8}],5:[function(require,module,exports){
+},{"./utils":9}],6:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
@@ -181,7 +229,7 @@ var JQueryGateway = CreateGateway({
       requestMethod = 'POST';
       this.body = this.body || {};
       if (typeof this.body === 'object') this.body._method = method;
-      this.opts.headers = Utils.extend(this.opts.header, {'X-HTTP-Method-Override': method});
+      this.opts.headers = Utils.extend({'X-HTTP-Method-Override': method}, this.opts.headers);
     }
 
     var defaults = {type: requestMethod, data: Utils.params(this.body)};
@@ -200,7 +248,7 @@ var JQueryGateway = CreateGateway({
 
 module.exports = JQueryGateway;
 
-},{"../create-gateway":2,"../utils":8}],6:[function(require,module,exports){
+},{"../create-gateway":2,"../utils":9}],7:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
@@ -298,8 +346,9 @@ var VanillaGateway = CreateGateway({
 
 module.exports = VanillaGateway;
 
-},{"../create-gateway":2,"../utils":8}],7:[function(require,module,exports){
+},{"../create-gateway":2,"../utils":9}],8:[function(require,module,exports){
 var Utils = require('./utils');
+var Env = require('./env');
 
 /**
  * Mapper constructor
@@ -431,9 +480,9 @@ Mapper.prototype = {
         opts: opts
       });
 
-      return new this.Gateway(gatewayOpts).
-        success(callback).
-        call();
+      var gateway = new this.Gateway(gatewayOpts);
+      if (Env.USE_PROMISES) return gateway.promisify(callback);
+      return gateway.success(callback).call();
 
     }.bind(this);
   }
@@ -442,8 +491,7 @@ Mapper.prototype = {
 
 module.exports = Mapper;
 
-},{"./utils":8}],8:[function(require,module,exports){
-(function (process){
+},{"./env":3,"./utils":9}],9:[function(require,module,exports){
 if (typeof window !== 'undefined' && window !== null) {
   window.performance = window.performance || {};
   performance.now = (function() {
@@ -456,14 +504,18 @@ if (typeof window !== 'undefined' && window !== null) {
   })();
 }
 
+// avoid browserify shim
+var _process;
+try {_process = eval("process")} catch (e) {}
+
 var hasProcessHrtime = function() {
-  return (typeof process !== 'undefined' && process !== null) && process.hrtime;
+  return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime;
 }
 
 var getNanoSeconds, loadTime;
 if (hasProcessHrtime()) {
   getNanoSeconds = function() {
-    var hr = process.hrtime();
+    var hr = _process.hrtime();
     return hr[0] * 1e9 + hr[1];
   }
   loadTime = getNanoSeconds();
@@ -563,6 +615,5 @@ var Utils = {
 
 module.exports = Utils;
 
-}).call(this,require('_process'))
-},{"_process":undefined}]},{},[1])(1)
+},{}]},{},[1])(1)
 });
