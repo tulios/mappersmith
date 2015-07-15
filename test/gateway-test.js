@@ -94,6 +94,9 @@ describe('Gateway', function() {
     var gateway, data, params;
 
     beforeEach(function() {
+      data = 'data';
+      params = {a: 1, b: false};
+
       gateway = new Gateway({
         url: url,
         host: host,
@@ -101,13 +104,36 @@ describe('Gateway', function() {
         params: params,
         method: verb
       });
-
-      data = 'data';
-      params = {a: 1, b: false};
     });
 
     it('returns a Promise', function() {
       expect(gateway.promisify()).to.be.an.instanceof(Promise);
+    });
+
+    describe('when a callback is provided', function() {
+      it('configures the first "then"', function(done) {
+        var callback = sinon.spy(function() {});
+        gateway.promisify(callback).then(function() {
+
+          expect(callback).to.have.been.calledWith({
+            data: data,
+            stats: {
+              url: url,
+              host: host,
+              path: path,
+              params: params,
+              timeElapsed: gateway.timeElapsed,
+              timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
+            }
+          });
+          done();
+
+        }).catch(function(err) {
+          done(err);
+        });
+
+        gateway.successCallback(data);
+      });
     });
 
     describe('when success is called', function() {

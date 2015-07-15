@@ -284,6 +284,21 @@ Client.Book.all().then(function(response) {
 })
 ```
 
+The first callback, if provided, will be used as a "then" statement, example:
+
+```javascript
+Client.Book.all(function() {
+  console.log(1);
+
+}).then(function() {
+  console.log(2);
+});
+
+// output:
+// 1
+// 2
+```
+
 It is important to note that Mappersmith __does not apply__ any polyfills. If you are using this with a browser that doesn't support Promises, please apply the polyfill first. One option can be [then/promises](https://github.com/then/promise)
 
 ## Gateways

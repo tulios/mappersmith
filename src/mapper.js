@@ -132,7 +132,7 @@ Mapper.prototype = {
       });
 
       var gateway = new this.Gateway(gatewayOpts);
-      if (Env.USE_PROMISES) return gateway.promisify();
+      if (Env.USE_PROMISES) return gateway.promisify(callback);
       return gateway.success(callback).call();
 
     }.bind(this);

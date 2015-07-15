@@ -730,10 +730,10 @@ describe('Mapper', function() {
       Mappersmith.Env.USE_PROMISES = false;
     });
 
-    it('calls promisify to generate a promise', function() {
+    it('calls promisify with callback to generate a promise', function() {
       var request = mapper.newGatewayRequest(method, path);
       request(params, callback);
-      expect(gateway.prototype.promisify).to.have.been.called;
+      expect(gateway.prototype.promisify).to.have.been.calledWith(callback);
     });
 
   })

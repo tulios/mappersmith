@@ -40,8 +40,8 @@ Gateway.prototype = {
     return this;
   },
 
-  promisify: function() {
-    return new Promise(function(resolve, reject) {
+  promisify: function(thenCallback) {
+    var promise = new Promise(function(resolve, reject) {
       this.success(function(data, stats) {
         resolve({data: data, stats: stats});
       });
@@ -57,6 +57,9 @@ Gateway.prototype = {
 
       this.call();
     }.bind(this));
+
+    if (thenCallback !== undefined) return promise.then(thenCallback);
+    return promise;
   },
 
   success: function(callback) {
