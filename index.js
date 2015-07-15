@@ -1,3 +1,7 @@
+/*!
+ * Mappersmith __VERSION__
+ * https://github.com/tulios/mappersmith
+ */
 module.exports = {
   Env: require('./src/env'),
   Utils: require('./src/utils'),
