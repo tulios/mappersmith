@@ -9,6 +9,7 @@ module.exports = function(config) {
 
     plugins: [
       'karma-browserify',
+      'karma-firefox-launcher',
       'karma-phantomjs2-launcher',
       'karma-mocha',
       'karma-chai',
