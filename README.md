@@ -470,12 +470,15 @@ For gateways with transparent cache functionalities and different cache stores, 
 
 ### Client
 
-1. Build the source (`npm run build-test`)
-2. Open test.html
+`npm run test-browser` or `SINGLE_RUN=true npm run test-browser`
 
 ### Server
 
-1. `npm test`
+`npm run test-node`
+
+### To run both tests
+
+`npm test`
 
 ## Compile and release
 

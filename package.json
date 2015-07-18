@@ -10,22 +10,26 @@
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/.bin/browserify index.js -s Mappersmith -t browserify-versionify --no-builtins -o build/mappersmith.js",
-    "build-test": "./node_modules/.bin/browserify index.js -t browserify-versionify -t rewireify -s Mappersmith -o build/mappersmith.test.js",
-    "release": "npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c --screw-ie8 --comments /^\\s*\/*!/",
-    "test": "./node_modules/.bin/mocha test/node/*-test.js",
-    "debug-test": "./node_modules/.bin/mocha --debug-brk test/node/*-test.js",
-    "node-inspector": "./node_modules/.bin/node-inspector --web-port 7777"
+    "release": "npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c --screw-ie8 --comments /^\\s*/*!/",
+    "test-node": "./node_modules/.bin/mocha test/node/*-test.js",
+    "test-node-debug": "./node_modules/.bin/mocha --debug-brk test/node/*-test.js",
+    "test-node-inspector": "./node_modules/.bin/node-inspector --web-port 7777",
+    "test-browser": "./node_modules/.bin/karma start karma.conf.js",
+    "test": "SINGLE_RUN=true npm run test-browser && npm run test-node"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/tulios/mappersmith.git"
   },
   "keywords": [
+    "rest",
+    "client",
     "rest-client",
     "isomorphic",
     "browser",
     "server",
-    "data-mapper"
+    "data-mapper",
+    "mappersmith"
   ],
   "license": "MIT",
   "bugs": {
@@ -36,9 +40,21 @@
     "browserify": "^9.0.8",
     "browserify-versionify": "^1.0.4",
     "chai": "^1.10.0",
+    "jquery": "^2.1.4",
+    "karma": "^0.13.2",
+    "karma-browserify": "^4.2.1",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
+    "karma-phantomjs2-launcher": "^0.1.6",
+    "karma-sinon": "^1.0.4",
+    "karma-sinon-chai": "^0.3.2",
     "mocha": "^2.0.1",
     "nock": "^0.58.0",
     "node-inspector": "^0.8.3",
+    "phantomjs": "^1.9.17",
+    "promise": "^7.0.3",
     "rewire": "^2.3.0",
     "rewireify": "0.0.13",
     "shared-examples-for": "^0.1.3",

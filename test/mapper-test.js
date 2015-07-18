@@ -1,5 +1,6 @@
-var expect = chai.expect;
-var shared = $shared;
+var shared = require('shared-examples-for');
+
+var Mappersmith = require('../index');
 var Utils = Mappersmith.Utils;
 var Mapper = Mappersmith.Mapper;
 

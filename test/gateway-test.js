@@ -1,4 +1,5 @@
-var expect = chai.expect;
+var Mappersmith = require('../index');
+var Promise = require('promise');
 
 var Utils = Mappersmith.Utils;
 var Gateway = Mappersmith.Gateway;
@@ -13,6 +14,8 @@ describe('Gateway', function() {
       methodStub;
 
   beforeEach(function() {
+    Mappersmith.Gateway.__set__('Promise', Promise);
+
     noop = Utils.noop;
     host = 'http://host';
     path = '/path';

@@ -47,3 +47,5 @@ function browserGenerateMakeRequest(context) {
     done();
   }
 }
+
+module.exports = browserGenerateMakeRequest;

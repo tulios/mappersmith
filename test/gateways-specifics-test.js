@@ -1,5 +1,8 @@
-var expect = chai.expect;
-var shared = $shared;
+var $ = require('jquery');
+
+var Mappersmith = require('../index');
+var Promise = require('promise');
+var shared = require('shared-examples-for');
 var Utils = Mappersmith.Utils;
 
 describe('Gateways specifics', function() {
@@ -76,7 +79,7 @@ describe('Gateways specifics', function() {
         requestWithGateway(
           200,
           JSON.stringify(data),
-          newGateway(VanillaGateway, {opts: {configure: configure}})
+          newGateway(Mappersmith.VanillaGateway, {opts: {configure: configure}})
         );
 
         var firstCallArgs = configure.args[0];
@@ -117,7 +120,7 @@ describe('Gateways specifics', function() {
         requestWithGateway(
           200,
           JSON.stringify(data),
-          newGateway(JQueryGateway, {opts: opts})
+          newGateway(Mappersmith.JQueryGateway, {opts: opts})
         );
 
         expect($.ajax).to.have.been.calledWith(config);

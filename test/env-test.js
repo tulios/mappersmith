@@ -1,4 +1,4 @@
-var expect = chai.expect;
+var Mappersmith = require('../index');
 
 describe('Env', function() {
   it('has USE_PROMISES = false', function() {

@@ -1,17 +1,24 @@
+var $ = require('jquery');
+var shared = require('shared-examples-for');
+
+var Mappersmith = require('../../index');
+var Utils = Mappersmith.Utils;
+
 function gatewayImplSpecFor(GatewayName, GatewayImpl) {
+
+  if (GatewayImpl.__set__) {
+    GatewayImpl.__set__('jQuery', $);
+  }
 
   describe(GatewayName, function() {
     var context = {};
-    var makeRequest,
-        Utils;
+    var makeRequest;
 
     if (typeof window === 'undefined') {
       makeRequest = require('./node-generate-make-request')(context);
-      Utils = require('../../').Utils;
 
     } else {
-      makeRequest = browserGenerateMakeRequest(context);
-      Utils = window.Mappersmith.Utils;
+      makeRequest = require('./browser-generate-make-request')(context);
     }
 
     function newGateway(opts) {
@@ -246,6 +253,4 @@ function gatewayImplSpecFor(GatewayName, GatewayImpl) {
 
 }
 
-if (typeof window === 'undefined') {
-  module.exports = gatewayImplSpecFor;
-}
+module.exports = gatewayImplSpecFor;

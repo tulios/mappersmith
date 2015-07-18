@@ -1,4 +1,4 @@
-var expect = chai.expect;
+var Mappersmith = require('../index');
 
 describe('Mappersmith', function() {
   it('exposes Utils', function() {
