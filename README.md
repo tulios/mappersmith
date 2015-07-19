@@ -6,6 +6,10 @@
 
 https://www.npmjs.com/package/mappersmith
 
+## Browser support
+
+Mappersmith was designed considering modern browsers. However, all the methods used can be included by a shim such as [es5-shim](https://github.com/es-shims/es5-shim).
+
 ## Install
 
 #### NPM
@@ -90,7 +94,7 @@ Client.Book.byId({id: 3}, function(data, stats) {
 })
 ```
 
-__Mappersmith supports Promises, check how to enable in a section bellow__
+__Mappersmith supports Promises, check [how to enable](#using-with-promises) in a section bellow__
 
 #### Success callback arguments
 
@@ -235,25 +239,24 @@ Client.MyResource.other({url: 'http://host.com/other/'})
 // http://host.com/other/
 ```
 
-#### Compact Syntax
-If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
+It's also possible to disable the host resolution for all resources, using the current URL, just assign `false` to the host key and remember to start your resources paths with `/`.
 
 ```javascript
-...
-Book: {
-  all: 'get:/v1/books.json', // The same as {method: 'GET', path: '/v1/books.json'}
-  byId: '/v1/books/{id}.json' // The default is GET, as always
-},
-Photo: {
-  // The same as {method: 'POST', path: '/v1/photos/{category}/save.json'}
-  save: 'post:/v1/photos/{category}/save'
+var manifest = {
+  host: false,
+  resources: {
+    MyResouce: {
+      all: {path: '/all.json'}
+    }
+  }
 }
-...
+
+var Client = Mappersmith.forge(manifest);
+Client.MyResource.all()
+// /all.json
 ```
 
-**A downside is that you can't use processor functions with compact syntax.**
-
-#### Using with Promises
+#### <a name="using-with-promises"></a> Using with Promises
 
 To disable the callback API and enable Promises you must turn on the flag `USE_PROMISES`.
 
@@ -267,12 +270,12 @@ After that, you can forge your client and assume that every method will return a
 var Client = Mappersmith.forge(manifest);
 
 Client.Book.byId({id: 3}).then(function(response) {
-  console.log(response.data);
-  console.log(response.stats);
+  console.log(response.data); // data returned by your API
+  console.log(response.stats); // stats object with request information
 
 }).catch(function(err) {
-  console.log(err.response);
-  console.log(err.err);
+  console.log(err.response); // requested resource, same as stats
+  console.log(err.err); // array of errors given by gateway
 });
 
 // other example
@@ -301,6 +304,24 @@ Client.Book.all(function() {
 ```
 
 It is important to note that Mappersmith __does not apply__ any polyfills. If you are using this with a browser that doesn't support Promises, please apply the polyfill first. One option can be [then/promises](https://github.com/then/promise)
+
+#### Compact Syntax
+If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
+
+```javascript
+...
+Book: {
+  all: 'get:/v1/books.json', // The same as {method: 'GET', path: '/v1/books.json'}
+  byId: '/v1/books/{id}.json' // The default is GET, as always
+},
+Photo: {
+  // The same as {method: 'POST', path: '/v1/photos/{category}/save.json'}
+  save: 'post:/v1/photos/{category}/save'
+}
+...
+```
+
+__A downside is that you can't use processor functions with compact syntax.__
 
 ## Gateways
 
