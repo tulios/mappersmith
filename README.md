@@ -513,6 +513,6 @@ Check it out!
 
 https://github.com/tulios/mappersmith/graphs/contributors
 
-## Licence
+## License
 
-See [LICENCE](https://github.com/tulios/mappersmith/blob/master/LICENSE) for more details.
+See [LICENSE](https://github.com/tulios/mappersmith/blob/master/LICENSE) for more details.
