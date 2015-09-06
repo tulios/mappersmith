@@ -488,6 +488,10 @@ For gateways with transparent cache functionalities and different cache stores, 
 
 [https://github.com/tulios/mappersmith-cached-gateway](https://github.com/tulios/mappersmith-cached-gateway)
 
+for a layer on top of your objects/responses to help with common annoyances which the javascript world provides daily, take a look at:
+
+[https://github.com/tulios/mappersmith-object](https://github.com/tulios/mappersmith-object)
+
 ## Tests
 
 ### Client
