@@ -3,6 +3,7 @@ var CreateGateway = require('../create-gateway');
 
 var url = require('url');
 var http = require('http');
+var https = require('https');
 
 var NodeVanillaGateway = CreateGateway({
 
@@ -31,7 +32,12 @@ var NodeVanillaGateway = CreateGateway({
       }, opts.headers);
     }
 
-    var request = http.request(opts, this.onResponse.bind(this));
+    if (defaults.protocol === 'https:') {
+      var handler = https;
+    } else {
+      handler = http;
+    }
+    var request = handler.request(opts, this.onResponse.bind(this));
     request.on('error', this.onError.bind(this));
 
     if (body) request.write(body);
