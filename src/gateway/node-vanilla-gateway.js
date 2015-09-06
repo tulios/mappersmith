@@ -32,11 +32,10 @@ var NodeVanillaGateway = CreateGateway({
       }, opts.headers);
     }
 
-    if (defaults.protocol === 'https:') {
-      var handler = https;
-    } else {
-      handler = http;
-    }
+
+    var handler = http;
+    if (defaults.protocol === 'https:') handler = https;
+
     var request = handler.request(opts, this.onResponse.bind(this));
     request.on('error', this.onError.bind(this));
 
