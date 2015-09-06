@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.1
+
+  - bugfix: support for https in `NodeVanillaGateway`
+
 ## 0.8.0
 
   - Support for Promises
