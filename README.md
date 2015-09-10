@@ -414,7 +414,9 @@ rules: [
   },
   { // This will only be applied when the URL matches the regexp
     match: /\/v1\/books/,
-    values: {headers: {'X-MY-HEADER': 'value'}}
+    values: {
+      gateway: {headers: {'X-MY-HEADER': 'value'}}
+    }
   }
 ]
 ...
