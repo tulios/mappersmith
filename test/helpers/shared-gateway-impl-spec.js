@@ -208,6 +208,32 @@ function gatewayImplSpecFor(GatewayName, GatewayImpl) {
       });
     });
 
+    ['get', 'put', 'patch', 'delete'].forEach(function (methodName) {
+      describe('HTTP headers ' + methodName.toUpperCase(), function () {
+        var localGateway;
+
+        beforeEach(function () {
+          localGateway = newGateway({
+            method: methodName,
+            opts: {
+              headers: {
+                'Authorization': 'Dummy'
+              }
+            }
+          });
+        });
+
+        it('adds http headers for ' + methodName.toUpperCase() + ' requests', function (done) {
+          makeRequest({
+            status: 200,
+            rawData: 'OK',
+            gateway: localGateway,
+            assertHeader: {'Authorization': 'Dummy'}
+          }, done);
+        });
+      });
+    });
+
     ['put', 'patch', 'delete'].forEach(function(methodName) {
       describe('emulating HTTP method ' + methodName.toUpperCase(), function() {
         var body, localGateway;
