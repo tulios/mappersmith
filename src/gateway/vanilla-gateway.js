@@ -27,6 +27,14 @@ var VanillaGateway = CreateGateway({
     this._performRequest('DELETE');
   },
 
+  _setHeaders: function(request) {
+    if(this.opts.headers) {
+      for (var name in this.opts.headers) {
+        request.setRequestHeader(name, this.opts.headers[name]);
+      }
+    }
+  },
+
   _performRequest: function(method) {
     var emulateHTTP = this.shouldEmulateHTTP(method);
     var requestMethod = method;
