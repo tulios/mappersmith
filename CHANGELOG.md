@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.0
+
+  - Allows Promise implementation to be configured, defaults to global Promise
+  - Headers option for all gateways
+
 ## 0.8.1
 
   - bugfix: support for https in `NodeVanillaGateway`

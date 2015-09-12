@@ -314,7 +314,7 @@ var RSVP = require('rsvp');
 Mappersmith.Env.Promise = RSVP.Promise;
 ```
 
-All `Promise` references in __Mappersmith__ use `Mappersmith.Env.Promise`. The default value is the global `Promise`.
+All `Promise` references in __Mappersmith__ use `Mappersmith.Env.Promise`. The default value is the global Promise.
 
 #### Compact Syntax
 If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
