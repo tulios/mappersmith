@@ -30,6 +30,8 @@ var VanillaGateway = CreateGateway({
     var emulateHTTP = this.shouldEmulateHTTP(method);
     var requestMethod = method;
     var request = new XMLHttpRequest();
+    var headers = Utils.extend({}, this.opts.headers);
+
     this._configureCallbacks(request);
 
     if (emulateHTTP) {
@@ -39,8 +41,20 @@ var VanillaGateway = CreateGateway({
     }
 
     request.open(requestMethod, this.url, true);
-    if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+    if (emulateHTTP) {
+      headers = Utils.extend({}, {
+        'X-HTTP-Method-Override': method,
+      }, headers);
+    }
+
+    headers = Utils.extend({}, {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    }, headers);
+
+    Object.keys(headers || {}).map((function(header) {
+      request.setRequestHeader(header, this.opts.headers[header]);
+    }).bind(this));
 
     var args = [];
     if (this.body !== undefined) {
