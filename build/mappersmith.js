@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Mappersmith = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*!
- * Mappersmith 0.8.1
+ * Mappersmith 0.9.0
  * https://github.com/tulios/mappersmith
  */
 module.exports = {
@@ -31,7 +31,8 @@ module.exports = function(methods) {
 
 },{"./gateway":5,"./utils":9}],3:[function(require,module,exports){
 module.exports = {
-  USE_PROMISES: false
+  USE_PROMISES: false,
+  Promise: typeof Promise === 'function' ? Promise : null
 }
 
 },{}],4:[function(require,module,exports){
@@ -48,6 +49,7 @@ module.exports = function(manifest, gateway, bodyAttr) {
 
 },{"./gateway/vanilla-gateway":7,"./mapper":8}],5:[function(require,module,exports){
 var Utils = require('./utils');
+var Promise = require('./env').Promise;
 
 /**
  * Gateway constructor
@@ -186,7 +188,7 @@ Gateway.prototype = {
 
 module.exports = Gateway;
 
-},{"./utils":9}],6:[function(require,module,exports){
+},{"./env":3,"./utils":9}],6:[function(require,module,exports){
 var Utils = require('../utils');
 var CreateGateway = require('../create-gateway');
 
@@ -258,6 +260,7 @@ var VanillaGateway = CreateGateway({
     var request = new XMLHttpRequest();
     this._configureCallbacks(request);
     request.open('GET', this.url, true);
+    this._setHeaders(request);
     request.send();
   },
 
@@ -292,6 +295,7 @@ var VanillaGateway = CreateGateway({
     request.open(requestMethod, this.url, true);
     if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    this._setHeaders(request);
 
     var args = [];
     if (this.body !== undefined) {
@@ -336,6 +340,13 @@ var VanillaGateway = CreateGateway({
     if (this.opts.configure) {
       this.opts.configure(request);
     }
+  },
+
+  _setHeaders: function(request) {
+    var headers = Utils.extend({}, this.opts.headers);
+    Object.keys(headers).forEach(function(headerName) {
+      request.setRequestHeader(headerName, headers[headerName]);
+    });
   },
 
   _isContentTypeJSON: function(request) {
