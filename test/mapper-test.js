@@ -1,4 +1,5 @@
 var shared = require('shared-examples-for');
+var Promise = require('promise');
 
 var Mappersmith = require('../index');
 var Utils = Mappersmith.Utils;

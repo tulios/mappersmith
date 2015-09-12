@@ -14,7 +14,8 @@ describe('Gateway', function() {
       methodStub;
 
   beforeEach(function() {
-    Mappersmith.Gateway.__set__('Promise', Promise);
+    Mappersmith.Env.Promise = Promise;
+    Mappersmith.Gateway.__set__('Promise', Mappersmith.Env.Promise);
 
     noop = Utils.noop;
     host = 'http://host';

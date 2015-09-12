@@ -1,4 +1,5 @@
 var Utils = require('./utils');
+var Promise = require('./env').Promise;
 
 /**
  * Gateway constructor
