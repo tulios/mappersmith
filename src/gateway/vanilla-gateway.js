@@ -7,6 +7,7 @@ var VanillaGateway = CreateGateway({
     var request = new XMLHttpRequest();
     this._configureCallbacks(request);
     request.open('GET', this.url, true);
+    this._setHeaders(request);
     request.send();
   },
 
@@ -41,6 +42,7 @@ var VanillaGateway = CreateGateway({
     request.open(requestMethod, this.url, true);
     if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    this._setHeaders(request);
 
     var args = [];
     if (this.body !== undefined) {
@@ -85,6 +87,13 @@ var VanillaGateway = CreateGateway({
     if (this.opts.configure) {
       this.opts.configure(request);
     }
+  },
+
+  _setHeaders: function(request) {
+    var headers = Utils.extend({}, this.opts.headers);
+    Object.keys(headers).forEach(function(headerName) {
+      request.setRequestHeader(headerName, headers[headerName]);
+    });
   },
 
   _isContentTypeJSON: function(request) {

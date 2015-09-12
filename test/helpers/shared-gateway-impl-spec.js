@@ -6,9 +6,7 @@ var Utils = Mappersmith.Utils;
 
 function gatewayImplSpecFor(GatewayName, GatewayImpl) {
 
-  if (GatewayImpl.__set__) {
-    GatewayImpl.__set__('jQuery', $);
-  }
+  if (GatewayImpl.__set__) GatewayImpl.__set__('jQuery', $);
 
   describe(GatewayName, function() {
     var context = {};
@@ -245,6 +243,33 @@ function gatewayImplSpecFor(GatewayName, GatewayImpl) {
             rawData: 'OK',
             gateway: localGateway,
             assertHeader: {'X-HTTP-Method-Override': methodName.toUpperCase()}
+          }, done);
+        });
+      });
+    });
+
+    ['get', 'post', 'put', 'delete', 'patch'].forEach(function(methodName) {
+      describe('custom HTTP headers for method ' + methodName.toUpperCase(), function () {
+        var localGateway;
+
+        beforeEach(function () {
+          context.method = methodName;
+          localGateway = newGateway({
+            method: methodName,
+            opts: {
+              headers: {
+                'Authorization': 'Basic Auth'
+              }
+            }
+          });
+        });
+
+        it('adds http headers for ' + methodName.toUpperCase() + ' requests', function (done) {
+          makeRequest({
+            status: 200,
+            rawData: 'OK',
+            gateway: localGateway,
+            assertHeader: {'Authorization': 'Basic Auth'}
           }, done);
         });
       });
