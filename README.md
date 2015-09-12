@@ -305,6 +305,17 @@ Client.Book.all(function() {
 
 It is important to note that Mappersmith __does not apply__ any polyfills. If you are using this with a browser that doesn't support Promises, please apply the polyfill first. One option can be [then/promises](https://github.com/then/promise)
 
+In some cases is not possible to use/assign the global `Promise`, for those cases you can define the promise implementation used by __Mappersmith__ through the `Env` module.
+
+For example, using the project [rsvp.js](https://github.com/tildeio/rsvp.js/):
+
+```js
+var RSVP = require('rsvp');
+Mappersmith.Env.Promise = RSVP.Promise;
+```
+
+All `Promise` references in __Mappersmith__ use `Mappersmith.Env.Promise`. The default value is the global `Promise`.
+
 #### Compact Syntax
 If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
 
