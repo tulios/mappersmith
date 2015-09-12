@@ -455,6 +455,7 @@ Available options:
 
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with requested method as value. (default `false`)
 
+- headers: configures headers
 
 ### JQueryGateway
 
@@ -471,6 +472,8 @@ Available methods:
 Available options:
 
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
+
+- headers: configures headers
 
 ### NodeVanillaGateway
 
@@ -494,6 +497,8 @@ Available methods:
 Available options:
 
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
+
+- headers: configures headers
 
 ## Extras
 
