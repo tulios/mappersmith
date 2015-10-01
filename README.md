@@ -100,9 +100,9 @@ __Mappersmith supports Promises, check [how to enable](#using-with-promises) in 
 
 The success callback will receive two arguments: the _first one_ will be `data`, returned by your API; and the _second one_ will be a `stats` object. The stats object hold information of the request, like the elapsed time between your call and callback execution.
 
-Be aware that plugins hooked to Mappersmith can include more stats into this object, like [CachedGateway](https://github.com/tulios/mappersmith-cached-gateway) which includes if the call got an cache _hit_ or _miss_.
+Be aware that plugins hooked to Mappersmith can include more stats into this object, like [CachedGateway](https://github.com/tulios/mappersmith-cached-gateway) which includes if the call got a cache _hit_ or _miss_.
 
-The __default stats__ in the object are: `url`, `params`, `timeElapsed` and `timeElapsedHumanized`. Example:
+The __default stats__ in the object are `url`, `params`, `timeElapsed` and `timeElapsedHumanized`. Example:
 
 ```javascript
 {
@@ -214,7 +214,7 @@ Book: {
 
 #### Alternative host
 
-There are some cases where a resource method reside in another host, in those cases you can use the `host` key to configure a new host or to disable the resolution.
+There are some cases where a resource method resides in another host, in those cases you can use the `host` key to configure a new host or to disable the resolution.
 
 ```javascript
 var manifest = {
@@ -258,13 +258,13 @@ Client.MyResource.all()
 
 #### <a name="using-with-promises"></a> Using with Promises
 
-To disable the callback API and enable Promises you must turn on the flag `USE_PROMISES`.
+To disable the callback API and enable promises you must turn on the flag `USE_PROMISES`.
 
 ```javascript
 Mappersmith.Env.USE_PROMISES = true;
 ```
 
-After that, you can forge your client and assume that every method will return a promise.
+After that, you can __forge__ your client and assume that every method will return a promise.
 
 ```javascript
 var Client = Mappersmith.forge(manifest);
@@ -433,7 +433,7 @@ rules: [
 ...
 ```
 
-Just keep in mind that the configurations and processors will be prioritized by their order, and the global configurations does not have a `match` key.
+Just keep in mind that the configurations and processors will be prioritized by their order, and the global configurations do not have a `match` key.
 
 ## <a name="gateway-implementations"></a> Gateway Implementations
 
