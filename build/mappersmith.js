@@ -31,7 +31,9 @@ module.exports = function(methods) {
 
 },{"./gateway":5,"./utils":9}],3:[function(require,module,exports){
 module.exports = {
+  USE_FIXTURES: false,
   USE_PROMISES: false,
+  Fixture: null,
   Promise: typeof Promise === 'function' ? Promise : null
 }
 
@@ -48,6 +50,7 @@ module.exports = function(manifest, gateway, bodyAttr) {
 }
 
 },{"./gateway/vanilla-gateway":7,"./mapper":8}],5:[function(require,module,exports){
+var Env = require('./env');
 var Utils = require('./utils');
 var Promise = require('./env').Promise;
 
@@ -87,8 +90,35 @@ Gateway.prototype = {
 
   call: function() {
     this.timeStart = Utils.performanceNow();
-    this[this.method].apply(this, arguments);
+
+    if (Env.USE_FIXTURES && Env.Fixture) {
+      this.callWithFixture();
+
+    } else {
+      this[this.method].apply(this, arguments);
+    }
+
     return this;
+  },
+
+  callWithFixture: function() {
+    var resource = this.getRequestedResource();
+    var entry = Env.Fixture.lookup(this.method, resource);
+
+    if (!entry) {
+      throw new Utils.Exception(
+        'No fixture provided for ' + JSON.stringify(resource)
+      );
+    }
+
+    setTimeout(function() {
+      if (entry.isSuccess()) {
+        this.successCallback(entry.data());
+
+      } else {
+        this.failCallback(entry.data());
+      }
+    }.bind(this), 1);
   },
 
   promisify: function(thenCallback) {

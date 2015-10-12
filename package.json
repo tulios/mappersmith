@@ -9,12 +9,12 @@
   ],
   "main": "index.js",
   "scripts": {
-    "build": "./node_modules/.bin/browserify index.js -s Mappersmith -t browserify-versionify --no-builtins -o build/mappersmith.js",
-    "release": "npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c --screw-ie8 --comments /^\\s*/*!/",
-    "test-node": "./node_modules/.bin/mocha test/node/*-test.js",
-    "test-node-debug": "./node_modules/.bin/mocha --debug-brk test/node/*-test.js",
-    "test-node-inspector": "./node_modules/.bin/node-inspector --web-port 7777",
-    "test-browser": "./node_modules/.bin/karma start karma.conf.js",
+    "build": "./node_modules/.bin/browserify index.js -s Mappersmith -t browserify-versionify --no-builtins -o build/mappersmith.js && ./node_modules/.bin/browserify index-test.js -x mappersmith -s MappersmithFixture -t browserify-versionify --no-builtins -o build/mappersmith-fixture.js",
+    "release": "NODE_ENV=production npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c --screw-ie8 --comments /^\\s*/*!/",
+    "test-node": "NODE_ENV=test ./node_modules/.bin/mocha test/node/*-test.js",
+    "test-node-debug": "NODE_ENV=test ./node_modules/.bin/mocha --debug-brk test/node/*-test.js",
+    "test-node-inspector": "NODE_ENV=test ./node_modules/.bin/node-inspector --web-port 7777",
+    "test-browser": "NODE_ENV=test ./node_modules/.bin/karma start karma.conf.js",
     "test": "SINGLE_RUN=true npm run test-browser && npm run test-node"
   },
   "repository": {
@@ -38,6 +38,7 @@
   "homepage": "https://github.com/tulios/mappersmith",
   "devDependencies": {
     "browserify": "^9.0.8",
+    "browserify-shim": "^3.8.10",
     "browserify-versionify": "^1.0.4",
     "chai": "^1.10.0",
     "jquery": "^2.1.4",
@@ -61,5 +62,12 @@
     "sinon": "^1.12.2",
     "sinon-chai": "^2.6.0",
     "uglify-js": "^2.4.20"
-  }
+  },
+  "browserify": {
+    "transform": ["aliasify", "browserify-shim"]
+  },
+  "browserify-shim": {
+    "mappersmith": "global:Mappersmith"
+  },
+  "aliasify": "./aliasify.conf.js"
 }
