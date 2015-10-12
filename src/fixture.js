@@ -32,7 +32,7 @@ FixtureEntry.prototype = {
 
   data: function() {
     if (typeof entry !== 'object') return this.opts.value;
-    return Utils.extend(this.opts.value);
+    return Utils.extend({}, this.opts.value);
   },
 
   isSuccess: function() {

@@ -128,7 +128,7 @@ describe('Fixture', function() {
   });
 
   describe('JSON responses', function() {
-    it('returns a new object', function() {
+    it('returns a new object', function(done) {
       var data = {a: 1, b: true, c: 'value'};
 
       Mappersmith.Env.Fixture.
@@ -138,7 +138,7 @@ describe('Fixture', function() {
 
       client.Book.all().
         then(function(result) { result.data.b = false; }). // modify result
-        then(client.Book.all()). // grab fixture data again
+        then(function() { return client.Book.all() }). // grab fixture data again
         then(function(result) { // check if it's equal to the original value
           expect(result.data).to.deep.eql(data);
           done();
