@@ -114,8 +114,10 @@ var Utils = {
   },
 
   Exception: function(message) {
-    this.message = message;
-    this.toString = function() { return '[Mappersmith] ' + this.message; }
+    var err = new Error('[Mappersmith] ' + message);
+    this.message = err.message;
+    this.stack = err.stack;
+    this.toString = function() { return this.message; }
   }
 }
 

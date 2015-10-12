@@ -127,7 +127,7 @@ describe('Utils', function() {
     });
 
     it('creates an object with "message" attribute', function() {
-      expect(myError).to.have.property('message', 'wrong!');
+      expect(myError).to.have.property('message', '[Mappersmith] wrong!');
     });
 
     it('prepends "[Mappersmith]" to the "toString" method', function() {
