@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/tulios/mappersmith",
   "devDependencies": {
+    "aliasify": "^1.7.2",
     "browserify": "^9.0.8",
     "browserify-shim": "^3.8.10",
     "browserify-versionify": "^1.0.4",
@@ -64,7 +65,10 @@
     "uglify-js": "^2.4.20"
   },
   "browserify": {
-    "transform": ["aliasify", "browserify-shim"]
+    "transform": [
+      "aliasify",
+      "browserify-shim"
+    ]
   },
   "browserify-shim": {
     "mappersmith": "global:Mappersmith"
