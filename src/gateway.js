@@ -1,3 +1,4 @@
+var Env = require('./env');
 var Utils = require('./utils');
 var Promise = require('./env').Promise;
 
@@ -37,8 +38,35 @@ Gateway.prototype = {
 
   call: function() {
     this.timeStart = Utils.performanceNow();
-    this[this.method].apply(this, arguments);
+
+    if (Env.USE_FIXTURES && Env.Fixture) {
+      this.callWithFixture();
+
+    } else {
+      this[this.method].apply(this, arguments);
+    }
+
     return this;
+  },
+
+  callWithFixture: function() {
+    var resource = this.getRequestedResource();
+    var entry = Env.Fixture.lookup(this.method, resource);
+
+    if (!entry) {
+      throw new Utils.Exception(
+        'No fixture provided for ' + JSON.stringify(resource)
+      );
+    }
+
+    setTimeout(function() {
+      if (entry.isSuccess()) {
+        this.successCallback(entry.data());
+
+      } else {
+        this.failCallback(entry.data());
+      }
+    }.bind(this), 1);
   },
 
   promisify: function(thenCallback) {
