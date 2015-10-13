@@ -41,15 +41,28 @@ FixtureEntry.prototype = {
 
   response: function(value) {
     this.opts.value = value;
-    var entry = this;
+    var opts = this.opts;
+    var calls = opts.calls;
 
     return {
       remove: function() {
-        return Fixture.clear(entry.opts.method, entry.opts.matchingParams);
+        return Fixture.clear(opts.method, opts.matchingParams);
       },
 
-      calledWith: function() {
-        return entry.opts.calls[entry.opts.calls.length - 1] || null;
+      calls: function() {
+        return calls;
+      },
+
+      callsCount: function() {
+        return calls.length;
+      },
+
+      firstCall: function() {
+        return calls[0] || null;
+      },
+
+      mostRecentCall: function() {
+        return calls[calls.length - 1] || null;
       }
     }
   },
@@ -69,11 +82,21 @@ FixtureEntry.prototype = {
   },
 
   match: function(requestedResource) {
+    return this.matchObjects(this.opts.matchingParams, requestedResource);
+  },
+
+  matchObjects: function(match, target) {
     return Object.
-      keys(this.opts.matchingParams).
+      keys(match).
       reduce(function(result, key) {
-        return result = result && requestedResource[key] === this.opts.matchingParams[key];
+        return result = result && this.compare(match[key], target[key]);
       }.bind(this), true);
+  },
+
+  compare: function(match, value) {
+    if (match instanceof RegExp) return match.test(value);
+    if (typeof match === 'object') return this.matchObjects(match, value);
+    return match === value;
   }
 }
 
