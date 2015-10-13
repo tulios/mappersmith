@@ -151,61 +151,138 @@ describe('Fixture', function() {
 
   });
 
-  it('can remove the fixture from the definition', function(done) {
-    Mappersmith.Env.Fixture.
-      define('get').
-      matching({path: '/v1/books.json'}).
-      response('data1');
+  describe('instance', function() {
+    it('can be removed', function(done) {
+      Mappersmith.Env.Fixture.
+        define('get').
+        matching({path: '/v1/books.json'}).
+        response('data1');
 
-    var fixture2 = Mappersmith.Env.Fixture.
-      define('get').
-      matching({path: '/v1/books.json'}).
-      response('data2');
+      var fixture2 = Mappersmith.Env.Fixture.
+        define('get').
+        matching({path: '/v1/books.json'}).
+        response('data2');
 
-    client.Book.all().
-      then(function(result) {
-        expect(result.data).to.eql('data2');
-        expect(fixture2.remove()).to.eql(true);
-      }).
-      catch(function(err) { done(err) }).
-      then(function() { return client.Book.all() }).
-      then(function(result) {
-        expect(result.data).to.eql('data1');
+      client.Book.all().
+        then(function(result) {
+          expect(result.data).to.eql('data2');
+          expect(fixture2.remove()).to.eql(true);
+        }).
+        catch(function(err) { done(err) }).
+        then(function() { return client.Book.all() }).
+        then(function(result) {
+          expect(result.data).to.eql('data1');
+          done();
+        }).
+        catch(function(err) {
+          done(err);
+        });
+    });
+
+    it('can return the most recent call', function(done) {
+      var fixture = Mappersmith.Env.Fixture.
+        define('get').
+        matching({path: /v1\/books\.json/}).
+        response('data1');
+
+      expect(fixture.mostRecentCall()).to.eql(null);
+
+      Promise.all([
+        client.Book.all({param1: true}),
+        client.Book.all({param2: true})
+
+      ]).then(function() {
+        var args = fixture.mostRecentCall();
+        expect(args).to.not.deep.equal(fixture.firstCall());
+        expect(args).to.have.property('url', 'http://full-url/v1/books.json?param2=true');
+        expect(args).to.have.property('host', 'http://full-url');
+        expect(args).to.have.property('path', '/v1/books.json?param2=true');
+        expect(args).to.have.property('params').that.deep.equals({param2: true});
         done();
-      }).
-      catch(function(err) {
-        done(err);
+
+      }).catch(function(err) {
+        done(new Error(err));
       });
-  });
+    });
 
-  it('exposes the requested object', function(done) {
-    var fixture = Mappersmith.Env.Fixture.
-      define('get').
-      matching({path: /v1\/books\.json/}).
-      response('data1');
+    it('can return the first call', function(done) {
+      var fixture = Mappersmith.Env.Fixture.
+        define('get').
+        matching({path: /v1\/books\.json/}).
+        response('data1');
 
-    expect(fixture.calledWith()).to.eql(null);
+      expect(fixture.mostRecentCall()).to.eql(null);
 
-    Promise.all([
-      client.Book.all({param1: true}),
-      client.Book.all({param2: true})
+      Promise.all([
+        client.Book.all({param1: true}),
+        client.Book.all({param2: true})
 
-    ]).then(function() {
-      var args = fixture.calledWith();
-      expect(args).to.have.property('url', 'http://full-url/v1/books.json?param2=true');
-      expect(args).to.have.property('host', 'http://full-url');
-      expect(args).to.have.property('path', '/v1/books.json?param2=true');
-      expect(args).to.have.property('params').that.deep.equals({param2: true});
+      ]).then(function() {
+        var args = fixture.firstCall();
+        expect(args).to.not.deep.equal(fixture.mostRecentCall());
+        expect(args).to.have.property('url', 'http://full-url/v1/books.json?param1=true');
+        expect(args).to.have.property('host', 'http://full-url');
+        expect(args).to.have.property('path', '/v1/books.json?param1=true');
+        expect(args).to.have.property('params').that.deep.equals({param1: true});
+        done();
 
-      args = fixture.calledWith();
-      expect(args).to.have.property('url', 'http://full-url/v1/books.json?param1=true');
-      expect(args).to.have.property('host', 'http://full-url');
-      expect(args).to.have.property('path', '/v1/books.json?param1=true');
-      expect(args).to.have.property('params').that.deep.equals({param1: true});
-      done();
+      }).catch(function(err) {
+        done(new Error(err));
+      });
+    });
 
-    }).catch(function(err) {
-      done(new Error(err));
+    it('can return all calls', function(done) {
+      var fixture = Mappersmith.Env.Fixture.
+        define('get').
+        matching({path: /v1\/books\.json/}).
+        response('data1');
+
+      expect(fixture.mostRecentCall()).to.eql(null);
+
+      Promise.all([
+        client.Book.all({param1: true}),
+        client.Book.all({param2: true})
+
+      ]).then(function() {
+        expect(fixture.calls().length).to.eql(2);
+
+        var args = fixture.calls()[0];
+        expect(args).to.have.property('url', 'http://full-url/v1/books.json?param1=true');
+        expect(args).to.have.property('host', 'http://full-url');
+        expect(args).to.have.property('path', '/v1/books.json?param1=true');
+        expect(args).to.have.property('params').that.deep.equals({param1: true});
+
+        args = fixture.calls()[1];
+        expect(args).to.have.property('url', 'http://full-url/v1/books.json?param2=true');
+        expect(args).to.have.property('host', 'http://full-url');
+        expect(args).to.have.property('path', '/v1/books.json?param2=true');
+        expect(args).to.have.property('params').that.deep.equals({param2: true});
+        done();
+
+      }).catch(function(err) {
+        done(new Error(err));
+      });
+    });
+
+    it('can return calls count', function(done) {
+      var fixture = Mappersmith.Env.Fixture.
+        define('get').
+        matching({path: /v1\/books\.json/}).
+        response('data1');
+
+      expect(fixture.mostRecentCall()).to.eql(null);
+
+      Promise.all([
+        client.Book.all({param1: true}),
+        client.Book.all({param2: true})
+
+      ]).then(function() {
+        expect(fixture.callsCount()).to.eql(2);
+        done();
+
+      }).catch(function(err) {
+        done(new Error(err));
+      });
     });
   });
 

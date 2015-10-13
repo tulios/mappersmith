@@ -22,15 +22,28 @@ FixtureEntry.prototype = {
 
   response: function(value) {
     this.opts.value = value;
-    var entry = this;
+    var opts = this.opts;
+    var calls = opts.calls;
 
     return {
       remove: function() {
-        return Fixture.clear(entry.opts.method, entry.opts.matchingParams);
+        return Fixture.clear(opts.method, opts.matchingParams);
       },
 
-      calledWith: function() {
-        return entry.opts.calls.pop() || null;
+      calls: function() {
+        return calls;
+      },
+
+      callsCount: function() {
+        return calls.length;
+      },
+
+      firstCall: function() {
+        return calls[0] || null;
+      },
+
+      mostRecentCall: function() {
+        return calls[calls.length - 1] || null;
       }
     }
   },
