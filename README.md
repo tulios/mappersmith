@@ -6,6 +6,8 @@
 
 https://www.npmjs.com/package/mappersmith
 
+This README is [also available in a friendly navigable format](http://tulios.github.io/mappersmith/).
+
 ## Browser support
 
 Mappersmith was designed considering modern browsers. However, all the methods used can be included by a shim such as [es5-shim](https://github.com/es-shims/es5-shim).
@@ -96,7 +98,7 @@ Client.Book.byId({id: 3}, function(data, stats) {
 
 __Mappersmith supports Promises, check [how to enable](#using-with-promises) in a section bellow__
 
-#### Success callback arguments
+### Success callback arguments
 
 The success callback will receive two arguments: the _first one_ will be `data`, returned by your API; and the _second one_ will be a `stats` object. The stats object hold information of the request, like the elapsed time between your call and callback execution.
 
@@ -115,7 +117,7 @@ The __default stats__ in the object are `url`, `params`, `timeElapsed` and `time
 }
 ```
 
-#### Fail callback arguments
+### Fail callback arguments
 
 The fail callback will receive in the first argument the requested resource, which is an object that contains the requested URL, host, path and params. From the second argument and beyond it will receive the error objects from the specific gateway implementations.
 
@@ -127,7 +129,7 @@ fail(function(request, err) {
 });
 ```
 
-#### Parameters
+### Parameters
 
 If your method doesn't require any parameter, you can just call it without them:
 
@@ -141,7 +143,7 @@ Every parameter that doesn't match a pattern (`{parameter-name}`) in `path` will
 Client.Book.all({language: 'en'}) // http://my.api.com/v1/books.json?language=en
 ```
 
-#### Default parameters
+### Default parameters
 
 It is possible to configure default parameters for your resources, just use the key `params` in the definition. It will replace params in the URL or include query strings, for example, imagine that our manifest has the method __byYear__ in the resource __Photo__:
 
@@ -170,7 +172,7 @@ Client.Photo.byYear({category: 'dogs'});
 // http://my.api.com/v1/photos/2015.json?category=dogs
 ```
 
-#### Message Body
+### Message Body
 
 To send values in the request body (usually for POST or PUT methods) you will use the special parameter `body`:
 
@@ -195,7 +197,7 @@ Client.Photo.save({
 })
 ```
 
-#### Processors
+### Processors
 
 You can specify functions to process returned data before they are passed to success callback:
 
@@ -212,7 +214,7 @@ Book: {
 ...
 ```
 
-#### Alternative host
+### Alternative host
 
 There are some cases where a resource method resides in another host, in those cases you can use the `host` key to configure a new host or to disable the resolution.
 
@@ -256,7 +258,7 @@ Client.MyResource.all()
 // /all.json
 ```
 
-#### <a name="using-with-promises"></a> Using with Promises
+### <a name="using-with-promises"></a> Using with Promises
 
 To disable the callback API and enable promises you must turn on the flag `USE_PROMISES`.
 
@@ -316,7 +318,7 @@ Mappersmith.Env.Promise = RSVP.Promise;
 
 All `Promise` references in __Mappersmith__ use `Mappersmith.Env.Promise`. The default value is the global Promise.
 
-#### Compact Syntax
+### Compact Syntax
 If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
 
 ```javascript
@@ -338,7 +340,7 @@ __A downside is that you can't use processor functions with compact syntax.__
 
 **Mappersmith** allows you to customize the transport layer. There are gateways for browser and server (Nodejs). You can use the default `Mappersmith.VanillaGateway` (client only), the included `Mappersmith.JQueryGateway` (client only), `NodeVanillaGateway` (server only) or write your own version. Check the list of [available gateways](#gateway-implementations) at the bottom of the readme.
 
-#### How to write one?
+### How to write one?
 
 ```javascript
 var MyGateway = Mappersmith.createGateway({
@@ -359,7 +361,7 @@ var MyGateway = Mappersmith.createGateway({
 })
 ```
 
-#### How to change the default?
+### How to change the default?
 
 Just provide an object created with `Mappersmith.createGateway` as the second argument of the method `forge`:
 
@@ -367,7 +369,7 @@ Just provide an object created with `Mappersmith.createGateway` as the second ar
 var Client = Mappersmith.forge(manifest, Mappersmith.JQueryGateway)
 ```
 
-#### Specifics of each gateway
+### Specifics of each gateway
 
 You can pass options for the gateway implementation that you are using. For example, if we are using the `Mappersmith.JQueryGateway` and want one of our methods to use `jsonp`, we can call it like:
 
@@ -385,7 +387,7 @@ Client.Book.byId({id: 2}, function(data) {}, {
 })
 ```
 
-#### Global configurations and URL matching
+### Global configurations and URL matching
 
 Imagine that you are using `Mappersmith.JQueryGateway` and all of your methods must be called with `jsonp` or use a special header, it will be incredibly boring add those configurations every time. Global configurations allow you to configure gateway options and a processor that will be used for every method. Keep in mind that the processor configured in the resource will be prioritized instead to global, for example:
 
