@@ -22,6 +22,7 @@ var STORE = {};
 
 function FixtureEntry(method) {
   this.opts = {
+    calls: [],
     method: method.toLowerCase(),
     success: true
   }
@@ -45,6 +46,10 @@ FixtureEntry.prototype = {
     return {
       remove: function() {
         return Fixture.clear(entry.opts.method, entry.opts.matchingParams);
+      },
+
+      calledWith: function() {
+        return entry.opts.calls[entry.opts.calls.length - 1] || null;
       }
     }
   },
@@ -52,6 +57,11 @@ FixtureEntry.prototype = {
   data: function() {
     if (typeof entry !== 'object') return this.opts.value;
     return Utils.extend({}, this.opts.value);
+  },
+
+  callWith: function(requestedResource) {
+    this.opts.calls.push(requestedResource);
+    return this.data();
   },
 
   isSuccess: function() {

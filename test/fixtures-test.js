@@ -49,7 +49,7 @@ describe('Fixture', function() {
       done();
 
     }).catch(function(err) {
-      done(err);
+      done(new Error(err));
     });
   });
 
@@ -94,7 +94,7 @@ describe('Fixture', function() {
         done();
 
       }).catch(function(err) {
-        done(err);
+        done(new Error(err));
       });
     });
 
@@ -127,6 +127,38 @@ describe('Fixture', function() {
       });
   });
 
+  it('exposes the requested object', function(done) {
+    var fixture = Mappersmith.Env.Fixture.
+      define('get').
+      matching({path: /v1\/books\.json/}).
+      response('data1');
+
+    expect(fixture.calledWith()).to.eql(null);
+
+    Promise.all([
+      client.Book.all({param1: true}),
+      client.Book.all({param2: true})
+
+    ]).then(function() {
+      expect(fixture.calledWith()).to.deep.eql({
+        url: 'http://full-url/v1/books.json?param2=true',
+        host: 'http://full-url',
+        path: '/v1/books.json?param2=true',
+        params: {param2: true}
+      });
+      expect(fixture.calledWith()).to.deep.eql({
+        url: 'http://full-url/v1/books.json?param1=true',
+        host: 'http://full-url',
+        path: '/v1/books.json?param1=true',
+        params: {param1: true}
+      });
+      done();
+
+    }).catch(function(err) {
+      done(new Error(err));
+    });
+  });
+
   describe('JSON responses', function() {
     it('returns a new object', function(done) {
       var data = {a: 1, b: true, c: 'value'};
@@ -144,7 +176,7 @@ describe('Fixture', function() {
           done();
 
         }).catch(function(err) {
-          done(err);
+          done(new Error(err));
         });
     });
   });
@@ -167,7 +199,7 @@ describe('Fixture', function() {
         done();
 
       }).fail(function(request, err) {
-        done(err);
+        done(new Error(err));
       });
     });
 

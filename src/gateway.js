@@ -61,10 +61,10 @@ Gateway.prototype = {
 
     setTimeout(function() {
       if (entry.isSuccess()) {
-        this.successCallback(entry.data());
+        this.successCallback(entry.callWith(resource));
 
       } else {
-        this.failCallback(entry.data());
+        this.failCallback(entry.callWith(resource));
       }
     }.bind(this), 1);
   },

@@ -3,6 +3,7 @@ var STORE = {};
 
 function FixtureEntry(method) {
   this.opts = {
+    calls: [],
     method: method.toLowerCase(),
     success: true
   }
@@ -26,6 +27,10 @@ FixtureEntry.prototype = {
     return {
       remove: function() {
         return Fixture.clear(entry.opts.method, entry.opts.matchingParams);
+      },
+
+      calledWith: function() {
+        return entry.opts.calls.pop() || null;
       }
     }
   },
@@ -33,6 +38,11 @@ FixtureEntry.prototype = {
   data: function() {
     if (typeof entry !== 'object') return this.opts.value;
     return Utils.extend({}, this.opts.value);
+  },
+
+  callWith: function(requestedResource) {
+    this.opts.calls.push(requestedResource);
+    return this.data();
   },
 
   isSuccess: function() {
@@ -43,7 +53,9 @@ FixtureEntry.prototype = {
     return Object.
       keys(this.opts.matchingParams).
       reduce(function(result, key) {
-        return result = result && requestedResource[key] === this.opts.matchingParams[key];
+        var value = this.opts.matchingParams[key];
+        if (value['test']) return result = result && value.test(requestedResource[key]);
+        return result = result && requestedResource[key] === value;
       }.bind(this), true);
   }
 }
