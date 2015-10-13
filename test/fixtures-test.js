@@ -36,6 +36,40 @@ describe('Fixture', function() {
     Mappersmith.Env.USE_PROMISES = false;
   });
 
+  it('allows the use of fixtures matching url', function(done) {
+    var data = {a: 1, b: true, c: 'value'};
+
+    Mappersmith.Env.Fixture.
+      define('get').
+      matching({url: /full-url\/v1\/books\.json/}).
+      response(data);
+
+    client.Book.all().then(function(result) {
+      expect(result.data).to.deep.eql(data);
+      done();
+
+    }).catch(function(err) {
+      done(new Error(err));
+    });
+  });
+
+  it('allows the use of fixtures matching host', function(done) {
+    var data = {a: 1, b: true, c: 'value'};
+
+    Mappersmith.Env.Fixture.
+      define('get').
+      matching({host: /full-url/}).
+      response(data);
+
+    client.Book.all().then(function(result) {
+      expect(result.data).to.deep.eql(data);
+      done();
+
+    }).catch(function(err) {
+      done(new Error(err));
+    });
+  });
+
   it('allows the use of fixtures matching path', function(done) {
     var data = {a: 1, b: true, c: 'value'};
 
@@ -45,6 +79,23 @@ describe('Fixture', function() {
       response(data);
 
     client.Book.all().then(function(result) {
+      expect(result.data).to.deep.eql(data);
+      done();
+
+    }).catch(function(err) {
+      done(new Error(err));
+    });
+  });
+
+  it('allows the use of fixtures matching params', function(done) {
+    var data = {a: 1, b: true, c: 'value'};
+
+    Mappersmith.Env.Fixture.
+      define('get').
+      matching({params: {args: 1}}).
+      response(data);
+
+    client.Book.all({args: 1}).then(function(result) {
       expect(result.data).to.deep.eql(data);
       done();
 
@@ -87,7 +138,7 @@ describe('Fixture', function() {
       Mappersmith.Env.Fixture.
         define(method).
         matching({path: 'test.json'}).
-        response('post');
+        response(method);
 
       client.Book.test().then(function(result) {
         expect(result.data).to.eql(method);
@@ -140,18 +191,17 @@ describe('Fixture', function() {
       client.Book.all({param2: true})
 
     ]).then(function() {
-      expect(fixture.calledWith()).to.deep.eql({
-        url: 'http://full-url/v1/books.json?param2=true',
-        host: 'http://full-url',
-        path: '/v1/books.json?param2=true',
-        params: {param2: true}
-      });
-      expect(fixture.calledWith()).to.deep.eql({
-        url: 'http://full-url/v1/books.json?param1=true',
-        host: 'http://full-url',
-        path: '/v1/books.json?param1=true',
-        params: {param1: true}
-      });
+      var args = fixture.calledWith();
+      expect(args).to.have.property('url', 'http://full-url/v1/books.json?param2=true');
+      expect(args).to.have.property('host', 'http://full-url');
+      expect(args).to.have.property('path', '/v1/books.json?param2=true');
+      expect(args).to.have.property('params').that.deep.equals({param2: true});
+
+      args = fixture.calledWith();
+      expect(args).to.have.property('url', 'http://full-url/v1/books.json?param1=true');
+      expect(args).to.have.property('host', 'http://full-url');
+      expect(args).to.have.property('path', '/v1/books.json?param1=true');
+      expect(args).to.have.property('params').that.deep.equals({param1: true});
       done();
 
     }).catch(function(err) {
@@ -159,7 +209,7 @@ describe('Fixture', function() {
     });
   });
 
-  describe('JSON responses', function() {
+  describe('for JSON responses', function() {
     it('returns a new object', function(done) {
       var data = {a: 1, b: true, c: 'value'};
 
@@ -186,7 +236,7 @@ describe('Fixture', function() {
       Mappersmith.Env.USE_PROMISES = false;
     });
 
-    it('allows the use of fixtures matching path', function(done) {
+    it('allows the use of fixtures', function(done) {
       var data = {a: 1, b: true, c: 'value'};
 
       Mappersmith.Env.Fixture.

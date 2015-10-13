@@ -50,13 +50,21 @@ FixtureEntry.prototype = {
   },
 
   match: function(requestedResource) {
+    return this.matchObjects(this.opts.matchingParams, requestedResource);
+  },
+
+  matchObjects: function(match, target) {
     return Object.
-      keys(this.opts.matchingParams).
+      keys(match).
       reduce(function(result, key) {
-        var value = this.opts.matchingParams[key];
-        if (value['test']) return result = result && value.test(requestedResource[key]);
-        return result = result && requestedResource[key] === value;
+        return result = result && this.compare(match[key], target[key]);
       }.bind(this), true);
+  },
+
+  compare: function(match, value) {
+    if (match instanceof RegExp) return match.test(value);
+    if (typeof match === 'object') return this.matchObjects(match, value);
+    return match === value;
   }
 }
 
