@@ -571,19 +571,19 @@ var fixture = Mappersmith.Env.Fixture.
 
 The fixture object contains some methods to help you with your tests. Using the variable `fixture` from the last example, you can call:
 
-  * `remove`: It will remove the fixture.
+  * __remove__: It will remove the fixture.
 
     ```javascript
     fixture.remove() // true or false
     ```
 
-  * `callsCount`: It will return the number of calls performed by this fixture.
+  * __callsCount__: It will return the number of calls performed by this fixture.
 
     ```javascript
     fixture.callsCount() // 1
     ```
 
-  * `mostRecentCall`: It will return the most recent call (the last one) or `null`
+  * __mostRecentCall__: It will return the most recent call (the last one) or `null`
 
     ```javascript
     fixture.mostRecentCall()
@@ -595,13 +595,13 @@ The fixture object contains some methods to help you with your tests. Using the 
     // }
     ```
 
-  * `firstCall`: It will return the first call or `null`
+  * __firstCall__: It will return the first call or `null`
 
     ```javascript
     fixture.firstCall() // it will return the same object of mostRecentCall
     ```
 
-  * `calls`: It will return an array of calls or an empty array
+  * __calls__: It will return an array of calls or an empty array
 
     ```javascript
     fixture.calls() // []
@@ -609,7 +609,7 @@ The fixture object contains some methods to help you with your tests. Using the 
 
 The `Fixture` module contains some methods to check and maintain the environment, you can call:
 
-  * `clear`: It will clear the fixtures.
+  * __clear__: It will clear the fixtures.
 
     ```javascript
     // will clear all the fixtures
@@ -622,7 +622,7 @@ The `Fixture` module contains some methods to check and maintain the environment
     Mappersmith.Env.Fixture.clear('get', {path: '/v1/books.json'}) // true or false
     ```
 
-  * `count`: It will count the number of fixtures defined
+  * __count__: It will count the number of fixtures defined
 
     ```javascript
     Mappersmith.Env.Fixture.count() // 32
