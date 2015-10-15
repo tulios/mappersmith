@@ -628,7 +628,7 @@ The `Fixture` module contains some methods to check and maintain the environment
     Mappersmith.Env.Fixture.count() // 32
     ```
 
-Mappersmith will use the last fixture matching the params, so you can always override a previous fixture. it will raise an exception for calls without fixtures, `Mappersmith.Env.USE_FIXTURES = true` completely disables network activity.
+Mappersmith will use the last fixture matching the params, thus you can always override a previous fixture. It will raise an exception for calls without fixtures, `Mappersmith.Env.USE_FIXTURES = true` completely disables network activity.
 
 ## Extras
 
