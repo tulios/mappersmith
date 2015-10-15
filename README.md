@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/tulios/mappersmith.svg?branch=master)](https://travis-ci.org/tulios/mappersmith)
 # Mappersmith
 
-**Mappersmith** is a lightweight, isomorphic, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client and/or server, giving you all the flexibility you want to customize requests or write your own gateways.
+__Mappersmith__ is a lightweight, isomorphic, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client and/or server, giving you all the flexibility you want to customize requests or write your own gateways.
 
 https://www.npmjs.com/package/mappersmith
 
@@ -338,7 +338,7 @@ __A downside is that you can't use processor functions with compact syntax.__
 
 ## Gateways
 
-**Mappersmith** allows you to customize the transport layer. There are gateways for browser and server (Nodejs). You can use the default `Mappersmith.VanillaGateway` (client only), the included `Mappersmith.JQueryGateway` (client only), `NodeVanillaGateway` (server only) or write your own version. Check the list of [available gateways](#gateway-implementations) at the bottom of the readme.
+__Mappersmith__ allows you to customize the transport layer. There are gateways for browser and server (Nodejs). You can use the default `Mappersmith.VanillaGateway` (client only), the included `Mappersmith.JQueryGateway` (client only), `NodeVanillaGateway` (server only) or write your own version. Check the list of [available gateways](#gateway-implementations) at the bottom of the readme.
 
 ### How to write one?
 
@@ -461,7 +461,7 @@ Available options:
 
 ### JQueryGateway
 
-__Client Only__. It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include **jquery**, so you will need to include that in your page.
+__Client Only__. It uses `$.ajax` and accepts an object that will be merged with `defaults`. It doesn't include __jquery__, so you will need to include that in your page.
 
 Available methods:
 
@@ -501,6 +501,122 @@ Available options:
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
 
 - headers: configures headers
+
+## Fixtures
+
+__Mappersmith__ plays nice with all test frameworks, the generated client is a plain javascript object and all the methods can be mocked without any problem. However, with promises and custom processors its setup code can become a bit messy. Methods without a mock will call the original endpoint.
+
+The built-in fixture module allows you to disable network for all methods and use your configured processors.
+
+### How to setup?
+
+#### NPM
+
+```sh
+require('mappersmith/fixtures')
+```
+
+#### Browser
+
+Download the tag/latest version of the file `mappersmith-fixture.js` from the build folder.
+
+### Usage
+
+By requiring the module or importing the file, you will enable the `fixtures` module, remember to do that in a test environment. The import will automatically call:
+
+```javascript
+Mappersmith.Env.USE_FIXTURES = true;
+```
+
+You can disable it anytime.
+
+__How to define a fixture?__
+
+```javascript
+Mappersmith.Env.Fixture.
+  define('get'). // HTTP method
+  matching({path: '/v1/books.json'}).
+  response(data);
+```
+
+You can define multiple fixtures for each HTTP method supported by your [gateway](#gateway-implementations). You must define a matching pattern using one or more attributes of the requested resource (url, host, path or params) and a response data. The response data can be a JSON object.
+
+It's possible to use regexp in the matchers:
+
+```javascript
+Mappersmith.Env.Fixture.
+  define('get').
+  matching({path: /books/}).
+  response({data: []});
+```
+
+and it's possible to match the params using an object:
+
+```javascript
+Mappersmith.Env.Fixture.
+  define('get').
+  matching({params: {myParam: 'paramValue'}}).
+  response(data);
+```
+
+To define failures, use the `failure` method:
+
+```javascript
+var fixture = Mappersmith.Env.Fixture.
+  define('get').
+  matching({url: 'http://full-url/v1/books.json'}).
+  failure().
+  response(data);
+```
+
+The fixture object contains some methods to help you with your tests. Using the variable `fixture` from the last example, you can call:
+
+  * `remove`: It will remove the fixture.
+    ```javascript
+    fixture.remove() // true or false
+    ```
+  * `callsCount`: It will return the number of calls performed by this fixture.
+    ```javascript
+    fixture.callsCount() // 1
+    ```
+  * `mostRecentCall`: It will return the most recent call (the last one) or `null`
+    ```javascript
+    fixture.mostRecentCall()
+    // {
+    //   url: 'http://full-url/v1/books.json?param2=true'
+    //   host: 'http://full-url',
+    //   path: '/v1/books.json?param2=true',
+    //   params: {param2: true}
+    // }
+    ```
+  * `firstCall`: It will return the first call or `null`
+    ```javascript
+    fixture.firstCall() // it will return the same object of mostRecentCall
+    ```
+  * `calls`: It will return an array of calls or an empty array
+    ```javascript
+    fixture.calls() // []
+    ```
+
+The `Fixture` module contains some methods to check and maintain the environment, you can call:
+
+  * `clear`: It will clear the fixtures.
+    ```javascript
+    // will clear all the fixtures
+    Mappersmith.Env.Fixture.clear() // true or false
+
+    // will clear all "get" fixtures
+    Mappersmith.Env.Fixture.clear('get') // true or false
+
+    // will clear all "get" fixtures matching the params
+    Mappersmith.Env.Fixture.clear('get', {path: '/v1/books.json'}) // true or false
+    ```
+  * `count`: It will count the number of fixtures defined
+    ```javascript
+    Mappersmith.Env.Fixture.count() // 32
+    ```
+
+Mappersmith will use the last fixture matching the params, so you can always override a previous fixture. it will raise an exception for calls without fixtures, `Mappersmith.Env.USE_FIXTURES = true` completely disables network activity.
 
 ## Extras
 
