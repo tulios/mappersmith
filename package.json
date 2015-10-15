@@ -9,7 +9,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "build": "./node_modules/.bin/browserify index.js -s Mappersmith -t browserify-versionify --no-builtins -o build/mappersmith.js && ./node_modules/.bin/browserify index-test.js -x mappersmith -s MappersmithFixture -t browserify-versionify --no-builtins -o build/mappersmith-fixture.js",
+    "build": "./node_modules/.bin/browserify index.js -s Mappersmith -t browserify-versionify --no-builtins -o build/mappersmith.js && ./node_modules/.bin/browserify fixtures.js -x mappersmith -s MappersmithFixture -t browserify-versionify --no-builtins -o build/mappersmith-fixture.js",
     "release": "NODE_ENV=production npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c --screw-ie8 --comments /^\\s*/*!/",
     "test-node": "NODE_ENV=test ./node_modules/.bin/mocha test/node/*-test.js",
     "test-node-debug": "NODE_ENV=test ./node_modules/.bin/mocha --debug-brk test/node/*-test.js",
