@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.0
+
+  - Bult-in fixture support
+  - Holding error stack for better debugging
+
 ## 0.9.0
 
   - Allows Promise implementation to be configured, defaults to global Promise
