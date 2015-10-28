@@ -33,18 +33,27 @@ describe('Gateway', function() {
 
   describe('constructor', function() {
     it('configures successCallback with noop', function() {
+      sinon.spy(Utils, 'noop');
       gateway = new Gateway({url: url, method: verb});
-      expect(gateway.successCallback).to.equals(noop);
+      gateway.successCallback();
+      expect(Utils.noop).to.have.been.called;
+      Utils.noop.restore();
     });
 
     it('configures failCallback with noop', function() {
+      sinon.spy(Utils, 'noop');
       gateway = new Gateway({url: url, method: verb});
-      expect(gateway.failCallback).to.equals(noop);
+      gateway.failCallback();
+      expect(Utils.noop).to.have.been.called;
+      Utils.noop.restore();
     });
 
     it('configures completeCallback with noop', function() {
+      sinon.spy(Utils, 'noop');
       gateway = new Gateway({url: url, method: verb});
-      expect(gateway.completeCallback).to.equals(noop);
+      gateway.completeCallback();
+      expect(Utils.noop).to.have.been.called;
+      Utils.noop.restore();
     });
 
     describe('exposed args values', function() {
@@ -69,6 +78,15 @@ describe('Gateway', function() {
           expect(gateway[attr]).to.equal(args[attr]);
         });
       });
+    });
+  });
+
+  describe('#setErrorHandler', function() {
+    it('assigns errorHandler', function() {
+      gateway = new Gateway({url: url, method: verb});
+      expect(gateway.errorHandler).to.be.undefined;
+      gateway.setErrorHandler(Utils.noop);
+      expect(gateway.errorHandler).to.equal(Utils.noop);
     });
   });
 
@@ -317,6 +335,28 @@ describe('Gateway', function() {
 
     it('return "this"', function() {
       expect(gateway.fail(function() {})).to.equals(gateway);
+    });
+
+    describe('with a errorHandler defined', function() {
+      it('calls errorHandler with the requested object and the errors list', function() {
+        var error1 = 'error1';
+        var error2 = 'error2';
+        var fail = sinon.spy(function() {});
+        var errorHandler = sinon.spy(function() {});
+
+        gateway.setErrorHandler(errorHandler);
+        gateway.fail(fail);
+
+        gateway.failCallback({status: 400, args: [error1, error2]});
+        expect(fail).to.have.been.deep.called;
+        expect(errorHandler).to.have.been.deep.calledWith({
+          url: url,
+          host: host,
+          path: path,
+          params: params,
+          status: 400
+        }, error1, error2);
+      });
     });
   });
 

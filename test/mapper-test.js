@@ -47,12 +47,14 @@ describe('Mapper', function() {
     test.gateway.prototype.success = function() {return this};
     test.gateway.prototype.call = function() {return this};
     test.gateway.prototype.promisify = function() {return Promise.resolve(true)};
+    test.gateway.prototype.setErrorHandler = function() {};
 
     sinon.spy(test, 'gateway');
     sinon.spy(test.gateway.prototype, 'get');
     sinon.spy(test.gateway.prototype, 'success');
     sinon.spy(test.gateway.prototype, 'call');
     sinon.spy(test.gateway.prototype, 'promisify');
+    sinon.spy(test.gateway.prototype, 'setErrorHandler');
 
     gateway = test.gateway;
     mapper = new Mapper(manifest, gateway);
@@ -123,7 +125,7 @@ describe('Mapper', function() {
     });
 
     it('returns a function', function() {
-      var output = typeof mapper.newGatewayRequest(method, path);
+      var output = typeof mapper.newGatewayRequest({method: method, path: path});
       expect(output).to.equals('function');
     });
 
@@ -141,6 +143,14 @@ describe('Mapper', function() {
         method: method,
         params: params
       });
+    });
+
+    it('calls gateway#setErrorHandler with globalErrorHandler', function() {
+      var errorHandler = function() {};
+      mapper.globalErrorHandler = errorHandler;
+      var request = mapper.newGatewayRequest({method: method, host: host, path: path});
+      expect(request(params, callback)).to.be.an.instanceof(gateway);
+      expect(gateway.prototype.setErrorHandler).to.have.been.calledWith(errorHandler);
     });
 
     describe('with host false', function() {
@@ -439,8 +449,18 @@ describe('Mapper', function() {
       result = mapper.build();
     });
 
-    it('returns an object', function() {
+    it('returns an object with a method "onError"', function() {
       expect(result).to.be.a('object');
+      expect(result.onError).to.be.a('function');
+    });
+
+    describe('when calling "onError" on the returned object', function() {
+      it('assigns the global error handler', function() {
+        var errorHandler = function() {};
+        expect(mapper.globalErrorHandler).to.equal(Utils.noop);
+        result.onError(errorHandler);
+        expect(mapper.globalErrorHandler).to.equal(errorHandler);
+      });
     });
 
     it('creates the namespaces', function() {
@@ -733,7 +753,7 @@ describe('Mapper', function() {
     });
 
     it('calls promisify with callback to generate a promise', function() {
-      var request = mapper.newGatewayRequest(method, path);
+      var request = mapper.newGatewayRequest({method: method, path: path});
       request(params, callback);
       expect(gateway.prototype.promisify).to.have.been.calledWith(callback);
     });

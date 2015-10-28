@@ -13,6 +13,7 @@ var Mapper = function(manifest, Gateway, bodyAttr) {
   this.rules = this.manifest.rules || [];
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
+  this.globalErrorHandler = Utils.noop;
 }
 
 Mapper.prototype = {
@@ -23,7 +24,15 @@ Mapper.prototype = {
       reduce(function(context, resource) {
         context[resource.name] = resource.methods;
         return context;
-      }, {});
+      }, this.createContext());
+  },
+
+  createContext: function() {
+    var errorAssigner = function(handler) {
+      this.globalErrorHandler = handler;
+    }.bind(this);
+
+    return {onError: errorAssigner};
   },
 
   buildResource: function(resourceName) {
@@ -132,6 +141,7 @@ Mapper.prototype = {
       });
 
       var gateway = new this.Gateway(gatewayOpts);
+      gateway.setErrorHandler(this.globalErrorHandler);
       if (Env.USE_PROMISES) return gateway.promisify(callback);
       return gateway.success(callback).call();
 

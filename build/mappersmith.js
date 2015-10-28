@@ -81,9 +81,9 @@ var Gateway = function(args) {
   this.timeEnd = null;
   this.timeElapsed = null;
 
-  this.successCallback = Utils.noop;
-  this.failCallback = Utils.noop;
-  this.completeCallback = Utils.noop;
+  this.success(Utils.noop);
+  this.fail(Utils.noop);
+  this.complete(Utils.noop);
 }
 
 Gateway.prototype = {
@@ -163,6 +163,7 @@ Gateway.prototype = {
 
   fail: function(callback) {
     this.failCallback = function(errorObj) {
+      errorObj = errorObj || {status: 400, args: []};
       var gatewayArgs = Array.prototype.slice.call(errorObj.args);
       var status = errorObj.status;
       var resource = this.getRequestedResource();
@@ -170,6 +171,7 @@ Gateway.prototype = {
       var args = [errorResource].concat(gatewayArgs);
 
       callback.apply(this, args);
+      if (this.errorHandler) this.errorHandler.apply(this, args);
     }.bind(this);
 
     return this;
@@ -187,6 +189,10 @@ Gateway.prototype = {
       path: this.path,
       params: this.params
     }
+  },
+
+  setErrorHandler: function(errorHandler) {
+    this.errorHandler = errorHandler;
   },
 
   shouldEmulateHTTP: function(method) {
@@ -412,6 +418,7 @@ var Mapper = function(manifest, Gateway, bodyAttr) {
   this.rules = this.manifest.rules || [];
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
+  this.globalErrorHandler = Utils.noop;
 }
 
 Mapper.prototype = {
@@ -422,7 +429,15 @@ Mapper.prototype = {
       reduce(function(context, resource) {
         context[resource.name] = resource.methods;
         return context;
-      }, {});
+      }, this.createContext());
+  },
+
+  createContext: function() {
+    var errorAssigner = function(handler) {
+      this.globalErrorHandler = handler;
+    }.bind(this);
+
+    return {onError: errorAssigner};
   },
 
   buildResource: function(resourceName) {
@@ -531,6 +546,7 @@ Mapper.prototype = {
       });
 
       var gateway = new this.Gateway(gatewayOpts);
+      gateway.setErrorHandler(this.globalErrorHandler);
       if (Env.USE_PROMISES) return gateway.promisify(callback);
       return gateway.success(callback).call();
 
