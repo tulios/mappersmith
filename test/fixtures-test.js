@@ -104,7 +104,7 @@ describe('Fixture', function() {
     });
   });
 
-  it('allows fixtures for failed requests', function(done) {
+  it('allows fixtures for failed requests, default status error 400', function(done) {
     Mappersmith.Env.Fixture.
       define('get').
       matching({path: '/v1/books.json'}).
@@ -117,6 +117,29 @@ describe('Fixture', function() {
     }).catch(function(err) {
       try {
         expect(err.err).to.eql(['error']);
+        expect(err.request.status).to.eql(400);
+        done();
+
+      } catch(e) {
+        done(e);
+      }
+    });
+  });
+
+  it('allows fixtures for failed requests with custom status', function(done) {
+    Mappersmith.Env.Fixture.
+      define('get').
+      matching({path: '/v1/books.json'}).
+      failure({status: 503}).
+      response('error');
+
+    client.Book.all().then(function(result) {
+      done(new Error('should have called "catch"'));
+
+    }).catch(function(err) {
+      try {
+        expect(err.err).to.eql(['error']);
+        expect(err.request.status).to.eql(503);
         done();
 
       } catch(e) {
@@ -330,7 +353,7 @@ describe('Fixture', function() {
       });
     });
 
-    it('allows fixtures for failed requests', function(done) {
+    it('allows fixtures for failed requests, default status error 400', function(done) {
       Mappersmith.Env.Fixture.
         define('get').
         matching({path: '/v1/books.json'}).
@@ -343,6 +366,29 @@ describe('Fixture', function() {
       }).fail(function(request, err) {
         try {
           expect(err).to.eql('error');
+          expect(request.status).to.eql(400);
+          done();
+
+        } catch(e) {
+          done(e);
+        }
+      });
+    });
+
+    it('allows fixtures for failed requests with custom status', function(done) {
+      Mappersmith.Env.Fixture.
+        define('get').
+        matching({path: '/v1/books.json'}).
+        failure({status: 503}).
+        response('error');
+
+      client.Book.all(function() {
+        done(new Error('should have called "fail"'));
+
+      }).fail(function(request, err) {
+        try {
+          expect(err).to.eql('error');
+          expect(request.status).to.eql(503);
           done();
 
         } catch(e) {

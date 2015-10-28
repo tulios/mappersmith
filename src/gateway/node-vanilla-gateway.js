@@ -47,18 +47,18 @@ var NodeVanillaGateway = CreateGateway({
     response.setEncoding('utf8');
     response.on('data', function(chunk) { data += chunk });
     response.on('end', function() {
-
+      var status = response.statusCode;
       try {
-        if (response.statusCode >= 200 && response.statusCode < 400) {
+        if (status >= 200 && status < 400) {
           if (this.isContentTypeJSON(response)) data = JSON.parse(data);
           this.successCallback(data);
 
         } else {
-          this.failCallback(response);
+          this.failCallback({status: status, args: [response]});
         }
 
       } catch(e) {
-        this.failCallback(response, e);
+        this.failCallback({status: status, args: [response, e]});
 
       } finally {
         this.completeCallback(data, response);
@@ -68,7 +68,7 @@ var NodeVanillaGateway = CreateGateway({
   },
 
   onError: function() {
-    this.failCallback.apply(this, arguments);
+    this.failCallback({status: 400, args: arguments});
     this.completeCallback.apply(this, arguments);
   },
 

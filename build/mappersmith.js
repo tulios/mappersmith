@@ -162,13 +162,12 @@ Gateway.prototype = {
   },
 
   fail: function(callback) {
-    this.failCallback = function() {
-      var args = [this.getRequestedResource()];
-
-      // remember, `arguments` isn't an array
-      for (var i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
+    this.failCallback = function(errorObj) {
+      var gatewayArgs = Array.prototype.slice.call(errorObj.args);
+      var status = errorObj.status;
+      var resource = this.getRequestedResource();
+      var errorResource = Utils.extend({status: status}, resource);
+      var args = [errorResource].concat(gatewayArgs);
 
       callback.apply(this, args);
     }.bind(this);
@@ -271,9 +270,18 @@ var JQueryGateway = CreateGateway({
 
   _jQueryAjax: function(config) {
     jQuery.ajax(Utils.extend({url: this.url}, config)).
-      done(function() { this.successCallback(arguments[0]) }.bind(this)).
-      fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
-      always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
+      done(function() {
+        this.successCallback(arguments[0]);
+
+      }.bind(this)).
+      fail(function(jqXHR) {
+        this.failCallback({status: jqXHR.status, args: arguments});
+
+      }.bind(this)).
+      always(function() {
+        this.completeCallback.apply(this, arguments);
+
+      }.bind(this));
   }
 
 });
@@ -338,9 +346,10 @@ var VanillaGateway = CreateGateway({
   _configureCallbacks: function(request) {
     request.onload = function() {
       var data = null;
+      var status = request.status;
 
       try {
-        if (request.status >= 200 && request.status < 400) {
+        if (status >= 200 && status < 400) {
           if (this._isContentTypeJSON(request)) {
             data = JSON.parse(request.responseText);
 
@@ -351,10 +360,10 @@ var VanillaGateway = CreateGateway({
           this.successCallback(data);
 
         } else {
-          this.failCallback(request);
+          this.failCallback({status: status, args: [request]});
         }
       } catch(e) {
-        this.failCallback(request);
+        this.failCallback({status: status, args: [request]});
 
       } finally {
         this.completeCallback(data, request);
@@ -363,7 +372,7 @@ var VanillaGateway = CreateGateway({
     }.bind(this);
 
     request.onerror = function() {
-      this.failCallback.apply(this, arguments);
+      this.failCallback({status: 400, args: [arguments]});
       this.completeCallback.apply(this, arguments);
     }.bind(this);
 

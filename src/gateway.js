@@ -110,13 +110,12 @@ Gateway.prototype = {
   },
 
   fail: function(callback) {
-    this.failCallback = function() {
-      var args = [this.getRequestedResource()];
-
-      // remember, `arguments` isn't an array
-      for (var i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
+    this.failCallback = function(errorObj) {
+      var gatewayArgs = Array.prototype.slice.call(errorObj.args);
+      var status = errorObj.status;
+      var resource = this.getRequestedResource();
+      var errorResource = Utils.extend({status: status}, resource);
+      var args = [errorResource].concat(gatewayArgs);
 
       callback.apply(this, args);
     }.bind(this);

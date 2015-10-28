@@ -119,13 +119,14 @@ The __default stats__ in the object are `url`, `params`, `timeElapsed` and `time
 
 ### Fail callback arguments
 
-The fail callback will receive in the first argument the requested resource, which is an object that contains the requested URL, host, path and params. From the second argument and beyond it will receive the error objects from the specific gateway implementations.
+The fail callback will receive in the first argument the requested resource, which is an object that contains the requested URL, host, path, status and params. From the second argument and beyond it will receive the error objects from the specific gateway implementations.
 
 ```javascript
 ...
 fail(function(request, err) {
   console.log(request.url) // 'http://my.api.com/v1/books/3.json'
   console.log(request.params) // {id: 3}
+  console.log(request.status) // 503
 });
 ```
 
@@ -277,6 +278,7 @@ Client.Book.byId({id: 3}).then(function(response) {
 
 }).catch(function(err) {
   console.log(err.response); // requested resource, same as stats
+  console.log(err.response.status); // status code from the request (e.g: 503, 404, etc)
   console.log(err.err); // array of errors given by gateway
 });
 
@@ -565,7 +567,17 @@ To define failures, use the `failure` method:
 var fixture = Mappersmith.Env.Fixture.
   define('get').
   matching({url: 'http://full-url/v1/books.json'}).
-  failure().
+  failure(). // status 400 by default
+  response(data);
+```
+
+It's possible to define the status code of the failed request:
+
+```javascript
+var fixture = Mappersmith.Env.Fixture.
+  define('get').
+  matching({url: 'http://full-url/v1/books.json'}).
+  failure({status: 503}).
   response(data);
 ```
 

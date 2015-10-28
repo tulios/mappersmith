@@ -178,6 +178,7 @@ describe('Gateway', function() {
               host: host,
               path: path,
               params: params,
+              status: 400
             });
 
             expect(err.err).to.eql([error1, error2]);
@@ -187,7 +188,7 @@ describe('Gateway', function() {
           }
         });
 
-        gateway.failCallback(error1, error2);
+        gateway.failCallback({status: 400, args: [error1, error2]});
       });
     });
   });
@@ -304,12 +305,13 @@ describe('Gateway', function() {
       var fail = sinon.spy(function() {});
 
       gateway.fail(fail);
-      gateway.failCallback(error1, error2);
+      gateway.failCallback({status: 400, args: [error1, error2]});
       expect(fail).to.have.been.deep.calledWith({
         url: url,
         host: host,
         path: path,
         params: params,
+        status: 400
       }, error1, error2);
     });
 

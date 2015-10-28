@@ -50,9 +50,18 @@ var JQueryGateway = CreateGateway({
 
   _jQueryAjax: function(config) {
     jQuery.ajax(Utils.extend({url: this.url}, config)).
-      done(function() { this.successCallback(arguments[0]) }.bind(this)).
-      fail(function() { this.failCallback.apply(this, arguments) }.bind(this)).
-      always(function() { this.completeCallback.apply(this, arguments) }.bind(this));
+      done(function() {
+        this.successCallback(arguments[0]);
+
+      }.bind(this)).
+      fail(function(jqXHR) {
+        this.failCallback({status: jqXHR.status, args: arguments});
+
+      }.bind(this)).
+      always(function() {
+        this.completeCallback.apply(this, arguments);
+
+      }.bind(this));
   }
 
 });

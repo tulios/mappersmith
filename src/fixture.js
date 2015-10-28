@@ -17,6 +17,7 @@ FixtureEntry.prototype = {
 
   failure: function(params) {
     this.opts.success = false;
+    this.opts.errorParams = Utils.extend({status: 400}, params || {});
     return this;
   },
 
@@ -55,7 +56,12 @@ FixtureEntry.prototype = {
 
   callWith: function(requestedResource) {
     this.opts.calls.push(requestedResource);
-    return this.data();
+
+    var data = this.data();
+    var errorParams = this.opts.errorParams || {};
+    var errorObj = {status: errorParams.status, args: [data]};
+
+    return this.isSuccess() ? data : errorObj;
   },
 
   isSuccess: function() {
