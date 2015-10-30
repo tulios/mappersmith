@@ -96,7 +96,7 @@ Client.Book.byId({id: 3}, function(data, stats) {
 })
 ```
 
-__Mappersmith supports Promises, check [how to enable](#using-with-promises) in a section bellow__
+__Mappersmith supports Promises, check [how to enable](#using-with-promises) in a section below__
 
 ### Success callback arguments
 
@@ -129,6 +129,8 @@ fail(function(request, err) {
   console.log(request.status) // 503
 });
 ```
+
+It's possible to assign a global error handler, take a look in a [section below](#global-error-handling)
 
 ### Parameters
 
@@ -319,6 +321,20 @@ Mappersmith.Env.Promise = RSVP.Promise;
 ```
 
 All `Promise` references in __Mappersmith__ use `Mappersmith.Env.Promise`. The default value is the global Promise.
+
+### <a name="global-error-handling"></a> Global error handling
+
+It's possible to assign a different global error handling for each generated client (every call to `forge` generates a new client), this is useful to remove repetition regarding authorization, content not found and so on. This error handler will be called for every error in any resource available in the client.
+
+```javascript
+Client.onError(function(request, err) {
+  console.log(request.url) // 'http://my.api.com/v1/books/3.json'
+  console.log(request.params) // {id: 3}
+  console.log(request.status) // 503
+});
+```
+
+The global handler runs before the local callback, to skip the local handler return `true`.
 
 ### Compact Syntax
 If you find tiring having to map your API methods with hashes, you can use our incredible compact syntax:
