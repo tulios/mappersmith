@@ -338,7 +338,7 @@ describe('Gateway', function() {
     });
 
     describe('with a errorHandler defined', function() {
-      it('calls errorHandler with the requested object and the errors list', function() {
+      it('calls handler with the requested object and the errors list', function() {
         var error1 = 'error1';
         var error2 = 'error2';
         var fail = sinon.spy(function() {});
@@ -348,7 +348,27 @@ describe('Gateway', function() {
         gateway.fail(fail);
 
         gateway.failCallback({status: 400, args: [error1, error2]});
-        expect(fail).to.have.been.deep.called;
+        expect(fail).to.have.been.called;
+        expect(errorHandler).to.have.been.deep.calledWith({
+          url: url,
+          host: host,
+          path: path,
+          params: params,
+          status: 400
+        }, error1, error2);
+      });
+
+      it('returning true, skips the local error callback', function() {
+        var error1 = 'error1';
+        var error2 = 'error2';
+        var fail = sinon.spy(function() {});
+        var errorHandler = sinon.spy(function() { return true });
+
+        gateway.setErrorHandler(errorHandler);
+        gateway.fail(fail);
+
+        gateway.failCallback({status: 400, args: [error1, error2]});
+        expect(fail).to.not.have.been.called;
         expect(errorHandler).to.have.been.deep.calledWith({
           url: url,
           host: host,

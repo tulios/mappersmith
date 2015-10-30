@@ -169,9 +169,10 @@ Gateway.prototype = {
       var resource = this.getRequestedResource();
       var errorResource = Utils.extend({status: status}, resource);
       var args = [errorResource].concat(gatewayArgs);
+      var proceed = true;
 
-      callback.apply(this, args);
-      if (this.errorHandler) this.errorHandler.apply(this, args);
+      if (this.errorHandler) proceed = !(this.errorHandler.apply(this, args) === true);
+      if (proceed) callback.apply(this, args);
     }.bind(this);
 
     return this;
