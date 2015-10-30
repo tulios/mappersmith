@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.11.0
+
+  - Method to configure a global error handler per client
+  - Included status code in the error request object
+
 ## 0.10.0
 
   - Bult-in fixture support
