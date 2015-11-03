@@ -12,8 +12,6 @@
     "build": "./node_modules/.bin/browserify index.js -s Mappersmith -t browserify-versionify --no-builtins -o build/mappersmith.js && ./node_modules/.bin/browserify fixtures.js -x mappersmith -s MappersmithFixture -t browserify-versionify --no-builtins -o build/mappersmith-fixture.js",
     "release": "NODE_ENV=production npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c --screw-ie8 --comments /^\\s*/*!/",
     "test-node": "NODE_ENV=test ./node_modules/.bin/mocha test/node/*-test.js",
-    "test-node-debug": "NODE_ENV=test ./node_modules/.bin/mocha --debug-brk test/node/*-test.js",
-    "test-node-inspector": "NODE_ENV=test ./node_modules/.bin/node-inspector --web-port 7777",
     "test-browser": "NODE_ENV=test ./node_modules/.bin/karma start karma.conf.js",
     "test": "SINGLE_RUN=true npm run test-browser && npm run test-node"
   },
@@ -54,7 +52,6 @@
     "karma-sinon-chai": "^0.3.2",
     "mocha": "^2.0.1",
     "nock": "^0.58.0",
-    "node-inspector": "^0.8.3",
     "phantomjs": "^1.9.17",
     "promise": "^7.0.3",
     "rewire": "^2.3.0",
