@@ -221,7 +221,12 @@ describe('Gateway', function() {
         host: host,
         path: path,
         params: params,
-        method: verb
+        method: verb,
+        opts: {
+          headers: {
+            Authorization: 'token'
+          }
+        }
       });
     });
 
@@ -263,6 +268,7 @@ describe('Gateway', function() {
           host: host,
           path: path,
           params: params,
+          headers: {Authorization: 'token'},
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
         });
@@ -279,6 +285,7 @@ describe('Gateway', function() {
           host: host,
           path: path,
           params: params,
+          headers: {Authorization: 'token'},
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
         }, extraStats));
@@ -294,6 +301,7 @@ describe('Gateway', function() {
             host: host,
             path: path,
             params: params,
+            headers: {Authorization: 'token'},
             timeElapsed: gateway.timeElapsed,
             timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
           });

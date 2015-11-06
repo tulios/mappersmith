@@ -112,6 +112,7 @@ The __default stats__ in the object are `url`, `params`, `timeElapsed` and `time
   host: 'http://my.api.com',
   path: '/v1/books.json?language=en',
   params: {language: 'en'},
+  headers: {Authorization: 'token 123'},
   timeElapsed: 6.745000369846821,
   timeElapsedHumanized: '6.75 ms'
 }
@@ -369,7 +370,7 @@ var MyGateway = Mappersmith.createGateway({
     // - this.path
     // - this.params
     // - this.body
-    // - this.opts
+    // - this.opts (this.opts.headers)
   },
 
   post: function() {
@@ -557,7 +558,7 @@ Mappersmith.Env.Fixture.
   response(data);
 ```
 
-You can define multiple fixtures for each HTTP method supported by your [gateway](#gateway-implementations). You must define a matching pattern using one or more attributes of the requested resource (url, host, path or params) and a response data. The response data can be a JSON object.
+You can define multiple fixtures for each HTTP method supported by your [gateway](#gateway-implementations). You must define a matching pattern using one or more attributes of the requested resource (url, host, path, params or headers) and a response data. The response data can be a JSON object.
 
 It's possible to use regexp in the matchers:
 

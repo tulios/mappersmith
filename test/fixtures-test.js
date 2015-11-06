@@ -14,6 +14,12 @@ describe('Fixture', function() {
 
     manifest = {
       host: 'http://full-url',
+      rules: [{
+        match: /v1\/books\.json/,
+        values: {
+          gateway: {headers: {Authorization: 'token'}}
+  			}
+  		}],
       resources: {
         Book: {
           all:  {path: '/v1/books.json'},
@@ -97,6 +103,21 @@ describe('Fixture', function() {
 
     client.Book.all({args: 1}).then(function(result) {
       expect(result.data).to.deep.eql(data);
+      done();
+
+    }).catch(function(err) {
+      done(new Error(err));
+    });
+  });
+
+  it('allows the use of fixtures matching headers', function(done) {
+    Mappersmith.Env.Fixture.
+      define('get').
+      matching({headers: {Authorization: 'token'}}).
+      response();
+
+    client.Book.all().then(function(result) {
+      expect(result.stats.headers).to.deep.eql({Authorization: 'token'});
       done();
 
     }).catch(function(err) {

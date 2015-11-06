@@ -188,7 +188,8 @@ Gateway.prototype = {
       url: this.url,
       host: this.host,
       path: this.path,
-      params: this.params
+      params: this.params,
+      headers: this.opts.headers
     }
   },
 
