@@ -36,6 +36,17 @@ describe('Utils', function() {
 
       expect(result).to.deep.equal({a: 1, b: 1});
     });
+
+    it('merge object keys deeply', function() {
+      var objA = {a: {a1: 1, b1: 'yes'}};
+      var objB = {a: {a1: 2, c1: false}, b: true, c: 2};
+      var objC = {c: {c1: [1, 2]}};
+      var result = Utils.extend({}, objA, objB, objC);
+
+      expect(result.a).to.deep.equal({a1: 2, b1: 'yes', c1: false});
+      expect(result.b).to.equal(true);
+      expect(result.c).to.deep.equal({c1: [1, 2]});
+    });
   });
 
   describe('#params', function() {
@@ -90,6 +101,32 @@ describe('Utils', function() {
           expect(params).to.equal('a[]=1&a[][]=2&a[][][]=3&a[][][]=4');
         });
       });
+    });
+  });
+
+  describe('#parseResponseHeaders', function() {
+    var responseHeaders;
+
+    beforeEach(function() {
+      responseHeaders = 'X-RateLimit-Remaining: 57\
+\r\nLast-Modified: Mon, 09 Nov 2015 19:06:15 GMT\
+\r\nETag: W/"679e71e24e6d901f5b36a55c5d80a32d"\
+\r\nContent-Type: application/json; charset=utf-8\
+\r\nCache-Control: public, max-age=60, s-maxage=60\
+\r\nX-RateLimit-Reset: 1447102379\
+\r\nX-RateLimit-Limit: 60\
+';
+    });
+
+    it('returns an object with all headers with lowercase keys', function() {
+      var headers = Utils.parseResponseHeaders(responseHeaders);
+      expect(headers).to.have.property('x-ratelimit-remaining', '57');
+      expect(headers).to.have.property('last-modified', 'Mon, 09 Nov 2015 19:06:15 GMT');
+      expect(headers).to.have.property('etag', 'W/"679e71e24e6d901f5b36a55c5d80a32d"');
+      expect(headers).to.have.property('content-type', 'application/json; charset=utf-8');
+      expect(headers).to.have.property('cache-control', 'public, max-age=60, s-maxage=60');
+      expect(headers).to.have.property('x-ratelimit-reset', '1447102379');
+      expect(headers).to.have.property('x-ratelimit-limit', '60');
     });
   });
 
