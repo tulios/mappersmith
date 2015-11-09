@@ -66,7 +66,9 @@ var VanillaGateway = CreateGateway({
             data = request.responseText;
           }
 
-          this.successCallback(data);
+          var responseHeaders = request.getAllResponseHeaders();
+          var extra = {responseHeaders: Utils.parseResponseHeaders(responseHeaders)};
+          this.successCallback(data, extra);
 
         } else {
           this.failCallback({status: status, args: [request]});

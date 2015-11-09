@@ -201,6 +201,10 @@ Gateway.prototype = {
     return !!(this.opts.emulateHTTP && /^(delete|put|patch)/i.test(method));
   },
 
+  // responseHeaders: function() {
+  //   throw new Utils.Exception('Gateway#responseHeaders not implemented');
+  // },
+
   get: function() {
     throw new Utils.Exception('Gateway#get not implemented');
   },
@@ -278,8 +282,9 @@ var JQueryGateway = CreateGateway({
 
   _jQueryAjax: function(config) {
     jQuery.ajax(Utils.extend({url: this.url}, config)).
-      done(function() {
-        this.successCallback(arguments[0]);
+      done(function(data, textStatus, xhr) {
+        var headers = Utils.parseResponseHeaders(xhr.getAllResponseHeaders());
+        this.successCallback(data, {responseHeaders: headers});
 
       }.bind(this)).
       fail(function(jqXHR) {
@@ -365,7 +370,9 @@ var VanillaGateway = CreateGateway({
             data = request.responseText;
           }
 
-          this.successCallback(data);
+          var responseHeaders = request.getAllResponseHeaders();
+          var extra = {responseHeaders: Utils.parseResponseHeaders(responseHeaders)};
+          this.successCallback(data, extra);
 
         } else {
           this.failCallback({status: status, args: [request]});
@@ -471,8 +478,9 @@ Mapper.prototype = {
     var params = Utils.extend({}, urlParams);
     var resolvedPath = pathDefinition;
 
-    // does not includes the body param into the URL
+    // doesn't include body and headers in the URL
     delete params[this.bodyAttr];
+    delete params['headers'];
 
     Object.keys(params).forEach(function(key) {
       var value = params[key];
@@ -522,6 +530,11 @@ Mapper.prototype = {
       }
 
       opts = Utils.extend({}, opts, rules.gateway);
+      if (params && params.headers) {
+        opts.headers = Utils.extend(opts.headers, params.headers);
+        delete params['headers']
+      }
+
       if (Utils.isObjEmpty(opts)) opts = undefined;
 
       var host = this.resolveHost(descriptor.host);
@@ -576,8 +589,12 @@ if (typeof window !== 'undefined' && window !== null) {
 var _process;
 try {_process = eval("process")} catch (e) {}
 
-var hasProcessHrtime = function() {
+function hasProcessHrtime() {
   return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime;
+}
+
+function isObject(value) {
+  return Object.prototype.toString.call(value) === '[object Object]';
 }
 
 var getNanoSeconds, loadTime;
@@ -601,20 +618,41 @@ var Utils = {
     return true;
   },
 
+  // Code based on: https://github.com/jquery/jquery/blob/2.1.4/src/core.js#L124
   extend: function(out) {
-    out = out || {};
+    var options, name, src, copy, clone;
+  	var target = arguments[0] || {};
+  	var length = arguments.length;
 
-    for (var i = 1; i < arguments.length; i++) {
-      if (!arguments[i])
-        continue;
+  	// Handle case when target is a string or something
+  	if (typeof target !== 'object') target = {};
 
-      for (var key in arguments[i]) {
-        if (arguments[i].hasOwnProperty(key) && arguments[i][key] !== undefined)
-          out[key] = arguments[i][key];
-      }
-    }
+  	for (var i = 1; i < length; i++) {
+  		// Only deal with non-null/undefined values
+      if ((options = arguments[i]) === null) continue;
 
-    return out;
+  		// Extend the base object
+  		for (name in options) {
+  		  src = target[name];
+  			copy = options[name];
+
+  			// Prevent never-ending loop
+  			if (target === copy) continue;
+
+  			// Recurse if we're merging plain objects or arrays
+  			if (copy && isObject(copy)) {
+					clone = src && isObject(src) ? src : {};
+  				// Never move original objects, clone them
+  				target[name] = this.extend(clone, copy);
+
+  		  // Don't bring in undefined values
+  			} else if (copy !== undefined) {
+  				target[name] = copy;
+  			}
+  		}
+  	}
+
+  	return target;
   },
 
   params: function(entry) {
@@ -653,6 +691,32 @@ var Utils = {
       map(function(key) { return buildRecursive(key, entry[key]) }).
       join('&').
       replace(Utils.r20, '+');
+  },
+
+  /*
+   * borrowed from: https://gist.github.com/monsur/706839
+   * XmlHttpRequest's getAllResponseHeaders() method returns a string of response
+   * headers according to the format described here:
+   * http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method
+   * This method parses that string into a user-friendly key/value pair object.
+   */
+  parseResponseHeaders: function(headerStr) {
+    var headers = {};
+    if (!headerStr) return headers;
+
+    var headerPairs = headerStr.split('\u000d\u000a');
+    for (var i = 0; i < headerPairs.length; i++) {
+      var headerPair = headerPairs[i];
+      // Can't use split() here because it does the wrong thing
+      // if the header value has the string ": " in it.
+      var index = headerPair.indexOf('\u003a\u0020');
+      if (index > 0) {
+        var key = headerPair.substring(0, index).toLowerCase();
+        var val = headerPair.substring(index + 2);
+        headers[key] = val;
+      }
+    }
+    return headers;
   },
 
   /*

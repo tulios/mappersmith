@@ -11,7 +11,8 @@ describe('Gateway', function() {
       path,
       url,
       verb,
-      methodStub;
+      methodStub,
+      stats;
 
   beforeEach(function() {
     Mappersmith.Env.Promise = Promise;
@@ -23,6 +24,11 @@ describe('Gateway', function() {
     url = host + path;
     verb = 'get';
     methodStub = sinon.stub(Gateway.prototype, verb);
+    stats = {
+      url: url,
+      host: host,
+      path: path
+    }
   });
 
   afterEach(function() {
@@ -139,14 +145,11 @@ describe('Gateway', function() {
 
           expect(callback).to.have.been.calledWith({
             data: data,
-            stats: {
-              url: url,
-              host: host,
-              path: path,
+            stats: Utils.extend({}, stats, {
               params: params,
               timeElapsed: gateway.timeElapsed,
               timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
-            }
+            })
           });
           done();
 
@@ -163,14 +166,11 @@ describe('Gateway', function() {
         gateway.promisify().then(function(result) {
 
           expect(result.data).to.eql(data);
-          expect(result.stats).to.eql({
-            url: url,
-            host: host,
-            path: path,
+          expect(result.stats).to.eql(Utils.extend({}, stats, {
             params: params,
             timeElapsed: gateway.timeElapsed,
             timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
-          });
+          }));
           done();
 
         }).catch(function(err) {
@@ -263,15 +263,12 @@ describe('Gateway', function() {
 
       it('calls the callback with data and stats object', function() {
         gateway.successCallback(data);
-        expect(success).to.have.been.deep.calledWith(data, {
-          url: url,
-          host: host,
-          path: path,
+        expect(success).to.have.been.deep.calledWith(data, Utils.extend({}, stats, {
           params: params,
           headers: {Authorization: 'token'},
           timeElapsed: gateway.timeElapsed,
           timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
-        });
+        }));
       });
 
       it('merges extraStats with default stats', function() {
@@ -280,10 +277,7 @@ describe('Gateway', function() {
           b: true
         }
         gateway.successCallback(data, extraStats);
-        expect(success).to.have.been.deep.calledWith(data, Utils.extend({
-          url: url,
-          host: host,
-          path: path,
+        expect(success).to.have.been.deep.calledWith(data, Utils.extend({}, stats, {
           params: params,
           headers: {Authorization: 'token'},
           timeElapsed: gateway.timeElapsed,
@@ -296,15 +290,12 @@ describe('Gateway', function() {
           var processedData = 'new';
           gateway.processor = function(data) { return processedData };
           gateway.successCallback(data);
-          expect(success).to.have.been.deep.calledWith(processedData, {
-            url: url,
-            host: host,
-            path: path,
+          expect(success).to.have.been.deep.calledWith(processedData, Utils.extend({}, stats, {
             params: params,
             headers: {Authorization: 'token'},
             timeElapsed: gateway.timeElapsed,
             timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
-          });
+          }));
         });
       });
 
