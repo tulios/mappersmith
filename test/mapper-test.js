@@ -304,8 +304,14 @@ describe('Mapper', function() {
         var optsMatch;
 
         beforeEach(function() {
-          opts = {gateway: {global: true}, processor: function globalMatch() {}};
-          optsMatch = {gateway: {matchUrl: true}, processor: function urlMatch() {}};
+          opts = {
+            gateway: {global: true, headers: {a: 1}},
+            processor: function globalMatch() {}
+          };
+          optsMatch = {
+            gateway: {matchUrl: true, headers: {b: 2}},
+            processor: function urlMatch() {}
+          };
 
           manifest.rules = [
             {values: opts},
@@ -328,7 +334,7 @@ describe('Mapper', function() {
             host: host,
             path: path,
             method: method,
-            opts: Utils.extend({}, opts.gateway, optsMatch.gateway),
+            opts: {global: true, headers: {a: 1, b: 2}, matchUrl: true},
             processor: optsMatch.processor
           });
         });
