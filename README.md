@@ -209,9 +209,7 @@ There are several ways assign headers. It's possible to configure headers for al
 Client.Photo.save({
   category: 'family',
   data: {year: 2015, tags: ['party', 'family']},
-  headers: {
-    Authorization: 'token 1d1435k'
-  }
+  headers: {Authorization: 'token 1d1435k'}
 })
 ```
 
