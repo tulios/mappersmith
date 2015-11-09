@@ -201,6 +201,22 @@ Client.Photo.save({
 })
 ```
 
+### Headers
+
+There are several ways assign headers. It's possible to configure headers for all resources using the global match, for resources matching a defined pattern or directly through the method call. To define headers in the method call use the parameter `headers`.
+
+```javascript
+Client.Photo.save({
+  category: 'family',
+  data: {year: 2015, tags: ['party', 'family']},
+  headers: {
+    Authorization: 'token 1d1435k'
+  }
+})
+```
+
+Check the section [global configurations and url matching](#global-configurations-and-url-matching) for more information about the other configurations.
+
 ### Processors
 
 You can specify functions to process returned data before they are passed to success callback:
@@ -406,7 +422,7 @@ Client.Book.byId({id: 2}, function(data) {}, {
 })
 ```
 
-### Global configurations and URL matching
+### <a name="global-configurations-and-url-matching"></a> Global configurations and URL matching
 
 Imagine that you are using `Mappersmith.JQueryGateway` and all of your methods must be called with `jsonp` or use a special header, it will be incredibly boring add those configurations every time. Global configurations allow you to configure gateway options and a processor that will be used for every method. Keep in mind that the processor configured in the resource will be prioritized instead to global, for example:
 
@@ -416,7 +432,7 @@ var manifest = {
   rules: [
     { // This is our global configuration
       values: {
-        gateway: {jsonp: true},
+        gateway: {jsonp: true, headers: {'X-SOMETHING': 'value'}},
         processor: function(data) { return data.result }
       }
     }
@@ -454,7 +470,7 @@ rules: [
 ...
 ```
 
-Just keep in mind that the configurations and processors will be prioritized by their order, and the global configurations do not have a `match` key.
+Just keep in mind that the configurations and processors will be prioritized by their order, and the global configurations __do not have__ a `match` key.
 
 ## <a name="gateway-implementations"></a> Gateway Implementations
 

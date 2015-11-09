@@ -64,8 +64,9 @@ Mapper.prototype = {
     var params = Utils.extend({}, urlParams);
     var resolvedPath = pathDefinition;
 
-    // does not includes the body param into the URL
+    // doesn't include body and headers in the URL
     delete params[this.bodyAttr];
+    delete params['headers'];
 
     Object.keys(params).forEach(function(key) {
       var value = params[key];
@@ -115,6 +116,11 @@ Mapper.prototype = {
       }
 
       opts = Utils.extend({}, opts, rules.gateway);
+      if (params && params.headers) {
+        opts.headers = Utils.extend(opts.headers, params.headers);
+        delete params['headers']
+      }
+
       if (Utils.isObjEmpty(opts)) opts = undefined;
 
       var host = this.resolveHost(descriptor.host);

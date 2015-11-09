@@ -338,6 +338,29 @@ describe('Mapper', function() {
             processor: optsMatch.processor
           });
         });
+
+        it('merges both rules with local header definition', function() {
+          var request = mapper.newGatewayRequest({
+            method: method,
+            host: host,
+            path: path
+          });
+
+          var localHeader = { Authorization: 'token my'};
+          var expectedHeaders = {a: 1, b: 2, Authorization: 'token my'}
+          var output = request({headers: localHeader}, callback)
+
+          expect(output).to.be.an.instanceof(gateway);
+          expect(gateway).to.have.been.calledWith({
+            url: fullUrl,
+            host: host,
+            path: path,
+            method: method,
+            params: {},
+            opts: {global: true, headers: expectedHeaders, matchUrl: true},
+            processor: optsMatch.processor
+          });
+        });
       });
 
       describe('with default params', function() {
