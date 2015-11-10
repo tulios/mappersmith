@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.0
+
+  - Included request and response headers into stats object
+  - Included a way to assign headers directly from method calls
+
 ## 0.11.0
 
   - Method to configure a global error handler per client
