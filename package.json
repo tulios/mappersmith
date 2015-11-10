@@ -34,6 +34,7 @@
     "url": "https://github.com/tulios/mappersmith/issues"
   },
   "homepage": "https://github.com/tulios/mappersmith",
+  "tonicExampleFilename": "example.js",
   "devDependencies": {
     "aliasify": "^1.7.2",
     "browserify": "^9.0.8",
