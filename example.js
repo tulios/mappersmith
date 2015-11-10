@@ -8,9 +8,9 @@ Mappersmith.Env.USE_PROMISES = true
 var manifest = {
   host: 'https://status.github.com',
   resources: {
-      Status: {
-        lastMessage: '/api/last-message.json'
-      }
+    Status: {
+      lastMessage: '/api/last-message.json'
+    }
   }
 }
 
