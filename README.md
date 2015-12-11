@@ -47,7 +47,7 @@ var Mappersmith = require('mappersmith/node');
 
 ## Usage
 
-To create a client for your API, you will need to provide a simple manifest, which must have `host` and `resources` keys. Each resource has a name and a list of methods with its definitions, like:
+To create a client for your API, you will need to provide a simple manifest, which must have `host` and `resources` keys. If your API reside in the same domain as your app, just assign `false` to host. Each resource has a name and a list of methods with its definitions, like:
 
 ```javascript
 var manifest = {
@@ -165,18 +165,18 @@ Photo: {
 ...
 ```
 
-If we call it without any params and `new Date().getFullYear()` is 2015, it will generate the following URL:
+If we call it without any params and `new Date().getFullYear()` is 2016, it will generate the following URL:
 
 ```javascript
 Client.Photo.byYear();
-// http://my.api.com/v1/photos/2015.json?category=cats
+// http://my.api.com/v1/photos/2016.json?category=cats
 ```
 
 And, of course, we can override the defaults:
 
 ```javascript
 Client.Photo.byYear({category: 'dogs'});
-// http://my.api.com/v1/photos/2015.json?category=dogs
+// http://my.api.com/v1/photos/2016.json?category=dogs
 ```
 
 ### Message Body
@@ -186,11 +186,11 @@ To send values in the request body (usually for POST or PUT methods) you will us
 ```javascript
 Client.Photo.save({
   category: 'family',
-  body: {year: 2015, tags: ['party', 'family']}
+  body: {year: 2016, tags: ['party', 'family']}
 })
 ```
 
-It will create a _urlencoded_ version of the object (`year=2015&tags[]=party&tags[]=family`). If the `body` used
+It will create a _urlencoded_ version of the object (`year=2016&tags[]=party&tags[]=family`). If the `body` used
 is not an object it will use the original value. If `body` is not possible as a special parameter
 for your API you can configure it with another value, just pass the new name as the third argument
 of method forge:
@@ -200,18 +200,18 @@ var Client = Mappersmith.forge(manifest, Mappersmith.VanillaGateway, 'data')
 ...
 Client.Photo.save({
   category: 'family',
-  data: {year: 2015, tags: ['party', 'family']}
+  data: {year: 2016, tags: ['party', 'family']}
 })
 ```
 
 ### Headers
 
-There are several ways assign headers. It's possible to configure headers for all resources using the global match, for resources matching a defined pattern or directly through the method call. To define headers in the method call use the parameter `headers`.
+There are several ways to assign headers. It's possible to configure headers for all resources using the global match, for resources matching a defined pattern or directly through the method call. To define headers in the method call use the parameter `headers`.
 
 ```javascript
 Client.Photo.save({
   category: 'family',
-  data: {year: 2015, tags: ['party', 'family']},
+  data: {year: 2016, tags: ['party', 'family']},
   headers: {Authorization: 'token 1d1435k'}
 })
 ```
