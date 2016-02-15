@@ -1,5 +1,10 @@
 # Changelog
 
+## ?
+
+  - Included status code for success calls
+  - `withCredentials` option for `VanillaGateway` and `JQueryGateway`
+
 ## 0.12.1
 
   - Optional callback parameter when passing options to gateway. Check the section "Specifics of each gateway" for more info
