@@ -228,6 +228,30 @@ describe('Mapper', function() {
       });
     });
 
+    describe('with params and opts but without callback', function() {
+      it('considers opts as the second argument', function() {
+        var opts = {jsonp: true};
+        var request = mapper.newGatewayRequest({
+          method: method,
+          host: host,
+          path: path
+        });
+        fullUrl = host + resolvedPath;
+
+        expect(request(params, opts)).to.be.an.instanceof(gateway);
+        expect(gateway.prototype.success).to.have.been.calledWith(Utils.noop);
+        expect(gateway.prototype.call).to.have.been.called;
+        expect(gateway).to.have.been.calledWith({
+          url: fullUrl,
+          host: host,
+          path: resolvedPath,
+          method: method,
+          opts: opts,
+          params: params,
+        });
+      });
+    })
+
     describe('with body param', function() {
       it('includes the value defined by bodyAttr in the key "body"', function() {
         mapper.bodyAttr = 'body';
