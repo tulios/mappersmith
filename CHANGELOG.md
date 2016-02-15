@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.1
+
+  - Optional callback parameter when passing options to gateway. Check the section "Specifics of each gateway" for more info
+
 ## 0.12.0
 
   - Included request and response headers into stats object
