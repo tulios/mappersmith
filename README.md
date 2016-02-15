@@ -113,6 +113,7 @@ The __default stats__ in the object are `url`, `params`, `timeElapsed` and `time
   path: '/v1/books.json?language=en',
   params: {language: 'en'},
   headers: {Authorization: 'token 123'},
+  status: 200,
   responseHeaders: {'content-type': 'application/json'}
   timeElapsed: 6.745000369846821,
   timeElapsedHumanized: '6.75 ms'
