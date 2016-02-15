@@ -46,38 +46,38 @@ var Utils = {
   // Code based on: https://github.com/jquery/jquery/blob/2.1.4/src/core.js#L124
   extend: function(out) {
     var options, name, src, copy, clone;
-  	var target = arguments[0] || {};
-  	var length = arguments.length;
+    var target = arguments[0] || {};
+    var length = arguments.length;
 
-  	// Handle case when target is a string or something
-  	if (typeof target !== 'object') target = {};
+    // Handle case when target is a string or something
+    if (typeof target !== 'object') target = {};
 
-  	for (var i = 1; i < length; i++) {
-  		// Only deal with non-null/undefined values
+    for (var i = 1; i < length; i++) {
+      // Only deal with non-null/undefined values
       if ((options = arguments[i]) === null) continue;
 
-  		// Extend the base object
-  		for (name in options) {
-  		  src = target[name];
-  			copy = options[name];
+      // Extend the base object
+      for (name in options) {
+        src = target[name];
+        copy = options[name];
 
-  			// Prevent never-ending loop
-  			if (target === copy) continue;
+        // Prevent never-ending loop
+        if (target === copy) continue;
 
-  			// Recurse if we're merging plain objects or arrays
-  			if (copy && isObject(copy)) {
-					clone = src && isObject(src) ? src : {};
-  				// Never move original objects, clone them
-  				target[name] = this.extend(clone, copy);
+        // Recurse if we're merging plain objects or arrays
+        if (copy && isObject(copy)) {
+          clone = src && isObject(src) ? src : {};
+          // Never move original objects, clone them
+          target[name] = this.extend(clone, copy);
 
-  		  // Don't bring in undefined values
-  			} else if (copy !== undefined) {
-  				target[name] = copy;
-  			}
-  		}
-  	}
+        // Don't bring in undefined values
+        } else if (copy !== undefined) {
+          target[name] = copy;
+        }
+      }
+    }
 
-  	return target;
+    return target;
   },
 
   params: function(entry) {
