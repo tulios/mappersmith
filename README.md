@@ -423,6 +423,12 @@ Client.Book.byId({id: 2}, function(data) {}, {
 })
 ```
 
+You can also ommit the second parameter (i.e. success callback), for example:
+
+```javascript
+Client.Book.starById({id: 2}, {xhrFields: {withCredentials: true}})
+```
+
 ### <a name="global-configurations-and-url-matching"></a> Global configurations and URL matching
 
 Imagine that you are using `Mappersmith.JQueryGateway` and all of your methods must be called with `jsonp` or use a special header, it will be incredibly boring add those configurations every time. Global configurations allow you to configure gateway options and a processor that will be used for every method. Keep in mind that the processor configured in the resource will be prioritized instead to global, for example:

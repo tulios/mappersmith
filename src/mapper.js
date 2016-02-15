@@ -109,6 +109,9 @@ Mapper.prototype = {
         opts = callback;
         callback = params;
         params = undefined;
+      } else if (callback && typeof callback !== 'function') {
+        opts = callback;
+        callback = Utils.noop;
       }
 
       if (!!descriptor.params) {
