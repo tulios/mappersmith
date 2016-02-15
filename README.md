@@ -486,7 +486,7 @@ The gateways listed here are available through the `Mappersmith` namespace.
 
 ### VanillaGateway
 
-__Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used. Accepts `withCredentials` to configure the property with same name.
+__Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used.
 
 Available methods:
 
@@ -501,6 +501,8 @@ Available options:
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with requested method as value. (default `false`)
 
 - headers: configures headers
+
+- withCredentials: Configure the property with same name
 
 ### JQueryGateway
 
@@ -519,6 +521,8 @@ Available options:
 - emulateHTTP: sends request as POST with `_method` in the body and `X-HTTP-Method-Override` header, both with request method as value. (default `false`)
 
 - headers: configures headers
+
+- withCredentials: Configure the property with same name
 
 ### NodeVanillaGateway
 

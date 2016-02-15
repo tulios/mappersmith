@@ -150,26 +150,28 @@ describe('Gateways specifics', function() {
   });
 
   describe('JQueryGateway', function() {
+    var ajax;
+
+    beforeEach(function() {
+      ajax = {
+        done: function() {return this},
+        fail: function() {return this},
+        always: function() {return this}
+      };
+
+      sinon.spy(ajax, 'done');
+      sinon.spy(ajax, 'fail');
+      sinon.spy(ajax, 'always');
+    });
+
+    afterEach(function() {
+      if ($.ajax.restore) $.ajax.restore();
+    });
+
     describe('custom opts', function() {
-      var ajax;
-
       beforeEach(function() {
-        ajax = {
-          done: function() {return this},
-          fail: function() {return this},
-          always: function() {return this}
-        };
-
-        sinon.spy(ajax, 'done');
-        sinon.spy(ajax, 'fail');
-        sinon.spy(ajax, 'always');
-
         sinon.stub($, 'ajax').returns(ajax);
         method = 'get';
-      });
-
-      afterEach(function() {
-        $.ajax.restore();
       });
 
       it('merges opts with $.ajax defaults', function() {
@@ -225,6 +227,26 @@ describe('Gateways specifics', function() {
           expect(stats).to.not.be.undefined;
           expect(stats.status).to.equal(204);
         });
+      });
+    });
+
+    describe('withCredentials', function() {
+      beforeEach(function() {
+        sinon.stub($, 'ajax').returns(ajax);
+      });
+
+      it('configures withCredentials in the request', function() {
+        var opts = {xhrFields: {withCredentials: true}};
+        var defaults = {url: url};
+        var config = Utils.extend(defaults, opts);
+
+        requestWithGateway(
+          200,
+          JSON.stringify(data),
+          newGateway(Mappersmith.JQueryGateway, {opts: {withCredentials: true}})
+        );
+
+        expect($.ajax).to.have.been.calledWith(config);
       });
     });
   });

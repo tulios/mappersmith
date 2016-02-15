@@ -49,6 +49,11 @@ var JQueryGateway = CreateGateway({
   },
 
   _jQueryAjax: function(config) {
+    if (config.withCredentials) {
+      delete config.withCredentials;
+      config = Utils.extend(config, {xhrFields: {withCredentials: true}});
+    }
+
     jQuery.ajax(Utils.extend({url: this.url}, config)).
       done(function(data, textStatus, xhr) {
         var headers = Utils.parseResponseHeaders(xhr.getAllResponseHeaders());
