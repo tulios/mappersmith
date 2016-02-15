@@ -98,7 +98,7 @@ Client.Book.byId({id: 3}, function(data, stats) {
 
 __Mappersmith supports Promises, check [how to enable](#using-with-promises) in a section below__
 
-### Success callback arguments
+### <a name="success-callback-arguments"></a> Success callback arguments
 
 The success callback will receive two arguments: the _first one_ will be `data`, returned by your API; and the _second one_ will be a `stats` object. The stats object hold information of the request, like the elapsed time between your call and callback execution.
 
@@ -122,6 +122,8 @@ The __default stats__ in the object are `url`, `params`, `timeElapsed` and `time
 
 `responseHeaders` will __always__ have lower case names.
 
+It's possible to assign a global success handler, take a look in a [section below](#global-success-handler)
+
 ### Fail callback arguments
 
 The fail callback will receive in the first argument the requested resource, which is an object that contains the requested URL, host, path, status and params. From the second argument and beyond it will receive the error objects from the specific gateway implementations.
@@ -135,7 +137,7 @@ fail(function(request, err) {
 });
 ```
 
-It's possible to assign a global error handler, take a look in a [section below](#global-error-handling)
+It's possible to assign a global error handler, take a look in a [section below](#global-error-handler)
 
 ### Parameters
 
@@ -341,9 +343,24 @@ Mappersmith.Env.Promise = RSVP.Promise;
 
 All `Promise` references in __Mappersmith__ use `Mappersmith.Env.Promise`. The default value is the global Promise.
 
-### <a name="global-error-handling"></a> Global error handling
+### <a name="global-success-handler"></a> Global success handler
 
-It's possible to assign a different global error handling for each generated client (every call to `forge` generates a new client), this is useful to remove repetition regarding authorization, content not found and so on. This error handler will be called for every error in any resource available in the client.
+Sometimes you want to inspect all your requests for metrics, statistics or to notify activity. This handler will be called for every success response in any resource available to the client.
+
+```javascript
+Client.onSuccess(function(stats, data) {
+  console.log(data) // {data: 'my-data'}
+  console.log(stats.status) // 201
+  console.log(stats.url) // 'http://my.api.com/v1/books.json?language=en'
+  console.log(stats.params) // {language: 'en'}
+});
+```
+
+Check the section [success callback arguments](#success-callback-arguments) for more information about the other attributes in stats.
+
+### <a name="global-error-handler"></a> Global error handler
+
+It's possible to assign a different global error handling for each generated client (every call to `forge` generates a new client), this is useful to remove repetition regarding authorization, content not found and so on. This error handler will be called for every error in any resource available to the client.
 
 ```javascript
 Client.onError(function(request, err) {

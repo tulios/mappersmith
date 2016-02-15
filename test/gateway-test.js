@@ -96,6 +96,15 @@ describe('Gateway', function() {
     });
   });
 
+  describe('#setSuccessHandler', function() {
+    it('assigns successHandler', function() {
+      gateway = new Gateway({url: url, method: verb});
+      expect(gateway.successHandler).to.be.undefined;
+      gateway.setSuccessHandler(Utils.noop);
+      expect(gateway.successHandler).to.equal(Utils.noop);
+    });
+  });
+
   describe('#call', function() {
     var gateway, performanceNowValue;
 
@@ -299,6 +308,26 @@ describe('Gateway', function() {
         });
       });
 
+    });
+
+    describe('with a successHandler defined', function() {
+      it('calls handler with stats object and data', function() {
+        var data = 'data';
+        var success = sinon.spy(function() {});
+        var successHandler = sinon.spy(function() {});
+
+        gateway.setSuccessHandler(successHandler);
+        gateway.success(success);
+        gateway.successCallback(data);
+
+        expect(success).to.have.been.called;
+        expect(successHandler).to.have.been.deep.calledWith(Utils.extend({}, stats, {
+          params: params,
+          headers: {Authorization: 'token'},
+          timeElapsed: gateway.timeElapsed,
+          timeElapsedHumanized: Utils.humanizeTimeElapsed(gateway.timeElapsed)
+        }), data);
+      });
     });
   });
 

@@ -14,6 +14,7 @@ var Mapper = function(manifest, Gateway, bodyAttr) {
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
   this.globalErrorHandler = Utils.noop;
+  this.globalSuccessHandler = Utils.noop;
 }
 
 Mapper.prototype = {
@@ -28,11 +29,10 @@ Mapper.prototype = {
   },
 
   createContext: function() {
-    var errorAssigner = function(handler) {
-      this.globalErrorHandler = handler;
-    }.bind(this);
-
-    return {onError: errorAssigner};
+    return {
+      onSuccess: function(handler) { this.globalSuccessHandler = handler }.bind(this),
+      onError: function(handler) { this.globalErrorHandler = handler }.bind(this)
+    };
   },
 
   buildResource: function(resourceName) {
@@ -150,7 +150,9 @@ Mapper.prototype = {
       });
 
       var gateway = new this.Gateway(gatewayOpts);
+      gateway.setSuccessHandler(this.globalSuccessHandler);
       gateway.setErrorHandler(this.globalErrorHandler);
+
       if (Env.USE_PROMISES) return gateway.promisify(callback);
       return gateway.success(callback).call();
 

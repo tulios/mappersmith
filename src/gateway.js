@@ -103,6 +103,7 @@ Gateway.prototype = {
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
       }, requestedResource, extraStats);
 
+      if (this.successHandler) this.successHandler.apply(this, [stats, data]);
       callback(data, stats);
     }.bind(this);
 
@@ -143,6 +144,10 @@ Gateway.prototype = {
 
   setErrorHandler: function(errorHandler) {
     this.errorHandler = errorHandler;
+  },
+
+  setSuccessHandler: function(successHandler) {
+    this.successHandler = successHandler;
   },
 
   shouldEmulateHTTP: function(method) {

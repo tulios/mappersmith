@@ -48,6 +48,7 @@ describe('Mapper', function() {
     test.gateway.prototype.call = function() {return this};
     test.gateway.prototype.promisify = function() {return Promise.resolve(true)};
     test.gateway.prototype.setErrorHandler = function() {};
+    test.gateway.prototype.setSuccessHandler = function() {};
 
     sinon.spy(test, 'gateway');
     sinon.spy(test.gateway.prototype, 'get');
@@ -55,6 +56,7 @@ describe('Mapper', function() {
     sinon.spy(test.gateway.prototype, 'call');
     sinon.spy(test.gateway.prototype, 'promisify');
     sinon.spy(test.gateway.prototype, 'setErrorHandler');
+    sinon.spy(test.gateway.prototype, 'setSuccessHandler');
 
     gateway = test.gateway;
     mapper = new Mapper(manifest, gateway);
@@ -143,6 +145,14 @@ describe('Mapper', function() {
         method: method,
         params: params
       });
+    });
+
+    it('calls gateway#setSuccessHandler with globalSuccessHandler', function() {
+      var successHandler = function() {};
+      mapper.globalSuccessHandler = successHandler;
+      var request = mapper.newGatewayRequest({method: method, host: host, path: path});
+      expect(request(params, callback)).to.be.an.instanceof(gateway);
+      expect(gateway.prototype.setSuccessHandler).to.have.been.calledWith(successHandler);
     });
 
     it('calls gateway#setErrorHandler with globalErrorHandler', function() {
@@ -505,6 +515,15 @@ describe('Mapper', function() {
     it('returns an object with a method "onError"', function() {
       expect(result).to.be.a('object');
       expect(result.onError).to.be.a('function');
+    });
+
+    describe('when calling "onSuccess" on the returned object', function() {
+      it('assigns the global success handler', function() {
+        var successHandler = function() {};
+        expect(mapper.globalSuccessHandler).to.equal(Utils.noop);
+        result.onSuccess(successHandler);
+        expect(mapper.globalSuccessHandler).to.equal(successHandler);
+      });
     });
 
     describe('when calling "onError" on the returned object', function() {

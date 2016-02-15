@@ -4,6 +4,7 @@
 
   - Included status code for success calls
   - `withCredentials` option for `VanillaGateway` and `JQueryGateway`
+  - Method to configure a global success handler per client
 
 ## 0.12.1
 
