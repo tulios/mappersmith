@@ -51,7 +51,7 @@ var NodeVanillaGateway = CreateGateway({
       try {
         if (status >= 200 && status < 400) {
           if (this.isContentTypeJSON(response)) data = JSON.parse(data);
-          this.successCallback(data, {responseHeaders: response.headers});
+          this.successCallback(data, {status: status, responseHeaders: response.headers});
 
         } else {
           this.failCallback({status: status, args: [response]});

@@ -22,19 +22,24 @@ describe('Gateways specifics', function() {
     });
   }
 
-
   describe('NodeVanillaGateway', function() {
     describe('extra stats', function() {
       beforeEach(function(done) {
         nock(host).
           defaultReplyHeaders({'Content-Type': 'application/json'}).
           get(path).
-          reply(200, JSON.stringify(data));
+          reply(201, JSON.stringify(data));
 
         newGateway().
           success(success).
           complete(function() { done() }).
           call();
+      });
+
+      it('returns status code', function() {
+        var stats = success.args[0][1];
+        expect(stats).to.not.be.undefined;
+        expect(stats.status).to.equal(201);
       });
 
       it('returns response headers', function() {
@@ -43,7 +48,6 @@ describe('Gateways specifics', function() {
         expect(stats).to.have.property('responseHeaders');
         expect(stats.responseHeaders).to.have.property('content-type', 'application/json');
       });
-
     });
   });
 });
