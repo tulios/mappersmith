@@ -52,7 +52,7 @@ var JQueryGateway = CreateGateway({
     jQuery.ajax(Utils.extend({url: this.url}, config)).
       done(function(data, textStatus, xhr) {
         var headers = Utils.parseResponseHeaders(xhr.getAllResponseHeaders());
-        this.successCallback(data, {responseHeaders: headers});
+        this.successCallback(data, {status: xhr.status, responseHeaders: headers});
 
       }.bind(this)).
       fail(function(jqXHR) {
