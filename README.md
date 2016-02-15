@@ -486,7 +486,7 @@ The gateways listed here are available through the `Mappersmith` namespace.
 
 ### VanillaGateway
 
-__Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used.
+__Client Only__. The default gateway - it uses plain `XMLHttpRequest`. Accepts a `configure` callback that allows you to change the request object before it is used. Accepts `withCredentials` to configure the property with same name.
 
 Available methods:
 

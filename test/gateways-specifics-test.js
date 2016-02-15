@@ -128,6 +128,25 @@ describe('Gateways specifics', function() {
         });
       });
     });
+
+    describe('withCredentials', function() {
+      it('configures withCredentials in the request', function() {
+        var xhr;
+
+        requestWithGateway(
+          200,
+          JSON.stringify(data),
+          newGateway(Mappersmith.VanillaGateway, {
+            opts: {
+              withCredentials: true,
+              configure: function(request) { xhr = request }
+            }
+          })
+        );
+
+        expect(xhr.withCredentials).to.equal(true);
+      });
+    });
   });
 
   describe('JQueryGateway', function() {

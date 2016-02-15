@@ -94,6 +94,10 @@ var VanillaGateway = CreateGateway({
       this.completeCallback.apply(this, arguments);
     }.bind(this);
 
+    if (this.opts.withCredentials) {
+      request.withCredentials = true;
+    }
+
     if (this.opts.configure) {
       this.opts.configure(request);
     }
