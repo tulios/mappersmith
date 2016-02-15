@@ -89,6 +89,18 @@ describe('Gateways specifics', function() {
     });
 
     describe('extra stats', function() {
+      it('returns status code', function() {
+        requestWithGateway(
+          201,
+          JSON.stringify(data),
+          newGateway(Mappersmith.VanillaGateway)
+        );
+
+        var stats = success.args[0][1];
+        expect(stats).to.not.be.undefined;
+        expect(stats.status).to.equal(201);
+      });
+
       it('returns response headers', function() {
         requestWithGateway(
           200,
@@ -100,6 +112,20 @@ describe('Gateways specifics', function() {
         expect(stats).to.not.be.undefined;
         expect(stats).to.have.property('responseHeaders');
         expect(stats.responseHeaders).to.have.property('content-type', 'application/json');
+      });
+
+      describe('when IE returns status 1223 for 204', function() {
+        it('return status 204', function() {
+          requestWithGateway(
+            1223,
+            JSON.stringify(data),
+            newGateway(Mappersmith.VanillaGateway)
+          );
+
+          var stats = success.args[0][1];
+          expect(stats).to.not.be.undefined;
+          expect(stats.status).to.equal(204);
+        });
       });
     });
   });

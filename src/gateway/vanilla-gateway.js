@@ -57,6 +57,9 @@ var VanillaGateway = CreateGateway({
       var data = null;
       var status = request.status;
 
+      // IE sends 1223 instead of 204
+      if (status === 1223) status = 204;
+
       try {
         if (status >= 200 && status < 400) {
           if (this._isContentTypeJSON(request)) {
@@ -67,7 +70,11 @@ var VanillaGateway = CreateGateway({
           }
 
           var responseHeaders = request.getAllResponseHeaders();
-          var extra = {responseHeaders: Utils.parseResponseHeaders(responseHeaders)};
+          var extra = {
+            status: status,
+            responseHeaders: Utils.parseResponseHeaders(responseHeaders)
+          };
+
           this.successCallback(data, extra);
 
         } else {
