@@ -155,6 +155,7 @@ Gateway.prototype = {
         timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
       }, requestedResource, extraStats);
 
+      if (this.successHandler) this.successHandler.apply(this, [stats, data]);
       callback(data, stats);
     }.bind(this);
 
@@ -195,6 +196,10 @@ Gateway.prototype = {
 
   setErrorHandler: function(errorHandler) {
     this.errorHandler = errorHandler;
+  },
+
+  setSuccessHandler: function(successHandler) {
+    this.successHandler = successHandler;
   },
 
   shouldEmulateHTTP: function(method) {
@@ -277,10 +282,15 @@ var JQueryGateway = CreateGateway({
   },
 
   _jQueryAjax: function(config) {
+    if (config.withCredentials) {
+      delete config.withCredentials;
+      config = Utils.extend(config, {xhrFields: {withCredentials: true}});
+    }
+
     jQuery.ajax(Utils.extend({url: this.url}, config)).
       done(function(data, textStatus, xhr) {
         var headers = Utils.parseResponseHeaders(xhr.getAllResponseHeaders());
-        this.successCallback(data, {responseHeaders: headers});
+        this.successCallback(data, {status: xhr.status, responseHeaders: headers});
 
       }.bind(this)).
       fail(function(jqXHR) {
@@ -357,6 +367,9 @@ var VanillaGateway = CreateGateway({
       var data = null;
       var status = request.status;
 
+      // IE sends 1223 instead of 204
+      if (status === 1223) status = 204;
+
       try {
         if (status >= 200 && status < 400) {
           if (this._isContentTypeJSON(request)) {
@@ -367,7 +380,11 @@ var VanillaGateway = CreateGateway({
           }
 
           var responseHeaders = request.getAllResponseHeaders();
-          var extra = {responseHeaders: Utils.parseResponseHeaders(responseHeaders)};
+          var extra = {
+            status: status,
+            responseHeaders: Utils.parseResponseHeaders(responseHeaders)
+          };
+
           this.successCallback(data, extra);
 
         } else {
@@ -386,6 +403,10 @@ var VanillaGateway = CreateGateway({
       this.failCallback({status: 400, args: [arguments]});
       this.completeCallback.apply(this, arguments);
     }.bind(this);
+
+    if (this.opts.withCredentials) {
+      request.withCredentials = true;
+    }
 
     if (this.opts.configure) {
       this.opts.configure(request);
@@ -424,6 +445,7 @@ var Mapper = function(manifest, Gateway, bodyAttr) {
   this.Gateway = Gateway;
   this.bodyAttr = bodyAttr;
   this.globalErrorHandler = Utils.noop;
+  this.globalSuccessHandler = Utils.noop;
 }
 
 Mapper.prototype = {
@@ -438,11 +460,10 @@ Mapper.prototype = {
   },
 
   createContext: function() {
-    var errorAssigner = function(handler) {
-      this.globalErrorHandler = handler;
-    }.bind(this);
-
-    return {onError: errorAssigner};
+    return {
+      onSuccess: function(handler) { this.globalSuccessHandler = handler }.bind(this),
+      onError: function(handler) { this.globalErrorHandler = handler }.bind(this)
+    };
   },
 
   buildResource: function(resourceName) {
@@ -519,6 +540,9 @@ Mapper.prototype = {
         opts = callback;
         callback = params;
         params = undefined;
+      } else if (callback && typeof callback !== 'function') {
+        opts = callback;
+        callback = Utils.noop;
       }
 
       if (!!descriptor.params) {
@@ -557,7 +581,9 @@ Mapper.prototype = {
       });
 
       var gateway = new this.Gateway(gatewayOpts);
+      gateway.setSuccessHandler(this.globalSuccessHandler);
       gateway.setErrorHandler(this.globalErrorHandler);
+
       if (Env.USE_PROMISES) return gateway.promisify(callback);
       return gateway.success(callback).call();
 
@@ -617,38 +643,38 @@ var Utils = {
   // Code based on: https://github.com/jquery/jquery/blob/2.1.4/src/core.js#L124
   extend: function(out) {
     var options, name, src, copy, clone;
-  	var target = arguments[0] || {};
-  	var length = arguments.length;
+    var target = arguments[0] || {};
+    var length = arguments.length;
 
-  	// Handle case when target is a string or something
-  	if (typeof target !== 'object') target = {};
+    // Handle case when target is a string or something
+    if (typeof target !== 'object') target = {};
 
-  	for (var i = 1; i < length; i++) {
-  		// Only deal with non-null/undefined values
+    for (var i = 1; i < length; i++) {
+      // Only deal with non-null/undefined values
       if ((options = arguments[i]) === null) continue;
 
-  		// Extend the base object
-  		for (name in options) {
-  		  src = target[name];
-  			copy = options[name];
+      // Extend the base object
+      for (name in options) {
+        src = target[name];
+        copy = options[name];
 
-  			// Prevent never-ending loop
-  			if (target === copy) continue;
+        // Prevent never-ending loop
+        if (target === copy) continue;
 
-  			// Recurse if we're merging plain objects or arrays
-  			if (copy && isObject(copy)) {
-					clone = src && isObject(src) ? src : {};
-  				// Never move original objects, clone them
-  				target[name] = this.extend(clone, copy);
+        // Recurse if we're merging plain objects or arrays
+        if (copy && isObject(copy)) {
+          clone = src && isObject(src) ? src : {};
+          // Never move original objects, clone them
+          target[name] = this.extend(clone, copy);
 
-  		  // Don't bring in undefined values
-  			} else if (copy !== undefined) {
-  				target[name] = copy;
-  			}
-  		}
-  	}
+        // Don't bring in undefined values
+        } else if (copy !== undefined) {
+          target[name] = copy;
+        }
+      }
+    }
 
-  	return target;
+    return target;
   },
 
   params: function(entry) {
