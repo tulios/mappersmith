@@ -9,6 +9,7 @@ module.exports = function(config) {
 
     plugins: [
       'karma-browserify',
+      'karma-sourcemap-loader',
       'karma-firefox-launcher',
       'karma-phantomjs2-launcher',
       'karma-mocha',
@@ -35,8 +36,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'index.js': ['browserify'],
-      'test/*.js': ['browserify']
+      'index.js': ['browserify', 'sourcemap'],
+      'test/*.js': ['browserify', 'sourcemap']
     },
 
     // test results reporter to use
