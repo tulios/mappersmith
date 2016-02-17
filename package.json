@@ -37,7 +37,6 @@
   "tonicExampleFilename": "example.js",
   "devDependencies": {
     "aliasify": "^1.7.2",
-    "bn.js": "0.15.2",
     "browserify": "^13.0.0",
     "browserify-shim": "^3.8.12",
     "browserify-versionify": "^1.0.6",
@@ -53,7 +52,6 @@
     "karma-sinon": "^1.0.4",
     "karma-sinon-chai": "^0.3.2",
     "karma-sourcemap-loader": "^0.3.7",
-    "miller-rabin": "1.1.1",
     "mocha": "^2.0.1",
     "nock": "^0.58.0",
     "phantomjs": "^1.9.17",
