@@ -92,10 +92,10 @@ Mapper.prototype = {
     return value.replace(/\/$/, '');
   },
 
-  newGatewayRequest: function(descriptor) {
-    var rules = this.rules.
+  resolveRules: function(descriptor, resolvedUrl) {
+    return this.rules.
       filter(function(rule) {
-        return rule.match === undefined || rule.match.test(descriptor.path)
+        return rule.match === undefined || rule.match.test(resolvedUrl)
       }).
       reduce(function(context, rule) {
         var mergedGateway = Utils.extend(context.gateway, rule.values.gateway);
@@ -103,7 +103,9 @@ Mapper.prototype = {
         context.gateway = mergedGateway;
         return context;
       }, {});
+  },
 
+  newGatewayRequest: function(descriptor) {
     return function(params, callback, opts) {
       if (typeof params === 'function') {
         opts = callback;
@@ -118,14 +120,6 @@ Mapper.prototype = {
         params = Utils.extend({}, descriptor.params, params);
       }
 
-      opts = Utils.extend({}, opts, rules.gateway);
-      if (params && params.headers) {
-        opts.headers = Utils.extend(opts.headers, params.headers);
-        delete params['headers']
-      }
-
-      if (Utils.isObjEmpty(opts)) opts = undefined;
-
       var host = this.resolveHost(descriptor.host);
       var path = this.resolvePath(descriptor.path, params);
 
@@ -134,6 +128,15 @@ Mapper.prototype = {
       }
 
       var fullUrl = host + path;
+      var rules = this.resolveRules(descriptor, fullUrl);
+
+      opts = Utils.extend({}, opts, rules.gateway);
+      if (params && params.headers) {
+        opts.headers = Utils.extend(opts.headers, params.headers);
+        delete params['headers']
+      }
+
+      if (Utils.isObjEmpty(opts)) opts = undefined;
       var body = (params || {})[this.bodyAttr];
 
       var gatewayOpts = Utils.extend({}, {

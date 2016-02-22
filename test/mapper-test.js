@@ -332,6 +332,35 @@ describe('Mapper', function() {
         });
 
         shared.shouldBehaveLike('merged rules');
+
+        describe('matching against dynamic parts of the URL', function() {
+          beforeEach(function() {
+            resolvedPath = '/v1/books/cats/all.json';
+            fullUrl = host + resolvedPath;
+            manifest.rules = [{match: /\/v1\/books\/cats\/all\.json/, values: opts}];
+            mapper = new Mapper(manifest, gateway);
+          });
+
+          it('merge the configured rules', function() {
+            var request = mapper.newGatewayRequest({
+              method: method,
+              host: host,
+              path: '/v1/books/{category}/all.json',
+              params: {category: 'cats'}
+            });
+
+            expect(request(callback)).to.be.an.instanceof(gateway);
+            expect(gateway).to.have.been.calledWith({
+              url: fullUrl,
+              host: host,
+              path: resolvedPath,
+              params: {category: 'cats'},
+              method: method,
+              opts: {matchUrl: true},
+              processor: opts.processor
+            });
+          });
+        });
       });
 
       describe('mixed', function() {
