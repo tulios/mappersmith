@@ -5,6 +5,7 @@
   - Included status code for success calls
   - `withCredentials` option for `VanillaGateway` and `JQueryGateway`
   - Method to configure a global success handler per client
+  - bugfix: rules matcher now uses full URL instead of descriptor path
 
 ## 0.12.1
 
