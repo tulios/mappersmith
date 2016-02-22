@@ -1,6 +1,6 @@
 # Changelog
 
-## ?
+## 0.13.0
 
   - Included status code for success calls
   - `withCredentials` option for `VanillaGateway` and `JQueryGateway`
