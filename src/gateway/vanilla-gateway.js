@@ -41,7 +41,7 @@ var VanillaGateway = CreateGateway({
 
     request.open(requestMethod, this.url, true);
     if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8;');
     this._setHeaders(request);
 
     var args = [];
