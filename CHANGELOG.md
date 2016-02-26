@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.1
+
+  - bugfix: wrong content-type on vanilla gateway, a semicolon was missing on `charset=UTF-8`
+
 ## 0.13.0
 
   - Included status code for success calls
