@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.13.2
+
+  - bugfix: prioritizes user-defined content-type header even for post/put/patch/delete methods. `application/x-www-form-urlencoded` is not forced if Content-Type header is defined.
+
 ## 0.13.1
 
   - bugfix: wrong content-type on vanilla gateway, a semicolon was missing on `charset=UTF-8`
