@@ -7,7 +7,7 @@ var VanillaGateway = CreateGateway({
     var request = new XMLHttpRequest();
     this._configureCallbacks(request);
     request.open('GET', this.url, true);
-    this._setHeaders(request);
+    this._setUserDefinedHeaders(request);
     request.send();
   },
 
@@ -31,6 +31,7 @@ var VanillaGateway = CreateGateway({
     var emulateHTTP = this.shouldEmulateHTTP(method);
     var requestMethod = method;
     var request = new XMLHttpRequest();
+
     this._configureCallbacks(request);
 
     if (emulateHTTP) {
@@ -41,8 +42,9 @@ var VanillaGateway = CreateGateway({
 
     request.open(requestMethod, this.url, true);
     if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8;');
-    this._setHeaders(request);
+
+    this._setContentTypeHeader(request);
+    this._setUserDefinedHeaders(request);
 
     var args = [];
     if (this.body !== undefined) {
@@ -103,8 +105,8 @@ var VanillaGateway = CreateGateway({
     }
   },
 
-  _setHeaders: function(request) {
-    var headers = Utils.extend({}, this.opts.headers);
+  _setUserDefinedHeaders: function(request) {
+    var headers = this._getHeaders();
     Object.keys(headers).forEach(function(headerName) {
       request.setRequestHeader(headerName, headers[headerName]);
     });
@@ -112,6 +114,22 @@ var VanillaGateway = CreateGateway({
 
   _isContentTypeJSON: function(request) {
     return /application\/json/.test(request.getResponseHeader('Content-Type'));
+  },
+
+  _setContentTypeHeader: function(request) {
+    var headers = this._getHeaders();
+    var contentType = null;
+
+    Object.keys(headers).forEach(function(headerName) {
+      if (/^content-type$/i.test(headerName)) contentType = headers[headerName];
+    });
+
+    if (!contentType) contentType = 'application/x-www-form-urlencoded; charset=UTF-8;';
+    request.setRequestHeader('Content-Type', contentType);
+  },
+
+  _getHeaders: function() {
+    return Utils.extend({}, this.opts.headers);
   }
 
 });

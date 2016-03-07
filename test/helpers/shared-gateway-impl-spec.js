@@ -196,6 +196,32 @@ function gatewayImplSpecFor(GatewayName, GatewayImpl) {
                 assertBodyData: bodyData
               }, done);
             });
+
+            it('prioritizes user-defined Content-Type header', function(done) {
+              var body = {val1: 1, val2: 2};
+              var headers = {'Content-Type': 'text/plain;charset=utf-8'}
+              var bodyData = Utils.params(body);
+
+              makeRequest({
+                status: 200,
+                rawData: 'OK',
+                gateway: newGateway({body: body, opts: {headers: headers}}),
+                assertHeader: headers
+              }, done);
+            });
+
+            it('accepts the lowercase variation of Content-Type', function(done) {
+              var body = {val1: 1, val2: 2};
+              var headers = {'content-type': 'text/plain;charset=utf-8'}
+              var bodyData = Utils.params(body);
+
+              makeRequest({
+                status: 200,
+                rawData: 'OK',
+                gateway: newGateway({body: body, opts: {headers: headers}}),
+                assertHeader: {'Content-Type': 'text/plain;charset=utf-8'}
+              }, done);
+            });
           });
         });
 

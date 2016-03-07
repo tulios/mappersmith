@@ -30,6 +30,11 @@ var NodeVanillaGateway = CreateGateway({
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': body.length
       }, opts.headers);
+
+      if (opts.headers['content-type']) {
+        opts.headers['Content-Type'] = opts.headers['content-type'];
+        delete opts.headers['content-type'];
+      }
     }
 
     var handler = http;
