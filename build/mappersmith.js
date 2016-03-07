@@ -1,6 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Mappersmith = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*!
- * Mappersmith 0.13.1
+ * Mappersmith 0.13.2
  * https://github.com/tulios/mappersmith
  */
 module.exports = {
@@ -317,7 +317,7 @@ var VanillaGateway = CreateGateway({
     var request = new XMLHttpRequest();
     this._configureCallbacks(request);
     request.open('GET', this.url, true);
-    this._setHeaders(request);
+    this._setUserDefinedHeaders(request);
     request.send();
   },
 
@@ -341,6 +341,7 @@ var VanillaGateway = CreateGateway({
     var emulateHTTP = this.shouldEmulateHTTP(method);
     var requestMethod = method;
     var request = new XMLHttpRequest();
+
     this._configureCallbacks(request);
 
     if (emulateHTTP) {
@@ -351,8 +352,9 @@ var VanillaGateway = CreateGateway({
 
     request.open(requestMethod, this.url, true);
     if (emulateHTTP) request.setRequestHeader('X-HTTP-Method-Override', method);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8;');
-    this._setHeaders(request);
+
+    this._setContentTypeHeader(request);
+    this._setUserDefinedHeaders(request);
 
     var args = [];
     if (this.body !== undefined) {
@@ -413,8 +415,8 @@ var VanillaGateway = CreateGateway({
     }
   },
 
-  _setHeaders: function(request) {
-    var headers = Utils.extend({}, this.opts.headers);
+  _setUserDefinedHeaders: function(request) {
+    var headers = this._getHeaders();
     Object.keys(headers).forEach(function(headerName) {
       request.setRequestHeader(headerName, headers[headerName]);
     });
@@ -422,6 +424,22 @@ var VanillaGateway = CreateGateway({
 
   _isContentTypeJSON: function(request) {
     return /application\/json/.test(request.getResponseHeader('Content-Type'));
+  },
+
+  _setContentTypeHeader: function(request) {
+    var headers = this._getHeaders();
+    var contentType = null;
+
+    Object.keys(headers).forEach(function(headerName) {
+      if (/^content-type$/i.test(headerName)) contentType = headers[headerName];
+    });
+
+    if (!contentType) contentType = 'application/x-www-form-urlencoded; charset=UTF-8;';
+    request.setRequestHeader('Content-Type', contentType);
+  },
+
+  _getHeaders: function() {
+    return Utils.extend({}, this.opts.headers);
   }
 
 });
