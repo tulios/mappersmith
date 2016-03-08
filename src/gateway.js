@@ -23,6 +23,7 @@ var Gateway = function(args) {
   this.method = args.method;
   this.body = args.body;
   this.processor = args.processor;
+  this.beforeSend = args.beforeSend;
   this.opts = args.opts || {};
 
   this.timeStart = null;
@@ -38,6 +39,7 @@ Gateway.prototype = {
 
   call: function() {
     this.timeStart = Utils.performanceNow();
+    if (this.beforeSend) this.beforeSend(this);
 
     if (Env.USE_FIXTURES && Env.Fixture) {
       this.callWithFixture();

@@ -106,12 +106,13 @@ describe('Gateway', function() {
   });
 
   describe('#call', function() {
-    var gateway, performanceNowValue;
+    var gateway, performanceNowValue, beforeSendSpy;
 
     beforeEach(function() {
       performanceNowValue = 88;
+      beforeSendSpy = sinon.spy(function() {});
       sinon.stub(Utils, 'performanceNow').returns(performanceNowValue);
-      gateway = new Gateway({url: url, method: verb}).call();
+      gateway = new Gateway({url: url, method: verb, beforeSend: beforeSendSpy}).call();
     });
 
     afterEach(function() {
@@ -120,6 +121,11 @@ describe('Gateway', function() {
 
     it('records the start time', function() {
       expect(gateway.timeStart).to.equal(performanceNowValue);
+    });
+
+    it('calls "beforeSend" callback before action with gateway', function() {
+      expect(beforeSendSpy).calledBefore(methodStub);
+      expect(beforeSendSpy).to.have.been.deep.calledWith(gateway);
     });
 
     it('calls the configured method with the url', function() {

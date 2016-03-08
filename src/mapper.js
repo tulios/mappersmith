@@ -149,6 +149,7 @@ Mapper.prototype = {
         method: descriptor.method,
 
         processor: descriptor.processor || rules.processor,
+        beforeSend: descriptor.beforeSend || rules.beforeSend,
         opts: opts
       });
 

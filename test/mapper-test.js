@@ -25,7 +25,10 @@ describe('Mapper', function() {
           byCategory: 'get:/v1/books/{category}/all.json'
         },
         Photo: {
-          byCategory: {path: '/v1/photos/{category}/all.json'},
+          byCategory: {
+            path: '/v1/photos/{category}/all.json',
+            beforeSend: function(gateway) {}
+          },
           add: {method: 'post', path: '/v1/photos/create.json'},
           byId: {
             path: '/v1/photos/{id}.json',
@@ -309,14 +312,19 @@ describe('Mapper', function() {
             path: path,
             method: method,
             opts: opts.gateway,
-            processor: opts.processor
+            processor: opts.processor,
+            beforeSend: opts.beforeSend,
           });
         });
       });
 
       describe('global', function() {
         beforeEach(function() {
-          opts = {gateway: {global: true}, processor: Utils.noop};
+          opts = {
+            gateway: {global: true},
+            processor: Utils.noop,
+            beforeSend: Utils.noop
+          };
           manifest.rules = [{values: opts}];
           mapper = new Mapper(manifest, gateway);
         });
@@ -326,7 +334,11 @@ describe('Mapper', function() {
 
       describe('url match', function() {
         beforeEach(function() {
-          opts = {gateway: {matchUrl: true}, processor: Utils.noop};
+          opts = {
+            gateway: {matchUrl: true},
+            processor: Utils.noop,
+            beforeSend: Utils.noop
+          };
           manifest.rules = [{match: /\/v1\/books/, values: opts}];
           mapper = new Mapper(manifest, gateway);
         });
@@ -356,7 +368,8 @@ describe('Mapper', function() {
               params: {category: 'cats'},
               method: method,
               opts: {matchUrl: true},
-              processor: opts.processor
+              processor: opts.processor,
+              beforeSend: opts.beforeSend
             });
           });
 
@@ -389,11 +402,13 @@ describe('Mapper', function() {
         beforeEach(function() {
           opts = {
             gateway: {global: true, headers: {a: 1}},
-            processor: function globalMatch() {}
+            processor: function globalMatch() {},
+            beforeSend: function beforeSendGlobalMatch() {}
           };
           optsMatch = {
             gateway: {matchUrl: true, headers: {b: 2}},
-            processor: function urlMatch() {}
+            processor: function urlMatch() {},
+            beforeSend: function beforeSendUrlMatch() {}
           };
 
           manifest.rules = [
@@ -418,7 +433,8 @@ describe('Mapper', function() {
             path: path,
             method: method,
             opts: {global: true, headers: {a: 1, b: 2}, matchUrl: true},
-            processor: optsMatch.processor
+            processor: optsMatch.processor,
+            beforeSend: optsMatch.beforeSend
           });
         });
 
@@ -441,7 +457,8 @@ describe('Mapper', function() {
             method: method,
             params: {},
             opts: {global: true, headers: expectedHeaders, matchUrl: true},
-            processor: optsMatch.processor
+            processor: optsMatch.processor,
+            beforeSend: optsMatch.beforeSend
           });
         });
       });
@@ -679,7 +696,6 @@ describe('Mapper', function() {
         });
       });
 
-
       describe('with params in the path, query string and an alternative empty host', function() {
         it('calls the gateway with the configured values', function() {
           var path = manifest.resources.Book.byUrl.path;
@@ -826,7 +842,7 @@ describe('Mapper', function() {
       });
 
       describe('processors', function() {
-        it('should be passed to gateway', function() {
+        it('it\'s passed to gateway', function() {
           var path = manifest.resources.Photo.byId.path;
           var processor = manifest.resources.Photo.byId.processor;
           var params = {id: 3};
@@ -841,6 +857,27 @@ describe('Mapper', function() {
             params: params,
             method: method,
             processor: processor
+          });
+          expect(gateway.prototype.success).to.have.been.calledWith(callback);
+        });
+      });
+
+      describe('beforeSend', function() {
+        it('it\'s passed to gateway', function() {
+          var path = manifest.resources.Photo.byCategory.path;
+          var beforeSend = manifest.resources.Photo.byCategory.beforeSend;
+          var params = {category: 'unicorns'};
+          var resolvedPath = mapper.resolvePath(path, params);
+          var url = mapper.resolveHost() + resolvedPath;
+
+          result.Photo.byCategory(params, callback);
+          expect(gateway).to.have.been.calledWith({
+            url: url,
+            host: mapper.resolveHost(),
+            path: resolvedPath,
+            params: params,
+            method: method,
+            beforeSend: beforeSend
           });
           expect(gateway.prototype.success).to.have.been.calledWith(callback);
         });
