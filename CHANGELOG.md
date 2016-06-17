@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.3
+
+  - Included beforeSend callback, this should be configured through Global configurations and URL matching. It will follow the same behavior as the processor callback
+  - bugfix: some body parsers are super strict and will fail if charset has a “;” termination. PR #26 introduced this bug trying to solve issue #27
+
 ## 0.13.2
 
   - bugfix: prioritizes user-defined content-type header even for post/put/patch/delete methods. `application/x-www-form-urlencoded` is not forced if Content-Type header is defined.
