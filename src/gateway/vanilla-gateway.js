@@ -124,7 +124,7 @@ var VanillaGateway = CreateGateway({
       if (/^content-type$/i.test(headerName)) contentType = headers[headerName];
     });
 
-    if (!contentType) contentType = 'application/x-www-form-urlencoded; charset=UTF-8;';
+    if (!contentType) contentType = 'application/x-www-form-urlencoded;charset=utf-8';
     request.setRequestHeader('Content-Type', contentType);
   },
 

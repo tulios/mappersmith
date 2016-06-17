@@ -193,7 +193,8 @@ function gatewayImplSpecFor(GatewayName, GatewayImpl) {
                 status: 200,
                 rawData: 'OK',
                 gateway: newGateway({body: body}),
-                assertBodyData: bodyData
+                assertBodyData: bodyData,
+                assertHeader: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
               }, done);
             });
 
