@@ -10,11 +10,25 @@ export default class Request {
   }
 
   params() {
-    return Object.assign(
+    const params = Object.assign(
       {},
       this.methodDescriptor.params,
       this.requestParams
     )
+
+    const isParam = (key) => (
+      key !== this.methodDescriptor.headersAttr &&
+        key !== this.methodDescriptor.bodyAttr
+    )
+
+    return Object
+      .keys(params)
+      .reduce((obj, key) => {
+        if (isParam(key)) {
+          obj[key] = params[key]
+        }
+        return obj
+      }, {})
   }
 
   host() {
@@ -31,11 +45,6 @@ export default class Request {
     }
 
     const params = this.params()
-
-    // doesn't include body and headers in the URL
-    delete params[headersAttr]
-    delete params[bodyAttr]
-
     Object.keys(params).forEach((key) => {
       const value = params[key]
       const pattern = '\{' + key + '\}'
@@ -73,5 +82,9 @@ export default class Request {
         this.requestParams[this.methodDescriptor.headersAttr]
       )
     )
+  }
+
+  body() {
+    return this.requestParams[this.methodDescriptor.bodyAttr]
   }
 }

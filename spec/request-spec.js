@@ -24,6 +24,20 @@ describe('Request', () => {
         expect(request.params()).toEqual({ id: 1, title: 'test' })
       })
     })
+
+    it('does not return the body configured param', () => {
+      methodDescriptor.params = { id: 1, payload: 'abc' }
+      methodDescriptor.bodyAttr = 'payload'
+      const request = new Request(methodDescriptor, { title: 'test' })
+      expect(request.params()).toEqual({ id: 1, title: 'test' })
+    })
+
+    it('does not return the headers configured param', () => {
+      methodDescriptor.params = { id: 1, myHeaders: { a: 1 } }
+      methodDescriptor.headersAttr = 'myHeaders'
+      const request = new Request(methodDescriptor, { title: 'test' })
+      expect(request.params()).toEqual({ id: 1, title: 'test' })
+    })
   })
 
   describe('#host', () => {
@@ -114,6 +128,14 @@ describe('Request', () => {
           'content-type': 'application/json'
         })
       })
+    })
+  })
+
+  describe('#body', () => {
+    it('returns the configured body param from params', () => {
+      methodDescriptor.bodyAttr = 'differentParam'
+      const request = new Request(methodDescriptor, { differentParam: 'abc123' })
+      expect(request.body()).toEqual('abc123')
     })
   })
 })
