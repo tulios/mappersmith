@@ -82,4 +82,38 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json')
     })
   })
+
+  describe('#processor', () => {
+    it('returns the "processor" configured in the method descriptor', () => {
+      methodDescriptor.processor = () => true
+      const request = new Request(methodDescriptor)
+      expect(request.processor()()).toEqual(true)
+    })
+  })
+
+  describe('#headers', () => {
+    describe('with pre configured headers', () => {
+      it('returns available headers', () => {
+        methodDescriptor.headers = { Authorization: 'token-123' }
+        const request = new Request(methodDescriptor)
+        expect(request.headers()).toEqual({ authorization: 'token-123' })
+      })
+    })
+
+    describe('with request headers', () => {
+      it('returns available headers', () => {
+        methodDescriptor.headers = { Authorization: 'token-123' }
+        const request = new Request(methodDescriptor, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        expect(request.headers()).toEqual({
+          authorization: 'token-123',
+          'content-type': 'application/json'
+        })
+      })
+    })
+  })
 })

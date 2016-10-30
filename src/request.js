@@ -1,12 +1,12 @@
-import { toQueryString } from 'src/utils'
+import { toQueryString, lowerCaseObjectKeys } from 'src/utils'
 
 const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
 
 export default class Request {
   constructor(methodDescriptor, requestParams, requestOpts) {
     this.methodDescriptor = methodDescriptor
-    this.requestParams = requestParams
-    this.requestOpts = requestOpts
+    this.requestParams = requestParams || {}
+    this.requestOpts = requestOpts || {}
   }
 
   params() {
@@ -59,5 +59,19 @@ export default class Request {
     }
 
     return path
+  }
+
+  processor() {
+    return this.methodDescriptor.processor
+  }
+
+  headers() {
+    return lowerCaseObjectKeys(
+      Object.assign(
+        {},
+        this.methodDescriptor.headers,
+        this.requestParams[this.methodDescriptor.headersAttr]
+      )
+    )
   }
 }
