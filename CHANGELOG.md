@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.4
+
+  - Add yarn.lock
+  - bugfix: duplicated content-type on vanilla gateway #32
+
 ## 0.13.3
 
   - Included beforeSend callback, this should be configured through Global configurations and URL matching. It will follow the same behavior as the processor callback
