@@ -108,7 +108,9 @@ var VanillaGateway = CreateGateway({
   _setUserDefinedHeaders: function(request) {
     var headers = this._getHeaders();
     Object.keys(headers).forEach(function(headerName) {
-      request.setRequestHeader(headerName, headers[headerName]);
+      if (!/^content-type$/i.test(headerName)) {
+        request.setRequestHeader(headerName, headers[headerName]);
+      }
     });
   },
 
