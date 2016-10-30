@@ -34,3 +34,11 @@ export function toQueryString(entry) {
     .join('&')
     .replace(R20, '+')
 }
+export function lowerCaseObjectKeys(obj) {
+  return Object
+    .keys(obj)
+    .reduce((target, key) => {
+      target[key.toLowerCase()] = obj[key]
+      return target
+    }, {})
+}
