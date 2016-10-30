@@ -2,6 +2,8 @@
 [![Build Status](https://travis-ci.org/tulios/mappersmith.svg?branch=master)](https://travis-ci.org/tulios/mappersmith)
 # Mappersmith
 
+**Under development, this README doesn't represent the state of version 2.0.0**
+
 __Mappersmith__ is a lightweight, isomorphic, dependency-free, rest client mapper for javascript. It helps you map your API to use at the client and/or server, giving you all the flexibility you want to customize requests or write your own gateways.
 
 https://www.npmjs.com/package/mappersmith
