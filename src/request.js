@@ -3,10 +3,9 @@ import { toQueryString, lowerCaseObjectKeys } from 'src/utils'
 const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
 
 export default class Request {
-  constructor(methodDescriptor, requestParams, requestOpts) {
+  constructor(methodDescriptor, requestParams) {
     this.methodDescriptor = methodDescriptor
     this.requestParams = requestParams || {}
-    this.requestOpts = requestOpts || {}
   }
 
   params() {
