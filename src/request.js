@@ -31,6 +31,10 @@ export default class Request {
       }, {})
   }
 
+  method() {
+    return this.methodDescriptor.method.toLowerCase()
+  }
+
   host() {
     const configuredHost = (this.methodDescriptor.host || '').replace(/\/$/, '')
     return configuredHost || '/'

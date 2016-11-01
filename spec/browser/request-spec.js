@@ -138,4 +138,12 @@ describe('Request', () => {
       expect(request.body()).toEqual('abc123')
     })
   })
+
+  describe('#method', () => {
+    it('returns the http method always in lowercase', () => {
+      methodDescriptor.method = 'GET'
+      const request = new Request(methodDescriptor)
+      expect(request.method()).toEqual('get')
+    })
+  })
 })

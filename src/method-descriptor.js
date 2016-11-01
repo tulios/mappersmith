@@ -4,17 +4,20 @@ export default class MethodDescriptor {
    *    @String host
    *    @String path
    *    @String method
+   *    @Object headers
    *    @Object params
    *    @Function processor
    *    @String bodyAttr - Body attribute name. Default: 'body'
    *    @String headersAttr - Headers attribute name. Default: 'headers'
-  **/
+   **/
   constructor(obj) {
     this.host = obj.host
     this.path = obj.path
-    this.method = obj.method
+    this.method = obj.method || 'get'
+    this.headers = obj.headers
     this.params = obj.params
     this.processor = obj.processor
+
     this.bodyAttr = obj.bodyAttr || 'body'
     this.headersAttr = obj.headersAttr || 'headers'
   }
