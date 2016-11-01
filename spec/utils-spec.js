@@ -1,4 +1,4 @@
-import { toQueryString } from 'src/utils'
+import { toQueryString, parseResponseHeaders, lowerCaseObjectKeys } from 'src/utils'
 
 describe('#toQueryString', () => {
     describe('for non-object', () => {
@@ -54,6 +54,33 @@ describe('#toQueryString', () => {
       })
     })
   })
+
+describe('#parseResponseHeaders', () => {
+  let responseHeaders;
+
+  beforeEach(() => {
+    responseHeaders = 'X-RateLimit-Remaining: 57\
+\r\nLast-Modified: Mon, 09 Nov 2015 19:06:15 GMT\
+\r\nETag: W/"679e71e24e6d901f5b36a55c5d80a32d"\
+\r\nContent-Type: application/json; charset=utf-8\
+\r\nCache-Control: public, max-age=60, s-maxage=60\
+\r\nX-RateLimit-Reset: 1447102379\
+\r\nX-RateLimit-Limit: 60\
+'
+  })
+
+  it('returns an object with all headers with lowercase keys', () => {
+    const headers = parseResponseHeaders(responseHeaders)
+    expect(headers).toEqual(jasmine.objectContaining({'x-ratelimit-remaining': '57'}))
+    expect(headers).toEqual(jasmine.objectContaining({'last-modified': 'Mon, 09 Nov 2015 19:06:15 GMT'}))
+    expect(headers).toEqual(jasmine.objectContaining({'etag': 'W/"679e71e24e6d901f5b36a55c5d80a32d"'}))
+    expect(headers).toEqual(jasmine.objectContaining({'content-type': 'application/json; charset=utf-8'}))
+    expect(headers).toEqual(jasmine.objectContaining({'cache-control': 'public, max-age=60, s-maxage=60'}))
+    expect(headers).toEqual(jasmine.objectContaining({'x-ratelimit-reset': '1447102379'}))
+    expect(headers).toEqual(jasmine.objectContaining({'x-ratelimit-limit': '60'}))
+  });
+});
+
 describe('#lowerCaseObjectKeys', () => {
   it('returns a new object with all keys in lowercase', () => {
     const obj = { ABC: 1, DeF: 2, ghI: 3}
