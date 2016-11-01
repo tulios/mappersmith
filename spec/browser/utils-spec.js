@@ -1,4 +1,9 @@
-import { toQueryString, parseResponseHeaders, lowerCaseObjectKeys } from 'src/utils'
+import {
+  toQueryString,
+  parseResponseHeaders,
+  lowerCaseObjectKeys,
+  performanceNow
+} from 'src/utils'
 
 describe('#toQueryString', () => {
     describe('for non-object', () => {
@@ -86,5 +91,12 @@ describe('#lowerCaseObjectKeys', () => {
     const obj = { ABC: 1, DeF: 2, ghI: 3}
     expect(lowerCaseObjectKeys(obj)).toEqual({ abc: 1, def: 2, ghi: 3})
     expect(obj.ABC).toEqual(1)
+  })
+})
+
+describe('#performanceNow', function() {
+  it('returns the same value as "performance.now()"', function() {
+    spyOn(performance, 'now').and.returnValue(999)
+    expect(performanceNow()).toEqual(999)
   })
 })
