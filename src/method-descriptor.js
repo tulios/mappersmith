@@ -6,7 +6,8 @@ export default class MethodDescriptor {
    * @param {String}   obj.method
    * @param {Object}   obj.headers
    * @param {Object}   obj.params
-   * @param {Function} obj.processor
+   * @param {Function} obj.processor - function with two arguments, {Response} and responseData
+   *                                   ex: (response, responseData) => ({ data: responseData })
    * @param {String}   obj.bodyAttr - Body attribute name. Default: 'body'
    * @param {String}   obj.headersAttr - Headers attribute name. Default: 'headers'
    */
