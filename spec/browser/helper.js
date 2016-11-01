@@ -14,10 +14,10 @@ export function createGatewayAsserts(gatewayArgsGenerator) {
   }
 }
 
-export function createGatewaySuccessAssert(Gateway, gatewayOpts, methodDescriptor, requestParams) {
+export function createGatewaySuccessAssert(Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
-    const gateway = new Gateway(request, gatewayOpts)
+    const gateway = new Gateway(request)
 
     gateway
       .call()
@@ -32,10 +32,10 @@ export function createGatewaySuccessAssert(Gateway, gatewayOpts, methodDescripto
   }
 }
 
-export function createGatewayFailureAssert(Gateway, gatewayOpts, methodDescriptor, requestParams) {
+export function createGatewayFailureAssert(Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
-    const gateway = new Gateway(request, gatewayOpts)
+    const gateway = new Gateway(request)
 
     gateway
       .call()
