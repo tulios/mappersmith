@@ -1,15 +1,15 @@
 export default class MethodDescriptor {
-  /*
-   * Accepts:
-   *    @String host
-   *    @String path
-   *    @String method
-   *    @Object headers
-   *    @Object params
-   *    @Function processor
-   *    @String bodyAttr - Body attribute name. Default: 'body'
-   *    @String headersAttr - Headers attribute name. Default: 'headers'
-   **/
+  /**
+   * @param {Object} obj
+   * @param {String}   obj.host
+   * @param {String}   obj.path
+   * @param {String}   obj.method
+   * @param {Object}   obj.headers
+   * @param {Object}   obj.params
+   * @param {Function} obj.processor
+   * @param {String}   obj.bodyAttr - Body attribute name. Default: 'body'
+   * @param {String}   obj.headersAttr - Headers attribute name. Default: 'headers'
+   */
   constructor(obj) {
     this.host = obj.host
     this.path = obj.path

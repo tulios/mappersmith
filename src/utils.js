@@ -64,10 +64,10 @@ export function toQueryString(entry) {
     .replace(R20, '+')
 }
 
-/*
+/**
  * Gives time in miliseconds, but with sub-milisecond precision for Browser
  * and Nodejs
- **/
+ */
 export function performanceNow() {
   if (hasProcessHrtime()) {
     return (getNanoSeconds() - loadTime) / 1e6;
@@ -76,13 +76,13 @@ export function performanceNow() {
   return performance.now();
 }
 
-/*
+/**
  * borrowed from: https://gist.github.com/monsur/706839
  * XmlHttpRequest's getAllResponseHeaders() method returns a string of response
  * headers according to the format described here:
  * http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method
  * This method parses that string into a user-friendly key/value pair object.
- **/
+ */
 export function parseResponseHeaders(headerStr) {
   const headers = {};
   if (!headerStr) {
