@@ -94,8 +94,8 @@ describe('#lowerCaseObjectKeys', () => {
   })
 })
 
-describe('#performanceNow', function() {
-  it('returns the same value as "performance.now()"', function() {
+describe('#performanceNow', () => {
+  it('returns the same value as "performance.now()"', () => {
     spyOn(performance, 'now').and.returnValue(999)
     expect(performanceNow()).toEqual(999)
   })

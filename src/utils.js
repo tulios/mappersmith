@@ -1,3 +1,32 @@
+if (typeof window !== 'undefined' && window !== null) {
+  if (!window.performance) {
+    window.performance = {}
+  }
+  performance.now = (() => {
+    return performance.now       ||
+           performance.mozNow    ||
+           performance.msNow     ||
+           performance.oNow      ||
+           performance.webkitNow ||
+           function() { return new Date().getTime() }
+  })()
+}
+
+let _process, getNanoSeconds, loadTime;
+try { _process = eval('process') } catch (e) {}
+
+const hasProcessHrtime = () => {
+  return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime
+}
+
+if (hasProcessHrtime()) {
+  getNanoSeconds = () => {
+    const hr = _process.hrtime()
+    return hr[0] * 1e9 + hr[1]
+  }
+  loadTime = getNanoSeconds()
+}
+
 const R20 = /%20/g
 
 const validKeys = (entry) => Object
@@ -34,6 +63,19 @@ export function toQueryString(entry) {
     .join('&')
     .replace(R20, '+')
 }
+
+/*
+ * Gives time in miliseconds, but with sub-milisecond precision for Browser
+ * and Nodejs
+ **/
+export function performanceNow() {
+  if (hasProcessHrtime()) {
+    return (getNanoSeconds() - loadTime) / 1e6;
+  }
+
+  return performance.now();
+}
+
 /*
  * borrowed from: https://gist.github.com/monsur/706839
  * XmlHttpRequest's getAllResponseHeaders() method returns a string of response
