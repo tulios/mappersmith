@@ -17,13 +17,13 @@ module.exports = function(config) {
     singleRun: process.env.SINGLE_RUN || false,
 
     files: [
-      'spec/helper.js',
+      'spec/index.js',
       {pattern: 'spec/*-spec.js', watched: false},
       {pattern: 'spec/**/*-spec.js', watched: false}
     ],
 
     preprocessors: {
-      'spec/helper.js': ['webpack', 'sourcemap'],
+      'spec/index.js': ['webpack', 'sourcemap'],
       'spec/*-spec.js': ['webpack', 'sourcemap'],
       'spec/**/*-spec.js': ['webpack', 'sourcemap']
     },
