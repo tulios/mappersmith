@@ -9,7 +9,7 @@ let originalConfigs, methodDescriptor, request
 describe('Gateway', () => {
   beforeEach(() => {
     if (!originalConfigs) {
-      originalConfigs = configs.gateway
+      originalConfigs = configs.gatewayConfigs
     }
 
     methodDescriptor = new MethodDescriptor({ method: 'get' })
@@ -17,19 +17,19 @@ describe('Gateway', () => {
   })
 
   afterEach(() => {
-    configs.gateway = originalConfigs
+    configs.gatewayConfigs = originalConfigs
   })
 
   describe('#options', () => {
     it('returns gateway options from index/configs', () => {
-      expect(new Gateway(request).options()).toEqual(configs.gateway)
+      expect(new Gateway(request).options()).toEqual(configs.gatewayConfigs)
     })
   })
 
   describe('#shouldEmulateHTTP', () => {
     describe('when "delete", "put" or "patch" and emulateHTTP=true', () => {
       beforeEach(() => {
-        configs.gateway.emulateHTTP = true
+        configs.gatewayConfigs.emulateHTTP = true
       })
 
       it('returns true', () => {
@@ -46,7 +46,7 @@ describe('Gateway', () => {
 
     describe('when "get" or "post" and emulateHTTP=true', () => {
       beforeEach(() => {
-        configs.gateway.emulateHTTP = true
+        configs.gatewayConfigs.emulateHTTP = true
       })
 
       it('returns false', () => {
@@ -60,7 +60,7 @@ describe('Gateway', () => {
 
     describe('when emulateHTTP=false', () => {
       beforeEach(() => {
-        configs.gateway.emulateHTTP = false
+        configs.gatewayConfigs.emulateHTTP = false
       })
 
       it('returns false', () => {

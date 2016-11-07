@@ -13,7 +13,7 @@ export default class Gateway {
   }
 
   options() {
-    return configs.gateway
+    return configs.gatewayConfigs
   }
 
   shouldEmulateHTTP() {

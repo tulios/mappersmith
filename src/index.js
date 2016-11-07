@@ -1,9 +1,16 @@
 export const configs = {
   Promise: typeof Promise === 'function' ? Promise : null,
-  gateway: {
-    // Setting this option will fake PUT, PATCH and DELETE requests with a HTTP POST. It will
-    // add "_method" and "X-HTTP-Method-Override" with the original requested method
-    // @default false
+  /**
+   * Gateway implementation, it defaults to "src/gateway/xhr" for browsers and
+   * "src/gateway/http" for node
+   */
+  gateway: null,
+  gatewayConfigs: {
+    /**
+     * Setting this option will fake PUT, PATCH and DELETE requests with a HTTP POST. It will
+     * add "_method" and "X-HTTP-Method-Override" with the original requested method
+     * @default false
+     */
     emulateHTTP: false,
 
     XHR: {

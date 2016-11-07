@@ -19,7 +19,7 @@ describe('XHR', () => {
     fauxJax.install()
 
     if (!originalConfigs) {
-      originalConfigs = configs.gateway
+      originalConfigs = configs.gatewayConfigs
     }
 
     requestParams = {}
@@ -37,7 +37,7 @@ describe('XHR', () => {
 
   afterEach(() => {
     fauxJax.restore()
-    configs.gateway = originalConfigs
+    configs.gatewayConfigs = originalConfigs
   })
 
   for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
@@ -143,7 +143,7 @@ describe('XHR', () => {
     describe(`#${methodName} emulating HTTP method`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
-        configs.gateway.emulateHTTP = true
+        configs.gatewayConfigs.emulateHTTP = true
       })
 
       it('sends a POST request', (done) => {
@@ -184,7 +184,7 @@ describe('XHR', () => {
     it('calls the callback with xhr object', (done) => {
       methodDescriptor.method = 'get'
       const configure = jasmine.createSpy('XHRConfigureCallback')
-      configs.gateway.XHR.configure = configure
+      configs.gatewayConfigs.XHR.configure = configure
 
       respondWith(httpResponse)
       assertSuccess()(done, (response) => {
@@ -197,7 +197,7 @@ describe('XHR', () => {
   describe('with option "withCredentials"', () => {
     it('sets the value', (done) => {
       methodDescriptor.method = 'get'
-      configs.gateway.XHR.withCredentials = true
+      configs.gatewayConfigs.XHR.withCredentials = true
 
       respondWith(httpResponse, (fauxJaxRequest) => {
         expect(fauxJaxRequest.withCredentials).toEqual(true)
