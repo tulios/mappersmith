@@ -1,23 +1,23 @@
 import { lowerCaseObjectKeys } from './utils'
 
-export default class Response {
-  /**
-   * @param {Request} originalRequest
-   * @param {Integer} responseStatus
-   * @param {String} responseData
-   * @param {Object} responseHeaders
-   */
-  constructor(originalRequest, responseStatus, responseData, responseHeaders) {
-    this.originalRequest = originalRequest
-    this.responseStatus = responseStatus
-    this.responseData = responseData
-    this.responseHeaders = responseHeaders || {}
-    this.timeElapsed = null
-  }
+/**
+ * @param {Request} originalRequest
+ * @param {Integer} responseStatus
+ * @param {String} responseData
+ * @param {Object} responseHeaders
+ */
+function Response(originalRequest, responseStatus, responseData, responseHeaders) {
+  this.originalRequest = originalRequest
+  this.responseStatus = responseStatus
+  this.responseData = responseData
+  this.responseHeaders = responseHeaders || {}
+  this.timeElapsed = null
+}
 
+Response.prototype = {
   request() {
     return this.originalRequest
-  }
+  },
 
   status() {
     // IE sends 1223 instead of 204
@@ -26,12 +26,12 @@ export default class Response {
     }
 
     return this.responseStatus
-  }
+  },
 
   success() {
     const status = this.status()
     return status >= 200 && status < 400
-  }
+  },
 
   /**
    * Returns an object with the headers. Header names are converted to
@@ -39,7 +39,7 @@ export default class Response {
    */
   headers() {
     return lowerCaseObjectKeys(this.responseHeaders)
-  }
+  },
 
   /**
    * Returns the response data, if "Content-Type" is "application/json"
@@ -55,9 +55,11 @@ export default class Response {
     }
 
     return processor(this, data)
-  }
+  },
 
   isContentTypeJSON() {
     return /application\/json/.test(this.headers()['content-type'])
   }
 }
+
+export default Response

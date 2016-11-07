@@ -6,30 +6,34 @@ const isContentTypeJSON = (xmlHttpRequest) => {
   return /application\/json/.test(xmlHttpRequest.getResponseHeader('Content-Type'))
 }
 
-export default class XHR extends Gateway {
+function XHR (request) {
+  Gateway.apply(this, arguments)
+}
+
+XHR.prototype = Gateway.extends({
   get() {
     const xmlHttpRequest = new XMLHttpRequest()
     this.configureCallbacks(xmlHttpRequest)
     xmlHttpRequest.open('get', this.request.url, true)
     this.setHeaders(xmlHttpRequest)
     xmlHttpRequest.send()
-  }
+  },
 
   post() {
     this.performRequest('post')
-  }
+  },
 
   put() {
     this.performRequest('put')
-  }
+  },
 
   patch() {
     this.performRequest('patch')
-  }
+  },
 
   delete() {
     this.performRequest('delete')
-  }
+  },
 
   configureCallbacks(xmlHttpRequest) {
     xmlHttpRequest.addEventListener('load', () => {
@@ -60,7 +64,7 @@ export default class XHR extends Gateway {
     if (xhrOptions.configure) {
       xhrOptions.configure(xmlHttpRequest)
     }
-  }
+  },
 
   performRequest(method) {
     let requestMethod = method
@@ -93,7 +97,7 @@ export default class XHR extends Gateway {
     }
 
     xmlHttpRequest.send.apply(xmlHttpRequest, args)
-  }
+  },
 
   createResponse(xmlHttpRequest) {
     const status = xmlHttpRequest.status
@@ -105,7 +109,7 @@ export default class XHR extends Gateway {
       data,
       responseHeaders
     )
-  }
+  },
 
   setHeaders(xmlHttpRequest) {
     const headers = this.request.headers()
@@ -114,7 +118,7 @@ export default class XHR extends Gateway {
       .forEach((headerName) => {
         xmlHttpRequest.setRequestHeader(headerName, headers[headerName])
       })
-  }
+  },
 
   ensureContentType(xmlHttpRequest) {
     const headers = this.request.headers()
@@ -125,4 +129,6 @@ export default class XHR extends Gateway {
       )
     }
   }
-}
+})
+
+export default XHR

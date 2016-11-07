@@ -2,12 +2,12 @@ import { toQueryString, lowerCaseObjectKeys } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
 
-export default class Request {
-  constructor(methodDescriptor, requestParams) {
-    this.methodDescriptor = methodDescriptor
-    this.requestParams = requestParams || {}
-  }
+function Request(methodDescriptor, requestParams) {
+  this.methodDescriptor = methodDescriptor
+  this.requestParams = requestParams || {}
+}
 
+Request.prototype = {
   params() {
     const params = Object.assign(
       {},
@@ -28,16 +28,16 @@ export default class Request {
         }
         return obj
       }, {})
-  }
+  },
 
   method() {
     return this.methodDescriptor.method.toLowerCase()
-  }
+  },
 
   host() {
     const configuredHost = (this.methodDescriptor.host || '').replace(/\/$/, '')
     return configuredHost || '/'
-  }
+  },
 
   path() {
     let path = this.methodDescriptor.path
@@ -71,11 +71,11 @@ export default class Request {
     }
 
     return path
-  }
+  },
 
   processor() {
     return this.methodDescriptor.processor
-  }
+  },
 
   headers() {
     return lowerCaseObjectKeys(
@@ -85,9 +85,11 @@ export default class Request {
         this.requestParams[this.methodDescriptor.headersAttr]
       )
     )
-  }
+  },
 
   body() {
     return this.requestParams[this.methodDescriptor.bodyAttr]
   }
 }
+
+export default Request

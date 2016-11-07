@@ -2,24 +2,25 @@ import { performanceNow } from './utils'
 import { configs } from './index'
 import Response from './response'
 
-export default class Gateway {
-  /**
-   * @param {Request} request
-   */
-  constructor(request) {
-    this.request = request
-    this.successCallback = function(response) {}
-    this.failCallback = function(response) {}
-  }
+function Gateway(request) {
+  this.request = request
+  this.successCallback = function(response) {}
+  this.failCallback = function(response) {}
+}
 
+Gateway.extends = function(methods) {
+  return Object.assign({}, Gateway.prototype, methods)
+}
+
+Gateway.prototype = {
   options() {
     return configs.gatewayConfigs
-  }
+  },
 
   shouldEmulateHTTP() {
     return this.options().emulateHTTP &&
       /^(delete|put|patch)/i.test(this.request.method())
-  }
+  },
 
   call() {
     const timeStart = performanceNow()
@@ -38,3 +39,5 @@ export default class Gateway {
     })
   }
 }
+
+export default Gateway

@@ -1,8 +1,13 @@
 const path = require('path')
 const webpack = require('webpack')
+const env = process.env.NODE_ENV || 'development'
 let plugins = []
 
-if (process.env.NODE_ENV === 'production') {
+const devTool = (env === 'test')
+  ? 'inline-source-map'
+  : 'source-map'
+
+if (env === 'production') {
   plugins = [
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
@@ -30,7 +35,7 @@ module.exports = {
     process: false
   },
   plugins: plugins,
-  devtool: 'source-map',
+  devtool: devTool,
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
