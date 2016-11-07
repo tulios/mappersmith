@@ -1,4 +1,4 @@
-import { performanceNow } from './utils'
+import { performanceNow, assign } from './utils'
 import { configs } from './index'
 import Response from './response'
 
@@ -9,7 +9,7 @@ function Gateway(request) {
 }
 
 Gateway.extends = function(methods) {
-  return Object.assign({}, Gateway.prototype, methods)
+  return assign({}, Gateway.prototype, methods)
 }
 
 Gateway.prototype = {

@@ -1,4 +1,4 @@
-import { toQueryString, lowerCaseObjectKeys } from './utils'
+import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
 
@@ -9,7 +9,7 @@ function Request(methodDescriptor, requestParams) {
 
 Request.prototype = {
   params() {
-    const params = Object.assign(
+    const params = assign(
       {},
       this.methodDescriptor.params,
       this.requestParams
@@ -79,7 +79,7 @@ Request.prototype = {
 
   headers() {
     return lowerCaseObjectKeys(
-      Object.assign(
+      assign(
         {},
         this.methodDescriptor.headers,
         this.requestParams[this.methodDescriptor.headersAttr]
