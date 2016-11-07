@@ -1,6 +1,6 @@
-import { performanceNow } from 'src/utils'
-import { configs } from 'src/index'
-import Response from 'src/response'
+import { performanceNow } from './utils'
+import { configs } from './index'
+import Response from './response'
 
 export default class Gateway {
   /**

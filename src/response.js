@@ -1,4 +1,4 @@
-import { lowerCaseObjectKeys } from 'src/utils'
+import { lowerCaseObjectKeys } from './utils'
 
 export default class Response {
   /**

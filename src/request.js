@@ -1,4 +1,4 @@
-import { toQueryString, lowerCaseObjectKeys } from 'src/utils'
+import { toQueryString, lowerCaseObjectKeys } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
 

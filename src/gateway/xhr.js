@@ -1,6 +1,6 @@
-import Gateway from 'src/gateway'
-import Response from 'src/response'
-import { parseResponseHeaders, toQueryString } from 'src/utils'
+import Gateway from '../gateway'
+import Response from '../response'
+import { parseResponseHeaders, toQueryString } from '../utils'
 
 const isContentTypeJSON = (xmlHttpRequest) => {
   return /application\/json/.test(xmlHttpRequest.getResponseHeader('Content-Type'))
