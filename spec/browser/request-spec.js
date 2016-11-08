@@ -41,8 +41,8 @@ describe('Request', () => {
   })
 
   describe('#host', () => {
-    it('has "/" as the default host', () => {
-      expect(new Request(methodDescriptor).host()).toEqual('/')
+    it('has blank as the default host', () => {
+      expect(new Request(methodDescriptor).host()).toEqual('')
     })
 
     it('removes trailing "/"', () => {
@@ -94,6 +94,15 @@ describe('Request', () => {
       methodDescriptor.params = { [methodDescriptor.bodyAttr]: 'body-payload' }
       const path = new Request(methodDescriptor).path()
       expect(path).toEqual('/api/example.json')
+    })
+  })
+
+  describe('#url', () => {
+    it('joins host and path', () => {
+      methodDescriptor.host = 'http://example.org'
+      methodDescriptor.path = 'api/example.json'
+      const url = new Request(methodDescriptor).url()
+      expect(url).toEqual('http://example.org/api/example.json')
     })
   })
 

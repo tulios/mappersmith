@@ -14,7 +14,7 @@ XHR.prototype = Gateway.extends({
   get() {
     const xmlHttpRequest = new XMLHttpRequest()
     this.configureCallbacks(xmlHttpRequest)
-    xmlHttpRequest.open('get', this.request.url, true)
+    xmlHttpRequest.open('get', this.request.url(), true)
     this.setHeaders(xmlHttpRequest)
     xmlHttpRequest.send()
   },
@@ -82,7 +82,7 @@ XHR.prototype = Gateway.extends({
       }
     }
 
-    xmlHttpRequest.open(requestMethod, this.request.url, true);
+    xmlHttpRequest.open(requestMethod, this.request.url(), true);
 
     if (emulateHTTP) {
       xmlHttpRequest.setRequestHeader('x-http-method-override', method)

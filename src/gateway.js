@@ -4,8 +4,8 @@ import Response from './response'
 
 function Gateway(request) {
   this.request = request
-  this.successCallback = function(response) {}
-  this.failCallback = function(response) {}
+  this.successCallback = function() {}
+  this.failCallback = function() {}
 }
 
 Gateway.extends = function(methods) {

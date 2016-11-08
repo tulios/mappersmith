@@ -35,8 +35,7 @@ Request.prototype = {
   },
 
   host() {
-    const configuredHost = (this.methodDescriptor.host || '').replace(/\/$/, '')
-    return configuredHost || '/'
+    return (this.methodDescriptor.host || '').replace(/\/$/, '')
   },
 
   path() {
@@ -71,6 +70,10 @@ Request.prototype = {
     }
 
     return path
+  },
+
+  url() {
+    return `${this.host()}${this.path()}`
   },
 
   processor() {
