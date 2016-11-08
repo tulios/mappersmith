@@ -6,15 +6,16 @@ import MethodDescriptor from 'src/method-descriptor'
 
 import { createGatewayAsserts, respondWith } from 'spec/browser/helper'
 
-let originalConfigs
-let methodDescriptor, requestParams, httpResponse
-const { assertSuccess, assertFailure } = createGatewayAsserts(() => [
-  XHR,
-  methodDescriptor,
-  requestParams
-])
-
 describe('XHR', () => {
+  let originalConfigs
+  let methodDescriptor, requestParams, httpResponse
+
+  const { assertSuccess, assertFailure } = createGatewayAsserts(() => [
+    XHR,
+    methodDescriptor,
+    requestParams
+  ])
+
   beforeEach(() => {
     fauxJax.install()
 

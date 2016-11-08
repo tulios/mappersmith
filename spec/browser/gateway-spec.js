@@ -4,9 +4,9 @@ import MethodDescriptor from 'src/method-descriptor'
 import Request from 'src/request'
 import Response from 'src/response'
 
-let originalConfigs, methodDescriptor, request
-
 describe('Gateway', () => {
+  let originalConfigs, methodDescriptor, request
+  
   beforeEach(() => {
     if (!originalConfigs) {
       originalConfigs = configs.gatewayConfigs
