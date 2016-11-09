@@ -1,8 +1,10 @@
+import ClientBuilder from './client-builder'
+
 export const configs = {
   Promise: typeof Promise === 'function' ? Promise : null,
   /**
-   * Gateway implementation, it defaults to "src/gateway/xhr" for browsers and
-   * "src/gateway/http" for node
+   * Gateway implementation, it defaults to "lib/gateway/xhr" for browsers and
+   * "lib/gateway/http" for node
    */
   gateway: null,
   gatewayConfigs: {
@@ -30,4 +32,8 @@ export const configs = {
       configure: null
     }
   }
+}
+
+export default function forge(manifest) {
+  return new ClientBuilder(manifest, configs.gateway).build()
 }
