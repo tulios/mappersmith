@@ -69,4 +69,11 @@ describe('ClientBuilder', () => {
       expect(request.params()).toEqual({ id: 1 })
     })
   })
+
+  describe('when gatewayClass is not defined', () => {
+    it('raises error', () => {
+      expect(() => new ClientBuilder(manifest, null))
+        .toThrowError('[Mappersmith] gateway class not configured (configs.gateway)')
+    })
+  })
 })

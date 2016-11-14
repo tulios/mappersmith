@@ -4,6 +4,12 @@ import Request from './request'
 import { assign } from './utils'
 
 function ClientBuilder(manifest, GatewayClass) {
+  if (!GatewayClass) {
+    throw new Error(
+      '[Mappersmith] gateway class not configured (configs.gateway)'
+    )
+  }
+
   this.manifest = new Manifest(manifest)
   this.GatewayClass = GatewayClass
   this.globalSuccessHandler = function() {}
