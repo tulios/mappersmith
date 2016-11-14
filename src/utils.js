@@ -124,3 +124,13 @@ export const assign = Object.assign || function(target) {
   }
   return target
 }
+
+const toString = Object.prototype.toString
+export function isPlainObject(value) {
+  if (!toString.call(value) === '[object Object]') {
+    return false
+  }
+
+  return Object.getPrototypeOf(value) ===
+    Object.getPrototypeOf({})
+}
