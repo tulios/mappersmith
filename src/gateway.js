@@ -1,4 +1,4 @@
-import { performanceNow, assign } from './utils'
+import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
 import { configs } from './index'
 import Response from './response'
 
@@ -35,8 +35,41 @@ Gateway.prototype = {
         reject(response)
       }
 
-      this[this.request.method()].apply(this, arguments)
+      try {
+        this[this.request.method()].apply(this, arguments)
+      } catch (e) {
+        this.dispatchClientError(e.message)
+      }
     })
+  },
+
+  dispatchResponse(response) {
+    response.success()
+      ? this.successCallback(response)
+      : this.failCallback(response)
+  },
+
+  dispatchClientError(message) {
+    this.failCallback(new Response(this.request, 400, message))
+  },
+
+  prepareBody(method, headers) {
+    let body = this.request.body()
+
+    if (this.shouldEmulateHTTP()) {
+      body = body || {}
+      isPlainObject(body) && (body._method = method)
+      headers['x-http-method-override'] = method
+    }
+
+    const bodyString = toQueryString(body)
+
+    if (bodyString) {
+      headers['content-type'] = 'application/x-www-form-urlencoded;charset=utf-8'
+      headers['content-length'] = bodyString.length
+    }
+
+    return bodyString
   }
 }
 

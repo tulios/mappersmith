@@ -25,8 +25,8 @@ export function createGatewaySuccessAssert(Gateway, methodDescriptor, requestPar
         assertsCallback(response)
         done()
       })
-      .catch((e) => {
-        const message = e.message ? e.message : e
+      .catch((response) => {
+        const message = response.responseData
         done.fail(`test failed with promise error: ${message}`)
       })
   }

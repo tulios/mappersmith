@@ -1,7 +1,7 @@
 import createManifest from 'spec/integration/manifest'
 import apiResponses from 'spec/integration/responses'
 
-import forge from 'src/index'
+import forge, { configs } from 'src/index'
 
 function debugResponse(response) {
   const request = response.request()
@@ -13,10 +13,16 @@ function errorMessage(response) {
 }
 
 export default function IntegrationTestsForGateway(gateway, params) {
-  let Client
+  let previousGateway, Client
 
   beforeEach(() => {
+    previousGateway = configs.gateway
+    configs.gateway = gateway
     Client = forge(createManifest(params.host), gateway)
+  })
+
+  afterEach(() => {
+    configs.gateway = previousGateway
   })
 
   it('GET /api/books.json', (done) => {

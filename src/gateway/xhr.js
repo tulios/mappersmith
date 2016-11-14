@@ -1,10 +1,6 @@
 import Gateway from '../gateway'
 import Response from '../response'
-import { parseResponseHeaders, toQueryString } from '../utils'
-
-const isContentTypeJSON = (xmlHttpRequest) => {
-  return /application\/json/.test(xmlHttpRequest.getResponseHeader('Content-Type'))
-}
+import { assign, parseResponseHeaders } from '../utils'
 
 function XHR (request) {
   Gateway.apply(this, arguments)
@@ -15,7 +11,7 @@ XHR.prototype = Gateway.extends({
     const xmlHttpRequest = new XMLHttpRequest()
     this.configureCallbacks(xmlHttpRequest)
     xmlHttpRequest.open('get', this.request.url(), true)
-    this.setHeaders(xmlHttpRequest)
+    this.setHeaders(xmlHttpRequest, {})
     xmlHttpRequest.send()
   },
 
@@ -37,23 +33,11 @@ XHR.prototype = Gateway.extends({
 
   configureCallbacks(xmlHttpRequest) {
     xmlHttpRequest.addEventListener('load', () => {
-      try {
-        const status = xmlHttpRequest.status
-        const response = this.createResponse(xmlHttpRequest)
-
-        if (status >= 200 && status < 400) {
-          this.successCallback(response)
-
-        } else {
-          this.failCallback(response)
-        }
-      } catch (e) {
-        this.failCallback(new Response(this.request, 400, e.message))
-      }
+      this.dispatchResponse(this.createResponse(xmlHttpRequest))
     })
 
     xmlHttpRequest.addEventListener('error', () => {
-      this.failCallback(new Response(this.request, 400, 'Network error'))
+      this.dispatchClientError('Network error')
     })
 
     const xhrOptions = this.options().XHR
@@ -67,34 +51,17 @@ XHR.prototype = Gateway.extends({
   },
 
   performRequest(method) {
-    let requestMethod = method
-    const emulateHTTP = this.shouldEmulateHTTP()
+    const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const xmlHttpRequest = new XMLHttpRequest()
     this.configureCallbacks(xmlHttpRequest)
-
-    let body = this.request.body()
-
-    if (emulateHTTP) {
-      body = body || {}
-      requestMethod = 'post'
-      if (typeof body === 'object') {
-        body._method = method
-      }
-    }
-
     xmlHttpRequest.open(requestMethod, this.request.url(), true);
 
-    if (emulateHTTP) {
-      xmlHttpRequest.setRequestHeader('x-http-method-override', method)
-    }
+    const customHeaders = {}
+    const body = this.prepareBody(method, customHeaders)
+    this.setHeaders(xmlHttpRequest, customHeaders)
 
-    this.setHeaders(xmlHttpRequest)
-    this.ensureContentType(xmlHttpRequest)
-
-    let args = [];
-    if (body !== undefined) {
-      args.push(toQueryString(body))
-    }
+    const args = []
+    body && args.push(body)
 
     xmlHttpRequest.send.apply(xmlHttpRequest, args)
   },
@@ -111,23 +78,13 @@ XHR.prototype = Gateway.extends({
     )
   },
 
-  setHeaders(xmlHttpRequest) {
-    const headers = this.request.headers()
+  setHeaders(xmlHttpRequest, customHeaders) {
+    const headers = assign(customHeaders, this.request.headers())
     Object
       .keys(headers)
       .forEach((headerName) => {
         xmlHttpRequest.setRequestHeader(headerName, headers[headerName])
       })
-  },
-
-  ensureContentType(xmlHttpRequest) {
-    const headers = this.request.headers()
-    if (!headers['content-type']) {
-      xmlHttpRequest.setRequestHeader(
-        'content-type',
-        'application/x-www-form-urlencoded;charset=utf-8'
-      )
-    }
   }
 })
 
