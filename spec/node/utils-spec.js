@@ -3,10 +3,6 @@ import {
 } from 'src/utils'
 
 describe('#performanceNow', () => {
-  it('initially gives a near zero (< 20 ms) time', () => {
-    expect(performanceNow() < 20).toEqual(true)
-  })
-
   it('gives a positive time', () => {
     expect(performanceNow() > 0).toEqual(true)
   })

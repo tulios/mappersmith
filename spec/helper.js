@@ -1,4 +1,4 @@
-import fauxJax from 'faux-jax'
+import fauxJax from 'faux-jax-tulios'
 import Request from 'src/request'
 import MethodDescriptor from 'src/method-descriptor'
 
