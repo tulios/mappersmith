@@ -80,6 +80,12 @@ describe('Response', () => {
     })
   })
 
+  describe('#rawData', () => {
+    it('returns raw responseData', () => {
+      expect(createResponse().rawData()).toEqual(responseData)
+    })
+  })
+
   describe('#data', () => {
     it('returns the response data', () => {
       expect(createResponse().data()).toEqual(responseData)

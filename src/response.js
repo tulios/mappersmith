@@ -41,6 +41,10 @@ Response.prototype = {
     return lowerCaseObjectKeys(this.responseHeaders)
   },
 
+  rawData() {
+    return this.responseData
+  },
+
   /**
    * Returns the response data, if "Content-Type" is "application/json"
    * it parses the response and returns an object. Response data with be
