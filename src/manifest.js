@@ -4,6 +4,7 @@ import { assign } from './utils'
 function Manifest(obj) {
   this.host = obj.host
   this.resources = obj.resources || {}
+  this.middlewares = obj.middlewares || []
 }
 
 Manifest.prototype = {
@@ -30,6 +31,10 @@ Manifest.prototype = {
       { host: this.host },
       definition
     ))
+  },
+
+  createMiddlewares() {
+    return this.middlewares.map((middleware) => middleware())
   }
 }
 
