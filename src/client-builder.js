@@ -18,7 +18,7 @@ function ClientBuilder(manifest, GatewayClass) {
 
 ClientBuilder.prototype = {
   build() {
-    const client = {}
+    const client = { _manifest: this.manifest }
 
     this.manifest.eachResource((name, methods) => {
       client[name] = this.buildResource(methods)

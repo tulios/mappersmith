@@ -1,4 +1,5 @@
 import ClientBuilder from 'src/client-builder'
+import Manifest from 'src/manifest'
 import MethodDescriptor from 'src/method-descriptor'
 import Request from 'src/request'
 import Response from 'src/response'
@@ -33,13 +34,15 @@ describe('ClientBuilder', () => {
     client = clientBuilder.build()
   })
 
-  it('creates an object with all resources and its methods', () => {
+  it('creates an object with all resources, methods, and a reference to the manifest', () => {
     expect(client.User).toEqual(jasmine.any(Object))
     expect(client.User.byId).toEqual(jasmine.any(Function))
 
     expect(client.Blog).toEqual(jasmine.any(Object))
     expect(client.Blog.post).toEqual(jasmine.any(Function))
     expect(client.Blog.addComment).toEqual(jasmine.any(Function))
+
+    expect(client._manifest instanceof Manifest).toEqual(true)
   })
 
   it('add global handlers for success and failure', () => {
