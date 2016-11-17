@@ -6,7 +6,7 @@ import Response from 'src/response'
 
 describe('Gateway', () => {
   let originalConfigs, methodDescriptor, request
-  
+
   beforeEach(() => {
     if (!originalConfigs) {
       originalConfigs = configs.gatewayConfigs
@@ -101,8 +101,9 @@ describe('Gateway', () => {
           expect(response.timeElapsed).not.toBeNull()
           done()
         })
-        .catch((e) => {
-          done.fail(`test failed with promise error: ${e.message}`)
+        .catch((response) => {
+          const error = response.rawData ? response.rawData() : response
+          done.fail(`test failed with promise error: ${error}`)
         })
 
         gateway.successCallback(new Response({}))

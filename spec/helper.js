@@ -28,8 +28,8 @@ export function createGatewaySuccessAssert(Gateway, methodDescriptor, requestPar
         done()
       })
       .catch((response) => {
-        const message = response.rawData()
-        done.fail(`test failed with promise error: ${message}`)
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
       })
   }
 }
@@ -42,7 +42,8 @@ export function createGatewayFailureAssert(Gateway, methodDescriptor, requestPar
     gateway
       .call()
       .then((response) => {
-        done.fail(`Expected this request to fail: ${response}`)
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
       })
       .catch((response) => {
         assertsCallback(response)

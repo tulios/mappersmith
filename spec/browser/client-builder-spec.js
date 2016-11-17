@@ -122,8 +122,8 @@ describe('ClientBuilder', () => {
         done()
       })
       .catch((response) => {
-        const message = response.rawData()
-        done.fail(`test failed with promise error: ${message}`)
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
       })
     })
 
@@ -135,8 +135,8 @@ describe('ClientBuilder', () => {
         done()
       })
       .catch((response) => {
-        const message = response.rawData()
-        done.fail(`test failed with promise error: ${message}`)
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
       })
     })
   })
