@@ -1,3 +1,5 @@
+import LogMiddleware from 'src/middlewares/log'
+
 export default function createManifest(host = null) {
   return {
     host: host,
@@ -12,7 +14,13 @@ export default function createManifest(host = null) {
       Pictures: {
         create: { method: 'post', path: '/api/pictures/{category}' },
         add: { method: 'put', path: '/api/pictures/{category}' }
+      },
+      Failure: {
+        get: { path: '/api/failure.json' }
       }
-    }
+    },
+    middlewares: [
+      LogMiddleware
+    ]
   }
 }

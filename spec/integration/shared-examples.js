@@ -2,20 +2,36 @@ import createManifest from 'spec/integration/manifest'
 import apiResponses from 'spec/integration/responses'
 
 import forge, { configs } from 'src/index'
+import {
+  setSuccessLogger,
+  setErrorLogger,
+  setLoggerEnabled,
+  defaultSuccessLogger,
+  defaultErrorLogger
+} from 'src/middlewares/log'
 
 function debugResponse(response) {
   const request = response.request()
-  return `Headers: ${JSON.stringify(request.headers())}, ${request.method().toUpperCase()} ${request.url()} => ${response.data()}`
+  return `Status: ${response.status()}, Headers: ${JSON.stringify(request.headers())}, ${request.method().toUpperCase()} ${request.url()} => ${response.rawData()}`
 }
 
 function errorMessage(response) {
-  return response.data ? debugResponse(response) : response
+  return response.rawData ? debugResponse(response) : response
 }
 
 export default function IntegrationTestsForGateway(gateway, params) {
-  let previousGateway, Client
+  let successLogBuffer,
+      errorLogBuffer,
+      previousGateway,
+      Client
 
   beforeEach(() => {
+    successLogBuffer = []
+    errorLogBuffer = []
+    setLoggerEnabled(true)
+    setSuccessLogger((message) => successLogBuffer.push(message))
+    setErrorLogger((message) => errorLogBuffer.push(message))
+
     previousGateway = configs.gateway
     configs.gateway = gateway
     Client = forge(createManifest(params.host), gateway)
@@ -23,6 +39,8 @@ export default function IntegrationTestsForGateway(gateway, params) {
 
   afterEach(() => {
     configs.gateway = previousGateway
+    setSuccessLogger(defaultSuccessLogger)
+    setErrorLogger(defaultErrorLogger)
   })
 
   it('GET /api/books.json', (done) => {
@@ -101,6 +119,53 @@ export default function IntegrationTestsForGateway(gateway, params) {
       })
       .catch((response) => {
         done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
+    })
+  })
+
+  describe('with failures', () => {
+    it('rejects the promise', (done) => {
+      Client.Failure.get().then((response) => {
+        done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+      })
+      .catch((response) => {
+        expect(response.status()).toEqual(500)
+        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiFailure' }))
+        expect(response.data()).toEqual(apiResponses.apiFailure)
+        done()
+      })
+    })
+  })
+
+  describe('log middleware', () => {
+    it('logs request and response', (done) => {
+      Client.Book.all().then((response) => {
+        expect(successLogBuffer.length).toEqual(2) // request and response
+        expect(successLogBuffer).toEqual([
+          `-> GET ${params.host}/api/books.json`,
+          `<- GET ${params.host}/api/books.json status=200 \'[{"id":1,"title":"Lorem ipsum dolor sit amet","description":"consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"},{"id":2,"title":"Ut enim ad minim veniam","description":"quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"}]\'`
+        ])
+        done()
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
+    })
+
+    describe('when the request fails', () => {
+      it('logs request and response anyway', (done) => {
+        Client.Failure.get().then((response) => {
+          done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+        })
+        .catch((response) => {
+          expect(successLogBuffer.length).toEqual(1) // only request
+          expect(errorLogBuffer.length).toEqual(1) // only response
+          expect(successLogBuffer).toEqual([`-> GET ${params.host}/api/failure.json`])
+          expect(errorLogBuffer).toEqual([
+            `<- (ERROR) GET ${params.host}/api/failure.json status=500 \'{"errorMessage":"something went bad"}\'`
+          ])
+          done()
+        })
       })
     })
   })

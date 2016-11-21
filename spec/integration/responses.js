@@ -28,5 +28,9 @@ module.exports = {
   apiPicturesAdd: {
     picture_id: 3,
     new: true
+  },
+
+  apiFailure: {
+    errorMessage: 'something went bad'
   }
 }

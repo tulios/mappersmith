@@ -42,6 +42,12 @@ app.put('/api/pictures/:category', function(req, res) {
   res.send(responses.apiPicturesAdd)
 })
 
+app.get('/api/failure.json', function(req, res) {
+  res.set({ 'X-Api-Response': 'apiFailure' })
+  res.status(500)
+  res.send(responses.apiFailure)
+})
+
 app.listen(9090, function() {
   console.log('Integration backend listening on port 9090')
 })
