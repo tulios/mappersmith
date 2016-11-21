@@ -2,14 +2,14 @@ import MockAssert from './mock-assert'
 import Response from '../response'
 import { isPlainObject } from '../utils'
 
-function MockResponse(id, props) {
+function MockRequest(id, props) {
   this.id = id
 
   this.method = props.method || 'get'
   this.url = props.url
-  this.responseData = props.response
-  this.responseHeaders = props.headers || {}
-  this.responseStatus = props.status || 200
+  this.responseData = props.response.body
+  this.responseHeaders = props.response.headers || {}
+  this.responseStatus = props.response.status || 200
 
   this.calls = []
 
@@ -21,7 +21,7 @@ function MockResponse(id, props) {
   }
 }
 
-MockResponse.prototype = {
+MockRequest.prototype = {
   call(request) {
     this.calls.push(request)
     return new Response(
@@ -47,4 +47,4 @@ MockResponse.prototype = {
   }
 }
 
-export default MockResponse
+export default MockRequest

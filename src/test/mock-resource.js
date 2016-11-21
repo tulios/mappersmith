@@ -1,4 +1,4 @@
-import MockResponse from './mock-response'
+import MockRequest from './mock-request'
 import Request from '../request'
 
 function MockResource(id, client) {
@@ -10,7 +10,7 @@ function MockResource(id, client) {
   this.responseData = null
   this.responseHeaders = {}
   this.responseStatus = 200
-  this.mockResponse = null
+  this.mockRequest = null
 }
 
 MockResource.prototype = {
@@ -41,21 +41,23 @@ MockResource.prototype = {
 
   response(responseData) {
     this.responseData = responseData
-    this.mockResponse = this.toMockResponse()
+    this.mockRequest = this.toMockRequest()
 
-    return this.mockResponse.assertObject()
+    return this.mockRequest.assertObject()
   },
 
-  toMockResponse() {
+  toMockRequest() {
     const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
     const request = new Request(methodDescriptor, this.requestParams)
 
-    return new MockResponse(this.id, {
+    return new MockRequest(this.id, {
       method: request.method(),
       url: request.url(),
-      status: this.responseStatus,
-      headers: this.responseHeaders,
-      response: this.responseData
+      response: {
+        status: this.responseStatus,
+        headers: this.responseHeaders,
+        body: this.responseData
+      }
     })
   }
 }

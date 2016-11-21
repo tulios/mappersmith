@@ -7,7 +7,7 @@ import {
   uninstall as uninstallMock,
   clear as clearMocks,
   mockClient,
-  mockResponse
+  mockRequest
 } from 'src/test'
 
 describe('Test lib', () => {
@@ -132,22 +132,26 @@ describe('Test lib', () => {
     })
   })
 
-  describe('mock responses', () => {
+  describe('mock requests', () => {
     it('returns a MockAssert object', () => {
-      const mock = mockResponse({
+      const mock = mockRequest({
         method: 'get',
         url: 'http://example.org/users?sort=desc',
-        response: { ok3: true }
+        response: {
+          body: { ok3: true }
+        }
       })
 
       expect(mock instanceof MockAssert).toEqual(true)
     })
 
     it('defaults status 200 and automatically includes "application/json" for object responses', (done) => {
-      mockResponse({
+      mockRequest({
         method: 'get',
         url: 'http://example.org/users?sort=desc',
-        response: { ok3: true }
+        response: {
+          body: { ok3: true }
+        }
       })
 
       client.User.all({ sort: 'desc' }).then((response) => {
@@ -166,11 +170,13 @@ describe('Test lib', () => {
     })
 
     it('accepts custom status, headers, and params', (done) => {
-      mockResponse({
+      mockRequest({
         url: 'http://example.org/users/16',
-        status: 201,
-        headers: { 'x-test-response': 'mock' },
-        response: { ok4: true }
+        response: {
+          status: 201,
+          headers: { 'x-test-response': 'mock' },
+          body: { ok4: true }
+        }
       })
 
       client.User.byId({ id: 16 }).then((response) => {
@@ -186,11 +192,13 @@ describe('Test lib', () => {
     })
 
     it('triggers the catch block on http errors', (done) => {
-      mockResponse({
+      mockRequest({
         method: 'get',
         url: 'http://example.org/users/15',
-        status: 503,
-        response: { error: true }
+        response: {
+          status: 503,
+          body: { error: true }
+        }
       })
 
       client.User.byId({ id: 15 }).then((response) => {
@@ -205,10 +213,12 @@ describe('Test lib', () => {
     })
 
     it('works with different http methods', (done) => {
-      mockResponse({
+      mockRequest({
         method: 'post',
         url: 'http://example.org/blogs',
-        response: { created: true }
+        response: {
+          body: { created: true }
+        }
       })
 
       client.Blog.post().then((response) => {
@@ -224,10 +234,12 @@ describe('Test lib', () => {
     })
 
     it('works with text responses', (done) => {
-      mockResponse({
+      mockRequest({
         method: 'post',
         url: 'http://example.org/blogs',
-        response: 'just text!'
+        response: {
+          body: 'just text!'
+        }
       })
 
       client.Blog.post().then((response) => {

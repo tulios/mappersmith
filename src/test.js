@@ -1,4 +1,4 @@
-import MockResponse from './test/mock-response'
+import MockRequest from './test/mock-request'
 import MockResource from './test/mock-resource'
 import MockGateway from './gateway/mock'
 import { configs } from './index'
@@ -13,8 +13,8 @@ export const mockClient = (client) => {
   return entry
 }
 
-export const mockResponse = (props) => {
-  const entry = new MockResponse(ids++, props)
+export const mockRequest = (props) => {
+  const entry = new MockRequest(ids++, props)
   store.push(entry)
   return entry.assertObject()
 }
@@ -35,7 +35,7 @@ export const clear = () => store = []
 
 export const lookupResponse = (request) => {
   const mocks = store
-    .map((mock) => mock.mockResponse ? mock.mockResponse : mock)
+    .map((mock) => mock.mockRequest ? mock.mockRequest : mock)
 
   const exactMatch = mocks
     .filter((mock) => mock.isExactMatch(request))
