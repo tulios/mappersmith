@@ -1,5 +1,7 @@
 import forge from 'src/index'
 import MockAssert from 'src/test/mock-assert'
+import { getManifest } from 'spec/helper'
+
 import {
   install as installMock,
   uninstall as uninstallMock,
@@ -9,26 +11,12 @@ import {
 } from 'src/test'
 
 describe('Test lib', () => {
-  let manifest, client
+  let client
 
   beforeEach(() => {
     installMock()
 
-    manifest = {
-      host: 'http://example.org',
-      resources: {
-        User: {
-          all: { path: '/users' },
-          byId: { path: '/users/{id}' }
-        },
-        Blog: {
-          post: { method: 'post', path: '/blogs' },
-          addComment: { method: 'put', path: '/blogs/{id}/comment' }
-        }
-      }
-    }
-
-    client = forge(manifest)
+    client = forge(getManifest())
   })
 
   afterEach(() => {

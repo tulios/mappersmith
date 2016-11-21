@@ -43,10 +43,15 @@ ClientBuilder.prototype = {
     const finalRequest = middlewares
       .reduce((request, middleware) => middleware.request(request), initialRequest)
 
-    const next = () => new this.GatewayClass(finalRequest).call()
+    const callGateway = () => new this.GatewayClass(finalRequest).call()
 
-    return middlewares
-      .reduce((promise, middleware) => middleware.response(promise), next())
+    const execute = middlewares
+      .reduce(
+        (next, middleware) => () => middleware.response(next),
+        callGateway
+      )
+
+    return execute()
   },
 
   addGlobalHandlers(client) {

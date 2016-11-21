@@ -75,8 +75,8 @@ export const headerMiddleware = () => ({
     )
   },
 
-  response(promise) {
-    return promise.then((response) => new Response(
+  response(next) {
+    return next().then((response) => new Response(
       response.request(),
       response.status(),
       response.rawData(),
@@ -84,5 +84,42 @@ export const headerMiddleware = () => ({
         'x-middleware-phase': 'response'
       })
     ))
+  }
+})
+
+let countMiddlewareCurrent = 0
+let countMiddlewareStack = []
+
+export const getCountMiddlewareCurrent = () => countMiddlewareCurrent
+export const getCountMiddlewareStack = () => countMiddlewareStack
+export const resetCountMiddleware = () => {
+  countMiddlewareCurrent = 0
+  countMiddlewareStack = []
+}
+
+export const countMiddleware = () => ({
+  request(request) {
+    return request
+  },
+
+  response(next) {
+    return next().then((response) => {
+      countMiddlewareStack.push(response.data())
+      return new Response(response.request(), 200, ++countMiddlewareCurrent)
+    })
+  }
+})
+
+export const getManifest = () => ({
+  host: 'http://example.org',
+  resources: {
+    User: {
+      all: { path: '/users' },
+      byId: { path: '/users/{id}' }
+    },
+    Blog: {
+      post: { method: 'post', path: '/blogs' },
+      addComment: { method: 'put', path: '/blogs/{id}/comment' }
+    }
   }
 })

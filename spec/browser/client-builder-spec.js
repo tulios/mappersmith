@@ -1,10 +1,7 @@
 import ClientBuilder from 'src/client-builder'
 import Manifest from 'src/manifest'
-import MethodDescriptor from 'src/method-descriptor'
 import Request from 'src/request'
-import Response from 'src/response'
-
-import { headerMiddleware } from 'spec/helper'
+import { getManifest } from 'spec/helper'
 
 describe('ClientBuilder', () => {
   let manifest,
@@ -14,18 +11,7 @@ describe('ClientBuilder', () => {
       client
 
   beforeEach(() => {
-    manifest = {
-      host: 'http://example.org',
-      resources: {
-        User: {
-          byId: { path: '/users/{id}' }
-        },
-        Blog: {
-          post: { method: 'post', path: '/blogs' },
-          addComment: { method: 'put', path: '/blogs/{id}/comment' }
-        }
-      }
-    }
+    manifest = getManifest()
 
     gatewayInstance = jasmine.createSpyObj('gatewayInstance', ['call'])
     gatewayClass = jasmine.createSpy('GatewayConstructor').and.returnValue(gatewayInstance)
@@ -81,66 +67,6 @@ describe('ClientBuilder', () => {
     it('raises error', () => {
       expect(() => new ClientBuilder(manifest, null))
         .toThrowError('[Mappersmith] gateway class not configured (configs.gateway)')
-    })
-  })
-
-  describe('middlewares', () => {
-    let middleware, response
-
-    beforeEach(() => {
-      gatewayInstance = jasmine.createSpyObj('gatewayInstance', ['call'])
-      gatewayClass = jasmine.createSpy('GatewayConstructor').and.callFake((request) => {
-        response = new Response(request, 200, 'success')
-        gatewayInstance.call.and.returnValue(Promise.resolve(response))
-        return gatewayInstance
-      })
-
-      middleware = headerMiddleware
-      manifest.middlewares = [ middleware ]
-
-      clientBuilder = new ClientBuilder(manifest, gatewayClass)
-      client = clientBuilder.build()
-    })
-
-    it('calls request and response phase', () => {
-      const requestPhase = jasmine.createSpy('requestPhase')
-      const responsePhase = jasmine.createSpy('responsePhase')
-
-      middleware = () => ({ request: requestPhase, response: responsePhase })
-      manifest.middlewares = [ middleware ]
-
-      clientBuilder = new ClientBuilder(manifest, gatewayClass)
-      client = clientBuilder.build()
-
-      client.User.byId({ id: 1 })
-      expect(requestPhase).toHaveBeenCalledWith(jasmine.any(Request))
-      expect(responsePhase).toHaveBeenCalledWith(jasmine.any(Promise))
-    })
-
-    it('can change the final request object', (done) => {
-      client.User.byId({ id: 1 }).then((response) => {
-        expect(response.request().headers()).toEqual(jasmine.objectContaining({
-          'x-middleware-phase': 'request'
-        }))
-        done()
-      })
-      .catch((response) => {
-        const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
-      })
-    })
-
-    it('can change the final response object', (done) => {
-      client.User.byId({ id: 1 }).then((response) => {
-        expect(response.headers()).toEqual(jasmine.objectContaining({
-          'x-middleware-phase': 'response'
-        }))
-        done()
-      })
-      .catch((response) => {
-        const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
-      })
     })
   })
 })

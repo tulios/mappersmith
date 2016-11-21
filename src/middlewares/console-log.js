@@ -23,8 +23,8 @@ const ConsoleLogMiddleware = () => ({
     return log(request)
   },
 
-  response(promise) {
-    return promise
+  response(next) {
+    return next()
       .then((response) => log(response.request(), response))
       .catch((response) => {
         log(response.request(), response)
