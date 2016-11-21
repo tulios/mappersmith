@@ -47,8 +47,7 @@ MockResource.prototype = {
   },
 
   toMockResponse() {
-    const resource = this.manifest.resources[this.resourceName]
-    const methodDescriptor = this.manifest.createMethodDescriptor(resource[this.methodName])
+    const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
     const request = new Request(methodDescriptor, this.requestParams)
 
     return new MockResponse(this.id, {

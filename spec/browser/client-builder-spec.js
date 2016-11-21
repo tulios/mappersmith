@@ -69,4 +69,12 @@ describe('ClientBuilder', () => {
         .toThrowError('[Mappersmith] gateway class not configured (configs.gateway)')
     })
   })
+
+  describe('when a resource path is not defined', () => {
+    it('raises error', () => {
+      manifest = { resources: { User: { all: { } } } }
+      expect(() => new ClientBuilder(manifest, gatewayClass).build())
+        .toThrowError('[Mappersmith] path is undefined for resource "User" method "all"')
+    })
+  })
 })

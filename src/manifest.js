@@ -10,23 +10,30 @@ function Manifest(obj) {
 Manifest.prototype = {
   eachResource(callback) {
     Object.keys(this.resources).forEach((resourceName) => {
-      const resource = this.resources[resourceName]
-      const methods = this.eachMethod(resource, (name, definition) => ({
-        name,
-        descriptor: this.createMethodDescriptor(definition)
+      const methods = this.eachMethod(resourceName, (methodName) => ({
+        name: methodName,
+        descriptor: this.createMethodDescriptor(resourceName, methodName)
       }))
 
       callback(resourceName, methods)
     })
   },
 
-  eachMethod(resource, callback) {
+  eachMethod(resourceName, callback) {
     return Object
-      .keys(resource)
-      .map((name) => callback(name, resource[name]))
+      .keys(this.resources[resourceName])
+      .map((name) => callback(name))
   },
 
-  createMethodDescriptor(definition) {
+  createMethodDescriptor(resourceName, methodName) {
+    const definition = this.resources[resourceName][methodName]
+
+    if (!definition || !definition.path) {
+      throw new Error(
+        `[Mappersmith] path is undefined for resource "${resourceName}" method "${methodName}"`
+      )
+    }
+
     return new MethodDescriptor(assign(
       { host: this.host },
       definition
