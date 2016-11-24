@@ -6,7 +6,7 @@ import MethodDescriptor from 'src/method-descriptor'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
 
-describe('XHR', () => {
+describe('Gateway / XHR', () => {
   let originalConfigs
   let methodDescriptor, requestParams, httpResponse
 
