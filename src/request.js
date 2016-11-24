@@ -2,12 +2,19 @@ import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
 
+/**
+ * @param {MethodDescriptor} methodDescriptor
+ * @param {Object} requestParams, defaults to an empty object ({})
+ */
 function Request(methodDescriptor, requestParams) {
   this.methodDescriptor = methodDescriptor
   this.requestParams = requestParams || {}
 }
 
 Request.prototype = {
+  /**
+   * @return {Object}
+   */
   params() {
     const params = assign(
       {},
@@ -30,14 +37,36 @@ Request.prototype = {
       }, {})
   },
 
+  /**
+   * Returns the HTTP method in lowercase
+   *
+   * @return {String}
+   */
   method() {
     return this.methodDescriptor.method.toLowerCase()
   },
 
+  /**
+   * Returns host name without trailing slash
+   * Example: http://example.org
+   *
+   * @return {String}
+   */
   host() {
     return (this.methodDescriptor.host || '').replace(/\/$/, '')
   },
 
+  /**
+   * Returns path with parameters and leading slash.
+   * Example: /some/path?param1=true
+   *
+   * @throws {Error} if any dynamic segment is missing.
+   * Example:
+   * Imagine the path '/some/{name}', the error will be similar to:
+   * '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
+   *
+   * @return {String}
+   */
   path() {
     let path = this.methodDescriptor.path
     const { headersAttr, bodyAttr } = this.methodDescriptor
@@ -72,10 +101,22 @@ Request.prototype = {
     return path
   },
 
+  /**
+   * Returns the full URL
+   * Example: http://example.org/some/path?param1=true
+   *
+   * @return {String}
+   */
   url() {
     return `${this.host()}${this.path()}`
   },
 
+  /**
+   * Returns an object with the headers. Header names are converted to
+   * lowercase
+   *
+   * @return {Object}
+   */
   headers() {
     return lowerCaseObjectKeys(
       assign(
