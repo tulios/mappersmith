@@ -31,22 +31,6 @@ describe('ClientBuilder', () => {
     expect(client._manifest instanceof Manifest).toEqual(true)
   })
 
-  it('add global handlers for success and failure', () => {
-    const successHandler = jasmine.createSpy('globalSuccessHandler')
-    const errorHandler = jasmine.createSpy('globalErrorHandler')
-
-    expect(client.onSuccess(successHandler)).toEqual(client)
-    expect(client.onError(errorHandler)).toEqual(client)
-    expect(clientBuilder.globalSuccessHandler).toEqual(successHandler)
-    expect(clientBuilder.globalErrorHandler).toEqual(errorHandler)
-
-    clientBuilder.globalSuccessHandler()
-    clientBuilder.globalErrorHandler()
-
-    expect(successHandler).toHaveBeenCalled()
-    expect(errorHandler).toHaveBeenCalled()
-  })
-
   describe('when a resource method is called', () => {
     it('calls the gateway with the correct request', () => {
       gatewayInstance.call.and.returnValue('Promise')

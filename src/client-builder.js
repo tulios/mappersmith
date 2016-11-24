@@ -12,8 +12,6 @@ function ClientBuilder(manifest, GatewayClass) {
 
   this.manifest = new Manifest(manifest)
   this.GatewayClass = GatewayClass
-  this.globalSuccessHandler = function() {}
-  this.globalErrorHandler = function() {}
 }
 
 ClientBuilder.prototype = {
@@ -23,8 +21,6 @@ ClientBuilder.prototype = {
     this.manifest.eachResource((name, methods) => {
       client[name] = this.buildResource(methods)
     })
-
-    this.addGlobalHandlers(client)
 
     return client
   },
@@ -52,18 +48,6 @@ ClientBuilder.prototype = {
       )
 
     return execute()
-  },
-
-  addGlobalHandlers(client) {
-    client.onSuccess = (handler) => {
-      this.globalSuccessHandler = handler
-      return client
-    }
-
-    client.onError = (handler) => {
-      this.globalErrorHandler = handler
-      return client
-    }
   }
 }
 
