@@ -108,4 +108,28 @@ describe('Response', () => {
       })
     })
   })
+
+  describe('#enhance', () => {
+    it('creates a new response based on the current response replacing status', () => {
+      const response = createResponse()
+      const enhancedResponse = response.enhance({ status: 201 })
+      expect(enhancedResponse).not.toEqual(response)
+      expect(enhancedResponse.status()).toEqual(201)
+    })
+
+    it('creates a new response based on the current response replacing rawData', () => {
+      const response = createResponse()
+      const enhancedResponse = response.enhance({ rawData: 'payload' })
+      expect(enhancedResponse).not.toEqual(response)
+      expect(enhancedResponse.rawData()).toEqual('payload')
+    })
+
+    it('creates a new response based on the current response merging the headers', () => {
+      responseHeaders = { 'x-old': 'no' }
+      const response = createResponse()
+      const enhancedResponse = response.enhance({ headers: { 'x-special': 'yes' } })
+      expect(enhancedResponse).not.toEqual(response)
+      expect(enhancedResponse.headers()).toEqual({ 'x-old': 'no', 'x-special': 'yes' })
+    })
+  })
 })

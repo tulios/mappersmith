@@ -1,4 +1,4 @@
-import { lowerCaseObjectKeys } from './utils'
+import { lowerCaseObjectKeys, assign } from './utils'
 
 /**
  * @param {Request} originalRequest
@@ -63,6 +63,22 @@ Response.prototype = {
 
   isContentTypeJSON() {
     return /application\/json/.test(this.headers()['content-type'])
+  },
+
+  /**
+   * Enhances current response returning a new Response
+   * @param {Object} extras
+   *   @param {Integer} extras.status - it will replace the current status
+   *   @param {String} extras.rawData - it will replace the current rawStatus
+   *   @param {Object} extras.headers - it will be merged with current headers
+   */
+  enhance(extras) {
+    return new Response(
+      this.request(),
+      extras.status || this.status(),
+      extras.rawData || this.rawData(),
+      assign({}, this.headers(), extras.headers)
+    )
   }
 }
 

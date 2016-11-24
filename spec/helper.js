@@ -71,14 +71,9 @@ export const headerMiddleware = () => ({
   },
 
   response(next) {
-    return next().then((response) => new Response(
-      response.request(),
-      response.status(),
-      response.rawData(),
-      assign({}, response.headers(), {
-        'x-middleware-phase': 'response'
-      })
-    ))
+    return next().then((response) => response.enhance({
+      headers: { 'x-middleware-phase': 'response' }
+    }))
   }
 })
 
