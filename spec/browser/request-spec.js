@@ -155,4 +155,53 @@ describe('Request', () => {
       expect(request.method()).toEqual('get')
     })
   })
+
+  describe('#enhance', () => {
+    it('creates a new request based on the current request merging the params', () => {
+      const request = new Request(methodDescriptor, { a: 1 })
+      const enhancedRequest = request.enhance({ params: { b: 2 } })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.params()).toEqual({ a: 1, b: 2 })
+    })
+
+    it('creates a new request based on the current request merging the headers', () => {
+      const request = new Request(methodDescriptor, { headers: { 'x-old': 'no' } })
+      const enhancedRequest = request.enhance({ headers: { 'x-special': 'yes' } })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.headers()).toEqual({ 'x-old': 'no', 'x-special': 'yes' })
+    })
+
+    it('creates a new request based on the current request replacing the body', () => {
+      const request = new Request(methodDescriptor, { body: 'payload-1' })
+      const enhancedRequest = request.enhance({ body: 'payload-2' })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.body()).toEqual('payload-2')
+    })
+
+    describe('for requests with a different "headers" key', () => {
+      beforeEach(() => {
+        methodDescriptor = new MethodDescriptor({ headersAttr: 'snowflake' })
+      })
+
+      it('creates a new request based on the current request merging the custom "headers" key', () => {
+        const request = new Request(methodDescriptor, { snowflake: { 'x-old': 'no' } })
+        const enhancedRequest = request.enhance({ headers: { 'x-special': 'yes' } })
+        expect(enhancedRequest).not.toEqual(request)
+        expect(enhancedRequest.headers()).toEqual({ 'x-old': 'no', 'x-special': 'yes' })
+      })
+    })
+
+    describe('for requests with a different "body" key', () => {
+      beforeEach(() => {
+        methodDescriptor = new MethodDescriptor({ bodyAttr: 'snowflake' })
+      })
+
+      it('creates a new request based on the current request replacing the custom "body"', () => {
+        const request = new Request(methodDescriptor, { snowflake: 'payload-1' })
+        const enhancedRequest = request.enhance({ body: 'payload-2' })
+        expect(enhancedRequest).not.toEqual(request)
+        expect(enhancedRequest.body()).toEqual('payload-2')
+      })
+    })
+  })
 })

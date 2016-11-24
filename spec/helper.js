@@ -65,14 +65,9 @@ export function respondWith(responseObj, assertsCallback) {
 
 export const headerMiddleware = () => ({
   request(request) {
-    return new Request(
-      new MethodDescriptor(
-        assign({}, request.methodDescriptor, {
-          headers: { 'x-middleware-phase': 'request' }
-        })
-      ),
-      request.requestParams
-    )
+    return request.enhance({
+      headers: { 'x-middleware-phase': 'request' }
+    })
   },
 
   response(next) {

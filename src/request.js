@@ -92,6 +92,23 @@ Request.prototype = {
 
   body() {
     return this.requestParams[this.methodDescriptor.bodyAttr]
+  },
+
+  /**
+   * Enhances current request returning a new Request
+   * @param {Object} extras
+   *   @param {Object} extras.params - it will be merged with current params
+   *   @param {Object} extras.headers - it will be merged with current headers
+   *   @param {String|Object} extras.body - it will replace the current body
+   */
+  enhance(extras) {
+    const headerKey = this.methodDescriptor.headersAttr
+    const bodyKey = this.methodDescriptor.bodyAttr
+    const requestParams = assign({}, this.requestParams, extras.params)
+    requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
+    requestParams[bodyKey] = extras.body
+
+    return new Request(this.methodDescriptor, requestParams)
   }
 }
 
