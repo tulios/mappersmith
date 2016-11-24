@@ -47,18 +47,18 @@ Response.prototype = {
 
   /**
    * Returns the response data, if "Content-Type" is "application/json"
-   * it parses the response and returns an object. Response data with be
-   * passed through {MethodDescriptor}.processor function if configured
+   * it parses the response and returns an object
+   *
+   * @return {String|Object}
    */
   data() {
     let data = this.responseData
-    const processor = this.request().processor() || ((response, data) => data)
 
     if (this.isContentTypeJSON()) {
       data = JSON.parse(this.responseData)
     }
 
-    return processor(this, data)
+    return data
   },
 
   isContentTypeJSON() {

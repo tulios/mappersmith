@@ -106,14 +106,6 @@ describe('Request', () => {
     })
   })
 
-  describe('#processor', () => {
-    it('returns the "processor" configured in the method descriptor', () => {
-      methodDescriptor.processor = () => true
-      const request = new Request(methodDescriptor)
-      expect(request.processor()()).toEqual(true)
-    })
-  })
-
   describe('#headers', () => {
     describe('with pre configured headers', () => {
       it('returns available headers', () => {

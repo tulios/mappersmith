@@ -76,10 +76,6 @@ Request.prototype = {
     return `${this.host()}${this.path()}`
   },
 
-  processor() {
-    return this.methodDescriptor.processor
-  },
-
   headers() {
     return lowerCaseObjectKeys(
       assign(
