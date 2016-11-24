@@ -102,4 +102,32 @@ describe('ClientBuilder middlewares', () => {
         done.fail(`test failed with promise error: ${error}`)
       })
   })
+
+  it('accepts middlewares with only one phase defined', (done) => {
+    let m1RequestCalled = false
+    let m2ResponseCalled = false
+
+    const m1 = () => ({
+      request: (request) => { m1RequestCalled = true; return request }
+    })
+
+    const m2 = () => ({
+      response: (next) => { m2ResponseCalled = true; return next() }
+    })
+
+    manifest.middlewares = [ m1, m2 ]
+
+    createClient().User
+      .byId({ id: 1 })
+      .then((response) => {
+        expect(response.data()).toEqual(responseValue)
+        expect(m1RequestCalled).toEqual(true)
+        expect(m2ResponseCalled).toEqual(true)
+      })
+      .then(() => done())
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
 })

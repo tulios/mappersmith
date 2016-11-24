@@ -41,7 +41,13 @@ Manifest.prototype = {
   },
 
   createMiddlewares() {
-    return this.middlewares.map((middleware) => middleware())
+    const createInstance = (middlewareFactory) => assign({
+      request: (request) => request,
+      response: (next) => next()
+    }, middlewareFactory())
+
+    return this.middlewares
+      .map((middleware) => createInstance(middleware))
   }
 }
 
