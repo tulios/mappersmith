@@ -55,7 +55,8 @@ Response.prototype = {
     let data = this.responseData
 
     if (this.isContentTypeJSON()) {
-      data = JSON.parse(this.responseData)
+      try { data = JSON.parse(this.responseData) }
+      catch(e) {}
     }
 
     return data

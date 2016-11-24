@@ -97,14 +97,13 @@ describe('Response', () => {
         responseHeaders = { 'Content-Type': 'application/json;charset=utf-8' }
         expect(createResponse().data()).toEqual({ nice: 'json' })
       })
-    })
 
-    describe('when a processor is configured', () => {
-      it('returns the processed data', () => {
-        methodDescriptor.processor = (response, data) => ({ data: data })
-        responseData = JSON.stringify({ nice: 'json' })
-        responseHeaders = { 'Content-Type': 'application/json;charset=utf-8' }
-        expect(createResponse().data()).toEqual({ data: { nice: 'json' } })
+      describe('and the payload is a invalid JSON', () => {
+        it('returns rawData', () => {
+          responseData = 'invalid{json}'
+          responseHeaders = { 'Content-Type': 'application/json;charset=utf-8' }
+          expect(createResponse().data()).toEqual('invalid{json}')
+        })
       })
     })
   })
