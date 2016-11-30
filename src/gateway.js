@@ -8,9 +8,7 @@ function Gateway(request) {
   this.failCallback = function() {}
 }
 
-Gateway.extends = function(methods) {
-  return assign({}, Gateway.prototype, methods)
-}
+Gateway.extends = (methods) => assign({}, Gateway.prototype, methods)
 
 Gateway.prototype = {
   options() {

@@ -2,6 +2,7 @@ import MockRequest from './test/mock-request'
 import MockResource from './test/mock-resource'
 import MockGateway from './gateway/mock'
 import { configs } from './index'
+import { toQueryString } from './utils'
 
 let store = []
 let ids = 1
@@ -51,11 +52,18 @@ export const lookupResponse = (request) => {
 
   if (partialMatch) {
     throw new Error(
-      `[Mappersmith Test] No exact match found for "${request.method()} ${request.url()}", partial match with "${partialMatch.method} ${partialMatch.url}", check your mock definition`
+      `[Mappersmith Test] No exact match found for ${requestToLog(request)}, partial match with ${mockToLog(partialMatch)}, check your mock definition`
     )
   }
 
   throw new Error(
-    `[Mappersmith Test] No match found for "${request.method()} ${request.url()}", check your mock definition`
+    `[Mappersmith Test] No match found for ${requestToLog(request)}, check your mock definition`
   )
 }
+
+const requestToLog = (request) => (
+  `"${request.method().toUpperCase()} ${request.url()}" (body: "${toQueryString(request.body())}")`
+)
+const mockToLog = (requestMock) => (
+  `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${requestMock.body}")`
+)

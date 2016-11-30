@@ -216,21 +216,24 @@ describe('Test lib', () => {
       mockRequest({
         method: 'post',
         url: 'http://example.org/blogs',
+        body: 'param1=A&param2=B',
         response: {
           body: { created: true }
         }
       })
 
-      client.Blog.post().then((response) => {
-        expect(response.request().method()).toEqual('post')
-        expect(response.status()).toEqual(200)
-        expect(response.data()).toEqual({ created: true })
-        done()
-      })
-      .catch((response) => {
-        const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
-      })
+      client.Blog
+        .post({ body: { param1: 'A', param2: 'B' } })
+        .then((response) => {
+          expect(response.request().method()).toEqual('post')
+          expect(response.status()).toEqual(200)
+          expect(response.data()).toEqual({ created: true })
+          done()
+        })
+        .catch((response) => {
+          const error = response.rawData ? response.rawData() : response
+          done.fail(`test failed with promise error: ${error}`)
+        })
     })
 
     it('works with text responses', (done) => {
