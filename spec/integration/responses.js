@@ -30,6 +30,10 @@ module.exports = {
     new: true
   },
 
+  apiPicturesUpload: {
+    created: true
+  },
+
   apiFailure: {
     errorMessage: 'something went bad'
   }

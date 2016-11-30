@@ -19,7 +19,7 @@ function errorMessage(response) {
   return response.rawData ? debugResponse(response) : response
 }
 
-export default function IntegrationTestsForGateway(gateway, params) {
+export default function IntegrationTestsForGateway(gateway, params, extraTests) {
   let successLogBuffer,
       errorLogBuffer,
       previousGateway,
@@ -42,6 +42,8 @@ export default function IntegrationTestsForGateway(gateway, params) {
     setSuccessLogger(defaultSuccessLogger)
     setErrorLogger(defaultErrorLogger)
   })
+
+  extraTests && extraTests(gateway, params)
 
   it('GET /api/books.json', (done) => {
     Client.Book.all().then((response) => {

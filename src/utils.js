@@ -54,7 +54,7 @@ const buildRecursive = (key, value, suffix) => {
 }
 
 export function toQueryString(entry) {
-  if (typeof entry !== 'object') {
+  if (!isPlainObject(entry)) {
     return entry
   }
 
@@ -113,11 +113,12 @@ export function lowerCaseObjectKeys(obj) {
     }, {})
 }
 
+const hasOwnProperty = Object.prototype.hasOwnProperty
 export const assign = Object.assign || function(target) {
   for (let i = 1; i < arguments.length; i++) {
     const source = arguments[i]
     for (let key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (hasOwnProperty.call(source, key)) {
         target[key] = source[key]
       }
     }
@@ -127,10 +128,6 @@ export const assign = Object.assign || function(target) {
 
 const toString = Object.prototype.toString
 export function isPlainObject(value) {
-  if (!toString.call(value) === '[object Object]') {
-    return false
-  }
-
-  return Object.getPrototypeOf(value) ===
-    Object.getPrototypeOf({})
+  return toString.call(value) === '[object Object]' &&
+    Object.getPrototypeOf(value) === Object.getPrototypeOf({})
 }

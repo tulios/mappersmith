@@ -1,5 +1,7 @@
 var express = require('express')
 var bodyParser = require('body-parser')
+var multer  = require('multer')
+var upload = multer({ storage: multer.memoryStorage() })
 
 var app = new express()
 var responses = require('./responses')
@@ -26,6 +28,14 @@ app.get('/api/books/:id.json', function(req, res) {
 app.get('/api/plain-text', function(req, res) {
   res.set({ 'X-Api-Response': 'apiPlainText' })
   res.send(responses.apiPlainText)
+})
+
+app.post('/api/pictures/upload', upload.any(), function(req, res) {
+  res.set({ 'X-Api-Response': 'apiPicturesUpload' })
+  res.set({ 'X-Api-Content-Type': req.headers['content-type'] })
+  res.set({ 'X-Api-files': JSON.stringify(req.files) })
+  res.set({ 'X-Body': JSON.stringify(req.files) })
+  res.send(responses.apiPicturesUpload)
 })
 
 app.post('/api/pictures/:category', function(req, res) {

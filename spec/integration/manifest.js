@@ -12,6 +12,7 @@ export default function createManifest(host = null) {
         get: { path: '/api/plain-text' }
       },
       Pictures: {
+        upload: { method: 'post', path: '/api/pictures/upload' },
         create: { method: 'post', path: '/api/pictures/{category}' },
         add: { method: 'put', path: '/api/pictures/{category}' }
       },
