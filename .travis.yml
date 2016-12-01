@@ -19,4 +19,4 @@ install:
   - yarn install
 script:
   - node spec/integration/server.js &
-  - npm run test
+  - PHANTOMJS_BIN=$PWD/travis-phantomjs/phantomjs npm run test
