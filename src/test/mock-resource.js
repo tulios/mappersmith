@@ -2,6 +2,10 @@ import MockRequest from './mock-request'
 import Request from '../request'
 
 function MockResource(id, client) {
+  if (!client || !client._manifest) {
+    throw new Error('[Mappersmith Test] "mockClient" received an invalid client')
+  }
+
   this.id = id
   this.manifest = client._manifest
   this.resourceName = null
