@@ -5,7 +5,6 @@ import { getManifest } from 'spec/helper'
 import {
   install as installMock,
   uninstall as uninstallMock,
-  clear as clearMocks,
   mockClient,
   mockRequest
 } from 'src/test'
@@ -15,12 +14,10 @@ describe('Test lib', () => {
 
   beforeEach(() => {
     installMock()
-
     client = forge(getManifest())
   })
 
   afterEach(() => {
-    clearMocks()
     uninstallMock()
   })
 

@@ -26,6 +26,7 @@ export const install = () => {
 }
 
 export const uninstall = () => {
+  clear()
   if (originalGateway) {
     configs.gateway = originalGateway
     originalGateway = null
