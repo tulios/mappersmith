@@ -156,13 +156,12 @@ To send values in the request body (usually for POST, PUT, or PATCH methods) you
 client.Blog.create({
   body: {
     title: 'Title',
-    content: 'Content',
     tags: ['party', 'launch']
   }
 })
 ```
 
-By default, it will create a _urlencoded_ version of the object (`title=Title&content=Content&tags[]=party&tags[]=launch`). If the body used is not an object it will use the original value. If `body` is not possible as a special parameter for your API you can configure it through the param `bodyAttr`:
+By default, it will create a _urlencoded_ version of the object (`title=Title&tags[]=party&tags[]=launch`). If the body used is not an object it will use the original value. If `body` is not possible as a special parameter for your API you can configure it through the param `bodyAttr`:
 
 ```javascript
 // ...
@@ -174,7 +173,6 @@ By default, it will create a _urlencoded_ version of the object (`title=Title&co
 client.Blog.create({
   payload: {
     title: 'Title',
-    content: 'Content',
     tags: ['party', 'launch']
   }
 })
