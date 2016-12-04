@@ -47,6 +47,13 @@ describe('ClientBuilder', () => {
     })
   })
 
+  describe('when manifest is not defined', () => {
+    it('raises error', () => {
+      expect(() => new ClientBuilder())
+        .toThrowError('[Mappersmith] invalid manifest (undefined)')
+    })
+  })
+
   describe('when gatewayClass is not defined', () => {
     it('raises error', () => {
       expect(() => new ClientBuilder(manifest, null))
