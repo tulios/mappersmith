@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.0 (in rc1)
+
+  - New API
+  - New test library
+
 ## 0.13.4
 
   - Add yarn.lock
