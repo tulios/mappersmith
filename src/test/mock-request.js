@@ -7,7 +7,7 @@ import { isPlainObject, toQueryString } from '../utils'
  * @param {Object} props
  *   @param {String} props.method
  *   @param {String} props.url
- *   @param {String} props.body
+ *   @param {String} props.body - request body
  *   @param {Object} props.response
  *     @param {String} props.response.body
  *     @param {Object} props.response.headers

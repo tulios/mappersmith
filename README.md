@@ -2,8 +2,6 @@
 [![Build Status](https://travis-ci.org/tulios/mappersmith.svg?branch=master)](https://travis-ci.org/tulios/mappersmith)
 # Mappersmith
 
-__THIS README IS STILL INCOMPLETE__
-
 __Mappersmith__ is a lightweight rest client for node.js and the browser. It creates a client for your API, gathering all configurations into a single place, freeing your code from HTTP configurations.
 
 ## Table of Contents
@@ -18,6 +16,8 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     1. [Headers](#headers)
     1. [Alternative host](#alternative-host)
   1. [Promises](#promises)
+  1. [Response object](#response-object)
+  1. [Testing Mappersmith](#testing-mappersmith)
 1. [Development](#development)
 
 ## <a name="installation"></a> Installation
@@ -50,7 +50,7 @@ npm run release # for minified version
 
 ## <a name="usage"></a> Usage
 
-To create a client for your API, you will need to provide a simple manifest. If your API reside in the same domain as your app you can skip the `host` configuration. Each resource has a name and a list of methods with its definitions, like:
+To create a client for your API you will need to provide a simple manifest. If your API reside in the same domain as your app you can skip the `host` configuration. Each resource has a name and a list of methods with its definitions, like:
 
 ```javascript
 // 1) Import
@@ -70,13 +70,13 @@ const github = forge({
 
 // profit!
 github.Status.lastMessage().then((response) => {
-  console.log(`status: ${response.data().body}`)
+  console.log(`status: ${response.data()}`)
 })
 ```
 
 ## <a name="commonjs"></a> Commonjs
 
-If you are using _commonjs_, your `require` should be like:
+If you are using _commonjs_, your `require` should look like:
 
 ```javascript
 const forge = require('mappersmith').default
@@ -104,7 +104,7 @@ const client = forge({
       // header "X-Special-Header" has been configured for this resource
       create: { method: 'post', path: '/blogs', headers: { 'X-Special-Header': 'value' } },
 
-      // There is no restrictions for dynamic segments and HTTP methods
+      // There are no restrictions for dynamic segments and HTTP methods
       addComment: { method: 'put', path: '/blogs/{id}/comment' }
     }
   }
@@ -150,7 +150,7 @@ client.User.byGroup({ group: 'cool' }) // https://my.api.com/users/groups/cool
 
 ### <a name="body"></a> Body
 
-To send values in the request body (usually for POST, PUT, or PATCH methods) you will use the special parameter `body`:
+To send values in the request body (usually for POST, PUT or PATCH methods) you will use the special parameter `body`:
 
 ```javascript
 client.Blog.create({
@@ -218,9 +218,9 @@ client.User.all() // http://old-api.com/users
 
 __Mappersmith__ does not apply any polyfills, it depends on a native Promise implementation to be supported. If your environment doesn't support Promises, please apply the polyfill first. One option can be [then/promises](https://github.com/then/promise)
 
-In some cases is not possible to use/assign the global Promise constant, for those cases you can define the promise implementation used by Mappersmith.
+In some cases is not possible to use/assign the global `Promise` constant, for those cases you can define the promise implementation used by Mappersmith.
 
-For example, using the project rsvp.js (a tiny implementation of Promises/A+):
+For example, using the project [rsvp.js](https://github.com/tildeio/rsvp.js/) (a tiny implementation of Promises/A+):
 
 ```javascript
 import RSVP from 'rsvp'
@@ -229,7 +229,191 @@ import { configs } from 'mappersmith'
 configs.Promise = RSVP.Promise
 ```
 
-All Promise references in Mappersmith use `configs.Promise`. The default value is the global Promise.
+All `Promise` references in Mappersmith use `configs.Promise`. The default value is the global Promise.
+
+## <a name="response-object"></a> Response object
+
+Mappersmith will provide an instance of its own `Response` object to the promises. This object has the methods:
+
+* `request()` - Returns the original request (mappersmith request object)
+* `status()` - Returns the status number
+* `success()` - Returns true for status greater than 200 and lower than 400
+* `headers()` - Returns an object with all headers, keys in lower case
+* `data()` - Returns the response data, if `Content-Type` is `application/json` it parses the response and returns an object
+
+## <a name="testing-mappersmith"></a> Testing Mappersmith
+
+Mappersmith plays nice with all test frameworks, the generated client is a plain javascript object and all the methods can be mocked without any problem. However, this experience can be greatly improved with the test library.
+
+The test library has 4 utilities: `install`, `uninstall`, `mockClient` and `mockRequest`
+
+#### install and uninstall
+
+They are used to setup the test library, __example using jasmine__:
+
+```javascript
+import { install, uninstall } from 'mappersmith/test'
+
+describe('Feature', () => {
+  beforeEach(() => install())
+  afterEach(() => uninstall())
+})
+```
+
+#### mockClient
+
+`mockClient` offers a high level abstraction, it works directly on your client mocking the resources and their methods.
+
+It accepts the methods:
+
+* `resource(resourceName)`, ex: `resource('Users')`
+* `method(resourceMethodName)`, ex: `method('byId')`
+* `with(resourceMethodArguments)`, ex: `with({ id: 1 })`
+* `status(statusNumber)`, ex: `status(204)`
+* `response(responseData)`, ex: `response({ user: { id: 1 } })`
+
+Example using __jasmine__:
+
+```javascript
+import forge from 'mappersmith'
+import { install, uninstall, mockClient } from 'mappersmith/test'
+
+describe('Feature', () => {
+  beforeEach(() => install())
+  afterEach(() => uninstall())
+
+  it('works', (done) => {
+    const myManifest = {} // Let's assume I have my manifest here
+    const client = forge(myManifest)
+
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .response({ allUsers: [{id: 1}] })
+
+    // now if I call my resource method, it should return my mock response
+    client.User
+      .all()
+      .then((response) => expect(response.data()).toEqual({ allUsers: [{id: 1}] }))
+      .then(done)
+  })
+})
+```
+
+To mock a failure just use the correct HTTP status, example:
+
+```javascript
+// ...
+mockClient(client)
+  .resource('User')
+  .method('byId')
+  .with({ id: 'ABC' })
+  .status(422)
+  .response({ error: 'invalid ID' })
+// ...
+```
+
+The method `with` accepts the body and headers attributes, example:
+
+```javascript
+// ...
+mockClient(client)
+  .with({
+    id: 'abc',
+    headers: { 'x-special': 'value'},
+    body: { payload: 1 }
+  })
+  // ...
+```
+
+#### mockRequest
+
+`mockRequest` offers a low level abstraction, very useful for automations.
+
+It accepts the params: method, url, body and response
+
+Example using __jasmine__:
+
+```javascript
+import forge from 'mappersmith'
+import { install, uninstall, mockRequest } from 'mappersmith/test'
+
+describe('Feature', () => {
+  beforeEach(() => install())
+  afterEach(() => uninstall())
+
+  it('works', (done) => {
+    mockRequest({
+      method: 'get',
+      url: 'https://my.api.com/users?someParam=true',
+      response: {
+        body: { allUsers: [{id: 1}] }
+      }
+    })
+
+    const myManifest = {} // Let's assume I have my manifest here
+    const client = forge(myManifest)
+
+    client.User
+      .all()
+      .then((response) => expect(response.data()).toEqual({ allUsers: [{id: 1}] }))
+      .then(done)
+  })
+})
+```
+
+A more complete example:
+
+```javascript
+// ...
+mockRequest({
+  method: 'post',
+  url: 'http://example.org/blogs',
+  body: 'param1=A&param2=B', // request body
+  response: {
+    status: 503,
+    body: { error: true },
+    headers: { 'x-header': 'nope' }
+  }
+})
+// ...
+```
+
+## <a name="development"></a> Development
+
+### Running unit tests:
+
+```sh
+npm run test-unit
+```
+
+You can also run browser or node tests independently:
+
+```sh
+npm run test-browser
+npm run test-node
+```
+
+### Running integration tests:
+
+```sh
+node spec/integration/server.js &
+npm run test-integration
+```
+
+You can also run browser or node tests independently:
+
+```sh
+npm run test-browser-integration
+npm run test-node-integration
+```
+
+### Running all tests
+
+```sh
+node spec/integration/server.js &
+npm run test
+```
 
 ## Compile and release
 
