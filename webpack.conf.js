@@ -1,6 +1,10 @@
 const path = require('path')
 const webpack = require('webpack')
+const packageJson = require('./package.json')
 const env = process.env.NODE_ENV || 'development'
+const version = packageJson.version
+const link = packageJson.homepage
+
 let plugins = []
 
 const devTool = (env === 'test')
@@ -10,7 +14,11 @@ const devTool = (env === 'test')
 if (env === 'production') {
   plugins = [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
+    new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
+    new webpack.BannerPlugin(
+      `/*!\n * Mappersmith ${version}\n * ${link}\n */`,
+      { raw: true, entryOnly: true }
+    )
   ]
 }
 
