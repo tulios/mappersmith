@@ -8,7 +8,8 @@ cache:
   directories:
     - node_modules
 before_install:
-  - "npm install --global yarn"
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH=$HOME/.yarn/bin:$PATH
 install:
   - yarn install
 script:
