@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "2.0.0",
+  "version": "2.0.0-rc1",
   "description": "It is a lightweight, isomorphic, dependency-free, rest client mapper for javascript",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
@@ -8,6 +8,16 @@
     "Roberto Soares <roberto.tech@gmail.com>"
   ],
   "main": "index.js",
+  "files": [
+    ".babelrc",
+    "lib",
+    "src",
+    "index.js",
+    "example.js",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test-browser": "npm run build-node && NODE_ENV=test SINGLE_RUN=true ./node_modules/.bin/karma start karma.conf.js",
     "test-node": "npm run build-node && NODE_ENV=test NODE_PATH=. JASMINE_CONFIG_PATH=spec/node/support/jasmine.json ./node_modules/.bin/babel-node ./node_modules/.bin/jasmine",
