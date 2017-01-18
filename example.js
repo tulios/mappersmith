@@ -1,26 +1,19 @@
-// Using with node, for the browser use: require('mappersmith')
-var Mappersmith = require("mappersmith/node")
+// 1) Import mappersmith
+const forge = require('mappersmith').default
+// import forge from 'mappersmith'
 
-// Enabling promises
-Mappersmith.Env.USE_PROMISES = true
-
-// My API manifest
-var manifest = {
+// 2) Forge your client with your API manifest
+const github = forge({
   host: 'https://status.github.com',
   resources: {
     Status: {
-      lastMessage: '/api/last-message.json'
+      lastMessage: { path: '/api/last-message.json' }
     }
   }
-}
-
-// Forging the client with the node js gateway, you have different options for the browser.
-// The default gateway uses XMLHttpRequest
-var github = Mappersmith.forge(manifest, Mappersmith.node.NodeVanillaGateway)
-
-// Since we are using promises everything works as expected
-var {data, stats} = await github.Status.lastMessage()
+})
 
 // profit!
-console.log(`status: ${data.body}`)
-console.log(`loaded in ${stats.timeElapsedHumanized}`)
+github.Status.lastMessage().then((response) => {
+  console.log(`status: ${response.data().body}`)
+  console.log(`loaded in ${response.timeElapsed}ms`)
+})

@@ -1,181 +1,80 @@
-var Env = require('./env');
-var Utils = require('./utils');
-var Promise = require('./env').Promise;
+import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
+import { configs } from './index'
+import Response from './response'
 
-/**
- * Gateway constructor
- * @param args {Object} with url, method, params and opts
- *
- * * url: The full url of the resource, including host and query strings
- * * host: The resolved host
- * * path: The resolved path (e.g. /path?a=true&b=3)
- * * method: The name of the HTTP method (get, head, post, put, delete and patch)
- *           to be used, in lower case.
- * * params: request params (query strings, url params and body)
- * * opts: gateway implementation specific options
- */
-var Gateway = function(args) {
-  this.url = args.url;
-  this.host = args.host;
-  this.path = args.path;
-  this.params = args.params || {};
-
-  this.method = args.method;
-  this.body = args.body;
-  this.processor = args.processor;
-  this.beforeSend = args.beforeSend;
-  this.opts = args.opts || {};
-
-  this.timeStart = null;
-  this.timeEnd = null;
-  this.timeElapsed = null;
-
-  this.success(Utils.noop);
-  this.fail(Utils.noop);
-  this.complete(Utils.noop);
+function Gateway(request) {
+  this.request = request
+  this.successCallback = function() {}
+  this.failCallback = function() {}
 }
+
+Gateway.extends = (methods) => assign({}, Gateway.prototype, methods)
 
 Gateway.prototype = {
-
-  call: function() {
-    this.timeStart = Utils.performanceNow();
-    if (this.beforeSend) this.beforeSend(this);
-
-    if (Env.USE_FIXTURES && Env.Fixture) {
-      this.callWithFixture();
-
-    } else {
-      this[this.method].apply(this, arguments);
-    }
-
-    return this;
+  options() {
+    return configs.gatewayConfigs
   },
 
-  callWithFixture: function() {
-    var resource = this.getRequestedResource();
-    var entry = Env.Fixture.lookup(this.method, resource);
+  shouldEmulateHTTP() {
+    return this.options().emulateHTTP &&
+      /^(delete|put|patch)/i.test(this.request.method())
+  },
 
-    if (!entry) {
-      throw new Utils.Exception(
-        'No fixture provided for ' + JSON.stringify(resource)
-      );
-    }
-
-    setTimeout(function() {
-      if (entry.isSuccess()) {
-        this.successCallback(entry.callWith(resource));
-
-      } else {
-        this.failCallback(entry.callWith(resource));
+  call() {
+    const timeStart = performanceNow()
+    return new configs.Promise((resolve, reject) => {
+      this.successCallback = (response) => {
+        response.timeElapsed = performanceNow() - timeStart
+        resolve(response)
       }
-    }.bind(this), 1);
+
+      this.failCallback = (response) => {
+        response.timeElapsed = performanceNow() - timeStart
+        reject(response)
+      }
+
+      try {
+        this[this.request.method()].apply(this, arguments)
+      } catch (e) {
+        this.dispatchClientError(e.message)
+      }
+    })
   },
 
-  promisify: function(thenCallback) {
-    var promise = new Promise(function(resolve, reject) {
-      this.success(function(data, stats) {
-        resolve({data: data, stats: stats});
-      });
-      this.fail(function() {
-        var args = [];
-        for (var i = 0; i < arguments.length; i++) {
-          args.push(arguments[i]);
-        }
-
-        var request = args.shift();
-        reject({request: request, err: args});
-      });
-
-      this.call();
-    }.bind(this));
-
-    if (thenCallback !== undefined) return promise.then(thenCallback);
-    return promise;
+  dispatchResponse(response) {
+    response.success()
+      ? this.successCallback(response)
+      : this.failCallback(response)
   },
 
-  success: function(callback) {
-    this.successCallback = function(data, extraStats) {
-      this.timeEnd = Utils.performanceNow();
-      this.timeElapsed = this.timeEnd - this.timeStart;
-      if (this.processor) data = this.processor(data);
-      var requestedResource = this.getRequestedResource();
-
-      var stats = Utils.extend({
-        timeElapsed: this.timeElapsed,
-        timeElapsedHumanized: Utils.humanizeTimeElapsed(this.timeElapsed)
-      }, requestedResource, extraStats);
-
-      if (this.successHandler) this.successHandler.apply(this, [stats, data]);
-      callback(data, stats);
-    }.bind(this);
-
-    return this;
+  dispatchClientError(message) {
+    this.failCallback(new Response(this.request, 400, message))
   },
 
-  fail: function(callback) {
-    this.failCallback = function(errorObj) {
-      errorObj = errorObj || {status: 400, args: []};
-      var gatewayArgs = Array.prototype.slice.call(errorObj.args);
-      var status = errorObj.status;
-      var resource = this.getRequestedResource();
-      var errorResource = Utils.extend({status: status}, resource);
-      var args = [errorResource].concat(gatewayArgs);
-      var proceed = true;
+  prepareBody(method, headers) {
+    let body = this.request.body()
 
-      if (this.errorHandler) proceed = !(this.errorHandler.apply(this, args) === true);
-      if (proceed) callback.apply(this, args);
-    }.bind(this);
-
-    return this;
-  },
-
-  complete: function(callback) {
-    this.completeCallback = callback;
-    return this;
-  },
-
-  getRequestedResource: function() {
-    return {
-      url: this.url,
-      host: this.host,
-      path: this.path,
-      params: this.params,
-      headers: this.opts.headers
+    if (this.shouldEmulateHTTP()) {
+      body = body || {}
+      isPlainObject(body) && (body._method = method)
+      headers['x-http-method-override'] = method
     }
-  },
 
-  setErrorHandler: function(errorHandler) {
-    this.errorHandler = errorHandler;
-  },
+    const bodyString = toQueryString(body)
 
-  setSuccessHandler: function(successHandler) {
-    this.successHandler = successHandler;
-  },
+    if (bodyString) {
+      if (typeof bodyString.length === 'number') {
+        headers['content-length'] = bodyString.length
+      }
 
-  shouldEmulateHTTP: function(method) {
-    return !!(this.opts.emulateHTTP && /^(delete|put|patch)/i.test(method));
-  },
+      // If it's not simple, let the browser (or the user) set it
+      if (isPlainObject(body)) {
+        headers['content-type'] = 'application/x-www-form-urlencoded;charset=utf-8'
+      }
+    }
 
-  get: function() {
-    throw new Utils.Exception('Gateway#get not implemented');
-  },
-
-  post: function() {
-    throw new Utils.Exception('Gateway#post not implemented');
-  },
-
-  put: function() {
-    throw new Utils.Exception('Gateway#put not implemented');
-  },
-
-  delete: function() {
-    throw new Utils.Exception('Gateway#delete not implemented');
-  },
-
-  patch: function() {
-    throw new Utils.Exception('Gateway#patch not implemented');
+    return bodyString
   }
-
 }
 
-module.exports = Gateway;
+export default Gateway

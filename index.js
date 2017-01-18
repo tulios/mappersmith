@@ -1,15 +1,14 @@
-/*!
- * Mappersmith __VERSION__
- * https://github.com/tulios/mappersmith
- */
-module.exports = {
-  Env: require('./src/env'),
-  Utils: require('./src/utils'),
-  Gateway: require('./src/gateway'),
-  Mapper: require('./src/mapper'),
-  VanillaGateway: require('./src/gateway/vanilla-gateway'),
-  JQueryGateway: require('./src/gateway/jquery-gateway'),
+// Load compiled code
+var lib = require('./lib')
+var defaultGateway
 
-  forge: require('./src/forge'),
-  createGateway: require('./src/create-gateway')
+if (typeof XMLHttpRequest !== 'undefined') {
+  // For browsers use XHR adapter
+  defaultGateway = require('./lib/gateway/xhr').default
+} else if (typeof process !== 'undefined') {
+  // For node use HTTP adapter
+  defaultGateway = require('./lib/gateway/http').default
 }
+
+lib.configs.gateway = defaultGateway
+module.exports = lib

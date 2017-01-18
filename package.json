@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "0.13.4",
+  "version": "2.0.0-rc1",
   "description": "It is a lightweight, isomorphic, dependency-free, rest client mapper for javascript",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
@@ -8,12 +8,27 @@
     "Roberto Soares <roberto.tech@gmail.com>"
   ],
   "main": "index.js",
+  "files": [
+    ".babelrc",
+    "lib",
+    "src",
+    "index.js",
+    "example.js",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "./node_modules/.bin/browserify index.js -s Mappersmith -t browserify-versionify --no-builtins -o build/mappersmith.js && ./node_modules/.bin/browserify fixtures.js -x mappersmith -s MappersmithFixture -t browserify-versionify --no-builtins -o build/mappersmith-fixture.js",
-    "release": "NODE_ENV=production npm run build && ./node_modules/.bin/uglifyjs build/mappersmith.js -o build/mappersmith.min.js -c --screw-ie8 --comments /^\\s*/*!/",
-    "test-node": "NODE_ENV=test ./node_modules/.bin/mocha test/node/*-test.js",
-    "test-browser": "NODE_ENV=test ./node_modules/.bin/karma start karma.conf.js",
-    "test": "SINGLE_RUN=true npm run test-browser && npm run test-node"
+    "test-browser": "npm run build-node && NODE_ENV=test SINGLE_RUN=true ./node_modules/.bin/karma start karma.conf.js",
+    "test-node": "npm run build-node && NODE_ENV=test NODE_PATH=. JASMINE_CONFIG_PATH=spec/node/support/jasmine.json ./node_modules/.bin/babel-node ./node_modules/.bin/jasmine",
+    "test-unit": "npm run test-browser && npm run test-node",
+    "test-browser-integration": "npm run build-node && NODE_ENV=test SINGLE_RUN=true ./node_modules/.bin/karma start spec/integration/browser/karma.conf.js",
+    "test-node-integration": "npm run build-node && NODE_ENV=test NODE_PATH=. JASMINE_CONFIG_PATH=spec/integration/node/support/jasmine.json ./node_modules/.bin/babel-node ./node_modules/.bin/jasmine",
+    "test-integration": "npm run test-browser-integration && npm run test-node-integration",
+    "test": "npm run test-unit && npm run test-integration",
+    "build-node": "rm -rf lib/* && ./node_modules/.bin/babel src -d lib",
+    "build-browser": "rm -rf dist/* && ./node_modules/.bin/webpack --config webpack.conf.js",
+    "build": "npm run build-node && npm run build-browser"
   },
   "repository": {
     "type": "git",
@@ -35,43 +50,29 @@
   },
   "homepage": "https://github.com/tulios/mappersmith",
   "tonicExampleFilename": "example.js",
+  "browser": {
+    "./lib/gateway/http.js": false
+  },
   "devDependencies": {
-    "aliasify": "1.9.x",
-    "browserify": "13.0.x",
-    "browserify-shim": "3.8.x",
-    "browserify-versionify": "1.0.x",
-    "chai": "1.10.x",
-    "jquery": "2.2.x",
-    "karma": "0.13.x",
-    "karma-browserify": "5.0.x",
-    "karma-chai": "0.1.x",
-    "karma-chrome-launcher": "0.2.x",
-    "karma-firefox-launcher": "0.1.x",
-    "karma-mocha": "0.2.x",
-    "karma-phantomjs2-launcher": "0.1.x",
-    "karma-sinon": "1.0.x",
-    "karma-sinon-chai": "0.3.x",
-    "karma-sourcemap-loader": "0.3.x",
-    "mocha": "2.4.x",
-    "nock": "0.58.x",
-    "phantomjs": "1.9.x",
-    "promise": "7.1.x",
-    "rewire": "2.5.x",
-    "rewireify": "0.0.x",
-    "shared-examples-for": "0.1.x",
-    "sinon": "1.17.3",
-    "sinon-chai": "2.8.x",
-    "uglify-js": "2.6.x",
-    "watchify": "3.7.x"
-  },
-  "browserify": {
-    "transform": [
-      "aliasify",
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": {
-    "mappersmith": "global:Mappersmith"
-  },
-  "aliasify": "./aliasify.conf.js"
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.0",
+    "babel-loader": "^6.2.7",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.18.0",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "faux-jax-tulios": "^5.0.5",
+    "jasmine": "^2.5.2",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.3.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-spec-reporter": "^0.0.26",
+    "karma-webpack": "^1.8.0",
+    "multer": "^1.2.0",
+    "phantomjs-prebuilt": "^2.1.14",
+    "webpack": "^1.13.3"
+  }
 }
