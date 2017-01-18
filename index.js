@@ -1,11 +1,14 @@
 // Load compiled code
 var lib = require('./lib')
-var defaultGateway
+var _process, defaultGateway
+
+// Prevents webpack to load the nodejs processs polyfill
+try { _process = eval('process') } catch (e) {}
 
 if (typeof XMLHttpRequest !== 'undefined') {
   // For browsers use XHR adapter
   defaultGateway = require('./lib/gateway/xhr').default
-} else if (typeof process !== 'undefined') {
+} else if (typeof _process !== 'undefined') {
   // For node use HTTP adapter
   defaultGateway = require('./lib/gateway/http').default
 }
