@@ -2,7 +2,7 @@ const webpackConfig = require('./webpack.conf.js')
 
 module.exports = function(config) {
   config.set({
-    browsers: ['PhantomJS2'],
+    browsers: ['PhantomJS'],
     frameworks: ['jasmine'],
     reporters: ['spec'],
 
@@ -10,7 +10,7 @@ module.exports = function(config) {
       'karma-webpack',
       'karma-jasmine',
       'karma-sourcemap-loader',
-      'karma-phantomjs2-launcher',
+      'karma-phantomjs-launcher',
       'karma-spec-reporter'
     ],
 
