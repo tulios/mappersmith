@@ -17,6 +17,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     1. [Alternative host](#alternative-host)
   1. [Promises](#promises)
   1. [Response object](#response-object)
+  1. [Middlewares](#middlewares)
   1. [Testing Mappersmith](#testing-mappersmith)
 1. [Development](#development)
 
@@ -235,11 +236,115 @@ All `Promise` references in Mappersmith use `configs.Promise`. The default value
 
 Mappersmith will provide an instance of its own `Response` object to the promises. This object has the methods:
 
-* `request()` - Returns the original request (mappersmith request object)
+* `request()` - Returns the original [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js)
 * `status()` - Returns the status number
 * `success()` - Returns true for status greater than 200 and lower than 400
 * `headers()` - Returns an object with all headers, keys in lower case
 * `data()` - Returns the response data, if `Content-Type` is `application/json` it parses the response and returns an object
+
+## <a name="middlewares"></a> Middlewares
+
+The behavior between your client and the API can be customized with middlewares. A middleware is a function which returns an object with two methods: request and response.
+
+The `request` method receives an instance of [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
+
+The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to genenrate a new response based on the previous one.
+
+You don't need to implement both methods, you can define only the phase you need.
+
+Example:
+
+```javascript
+const MyMiddleware = () => ({
+  request(request) {
+    return request.enhance({
+      headers: { 'x-special-request': '->' }
+    })
+  },
+
+  response(next) {
+    return next().then((response) => response.enhance({
+      headers: { 'x-special-response': '<-' }
+    }))
+  }
+})
+```
+
+The middleware can be configured using the key `middlewares` in the manifest, example:
+
+```javascript
+const client = forge({
+  middlewares: [ MyMiddleware ],
+  resources: {
+    User: {
+      all: { path: '/users' }
+    }
+  }
+})
+```
+
+### Built-in middlewares
+
+#### EncodeJson
+
+Automatically encode your objects into JSON
+
+```javascript
+import EncodeJson from 'mappersmith/middlewares/encode-json'
+
+const client = forge({
+  middlewares: [ EncodeJson ],
+  /* ... */
+})
+
+client.User.all({ body: { name: 'bob' } })
+// => body: {"name":"bob"}
+// => header: "Content-Type=application/json;charset=utf-8"
+```
+
+#### GlobalErrorHandler
+
+Provides a catch-all function for all requests. If the catch-all function returns `true` it prevents the original promise to continue.
+
+```javascript
+import GlobalErrorHandler, { setErrorHandler } from 'mappersmith/middlewares/global-error-handler'
+
+setErrorHandler((response) => {
+  console.log('global error handler')
+  return response.status() === 500
+})
+
+const client = forge({
+  middlewares: [ GlobalErrorHandler ],
+  /* ... */
+})
+
+client.User
+  .all()
+  .catch((response) => console.error('my error'))
+
+// If status != 500
+// output:
+//   -> global error handler
+//   -> my error
+
+// IF status == 500
+// output:
+//   -> global error handler
+```
+
+#### Log
+
+Log all requests and responses. Might be useful in development mode.
+
+```javascript
+import Log from 'mappersmith/middlewares/log'
+
+const client = forge({
+  middlewares: [ Log ],
+  /* ... */
+})
+```
 
 ## <a name="testing-mappersmith"></a> Testing Mappersmith
 
