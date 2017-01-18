@@ -13,24 +13,24 @@ const devTool = (env === 'test')
 
 if (env === 'production') {
   plugins = [
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
-    new webpack.BannerPlugin(
-      `/*!\n * Mappersmith ${version}\n * ${link}\n */`,
-      { raw: true, entryOnly: true }
-    )
+    new webpack.BannerPlugin({
+      banner: `/*!\n * Mappersmith ${version}\n * ${link}\n */`,
+      raw: true,
+      entryOnly: true
+    })
   ]
 }
 
 module.exports = {
   context: __dirname,
   resolve: {
-    root: [
+    modules: [
       path.join(__dirname, '/node_modules'),
       __dirname,
     ]
   },
-  entry: 'index.js',
+  entry: './index.js',
   output: {
     path: 'dist/',
     filename: 'mappersmith.js',
