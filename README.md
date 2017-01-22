@@ -19,6 +19,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
   1. [Response object](#response-object)
   1. [Middlewares](#middlewares)
   1. [Testing Mappersmith](#testing-mappersmith)
+  1. [Gateways](#gateways)
 1. [Development](#development)
 
 ## <a name="installation"></a> Installation
@@ -484,15 +485,38 @@ mockRequest({
 // ...
 ```
 
+## <a name="gateways"></a> Gateways
+
+Mappersmith has a pluggable transport layer and it includes by default two gateways: xhr and http. Mappersmith will pick the correct gateway based on the environment you are running (nodejs or the browser).
+
+You can write your own gateway, take a look at [XHR](https://github.com/tulios/mappersmith/blob/master/src/gateway/xhr.js)) for an example. To configure, import the `configs` object and assign the gateway option, like:
+
+```javascript
+import { configs } from 'mappersmith'
+configs.gateway = MyGateway
+```
+
+It's possible to globally configure your gateway through the option `gatewayConfigs`.
+
+### XHR
+
+When running in the browser you can configure `withCredentials` and `configure` to further customize the `XMLHttpRequest` object, example:
+
+```javascript
+import { configs } from 'mappersmith'
+configs.gatewayConfigs.XHR = {
+  withCredentials: true,
+  configure(xhr) {
+    xhr.ontimeout = () => console.error('timeout!')
+  }
+}
+```
+
+Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappersmith.js) for more options.
+
 ## <a name="development"></a> Development
 
 ### Running unit tests:
-
-```sh
-npm run test-unit
-```
-
-You can also run browser or node tests independently:
 
 ```sh
 npm run test-browser
@@ -503,12 +527,6 @@ npm run test-node
 
 ```sh
 node spec/integration/server.js &
-npm run test-integration
-```
-
-You can also run browser or node tests independently:
-
-```sh
 npm run test-browser-integration
 npm run test-node-integration
 ```
