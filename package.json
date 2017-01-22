@@ -1,23 +1,13 @@
 {
   "name": "mappersmith",
   "version": "2.0.0-rc2",
-  "description": "It is a lightweight, isomorphic, dependency-free, rest client mapper for javascript",
+  "description": "It is a lightweight rest client for node.js and the browser",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
     "Daniel Alves <alves.lopes.dan@gmail.com>",
     "Roberto Soares <roberto.tech@gmail.com>"
   ],
   "main": "index.js",
-  "files": [
-    ".babelrc",
-    "lib",
-    "src",
-    "index.js",
-    "example.js",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE"
-  ],
   "scripts": {
     "test-browser": "npm run build-node && NODE_ENV=test SINGLE_RUN=true ./node_modules/.bin/karma start karma.conf.js",
     "test-node": "npm run build-node && NODE_ENV=test NODE_PATH=. JASMINE_CONFIG_PATH=spec/node/support/jasmine.json ./node_modules/.bin/babel-node ./node_modules/.bin/jasmine",
@@ -28,7 +18,8 @@
     "test": "npm run test-unit && npm run test-integration",
     "build-node": "rm -rf lib/* && ./node_modules/.bin/babel src -d lib",
     "build-browser": "rm -rf dist/* && ./node_modules/.bin/webpack --config webpack.conf.js",
-    "build": "npm run build-node && npm run build-browser"
+    "build": "npm run build-node && npm run build-browser",
+    "release": "./scripts/release.sh"
   },
   "repository": {
     "type": "git",

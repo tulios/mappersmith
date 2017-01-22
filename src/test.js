@@ -1,7 +1,7 @@
 import MockRequest from './test/mock-request'
 import MockResource from './test/mock-resource'
 import MockGateway from './gateway/mock'
-import { configs } from './index'
+import { configs } from './mappersmith'
 import { toQueryString } from './utils'
 
 let store = []

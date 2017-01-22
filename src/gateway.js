@@ -1,5 +1,5 @@
 import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
-import { configs } from './index'
+import { configs } from './mappersmith'
 import Response from './response'
 
 function Gateway(request) {
