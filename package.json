@@ -40,7 +40,8 @@
   "homepage": "https://github.com/tulios/mappersmith",
   "tonicExampleFilename": "example.js",
   "browser": {
-    "./lib/gateway/http.js": false
+    "./lib/gateway/http.js": false,
+    "./gateway/http.js": false
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
