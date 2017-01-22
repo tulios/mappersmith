@@ -1,9 +1,15 @@
 # Changelog
 
-## 2.0.0 (in rc1)
+## 2.0.0-rc2
+
+  - Add `content-length` only for gateway http (#35)
+  - Eval `process` to avoid webpack polyfills
+
+## 2.0.0-rc1
 
   - New API
   - New test library
+  - Middlewares
 
 ## 0.13.4
 
