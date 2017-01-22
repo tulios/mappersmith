@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-rc4
+
+  - Fix regression introduced in rc3, disable gateway http when transpiling for browser
+
 ## 2.0.0-rc3
 
   - Publish only `lib` to NPM
