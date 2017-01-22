@@ -1,8 +1,12 @@
 # Changelog
 
+## 2.0.0-rc3
+
+  - Publish only `lib` to NPM
+
 ## 2.0.0-rc2
 
-  - Add `content-length` only for gateway http (#35)
+  - Add `content-length` only for gateway http #35
   - Eval `process` to avoid webpack polyfills
 
 ## 2.0.0-rc1
@@ -14,7 +18,7 @@
 ## 0.13.4
 
   - Add yarn.lock
-  - bugfix: duplicated content-type on vanilla gateway #32
+  - bugfix: duplicated `content-type` on vanilla gateway #32
 
 ## 0.13.3
 
@@ -27,7 +31,7 @@
 
 ## 0.13.1
 
-  - bugfix: wrong content-type on vanilla gateway, a semicolon was missing on `charset=UTF-8`
+  - bugfix: wrong `content-type` on vanilla gateway, a semicolon was missing on `charset=UTF-8`
 
 ## 0.13.0
 
