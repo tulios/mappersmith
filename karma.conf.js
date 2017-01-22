@@ -1,5 +1,4 @@
 const webpackConfig = require('./webpack.conf.js')
-require('phantomjs-prebuilt').path = './node_modules/.bin/phantomjs'
 
 module.exports = function(config) {
   config.set({
