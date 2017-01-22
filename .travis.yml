@@ -13,5 +13,6 @@ before_install:
 install:
   - yarn install
 script:
+  - npm rebuild phantom-prebuilt
   - node spec/integration/server.js &
   - npm run test
