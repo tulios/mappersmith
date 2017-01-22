@@ -11,11 +11,9 @@
   "scripts": {
     "test-browser": "npm run build-node && NODE_ENV=test SINGLE_RUN=true ./node_modules/.bin/karma start karma.conf.js",
     "test-node": "npm run build-node && NODE_ENV=test NODE_PATH=. JASMINE_CONFIG_PATH=spec/node/support/jasmine.json ./node_modules/.bin/babel-node ./node_modules/.bin/jasmine",
-    "test-unit": "npm run test-browser && npm run test-node",
     "test-browser-integration": "npm run build-node && NODE_ENV=test SINGLE_RUN=true ./node_modules/.bin/karma start spec/integration/browser/karma.conf.js",
     "test-node-integration": "npm run build-node && NODE_ENV=test NODE_PATH=. JASMINE_CONFIG_PATH=spec/integration/node/support/jasmine.json ./node_modules/.bin/babel-node ./node_modules/.bin/jasmine",
-    "test-integration": "npm run test-browser-integration && npm run test-node-integration",
-    "test": "npm run test-unit && npm run test-integration",
+    "test": "./scripts/ci.sh",
     "build-node": "rm -rf lib/* && ./node_modules/.bin/babel src -d lib",
     "build-browser": "rm -rf dist/* && ./node_modules/.bin/webpack --config webpack.conf.js",
     "build": "npm run build-node && npm run build-browser",
