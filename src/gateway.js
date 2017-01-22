@@ -63,10 +63,6 @@ Gateway.prototype = {
     const bodyString = toQueryString(body)
 
     if (bodyString) {
-      if (typeof bodyString.length === 'number') {
-        headers['content-length'] = bodyString.length
-      }
-
       // If it's not simple, let the browser (or the user) set it
       if (isPlainObject(body)) {
         headers['content-type'] = 'application/x-www-form-urlencoded;charset=utf-8'

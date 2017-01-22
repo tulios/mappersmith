@@ -37,6 +37,10 @@ HTTP.prototype = Gateway.extends({
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const body = this.prepareBody(method, headers)
 
+    if (body && typeof body.length === 'number') {
+      headers['content-length'] = body.length
+    }
+
     const handler = (defaults.protocol === 'https:') ? https : http
 
     const requestParams = assign(defaults, {
