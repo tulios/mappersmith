@@ -489,7 +489,7 @@ mockRequest({
 
 Mappersmith has a pluggable transport layer and it includes by default two gateways: xhr and http. Mappersmith will pick the correct gateway based on the environment you are running (nodejs or the browser).
 
-You can write your own gateway, take a look at [XHR](https://github.com/tulios/mappersmith/blob/master/src/gateway/xhr.js)) for an example. To configure, import the `configs` object and assign the gateway option, like:
+You can write your own gateway, take a look at [XHR](https://github.com/tulios/mappersmith/blob/master/src/gateway/xhr.js) for an example. To configure, import the `configs` object and assign the gateway option, like:
 
 ```javascript
 import { configs } from 'mappersmith'
