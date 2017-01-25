@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-rc5
+
+  - bugfix: `ClientBuilder` isn't using the new configured gateway when `config.gateway` changes #36
+
 ## 2.0.0-rc4
 
   - Fix regression introduced in rc3, disable gateway http when transpiling for browser
