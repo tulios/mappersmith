@@ -249,7 +249,7 @@ The behavior between your client and the API can be customized with middlewares.
 
 The `request` method receives an instance of [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
 
-The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to genenrate a new response based on the previous one.
+The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to generate a new response based on the previous one.
 
 You don't need to implement both methods, you can define only the phase you need.
 
