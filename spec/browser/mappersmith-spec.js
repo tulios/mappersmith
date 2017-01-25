@@ -1,7 +1,7 @@
 import forge from 'src/index'
 import { configs } from 'src/index'
 
-describe('index', () => {
+describe('mappersmith', () => {
   describe('#forge', () => {
     let originalConfig,
         manifest,
@@ -39,6 +39,25 @@ describe('index', () => {
       client.Test.method()
       expect(gatewayClass).toHaveBeenCalled()
       expect(gatewayInstance.call).toHaveBeenCalled()
+    })
+
+    describe('when config.gateway changes', () => {
+      it('make calls using the new configuration', () => {
+        configs.gateway = gatewayClass
+        const client = forge(manifest)
+
+        client.Test.method()
+        expect(gatewayClass).toHaveBeenCalled()
+        expect(gatewayClass.calls.count()).toEqual(1)
+
+        const newGatewayInstance = jasmine.createSpyObj('instance2', ['call'])
+        const newGatewayClass = jasmine.createSpy('GatewayClass2').and.returnValue(newGatewayInstance)
+        configs.gateway = newGatewayClass
+
+        client.Test.method()
+        expect(newGatewayClass).toHaveBeenCalled()
+        expect(gatewayClass.calls.count()).toEqual(1)
+      })
     })
   })
 })

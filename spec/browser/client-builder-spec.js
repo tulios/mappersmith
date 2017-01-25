@@ -16,7 +16,7 @@ describe('ClientBuilder', () => {
     gatewayInstance = jasmine.createSpyObj('gatewayInstance', ['call'])
     gatewayClass = jasmine.createSpy('GatewayConstructor').and.returnValue(gatewayInstance)
 
-    clientBuilder = new ClientBuilder(manifest, gatewayClass)
+    clientBuilder = new ClientBuilder(manifest, () => gatewayClass)
     client = clientBuilder.build()
   })
 

@@ -3,21 +3,25 @@ import MethodDescriptor from './method-descriptor'
 import Request from './request'
 import { assign } from './utils'
 
-function ClientBuilder(manifest, GatewayClass) {
+/**
+ * @param {Object} manifest - manifest definition with at least the `resources` key
+ * @param {Function} GatewayClassFactory - factory function that returns the a gateway class
+ */
+function ClientBuilder(manifest, GatewayClassFactory) {
   if (!manifest) {
     throw new Error(
       `[Mappersmith] invalid manifest (${manifest})`
     )
   }
 
-  if (!GatewayClass) {
+  if (!GatewayClassFactory || !GatewayClassFactory()) {
     throw new Error(
       '[Mappersmith] gateway class not configured (configs.gateway)'
     )
   }
 
   this.manifest = new Manifest(manifest)
-  this.GatewayClass = GatewayClass
+  this.GatewayClassFactory = GatewayClassFactory
 }
 
 ClientBuilder.prototype = {
@@ -45,7 +49,8 @@ ClientBuilder.prototype = {
     const finalRequest = middlewares
       .reduce((request, middleware) => middleware.request(request), initialRequest)
 
-    const callGateway = () => new this.GatewayClass(finalRequest).call()
+    const GatewayClass = this.GatewayClassFactory()
+    const callGateway = () => new GatewayClass(finalRequest).call()
 
     const execute = middlewares
       .reduce(

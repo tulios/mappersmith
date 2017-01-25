@@ -18,7 +18,7 @@ describe('ClientBuilder middlewares', () => {
       response,
       responseValue
 
-  const createClient = () => new ClientBuilder(manifest, gatewayClass).build()
+  const createClient = () => new ClientBuilder(manifest, () => gatewayClass).build()
 
   beforeEach(() => {
     responseValue = 'success'

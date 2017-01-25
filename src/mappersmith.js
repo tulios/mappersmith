@@ -35,5 +35,5 @@ export const configs = {
 }
 
 export default function forge(manifest) {
-  return new ClientBuilder(manifest, configs.gateway).build()
+  return new ClientBuilder(manifest, () => configs.gateway).build()
 }
