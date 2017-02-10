@@ -10,6 +10,8 @@ import {
   defaultErrorLogger
 } from 'src/middlewares/log'
 
+import RetryMiddleware, { setRetryConfigs } from 'src/middlewares/retry'
+
 function debugResponse(response) {
   const request = response.request()
   return `Status: ${response.status()}, Headers: ${JSON.stringify(request.headers())}, ${request.method().toUpperCase()} ${request.url()} => ${response.rawData()}`
@@ -168,6 +170,41 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
           ])
           done()
         })
+      })
+    })
+  })
+
+  describe('retry middleware', () => {
+    beforeEach(() => {
+      setRetryConfigs({ initialRetryTimeInSecs: 0.05, retries: 3 })
+      Client = forge(createManifest(params.host, [RetryMiddleware]), gateway)
+    })
+
+    it('retries failed GET requests', (done) => {
+      Client.Failure.onOdd().then((response) => {
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'x-api-response': 'apiFailOnOdd',
+          'x-mappersmith-retry-count': 1,
+          'x-mappersmith-retry-time': jasmine.any(Number)
+        }))
+        done()
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
+    })
+
+    it('rejects the promise when the request fails more than max retries', (done) => {
+      Client.Failure.get().then((response) => {
+        done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+      })
+      .catch((response) => {
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'x-api-response': 'apiFailure',
+          'x-mappersmith-retry-count': 3,
+          'x-mappersmith-retry-time': jasmine.any(Number)
+        }))
+        done()
       })
     })
   })

@@ -58,6 +58,14 @@ app.get('/api/failure.json', function(req, res) {
   res.send(responses.apiFailure)
 })
 
+var number = 0
+app.get('/api/fail-on-odd.json', function(req, res) {
+  number++
+  res.set({ 'X-Api-Response': 'apiFailOnOdd' })
+  res.status(number % 2 === 0 ? 200 : 500)
+  res.send(responses.apiFailOnOdd)
+})
+
 app.listen(9090, function() {
   console.log('Integration backend listening on port 9090')
 })

@@ -1,6 +1,6 @@
 import LogMiddleware from 'src/middlewares/log'
 
-export default function createManifest(host = null) {
+export default function createManifest(host = null, middlewares = []) {
   return {
     host: host,
     resources: {
@@ -17,11 +17,10 @@ export default function createManifest(host = null) {
         add: { method: 'put', path: '/api/pictures/{category}' }
       },
       Failure: {
-        get: { path: '/api/failure.json' }
+        get: { path: '/api/failure.json' },
+        onOdd: { path: '/api/fail-on-odd.json' }
       }
     },
-    middlewares: [
-      LogMiddleware
-    ]
+    middlewares: [LogMiddleware].concat(middlewares)
   }
 }

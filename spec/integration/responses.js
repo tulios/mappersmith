@@ -36,5 +36,9 @@ module.exports = {
 
   apiFailure: {
     errorMessage: 'something went bad'
+  },
+
+  apiFailOnOdd: {
+    payload: 'data'
   }
 }
