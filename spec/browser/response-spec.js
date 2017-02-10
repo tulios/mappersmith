@@ -67,6 +67,15 @@ describe('Response', () => {
     })
   })
 
+  describe('#header', () => {
+    it('returns the value of the given header name', () => {
+      responseHeaders = { 'X-SOMETHING': true, 'X-AnOtHeR': 'test' }
+      const response = createResponse()
+      expect(response.header('x-something')).toEqual(true)
+      expect(response.header('x-another')).toEqual('test')
+    })
+  })
+
   describe('#isContentTypeJSON', () => {
     it('returns true when content-type=application/json', () => {
       responseHeaders = { 'Content-Type': 'application/json;charset=utf-8' }

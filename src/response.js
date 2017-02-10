@@ -54,6 +54,17 @@ Response.prototype = {
     return lowerCaseObjectKeys(this.responseHeaders)
   },
 
+  /**
+   * Utility method to get a header value by name
+   *
+   * @param {String} name
+   *
+   * @return {String} / {Undefined}
+   */
+  header(name) {
+    return this.headers()[name.toLowerCase()]
+  },
+
   rawData() {
     return this.responseData
   },
