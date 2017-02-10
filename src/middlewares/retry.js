@@ -27,8 +27,8 @@ export const setRetryConfigs = (newConfigs) => {
 
 /**
  * This middleware will automatically retry GET requests up to the configured amount of
- * retries using a randomization function that grows exponentially. The retry count and time
- * used will be included as a header in the response.
+ * retries using a randomization function that grows exponentially. The retry count and
+ * the time used will be included as a header in the response.
  *
  * The retry time is calculated using the following formula:
  *   retryTime = min(

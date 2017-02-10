@@ -334,6 +334,36 @@ client.User
 //   -> global error handler
 ```
 
+#### Retry
+
+This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response.
+
+```javascript
+import RetryMiddleware from 'mappersmith/middlewares/retry'
+
+const client = forge({
+  middlewares: [ RetryMiddleware ],
+  /* ... */
+})
+```
+
+It's possible to configure the header names and parameters used in the calculation.
+
+```javascript
+import { setRetryConfigs } from 'mappersmith/middlewares/retry'
+
+// Using the default values as an example
+setRetryConfigs({
+  headerRetryCount: 'X-Mappersmith-Retry-Count',
+  headerRetryTime: 'X-Mappersmith-Retry-Time',
+  maxRetryTimeInSecs: 5,
+  initialRetryTimeInSecs: 0.1,
+  factor: 0.2, // randomization factor
+  multiplier: 2, // exponential factor
+  retries: 5 // max retries
+})
+```
+
 #### Log
 
 Log all requests and responses. Might be useful in development mode.
