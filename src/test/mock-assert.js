@@ -1,3 +1,6 @@
+/**
+ * @typedef MockAssert
+ */
 function MockAssert(calls) {
   this.calls = () => calls
   this.callsCount = () => calls.length

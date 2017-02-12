@@ -77,10 +77,10 @@ export function performanceNow() {
 }
 
 /**
- * borrowed from: https://gist.github.com/monsur/706839
+ * borrowed from: {@link https://gist.github.com/monsur/706839}
  * XmlHttpRequest's getAllResponseHeaders() method returns a string of response
  * headers according to the format described here:
- * http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method
+ * {@link http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method}
  * This method parses that string into a user-friendly key/value pair object.
  */
 export function parseResponseHeaders(headerStr) {

@@ -1,6 +1,13 @@
 import MethodDescriptor from './method-descriptor'
 import { assign } from './utils'
 
+/**
+ * @typedef Manifest
+ * @param {Object} obj
+ *   @param {String} obj.host
+ *   @param {String} obj.resources - default: {}
+ *   @param {String} obj.middlewares - default: []
+ */
 function Manifest(obj) {
   this.host = obj.host
   this.resources = obj.resources || {}

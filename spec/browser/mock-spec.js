@@ -1,6 +1,7 @@
 import forge from 'src/index'
 import MockAssert from 'src/test/mock-assert'
-import { getManifest } from 'spec/helper'
+import EncodeJsonMiddleware from 'src/middlewares/encode-json'
+import { getManifest, headerMiddleware } from 'spec/helper'
 
 import {
   install as installMock,
@@ -125,6 +126,43 @@ describe('Test lib', () => {
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
         done.fail(`test failed with promise error: ${error}`)
+      })
+    })
+
+    describe('when client is using middlewares', () => {
+      let params
+
+      beforeEach(() => {
+        // client is using the `EncodeJson` middleware which will change the request body.
+        // The mock request must go through the same transformation in order for them to match
+        client = forge(getManifest([EncodeJsonMiddleware, headerMiddleware]))
+        params = {
+          body: {
+            title: 'blog title',
+            text: 'lorem ipsum'
+          }
+        }
+      })
+
+      it('executes the middlewares to modify the request and response', (done) => {
+        mockClient(client)
+          .resource('Blog')
+          .method('post')
+          .with(params)
+          .status(200)
+          .response({ ok: true })
+
+        client.Blog
+          .post(params)
+          .then((response) => {
+            expect(response.status()).toEqual(200)
+            expect(response.request().headers()['x-middleware-phase']).toEqual('request')
+            expect(response.headers()['x-middleware-phase']).toEqual('response')
+            done()
+          })
+          .catch((response) => {
+            done.fail(response.data())
+          })
       })
     })
   })

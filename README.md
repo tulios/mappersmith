@@ -55,10 +55,8 @@ npm run release # for minified version
 To create a client for your API you will need to provide a simple manifest. If your API reside in the same domain as your app you can skip the `host` configuration. Each resource has a name and a list of methods with its definitions, like:
 
 ```javascript
-// 1) Import
 import forge from 'mappersmith'
 
-// 2) Forge your client with your API manifest
 const github = forge({
   host: 'https://status.github.com',
   resources: {
@@ -70,7 +68,6 @@ const github = forge({
   }
 })
 
-// profit!
 github.Status.lastMessage().then((response) => {
   console.log(`status: ${response.data()}`)
 })
@@ -118,7 +115,10 @@ const client = forge({
 If your method doesn't require any parameter, you can just call it without them:
 
 ```javascript
-client.User.all() // https://my.api.com/users
+client.User
+  .all() // https://my.api.com/users
+  .then((response) => console.log(response.data()))
+  .catch((response) => console.error(response.data()))
 ```
 
 Every parameter that doesn't match a pattern `{parameter-name}` in path will be sent as part of the query string:
@@ -220,7 +220,7 @@ client.User.all() // http://old-api.com/users
 
 __Mappersmith__ does not apply any polyfills, it depends on a native Promise implementation to be supported. If your environment doesn't support Promises, please apply the polyfill first. One option can be [then/promises](https://github.com/then/promise)
 
-In some cases is not possible to use/assign the global `Promise` constant, for those cases you can define the promise implementation used by Mappersmith.
+In some cases it is not possible to use/assign the global `Promise` constant, for those cases you can define the promise implementation used by Mappersmith.
 
 For example, using the project [rsvp.js](https://github.com/tildeio/rsvp.js/) (a tiny implementation of Promises/A+):
 
@@ -549,29 +549,29 @@ Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappers
 ### Running unit tests:
 
 ```sh
-npm run test-browser
-npm run test-node
+yarn test-browser
+yarn test-node
 ```
 
 ### Running integration tests:
 
 ```sh
 node spec/integration/server.js &
-npm run test-browser-integration
-npm run test-node-integration
+yarn test-browser-integration
+yarn test-node-integration
 ```
 
 ### Running all tests
 
 ```sh
 node spec/integration/server.js &
-npm run test
+yarn test
 ```
 
 ## Compile and release
 
 ```sh
-NODE_ENV=production npm run build
+NODE_ENV=production yarn build
 ```
 
 ## Contributors

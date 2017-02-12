@@ -1,12 +1,13 @@
 /**
+ * @typedef MethodDescriptor
  * @param {Object} obj
  *   @param {String} obj.host
  *   @param {String} obj.path
  *   @param {String} obj.method
  *   @param {Object} obj.headers
  *   @param {Object} obj.params
- *   @param {String} obj.bodyAttr - Body attribute name. Default: 'body'
- *   @param {String} obj.headersAttr - Headers attribute name. Default: 'headers'
+ *   @param {String} obj.bodyAttr - body attribute name. Default: 'body'
+ *   @param {String} obj.headersAttr - headers attribute name. Default: 'headers'
  */
 export default function MethodDescriptor(obj) {
   this.host = obj.host

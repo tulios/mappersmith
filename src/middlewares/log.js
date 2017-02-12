@@ -31,6 +31,9 @@ const log = (request, response) => {
   return response ? response : request
 }
 
+/**
+ * Log all requests and responses.
+ */
 const ConsoleLogMiddleware = () => ({
   request(request) {
     return log(request)

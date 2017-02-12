@@ -3,6 +3,7 @@ import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
 
 /**
+ * @typedef Request
  * @param {MethodDescriptor} methodDescriptor
  * @param {Object} requestParams, defaults to an empty object ({})
  */
