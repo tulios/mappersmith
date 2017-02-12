@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0-rc6
+
+  - bugfix: `MockClient` should use the same middlewares configured in the client #37
+
 ## 2.0.0-rc5
 
   - bugfix: `ClientBuilder` isn't using the new configured gateway when `config.gateway` changes #36
