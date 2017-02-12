@@ -2,7 +2,7 @@
 set -euv
 
 env
-npm run test-browser
-npm run test-node
-npm run test-browser-integration
-npm run test-node-integration
+yarn test-browser
+yarn test-node
+yarn test-browser-integration
+yarn test-node-integration
