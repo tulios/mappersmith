@@ -21,6 +21,7 @@ export const configs = {
        * such as cookies, authorization headers or TLS client certificates.
        * Setting withCredentials has no effect on same-site requests
        * https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials
+       * @default false
        */
       withCredentials: false,
 
@@ -34,6 +35,9 @@ export const configs = {
   }
 }
 
+/**
+ * @param {Object} manifest
+ */
 export default function forge(manifest) {
   return new ClientBuilder(manifest, () => configs.gateway).build()
 }

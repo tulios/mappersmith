@@ -4,8 +4,9 @@ import Request from './request'
 import { assign } from './utils'
 
 /**
+ * @typedef ClientBuilder
  * @param {Object} manifest - manifest definition with at least the `resources` key
- * @param {Function} GatewayClassFactory - factory function that returns the a gateway class
+ * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
 function ClientBuilder(manifest, GatewayClassFactory) {
   if (!manifest) {

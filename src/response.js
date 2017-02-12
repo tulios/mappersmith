@@ -1,6 +1,7 @@
 import { lowerCaseObjectKeys, assign } from './utils'
 
 /**
+ * @typedef Response
  * @param {Request} originalRequest
  * @param {Integer} responseStatus
  * @param {String} responseData
@@ -54,6 +55,9 @@ Response.prototype = {
     return lowerCaseObjectKeys(this.responseHeaders)
   },
 
+  /**
+   * Returns the original response data
+   */
   rawData() {
     return this.responseData
   },

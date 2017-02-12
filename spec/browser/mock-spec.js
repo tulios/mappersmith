@@ -133,9 +133,8 @@ describe('Test lib', () => {
       let params
 
       beforeEach(() => {
-        // client is using the `EncodeJson` middleware which will change the
-        // request body, the mock request go through the same transformation
-        // in order for them to match
+        // client is using the `EncodeJson` middleware which will change the request body.
+        // The mock request must go through the same transformation in order for them to match
         client = forge(getManifest([EncodeJsonMiddleware, headerMiddleware]))
         params = {
           body: {
