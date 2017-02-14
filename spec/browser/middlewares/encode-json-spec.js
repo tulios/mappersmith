@@ -18,6 +18,17 @@ describe('Middleware / EncodeJson', () => {
     expect(newRequest.headers()['content-type']).toEqual(CONTENT_TYPE_JSON)
   })
 
+  describe('when the request does not have a body', () => {
+    it('returns the original request', () => {
+      request = new Request(new MethodDescriptor({ method: 'get' }))
+      expect(request.body()).toBeUndefined()
+
+      const newRequest = middleware.request(request)
+      expect(newRequest.body()).toBeUndefined()
+      expect(newRequest.headers()['content-type']).toBeUndefined()
+    })
+  })
+
   describe('when body is an invalid JSON', () => {
     beforeEach(() => {
       const data = {}
