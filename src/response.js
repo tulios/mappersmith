@@ -4,13 +4,13 @@ import { lowerCaseObjectKeys, assign } from './utils'
  * @typedef Response
  * @param {Request} originalRequest
  * @param {Integer} responseStatus
- * @param {String} responseData
+ * @param {String} responseData, defaults to null
  * @param {Object} responseHeaders, defaults to an empty object ({})
  */
 function Response(originalRequest, responseStatus, responseData, responseHeaders) {
   this.originalRequest = originalRequest
   this.responseStatus = responseStatus
-  this.responseData = responseData
+  this.responseData = responseData !== undefined ? responseData : null
   this.responseHeaders = responseHeaders || {}
   this.timeElapsed = null
 }
