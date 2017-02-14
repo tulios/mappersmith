@@ -62,7 +62,9 @@ export const uninstall = () => {
 /**
  * Cleans up all mocks
  */
-export const clear = () => store = []
+export const clear = () => {
+  store = []
+}
 
 export const lookupResponse = (request) => {
   const mocks = store
