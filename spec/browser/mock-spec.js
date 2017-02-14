@@ -23,13 +23,16 @@ describe('Test lib', () => {
   })
 
   describe('mock resources', () => {
-    it('returns a MockAssert object', () => {
-      const mock = mockClient(client)
-        .resource('User')
-        .method('all')
-        .response({ ok1: true })
+    describe('#assertObject', () => {
+      it('returns a MockAssert object', () => {
+        const mock = mockClient(client)
+          .resource('User')
+          .method('all')
+          .response({ ok1: true })
+          .assertObject()
 
-      expect(mock instanceof MockAssert).toEqual(true)
+        expect(mock instanceof MockAssert).toEqual(true)
+      })
     })
 
     it('defaults status 200 and automatically includes "application/json" for object responses', (done) => {
@@ -121,6 +124,24 @@ describe('Test lib', () => {
         expect(response.request().method()).toEqual('post')
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+    })
+
+    it('works without a response', (done) => {
+      mockClient(client)
+        .resource('Blog')
+        .method('post')
+        .status(204)
+
+      client.Blog.post().then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(204)
+        expect(response.data()).toBeNull()
         done()
       })
       .catch((response) => {
@@ -301,6 +322,7 @@ describe('Test lib', () => {
         .resource('User')
         .method('all')
         .response({ ok1: true })
+        .assertObject()
     })
 
     it('keeps track of the number of calls', (done) => {

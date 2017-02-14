@@ -66,9 +66,13 @@ export const clear = () => {
   store = []
 }
 
+/**
+ * @param {Request} request
+ * @return {Response}
+ * @throws Will throw an error if it doesn't find a mock to match the given request
+ */
 export const lookupResponse = (request) => {
-  const mocks = store
-    .map((mock) => mock.mockRequest ? mock.mockRequest : mock)
+  const mocks = store.map((mock) => mock.toMockRequest())
 
   const exactMatch = mocks
     .filter((mock) => mock.isExactMatch(request))

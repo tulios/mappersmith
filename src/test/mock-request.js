@@ -73,6 +73,13 @@ MockRequest.prototype = {
   isPartialMatch(request) {
     return new RegExp(this.method).test(request.method()) &&
       new RegExp(this.url).test(request.url())
+  },
+
+  /**
+   * @return {MockRequest}
+   */
+  toMockRequest() {
+    return this
   }
 }
 

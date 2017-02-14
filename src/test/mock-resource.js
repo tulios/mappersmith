@@ -67,31 +67,40 @@ MockResource.prototype = {
    */
   response(responseData) {
     this.responseData = responseData
-    this.mockRequest = this.toMockRequest()
+    return this
+  },
 
-    return this.mockRequest.assertObject()
+  /**
+   * @return {MockAssert}
+   */
+  assertObject() {
+    return this.toMockRequest().assertObject()
   },
 
   /**
    * @return {MockRequest}
    */
   toMockRequest() {
-    const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
-    const initialRequest = new Request(methodDescriptor, this.requestParams)
-    const middlewares = this.manifest.createMiddlewares()
-    const finalRequest = middlewares
-      .reduce((request, middleware) => middleware.request(request), initialRequest)
+    if (!this.mockRequest) {
+      const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
+      const initialRequest = new Request(methodDescriptor, this.requestParams)
+      const middlewares = this.manifest.createMiddlewares()
+      const finalRequest = middlewares
+        .reduce((request, middleware) => middleware.request(request), initialRequest)
 
-    return new MockRequest(this.id, {
-      method: finalRequest.method(),
-      url: finalRequest.url(),
-      body: finalRequest.body(),
-      response: {
-        status: this.responseStatus,
-        headers: this.responseHeaders,
-        body: this.responseData
-      }
-    })
+      this.mockRequest = new MockRequest(this.id, {
+        method: finalRequest.method(),
+        url: finalRequest.url(),
+        body: finalRequest.body(),
+        response: {
+          status: this.responseStatus,
+          headers: this.responseHeaders,
+          body: this.responseData
+        }
+      })
+    }
+
+    return this.mockRequest
   }
 }
 
