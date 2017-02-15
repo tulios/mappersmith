@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.0-rc7
+
+  - bugfix: EncodeJSON middleware was only returning requests if the original request had a body or caused an error
+  - Prevent method clear from the test lib to expose the internal store
+  - Normalize `responseData` to be always `null` when not defined
+  - Make `mockClient` independent of the `response` call
+
 ## 2.0.0-rc6
 
   - bugfix: `MockClient` should use the same middlewares configured in the client #37
