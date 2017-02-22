@@ -17,9 +17,8 @@ const EncodeJsonMiddleware = () => ({
           body: JSON.stringify(request.body())
         })
       }
-    } catch(e) {
-      return request
-    }
+    } catch(e) {}
+    return request
   }
 })
 

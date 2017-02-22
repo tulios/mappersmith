@@ -115,6 +115,13 @@ describe('Response', () => {
         })
       })
     })
+
+    describe('without responseData', () => {
+      it('returns null', () => {
+        responseData = undefined
+        expect(createResponse().data()).toBeNull()
+      })
+    })
   })
 
   describe('#enhance', () => {
