@@ -6,11 +6,15 @@ var upload = multer({ storage: multer.memoryStorage() })
 var app = new express()
 var responses = require('./responses')
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+function extractRawBody(req, res, buf) {
+  req.rawBody = buf.toString('utf-8')
+}
+
+app.use(bodyParser.json({ verify: extractRawBody }))
+app.use(bodyParser.urlencoded({ extended: true, verify: extractRawBody }))
 
 app.use(function (req, res, next) {
-  console.log(req.method.toUpperCase() + ' ' + req.path + ', Body: ' + JSON.stringify(req.body) + ', Headers: ' + JSON.stringify(req.headers) + '\n')
+  console.log(req.method.toUpperCase() + ' ' + req.path + ', RawBody: ' + req.rawBody + ', Body: ' + JSON.stringify(req.body) + ', Headers: ' + JSON.stringify(req.headers) + '\n')
   next()
 })
 
@@ -42,6 +46,7 @@ app.post('/api/pictures/:category', function(req, res) {
   res.set({ 'X-Api-Response': 'apiPicturesCreate' })
   res.set({ 'X-Param-Category': req.params.category })
   res.set({ 'X-Body': JSON.stringify(req.body) })
+  res.set({ 'X-Raw-Body': req.rawBody })
   res.send(responses.apiPicturesCreate)
 })
 
@@ -49,6 +54,7 @@ app.put('/api/pictures/:category', function(req, res) {
   res.set({ 'X-Api-Response': 'apiPicturesAdd' })
   res.set({ 'X-Param-Category': req.params.category })
   res.set({ 'X-Body': JSON.stringify(req.body) })
+  res.set({ 'X-Raw-Body': req.rawBody })
   res.send(responses.apiPicturesAdd)
 })
 
