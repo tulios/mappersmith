@@ -284,6 +284,18 @@ const client = forge({
 })
 ```
 
+It can, optionally, receive the `resourceName` and `resourceMethod`, example:
+
+```javascript
+const MyMiddleware = ({ resourceName, resourceMethod }) => ({
+  /* ... */
+})
+
+client.User.all()
+// resourceName: 'User'
+// resourceMethod: 'all'
+```
+
 ### Built-in middlewares
 
 #### EncodeJson

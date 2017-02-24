@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+  - Expose `resourceName` and `resourceMethod` to middlewares
+
 ## 2.0.0-rc7
 
   - bugfix: EncodeJSON middleware was only returning requests if the original request had a body or caused an error

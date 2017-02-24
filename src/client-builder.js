@@ -30,23 +30,23 @@ ClientBuilder.prototype = {
     const client = { _manifest: this.manifest }
 
     this.manifest.eachResource((name, methods) => {
-      client[name] = this.buildResource(methods)
+      client[name] = this.buildResource(name, methods)
     })
 
     return client
   },
 
-  buildResource(methods) {
+  buildResource(resourceName, methods) {
     return methods.reduce((resource, method) => assign(resource, {
       [method.name]: (requestParams) => {
         const request = new Request(method.descriptor, requestParams)
-        return this.invokeMiddlewares(request)
+        return this.invokeMiddlewares(resourceName, method.name, request)
       }
     }), {})
   },
 
-  invokeMiddlewares(initialRequest) {
-    const middlewares = this.manifest.createMiddlewares()
+  invokeMiddlewares(resourceName, resourceMethod, initialRequest) {
+    const middlewares = this.manifest.createMiddlewares(resourceName, resourceMethod)
     const finalRequest = middlewares
       .reduce((request, middleware) => middleware.request(request), initialRequest)
 
