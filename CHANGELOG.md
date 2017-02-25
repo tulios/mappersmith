@@ -1,8 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## 2.0.0
 
   - Expose `resourceName` and `resourceMethod` to middlewares
+  - Features from 2.0.0-rc1 to 2.0.0-rc7
 
 ## 2.0.0-rc7
 
