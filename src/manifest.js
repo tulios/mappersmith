@@ -47,6 +47,14 @@ Manifest.prototype = {
     ))
   },
 
+  /**
+   * @param {Object} args
+   *   @param {String} args.resourceName
+   *   @param {String} args.resourceMethod
+   *   @param {Boolean} args.mockRequest
+   *
+   * @return {Array<Object>}
+   */
   createMiddlewares(args = {}) {
     const createInstance = (middlewareFactory) => assign({
       request: (request) => request,
