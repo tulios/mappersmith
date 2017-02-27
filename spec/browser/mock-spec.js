@@ -179,6 +179,8 @@ describe('Test lib', () => {
             expect(response.status()).toEqual(200)
             expect(response.request().headers()['x-middleware-phase']).toEqual('request')
             expect(response.headers()['x-middleware-phase']).toEqual('response')
+            expect(response.headers()['x-resource-name']).toEqual('Blog')
+            expect(response.headers()['x-resource-method']).toEqual('post')
             done()
           })
           .catch((response) => {

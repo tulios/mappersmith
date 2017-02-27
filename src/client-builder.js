@@ -46,7 +46,7 @@ ClientBuilder.prototype = {
   },
 
   invokeMiddlewares(resourceName, resourceMethod, initialRequest) {
-    const middlewares = this.manifest.createMiddlewares(resourceName, resourceMethod)
+    const middlewares = this.manifest.createMiddlewares({ resourceName, resourceMethod })
     const finalRequest = middlewares
       .reduce((request, middleware) => middleware.request(request), initialRequest)
 
