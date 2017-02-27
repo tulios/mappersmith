@@ -2,7 +2,7 @@
 set -euv
 
 env
-yarn test-browser
-yarn test-node
-yarn test-browser-integration
-yarn test-node-integration
+SINGLE_RUN=true yarn test-browser
+SINGLE_RUN=true yarn test-node
+SINGLE_RUN=true yarn test-browser-integration
+SINGLE_RUN=true yarn test-node-integration
