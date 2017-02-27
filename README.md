@@ -89,7 +89,7 @@ Each resource has a name and a list of methods with its definitions. A method de
 const client = forge({
   resources: {
     User: {
-      all: { path: '/users' }
+      all: { path: '/users' },
 
       // {id} is a dynamic segment and will be replaced by the parameter "id"
       // when called
