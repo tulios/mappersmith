@@ -1,5 +1,10 @@
 # Changelog
 
+# 2.0.1
+
+  - bugfix: Send `resourceName` and `resourceMethod` when running the test lib
+  - Add flag (`mockRequest`) when executing the middlewares from the test lib
+
 ## 2.0.0
 
   - Expose `resourceName` and `resourceMethod` to middlewares
