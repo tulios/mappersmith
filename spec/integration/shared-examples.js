@@ -1,5 +1,6 @@
 import createManifest from 'spec/integration/manifest'
 import apiResponses from 'spec/integration/responses'
+import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 
 import forge, { configs } from 'src/index'
 import {
@@ -87,13 +88,13 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
   })
 
   it('POST /api/pictures/{category}', (done) => {
-    const params = { category: 'sports', body: { payload: 'test' } }
+    const params = { category: 'sports', body: { payload: 'test', foo: 'bar' } }
     Client.Pictures.create(params).then((response) => {
       expect(response.status()).toEqual(200)
       expect(response.headers()).toEqual(jasmine.objectContaining({
         'x-api-response': 'apiPicturesCreate',
         'x-param-category': 'sports',
-        'x-body': JSON.stringify({ payload: 'test' })
+        'x-raw-body': 'payload=test&foo=bar'
       }))
       expect(response.data()).toEqual(apiResponses.apiPicturesCreate)
       done()
@@ -137,6 +138,30 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
         expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiFailure' }))
         expect(response.data()).toEqual(apiResponses.apiFailure)
         done()
+      })
+    })
+  })
+
+  describe('encode json middleware', () => {
+    it('encodes request body to json', (done) => {
+      Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)
+      const requestParams = {
+        category: 'sports',
+        body: { name: 'test2' }
+      }
+
+      Client.Pictures.add(requestParams).then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'x-api-response': 'apiPicturesAdd',
+          'x-param-category': 'sports',
+          'x-raw-body': JSON.stringify({ name: 'test2' })
+        }))
+        expect(response.data()).toEqual(apiResponses.apiPicturesAdd)
+        done()
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
       })
     })
   })

@@ -38,6 +38,17 @@ describe('ClientBuilder middlewares', () => {
 
   afterEach(() => resetCountMiddleware())
 
+  it('receives an object with "resourceName" and "resourceMethod"', () => {
+    const middleware = jasmine.createSpy('middleware')
+    manifest.middlewares = [ middleware ]
+
+    createClient().User.byId({ id: 1 })
+    expect(middleware).toHaveBeenCalledWith(jasmine.objectContaining({
+      resourceName: 'User',
+      resourceMethod: 'byId'
+    }))
+  })
+
   it('calls request and response phase', () => {
     const requestPhase = jasmine.createSpy('requestPhase')
     const responsePhase = jasmine.createSpy('responsePhase')

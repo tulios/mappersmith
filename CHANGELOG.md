@@ -1,5 +1,15 @@
 # Changelog
 
+# 2.0.1
+
+  - bugfix: Send `resourceName` and `resourceMethod` when running the test lib
+  - Add flag (`mockRequest`) when executing the middlewares from the test lib
+
+## 2.0.0
+
+  - Expose `resourceName` and `resourceMethod` to middlewares
+  - Features from 2.0.0-rc1 to 2.0.0-rc7
+
 ## 2.0.0-rc7
 
   - bugfix: EncodeJSON middleware was only returning requests if the original request had a body or caused an error

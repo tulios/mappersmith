@@ -84,7 +84,11 @@ MockResource.prototype = {
     if (!this.mockRequest) {
       const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
       const initialRequest = new Request(methodDescriptor, this.requestParams)
-      const middlewares = this.manifest.createMiddlewares()
+      const middlewares = this.manifest.createMiddlewares({
+        resourceName: this.resourceName,
+        resourceMethod: this.methodName,
+        mockRequest: true
+      })
       const finalRequest = middlewares
         .reduce((request, middleware) => middleware.request(request), initialRequest)
 

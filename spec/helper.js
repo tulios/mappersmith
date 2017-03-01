@@ -63,16 +63,22 @@ export function respondWith(responseObj, assertsCallback) {
   })
 }
 
-export const headerMiddleware = () => ({
+export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
   request(request) {
     return request.enhance({
-      headers: { 'x-middleware-phase': 'request' }
+      headers: {
+        'x-middleware-phase': 'request'
+      }
     })
   },
 
   response(next) {
     return next().then((response) => response.enhance({
-      headers: { 'x-middleware-phase': 'response' }
+      headers: {
+        'x-middleware-phase': 'response',
+        'x-resource-name': resourceName,
+        'x-resource-method': resourceMethod
+      }
     }))
   }
 })
