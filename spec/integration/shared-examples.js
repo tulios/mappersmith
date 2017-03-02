@@ -1,6 +1,7 @@
-import createManifest from 'spec/integration/manifest'
-import apiResponses from 'spec/integration/responses'
+import createManifest from 'spec/integration/support/manifest'
+import apiResponses from 'spec/integration/support/responses'
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
+import { debugResponse, errorMessage } from 'spec/integration/support'
 
 import forge, { configs } from 'src/index'
 import {
@@ -10,15 +11,6 @@ import {
   defaultSuccessLogger,
   defaultErrorLogger
 } from 'src/middlewares/log'
-
-function debugResponse(response) {
-  const request = response.request()
-  return `Status: ${response.status()}, Headers: ${JSON.stringify(request.headers())}, ${request.method().toUpperCase()} ${request.url()} => ${response.rawData()}`
-}
-
-function errorMessage(response) {
-  return response.rawData ? debugResponse(response) : response
-}
 
 export default function IntegrationTestsForGateway(gateway, params, extraTests) {
   let successLogBuffer,
@@ -115,7 +107,7 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
         expect(response.headers()).toEqual(jasmine.objectContaining({
           'x-api-response': 'apiPicturesAdd',
           'x-param-category': 'sports',
-          'x-body': JSON.stringify({ name: 'test2' })
+          'x-raw-body': JSON.stringify({ name: 'test2' })
         }))
         expect(response.data()).toEqual(apiResponses.apiPicturesAdd)
         done()
