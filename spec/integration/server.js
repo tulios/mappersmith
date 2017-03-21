@@ -4,7 +4,7 @@ var multer  = require('multer')
 var upload = multer({ storage: multer.memoryStorage() })
 
 var app = new express()
-var responses = require('./responses')
+var responses = require('./support/responses')
 
 function extractRawBody(req, res, buf) {
   req.rawBody = buf.toString('utf-8')

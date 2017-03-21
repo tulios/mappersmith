@@ -499,7 +499,7 @@ mockRequest({
 
 ## <a name="gateways"></a> Gateways
 
-Mappersmith has a pluggable transport layer and it includes by default two gateways: xhr and http. Mappersmith will pick the correct gateway based on the environment you are running (nodejs or the browser).
+Mappersmith has a pluggable transport layer and it includes by default three gateways: xhr, http and fetch. Mappersmith will pick the correct gateway based on the environment you are running (nodejs or the browser).
 
 You can write your own gateway, take a look at [XHR](https://github.com/tulios/mappersmith/blob/master/src/gateway/xhr.js) for an example. To configure, import the `configs` object and assign the gateway option, like:
 
@@ -521,6 +521,31 @@ configs.gatewayConfigs.XHR = {
   configure(xhr) {
     xhr.ontimeout = () => console.error('timeout!')
   }
+}
+```
+
+Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappersmith.js) for more options.
+
+### Fetch
+
+__Mappersmith__ does not apply any polyfills, it depends on a native `fetch` implementation to be supported. It is possible assign the fetch implementation used by Mappersmith:
+
+```javascript
+import { configs } from 'mappersmith'
+configs.fetch = fetchFunction
+```
+
+Fetch is not used by default, you can configure it through `configs.gateway`.
+
+```javascript
+import FetchGateway from 'mappersmith/gateway/fetch'
+import { configs } from 'mappersmith'
+
+configs.gateway = FetchGateway
+
+// Extra configurations, if needed
+configs.gatewayConfigs.Fetch = {
+  credentials: 'same-origin'
 }
 ```
 
