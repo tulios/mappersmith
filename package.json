@@ -63,6 +63,7 @@
     "karma-webpack": "^1.8.0",
     "multer": "^1.2.0",
     "phantomjs-prebuilt": "^2.1.14",
-    "webpack": "^2.2.0"
+    "webpack": "^2.2.0",
+    "whatwg-fetch": "^2.0.2"
   }
 }
