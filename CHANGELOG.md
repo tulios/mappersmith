@@ -1,5 +1,11 @@
 # Changelog
 
+# 2.1.0
+
+  - Add a retry middleware with exponential retry time #38
+  - Add a new gateway backed by `fetch` #42
+  - Add `Request#header` to get a single header value by name
+
 # 2.0.1
 
   - bugfix: Send `resourceName` and `resourceMethod` when running the test lib
