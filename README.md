@@ -241,6 +241,7 @@ Mappersmith will provide an instance of its own `Response` object to the promise
 * `status()` - Returns the status number
 * `success()` - Returns true for status greater than 200 and lower than 400
 * `headers()` - Returns an object with all headers, keys in lower case
+* `header(name)` - Returns the value of the header
 * `data()` - Returns the response data, if `Content-Type` is `application/json` it parses the response and returns an object
 
 ## <a name="middlewares"></a> Middlewares
