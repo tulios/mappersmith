@@ -13,7 +13,7 @@ const github = forge({
 })
 
 // profit!
-github.Status.lastMessage().then((response) => {
-  console.log(`status: ${response.data().body}`)
-  console.log(`loaded in ${response.timeElapsed}ms`)
-})
+const response = await github.Status.lastMessage()
+
+console.log(`status: ${response.data().body}`)
+console.log(`loaded in ${response.timeElapsed}ms`)
