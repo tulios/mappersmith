@@ -1,5 +1,12 @@
 # Changelog
 
+# 2.2.0
+
+  - Add support to basic auth for all gateways #46
+  - Add `BasicAuthMiddleware` to configure a default basic auth #46
+  - Add support to timeout for all gateways #47
+  - Add `TimeoutMiddleware` to configure a default timeout #47
+
 # 2.1.0
 
   - Add a retry middleware with exponential retry time #38
