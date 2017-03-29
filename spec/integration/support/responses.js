@@ -40,5 +40,9 @@ module.exports = {
 
   apiFailOnOdd: {
     payload: 'data'
+  },
+
+  apiSecure: {
+    ok: true
   }
 }
