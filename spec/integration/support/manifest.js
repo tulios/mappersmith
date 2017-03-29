@@ -22,6 +22,9 @@ export default function createManifest(host = null, middlewares = []) {
       },
       Secure: {
         get: { path: '/api/secure.json' }
+      },
+      Timeout: {
+        get: { path: '/api/timeout.json' }
       }
     },
     middlewares: [LogMiddleware].concat(middlewares)

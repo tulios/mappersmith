@@ -15,6 +15,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     1. [Body](#body)
     1. [Headers](#headers)
     1. [Basic Auth](#basic-auth)
+    1. [Timeout](#timeout)
     1. [Alternative host](#alternative-host)
   1. [Promises](#promises)
   1. [Response object](#response-object)
@@ -181,7 +182,7 @@ client.Blog.create({
 })
 ```
 
-__NOTE__: It's possible to post body as JSON, check the `EncodeJsonMiddleware` bellow for more information
+__NOTE__: It's possible to post body as JSON, check the [EncodeJsonMiddleware](#encode-json-middleware) below for more information
 
 ### <a name="headers"></a> Headers
 
@@ -225,6 +226,30 @@ If `auth` is not possible as a special parameter for your API you can configure 
 
 client.User.all({ secret: { username: 'bob', password: 'bob' } })
 ```
+
+__NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#basic-auth-middleware), check the middlewares section below for more information.
+
+### <a name="timeout"></a> Timeout
+
+To define the number of milliseconds before the request times out use the parameter `timeout`:
+
+```javascript
+client.User.all({ timeout: 1000 })
+```
+
+If `timeout` is not possible as a special parameter for your API you can configure it through the param `timeoutAttr`:
+
+```javascript
+// ...
+{
+  all: { path: '/users', timeoutAttr: 'maxWait' }
+}
+// ...
+
+client.User.all({ maxWait: 500 })
+```
+
+__NOTE__: A default timeout can be configured with the use of the [TimeoutMiddleware](#timeout-middleware), check the middlewares section below for more information.
 
 ### <a name="alternative-host"></a> Alternative host
 
@@ -323,7 +348,7 @@ client.User.all()
 
 ### Built-in middlewares
 
-#### EncodeJson
+#### <a name="encode-json-middleware"></a> EncodeJson
 
 Automatically encode your objects into JSON
 
@@ -401,7 +426,7 @@ setRetryConfigs({
 })
 ```
 
-#### BasicAuth
+#### <a name="basic-auth-middleware"></a> BasicAuth
 
 Automatically configure your requests with basic auth
 
@@ -416,6 +441,36 @@ const client = forge({
 
 client.User.all()
 // => header: "Authorization: Basic Ym9iOmJvYg=="
+```
+
+** The default auth can be overridden with the explicit use of the auth parameter, example:
+
+```javascript
+client.User.all({ auth: { username: 'bill', password: 'bill' } })
+// auth will be { username: 'bill', password: 'bill' } instead of { username: 'bob', password: 'bob' }
+```
+
+#### <a name="timeout-middleware"></a> Timeout
+
+Automatically configure your requests with a default timeout
+
+```javascript
+import TimeoutMiddleware from 'mappersmith/middlewares/timeout'
+const Timeout = TimeoutMiddleware(500)
+
+const client = forge({
+  middlewares: [ Timeout ],
+  /* ... */
+})
+
+client.User.all()
+```
+
+** The default timeout can be overridden with the explicit use of the timeout parameter, example:
+
+```javascript
+client.User.all({ timeout: 100 })
+// timeout will be 100 instead of 500
 ```
 
 #### Log

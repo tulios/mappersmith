@@ -10,10 +10,10 @@ function XHR (request) {
 
 XHR.prototype = Gateway.extends({
   get() {
-    const xmlHttpRequest = new XMLHttpRequest()
-    this.configureCallbacks(xmlHttpRequest)
+    const xmlHttpRequest = this.createXHR()
     xmlHttpRequest.open('get', this.request.url(), true)
     this.setHeaders(xmlHttpRequest, {})
+    this.configureTimeout(xmlHttpRequest)
     xmlHttpRequest.send()
   },
 
@@ -33,12 +33,44 @@ XHR.prototype = Gateway.extends({
     this.performRequest('delete')
   },
 
+  configureTimeout(xmlHttpRequest) {
+    this.canceled = false
+    this.timer = null
+
+    const timeout = this.request.timeout()
+
+    if (timeout) {
+      xmlHttpRequest.timeout = timeout
+      xmlHttpRequest.addEventListener('timeout', () => {
+        this.canceled = true
+        clearTimeout(this.timer)
+        this.dispatchClientError(`Timeout (${timeout}ms)`)
+      })
+
+      // PhantomJS doesn't support timeout for XMLHttpRequest
+      this.timer = setTimeout(() => {
+        this.canceled = true
+        this.dispatchClientError(`Timeout (${timeout}ms)`)
+      }, timeout + 1)
+    }
+  },
+
   configureCallbacks(xmlHttpRequest) {
     xmlHttpRequest.addEventListener('load', () => {
+      if (this.canceled) {
+        return
+      }
+
+      clearTimeout(this.timer)
       this.dispatchResponse(this.createResponse(xmlHttpRequest))
     })
 
     xmlHttpRequest.addEventListener('error', () => {
+      if (this.canceled) {
+        return
+      }
+
+      clearTimeout(this.timer)
       this.dispatchClientError('Network error')
     })
 
@@ -54,13 +86,13 @@ XHR.prototype = Gateway.extends({
 
   performRequest(method) {
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
-    const xmlHttpRequest = new XMLHttpRequest()
-    this.configureCallbacks(xmlHttpRequest)
+    const xmlHttpRequest = this.createXHR()
     xmlHttpRequest.open(requestMethod, this.request.url(), true);
 
     const customHeaders = {}
     const body = this.prepareBody(method, customHeaders)
     this.setHeaders(xmlHttpRequest, customHeaders)
+    this.configureTimeout(xmlHttpRequest)
 
     const args = []
     body && args.push(body)
@@ -94,6 +126,12 @@ XHR.prototype = Gateway.extends({
       .forEach((headerName) => {
         xmlHttpRequest.setRequestHeader(headerName, headers[headerName])
       })
+  },
+
+  createXHR() {
+    const xmlHttpRequest = new XMLHttpRequest()
+    this.configureCallbacks(xmlHttpRequest)
+    return xmlHttpRequest
   }
 })
 

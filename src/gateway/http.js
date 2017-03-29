@@ -36,6 +36,10 @@ HTTP.prototype = Gateway.extends({
     const defaults = url.parse(this.request.url())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const body = this.prepareBody(method, headers)
+    const timeout = this.request.timeout()
+
+    this.timer = null
+    this.canceled = false
 
     if (body && typeof body.length === 'number') {
       headers['content-length'] = body.length
@@ -60,6 +64,14 @@ HTTP.prototype = Gateway.extends({
 
     httpRequest.on('error', (e) => this.onError(e))
     body && httpRequest.write(body)
+
+    if (timeout) {
+      this.timer = setTimeout(() => {
+        this.canceled = true
+        this.dispatchClientError(`Timeout (${timeout}ms)`)
+      }, timeout)
+    }
+
     httpRequest.end()
   },
 
@@ -69,11 +81,21 @@ HTTP.prototype = Gateway.extends({
     httpResponse
       .on('data', (chunk) => rawData.push(chunk))
       .on('end', () => {
+        if (this.canceled) {
+          return
+        }
+
+        clearTimeout(this.timeout)
         this.dispatchResponse(this.createResponse(httpResponse, rawData))
       })
   },
 
   onError(e) {
+    if (this.canceled) {
+      return
+    }
+
+    clearTimeout(this.timeout)
     this.dispatchClientError(e.message)
   },
 

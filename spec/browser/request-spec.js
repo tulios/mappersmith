@@ -155,6 +155,14 @@ describe('Request', () => {
     })
   })
 
+  describe('#timeout', () => {
+    it('returns the configured timeout param from params', () => {
+      methodDescriptor.timeoutAttr = 'differentTimeoutParam'
+      const request = new Request(methodDescriptor, { differentTimeoutParam: 1000 })
+      expect(request.timeout()).toEqual(1000)
+    })
+  })
+
   describe('#method', () => {
     it('returns the http method always in lowercase', () => {
       methodDescriptor.method = 'GET'
@@ -194,6 +202,13 @@ describe('Request', () => {
       expect(enhancedRequest.auth()).toEqual(authData2)
     })
 
+    it('creates a new request based on the current request replacing the timeout', () => {
+      const request = new Request(methodDescriptor, { timeout: 1000 })
+      const enhancedRequest = request.enhance({ timeout: 2000 })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.timeout()).toEqual(2000)
+    })
+
     describe('for requests with a different "headers" key', () => {
       beforeEach(() => {
         methodDescriptor = new MethodDescriptor({ headersAttr: 'snowflake' })
@@ -225,13 +240,26 @@ describe('Request', () => {
         methodDescriptor = new MethodDescriptor({ authAttr: 'snowflake' })
       })
 
-      it('creates a new request based on the current request replacing the custom "body"', () => {
+      it('creates a new request based on the current request replacing the custom "auth"', () => {
         const authData1 = { username: 'bob', password: 'bob' }
         const authData2 = { username: 'bob', password: 'bill' }
         const request = new Request(methodDescriptor, { snowflake: authData1 })
         const enhancedRequest = request.enhance({ auth: authData2 })
         expect(enhancedRequest).not.toEqual(request)
         expect(enhancedRequest.auth()).toEqual(authData2)
+      })
+    })
+
+    describe('for requests with a different "timeout" key', () => {
+      beforeEach(() => {
+        methodDescriptor = new MethodDescriptor({ timeoutAttr: 'snowflake' })
+      })
+
+      it('creates a new request based on the current request replacing the custom "timeout"', () => {
+        const request = new Request(methodDescriptor, { snowflake: 1000 })
+        const enhancedRequest = request.enhance({ timeout: 2000 })
+        expect(enhancedRequest).not.toEqual(request)
+        expect(enhancedRequest.timeout()).toEqual(2000)
       })
     })
   })

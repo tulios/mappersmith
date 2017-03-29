@@ -57,14 +57,37 @@ Fetch.prototype = Gateway.extends({
     const headers = assign(customHeaders, this.request.headers())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const init = assign({ method: requestMethod, headers, body }, this.options())
+    const timeout = this.request.timeout()
+
+    let timer = null
+    let canceled = false
+
+    if (timeout) {
+      timer = setTimeout(() => {
+        canceled = true
+        this.dispatchClientError(`Timeout (${timeout}ms)`)
+      }, timeout)
+    }
 
     fetch(this.request.url(), init)
       .then((fetchResponse) => {
-        return fetchResponse.text().then((data) => {
+        if (canceled) {
+          return
+        }
+
+        clearTimeout(timer)
+        fetchResponse.text().then((data) => {
           this.dispatchResponse(this.createResponse(fetchResponse, data))
         })
       })
-      .catch((error) => this.dispatchClientError(error.message))
+      .catch((error) => {
+        if (canceled) {
+          return
+        }
+
+        clearTimeout(timer)
+        this.dispatchClientError(error.message)
+      })
   },
 
   createResponse(fetchResponse, data) {
