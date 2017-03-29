@@ -64,7 +64,7 @@ const github = forge({
     Status: {
       current: { path: '/api/status.json' },
       messages: { path: '/api/messages.json' },
-      lastMessage: { path: '/api/last-message.json' },
+      lastMessage: { path: '/api/last-message.json' }
     }
   }
 })
@@ -84,7 +84,7 @@ const forge = require('mappersmith').default
 
 ## <a name="resource-configuration"></a> Configuring my resources
 
-Each resource has a name and a list of methods with its definitions. A method definition can have host, path, method, headers, params, bodyAttr and headersAttr. Example:
+Each resource has a name and a list of methods with its definitions. A method definition can have host, path, method, headers, params, bodyAttr, headersAttr and authAttr. Example:
 
 ```javascript
 const client = forge({
@@ -97,7 +97,7 @@ const client = forge({
       byId: { path: '/users/{id}' },
 
       // {group} is also a dynamic segment but it has default value "general"
-      byGroup: { path: '/users/groups/{group}', params: { group: 'general' } },
+      byGroup: { path: '/users/groups/{group}', params: { group: 'general' } }
     },
     Blog: {
       // The HTTP method can be configured through the `method` key, and a default
@@ -188,7 +188,7 @@ __NOTE__: It's possible to post body as JSON, check the `EncodeJsonMiddleware` b
 To define headers in the method call use the parameter `headers`:
 
 ```javascript
-client.User.all({ headers: { Authorization: 'token 1d1435k'} })
+client.User.all({ headers: { Authorization: 'token 1d1435k' } })
 ```
 
 If `headers` is not possible as a special parameter for your API you can configure it through the param `headersAttr`:
@@ -200,7 +200,7 @@ If `headers` is not possible as a special parameter for your API you can configu
 }
 // ...
 
-client.User.all({ h: { Authorization: 'token 1d1435k'} })
+client.User.all({ h: { Authorization: 'token 1d1435k' } })
 ```
 
 ### <a name="basic-auth"></a> Basic auth
@@ -272,7 +272,7 @@ Mappersmith will provide an instance of its own `Response` object to the promise
 
 The behavior between your client and the API can be customized with middlewares. A middleware is a function which returns an object with two methods: request and response.
 
-The `request` method receives an instance of [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
+The `request` method receives an instance of the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
 
 The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to generate a new response based on the previous one.
 
