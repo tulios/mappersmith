@@ -149,6 +149,19 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     })
   })
 
+  describe('with timeout', () => {
+    it('rejects the promise', (done) => {
+      Client.Timeout.get({ waitTime: 100, timeout: 50 }).then((response) => {
+        done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+      })
+      .catch((response) => {
+        expect(response.status()).toEqual(400)
+        expect(response.data()).toEqual('Timeout (50ms)')
+        done()
+      })
+    })
+  })
+
   describe('encode json middleware', () => {
     it('encodes request body to json', (done) => {
       Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)

@@ -44,5 +44,9 @@ module.exports = {
 
   apiSecure: {
     ok: true
+  },
+
+  apiTimeout: {
+    ok: true
   }
 }

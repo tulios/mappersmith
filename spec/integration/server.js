@@ -78,6 +78,17 @@ app.get('/api/secure.json', function(req, res) {
   res.send(responses.apiSecure)
 })
 
+app.get('/api/timeout.json', function(req, res) {
+  res.set({ 'X-Api-Response': 'apiTimeout' })
+  var waitTime = req.params.waitTime
+    ? parseInt(req.params.waitTime, 10)
+    : 100
+
+  setTimeout(function() {
+    res.send(responses.apiTimeout)
+  }, waitTime)
+})
+
 app.listen(9090, function() {
   console.log('Integration backend listening on port 9090')
 })
