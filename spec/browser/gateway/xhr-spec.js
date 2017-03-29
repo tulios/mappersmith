@@ -3,6 +3,7 @@ import fauxJax from 'faux-jax-tulios'
 import { configs } from 'src/index'
 import XHR from 'src/gateway/xhr'
 import MethodDescriptor from 'src/method-descriptor'
+import { btoa } from 'src/utils'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
 
@@ -171,6 +172,30 @@ describe('Gateway / XHR', () => {
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(jasmine.objectContaining({
             'x-http-method-override': methodName
+          }))
+        })
+
+        assertSuccess()(done, (response) => {
+          expect(response.status()).toEqual(200)
+        })
+      })
+    })
+  }
+
+  for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
+    describe(`#${methodName} with request.auth() configured`, () => {
+      beforeEach(() => {
+        methodDescriptor.method = methodName
+      })
+
+      it('adds "Authorization: Basic base64" header', (done) => {
+        requestParams = {
+          [methodDescriptor.authAttr]: { username: 'bob', password: 'bob' }
+        }
+
+        respondWith(httpResponse, (fauxJaxRequest) => {
+          expect(fauxJaxRequest.requestHeaders).toEqual(jasmine.objectContaining({
+            authorization: `Basic ${btoa('bob:bob')}`
           }))
         })
 

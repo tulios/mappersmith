@@ -1,6 +1,8 @@
 import Gateway from '../gateway'
 import Response from '../response'
-import { assign, parseResponseHeaders } from '../utils'
+import { assign, parseResponseHeaders, btoa } from '../utils'
+
+const toBase64 = window.btoa || btoa
 
 function XHR (request) {
   Gateway.apply(this, arguments)
@@ -79,6 +81,13 @@ XHR.prototype = Gateway.extends({
   },
 
   setHeaders(xmlHttpRequest, customHeaders) {
+    const auth = this.request.auth()
+    if (auth) {
+      const username = auth.username || ''
+      const password = auth.password || ''
+      customHeaders['authorization'] = `Basic ${toBase64(`${username}:${password}`)}`
+    }
+
     const headers = assign(customHeaders, this.request.headers())
     Object
       .keys(headers)
