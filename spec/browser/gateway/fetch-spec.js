@@ -1,18 +1,18 @@
 import fauxJax from 'faux-jax-tulios'
 
 import { configs } from 'src/index'
-import HTTP from 'src/gateway/http'
+import Fetch from 'src/gateway/fetch'
 import MethodDescriptor from 'src/method-descriptor'
 import { btoa } from 'src/utils'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
 
-describe('Gateway / HTTP', () => {
+describe('Gateway / Fetch', () => {
   let originalConfigs
   let methodDescriptor, requestParams, httpResponse
 
   const { assertSuccess, assertFailure } = createGatewayAsserts(() => [
-    HTTP,
+    Fetch,
     methodDescriptor,
     requestParams
   ])

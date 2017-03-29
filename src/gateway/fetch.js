@@ -1,7 +1,8 @@
 import Gateway from '../gateway'
 import Response from '../response'
-import { assign } from '../utils'
 import { configs } from '../mappersmith'
+// Fetch can be used in nodejs, so it should always use the btoa util
+import { assign, btoa } from '../utils'
 
 const fetch = configs.fetch
 
@@ -45,8 +46,15 @@ Fetch.prototype = Gateway.extends({
   performRequest(method) {
     const customHeaders = {}
     const body = this.prepareBody(method, customHeaders)
-    const headers = assign(customHeaders, this.request.headers())
+    const auth = this.request.auth()
 
+    if (auth) {
+      const username = auth.username || ''
+      const password = auth.password || ''
+      customHeaders['authorization'] = `Basic ${btoa(`${username}:${password}`)}`
+    }
+
+    const headers = assign(customHeaders, this.request.headers())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const init = assign({ method: requestMethod, headers, body }, this.options())
 
