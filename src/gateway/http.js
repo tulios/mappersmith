@@ -48,6 +48,13 @@ HTTP.prototype = Gateway.extends({
       headers: assign(headers, this.request.headers())
     })
 
+    const auth = this.request.auth()
+    if (auth) {
+      const username = auth.username || ''
+      const password = auth.password || ''
+      requestParams['auth'] = `${username}:${password}`
+    }
+
     const httpRequest = handler
       .request(requestParams, (httpResponse) => this.onResponse(httpResponse))
 

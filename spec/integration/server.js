@@ -72,6 +72,12 @@ app.get('/api/fail-on-odd.json', function(req, res) {
   res.send(responses.apiFailOnOdd)
 })
 
+app.get('/api/secure.json', function(req, res) {
+  res.set({ 'X-Api-Response': 'apiSecure' })
+  res.set({ 'X-Header-Authorization': req.headers['authorization'] })
+  res.send(responses.apiSecure)
+})
+
 app.listen(9090, function() {
   console.log('Integration backend listening on port 9090')
 })

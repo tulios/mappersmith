@@ -134,6 +134,21 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     })
   })
 
+  describe('with basic auth', () => {
+    it('sends the authorization header with Basic base64', (done) => {
+      Client.Secure.get({ auth: { username: 'bob', password: 'bob' } }).then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiSecure' }))
+        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-header-authorization': 'Basic Ym9iOmJvYg==' }))
+        expect(response.data()).toEqual(apiResponses.apiSecure)
+        done()
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
+    })
+  })
+
   describe('encode json middleware', () => {
     it('encodes request body to json', (done) => {
       Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)

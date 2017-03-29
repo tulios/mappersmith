@@ -1,18 +1,18 @@
 import fauxJax from 'faux-jax-tulios'
 
 import { configs } from 'src/index'
-import XHR from 'src/gateway/xhr'
+import Fetch from 'src/gateway/fetch'
 import MethodDescriptor from 'src/method-descriptor'
 import { btoa } from 'src/utils'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
 
-describe('Gateway / XHR', () => {
+describe('Gateway / Fetch', () => {
   let originalConfigs
   let methodDescriptor, requestParams, httpResponse
 
   const { assertSuccess, assertFailure } = createGatewayAsserts(() => [
-    XHR,
+    Fetch,
     methodDescriptor,
     requestParams
   ])
@@ -205,32 +205,4 @@ describe('Gateway / XHR', () => {
       })
     })
   }
-
-  describe('with option "configure"', () => {
-    it('calls the callback with xhr object', (done) => {
-      methodDescriptor.method = 'get'
-      const configure = jasmine.createSpy('XHRConfigureCallback')
-      configs.gatewayConfigs.XHR.configure = configure
-
-      respondWith(httpResponse)
-      assertSuccess()(done, (response) => {
-        expect(response.status()).toEqual(200)
-        expect(configure).toHaveBeenCalledWith(jasmine.any(XMLHttpRequest))
-      })
-    })
-  })
-
-  describe('with option "withCredentials"', () => {
-    it('sets the value', (done) => {
-      methodDescriptor.method = 'get'
-      configs.gatewayConfigs.XHR.withCredentials = true
-
-      respondWith(httpResponse, (fauxJaxRequest) => {
-        expect(fauxJaxRequest.withCredentials).toEqual(true)
-      })
-      assertSuccess()(done, (response) => {
-        expect(response.status()).toEqual(200)
-      })
-    })
-  })
 })

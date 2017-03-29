@@ -19,6 +19,9 @@ export default function createManifest(host = null, middlewares = []) {
       Failure: {
         get: { path: '/api/failure.json' },
         onOdd: { path: '/api/fail-on-odd.json' }
+      },
+      Secure: {
+        get: { path: '/api/secure.json' }
       }
     },
     middlewares: [LogMiddleware].concat(middlewares)

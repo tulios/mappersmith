@@ -107,6 +107,12 @@ describe('Request', () => {
   })
 
   describe('#headers', () => {
+    it('returns the configured headers param from params', () => {
+      methodDescriptor.headersAttr = 'differentHeadersParam'
+      const request = new Request(methodDescriptor, { differentHeadersParam: { Authorization: 'token-123' } })
+      expect(request.headers()).toEqual({ authorization: 'token-123' })
+    })
+
     describe('with pre configured headers', () => {
       it('returns available headers', () => {
         methodDescriptor.headers = { Authorization: 'token-123' }
@@ -140,6 +146,15 @@ describe('Request', () => {
     })
   })
 
+  describe('#auth', () => {
+    it('returns the configured auth param from params', () => {
+      const authData = { username: 'bob', password: 'bob' }
+      methodDescriptor.authAttr = 'differentAuthParam'
+      const request = new Request(methodDescriptor, { differentAuthParam: authData })
+      expect(request.auth()).toEqual(authData)
+    })
+  })
+
   describe('#method', () => {
     it('returns the http method always in lowercase', () => {
       methodDescriptor.method = 'GET'
@@ -170,6 +185,15 @@ describe('Request', () => {
       expect(enhancedRequest.body()).toEqual('payload-2')
     })
 
+    it('creates a new request based on the current request replacing the auth', () => {
+      const authData1 = { username: 'bob', password: 'bob' }
+      const authData2 = { username: 'bob', password: 'bill' }
+      const request = new Request(methodDescriptor, { auth: authData1 })
+      const enhancedRequest = request.enhance({ auth: authData2 })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.auth()).toEqual(authData2)
+    })
+
     describe('for requests with a different "headers" key', () => {
       beforeEach(() => {
         methodDescriptor = new MethodDescriptor({ headersAttr: 'snowflake' })
@@ -193,6 +217,21 @@ describe('Request', () => {
         const enhancedRequest = request.enhance({ body: 'payload-2' })
         expect(enhancedRequest).not.toEqual(request)
         expect(enhancedRequest.body()).toEqual('payload-2')
+      })
+    })
+
+    describe('for requests with a different "auth" key', () => {
+      beforeEach(() => {
+        methodDescriptor = new MethodDescriptor({ authAttr: 'snowflake' })
+      })
+
+      it('creates a new request based on the current request replacing the custom "body"', () => {
+        const authData1 = { username: 'bob', password: 'bob' }
+        const authData2 = { username: 'bob', password: 'bill' }
+        const request = new Request(methodDescriptor, { snowflake: authData1 })
+        const enhancedRequest = request.enhance({ auth: authData2 })
+        expect(enhancedRequest).not.toEqual(request)
+        expect(enhancedRequest.auth()).toEqual(authData2)
       })
     })
   })

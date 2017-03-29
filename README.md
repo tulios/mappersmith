@@ -14,6 +14,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     1. [Default parameters](#default-parameters)
     1. [Body](#body)
     1. [Headers](#headers)
+    1. [Basic Auth](#basic-auth)
     1. [Alternative host](#alternative-host)
   1. [Promises](#promises)
   1. [Response object](#response-object)
@@ -202,6 +203,29 @@ If `headers` is not possible as a special parameter for your API you can configu
 client.User.all({ h: { Authorization: 'token 1d1435k'} })
 ```
 
+### <a name="basic-auth"></a> Basic auth
+
+To define credentials for basic auth use the parameter `auth`:
+
+```javascript
+client.User.all({ auth: { username: 'bob', password: 'bob' } })
+```
+
+The available attributes are: `username` and `password`.
+This will set an `Authorization` header. This can still be overridden by custom headers.
+
+If `auth` is not possible as a special parameter for your API you can configure it through the param `authAttr`:
+
+```javascript
+// ...
+{
+  all: { path: '/users', authAttr: 'secret' }
+}
+// ...
+
+client.User.all({ secret: { username: 'bob', password: 'bob' } })
+```
+
 ### <a name="alternative-host"></a> Alternative host
 
 There are some cases where a resource method resides in another host, in those cases you can use the `host` key to configure a new host:
@@ -352,10 +376,10 @@ client.User
 This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response.
 
 ```javascript
-import RetryMiddleware from 'mappersmith/middlewares/retry'
+import Retry from 'mappersmith/middlewares/retry'
 
 const client = forge({
-  middlewares: [ RetryMiddleware ],
+  middlewares: [ Retry ],
   /* ... */
 })
 ```
@@ -375,6 +399,23 @@ setRetryConfigs({
   multiplier: 2, // exponential factor
   retries: 5 // max retries
 })
+```
+
+#### BasicAuth
+
+Automatically configure your requests with basic auth
+
+```javascript
+import BasicAuthMiddleware from 'mappersmith/middlewares/basic-auth'
+const BasicAuth = BasicAuthMiddleware({ username: 'bob', password: 'bob' })
+
+const client = forge({
+  middlewares: [ BasicAuth ],
+  /* ... */
+})
+
+client.User.all()
+// => header: "Authorization: Basic Ym9iOmJvYg=="
 ```
 
 #### Log
