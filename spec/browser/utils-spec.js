@@ -3,7 +3,8 @@ import {
   parseResponseHeaders,
   lowerCaseObjectKeys,
   performanceNow,
-  isPlainObject
+  isPlainObject,
+  btoa
 } from 'src/utils'
 
 describe('utils', () => {
@@ -108,6 +109,37 @@ describe('utils', () => {
       function Custom() {}
       expect(isPlainObject(new Custom())).toEqual(false)
       expect(isPlainObject({ plain: true })).toEqual(true)
+    })
+  })
+
+  describe('#btoa', () => {
+    it('can encode ASCII input', () => {
+      expect(btoa('')).toEqual('')
+      expect(btoa('f')).toEqual('Zg==')
+      expect(btoa('fo')).toEqual('Zm8=')
+      expect(btoa('foo')).toEqual('Zm9v')
+      expect(btoa('quux')).toEqual('cXV1eA==')
+      expect(btoa('!"#$%')).toEqual('ISIjJCU=')
+      expect(btoa("&'()*+")).toEqual('JicoKSor')
+      expect(btoa(',-./012')).toEqual('LC0uLzAxMg==')
+      expect(btoa('3456789:')).toEqual('MzQ1Njc4OTo=')
+      expect(btoa(';<=>?@ABC')).toEqual('Ozw9Pj9AQUJD')
+      expect(btoa('DEFGHIJKLM')).toEqual('REVGR0hJSktMTQ==')
+      expect(btoa('NOPQRSTUVWX')).toEqual('Tk9QUVJTVFVWV1g=')
+      expect(btoa('YZ[\\]^_`abc')).toEqual('WVpbXF1eX2BhYmM=')
+      expect(btoa('defghijklmnop')).toEqual('ZGVmZ2hpamtsbW5vcA==')
+      expect(btoa('qrstuvwxyz{|}~')).toEqual('cXJzdHV2d3h5ent8fX4=')
+    })
+
+    it('cannot encode non-ASCII input', () => {
+      expect(() => btoa('✈'))
+        .toThrowError("[Mappersmith] 'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.")
+    })
+
+    it('coerces input', () => {
+      expect(btoa(42)).toEqual(btoa('42'))
+      expect(btoa(null)).toEqual(btoa('null'))
+      expect(btoa({ x: 1 })).toEqual(btoa('[object Object]'))
     })
   })
 })
