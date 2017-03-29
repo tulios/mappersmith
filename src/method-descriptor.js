@@ -9,6 +9,7 @@
  *   @param {String} obj.bodyAttr - body attribute name. Default: 'body'
  *   @param {String} obj.headersAttr - headers attribute name. Default: 'headers'
  *   @param {String} obj.authAttr - auth attribute name. Default: 'auth'
+ *   @param {Number} obj.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
 export default function MethodDescriptor(obj) {
   this.host = obj.host
@@ -20,4 +21,5 @@ export default function MethodDescriptor(obj) {
   this.bodyAttr = obj.bodyAttr || 'body'
   this.headersAttr = obj.headersAttr || 'headers'
   this.authAttr = obj.authAttr || 'auth'
+  this.timeoutAttr = obj.timeoutAttr || 'timeout'
 }
