@@ -10,10 +10,10 @@ function XHR (request) {
 
 XHR.prototype = Gateway.extends({
   get() {
-    const xmlHttpRequest = new XMLHttpRequest()
-    this.configureCallbacks(xmlHttpRequest)
+    const xmlHttpRequest = this.createXHR()
     xmlHttpRequest.open('get', this.request.url(), true)
     this.setHeaders(xmlHttpRequest, {})
+    this.configureTimeout(xmlHttpRequest)
     xmlHttpRequest.send()
   },
 
@@ -31,6 +31,16 @@ XHR.prototype = Gateway.extends({
 
   delete() {
     this.performRequest('delete')
+  },
+
+  configureTimeout(xmlHttpRequest) {
+    const timeout = this.request.timeout()
+    if (timeout) {
+      xmlHttpRequest.timeout = timeout
+      xmlHttpRequest.addEventListener('timeout', () => {
+        this.dispatchClientError(`Timeout (${timeout}ms)`)
+      })
+    }
   },
 
   configureCallbacks(xmlHttpRequest) {
@@ -54,13 +64,13 @@ XHR.prototype = Gateway.extends({
 
   performRequest(method) {
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
-    const xmlHttpRequest = new XMLHttpRequest()
-    this.configureCallbacks(xmlHttpRequest)
+    const xmlHttpRequest = this.createXHR()
     xmlHttpRequest.open(requestMethod, this.request.url(), true);
 
     const customHeaders = {}
     const body = this.prepareBody(method, customHeaders)
     this.setHeaders(xmlHttpRequest, customHeaders)
+    this.configureTimeout(xmlHttpRequest)
 
     const args = []
     body && args.push(body)
@@ -94,6 +104,12 @@ XHR.prototype = Gateway.extends({
       .forEach((headerName) => {
         xmlHttpRequest.setRequestHeader(headerName, headers[headerName])
       })
+  },
+
+  createXHR() {
+    const xmlHttpRequest = new XMLHttpRequest()
+    this.configureCallbacks(xmlHttpRequest)
+    return xmlHttpRequest
   }
 })
 
