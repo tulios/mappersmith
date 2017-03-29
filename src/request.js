@@ -25,7 +25,8 @@ Request.prototype = {
 
     const isParam = (key) => (
       key !== this.methodDescriptor.headersAttr &&
-        key !== this.methodDescriptor.bodyAttr
+        key !== this.methodDescriptor.bodyAttr &&
+        key !== this.methodDescriptor.authAttr
     )
 
     return Object
@@ -132,19 +133,26 @@ Request.prototype = {
     return this.requestParams[this.methodDescriptor.bodyAttr]
   },
 
+  auth() {
+    return this.requestParams[this.methodDescriptor.authAttr]
+  },
+
   /**
    * Enhances current request returning a new Request
    * @param {Object} extras
    *   @param {Object} extras.params - it will be merged with current params
    *   @param {Object} extras.headers - it will be merged with current headers
    *   @param {String|Object} extras.body - it will replace the current body
+   *   @param {Object} extras.auth - it will replace the current auth
    */
   enhance(extras) {
     const headerKey = this.methodDescriptor.headersAttr
     const bodyKey = this.methodDescriptor.bodyAttr
+    const authKey = this.methodDescriptor.authAttr
     const requestParams = assign({}, this.requestParams, extras.params)
     requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
     requestParams[bodyKey] = extras.body
+    requestParams[authKey] = extras.auth
 
     return new Request(this.methodDescriptor, requestParams)
   }

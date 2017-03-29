@@ -8,6 +8,7 @@
  *   @param {Object} obj.params
  *   @param {String} obj.bodyAttr - body attribute name. Default: 'body'
  *   @param {String} obj.headersAttr - headers attribute name. Default: 'headers'
+ *   @param {String} obj.authAttr - auth attribute name. Default: 'auth'
  */
 export default function MethodDescriptor(obj) {
   this.host = obj.host
@@ -18,4 +19,5 @@ export default function MethodDescriptor(obj) {
 
   this.bodyAttr = obj.bodyAttr || 'body'
   this.headersAttr = obj.headersAttr || 'headers'
+  this.authAttr = obj.authAttr || 'auth'
 }
