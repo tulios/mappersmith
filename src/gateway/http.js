@@ -39,7 +39,7 @@ HTTP.prototype = Gateway.extends({
     const timeout = this.request.timeout()
 
     this.timer = null
-    this.cancelled = false
+    this.canceled = false
 
     if (body && typeof body.length === 'number') {
       headers['content-length'] = body.length
@@ -67,7 +67,7 @@ HTTP.prototype = Gateway.extends({
 
     if (timeout) {
       this.timer = setTimeout(() => {
-        this.cancelled = true
+        this.canceled = true
         this.dispatchClientError(`Timeout (${timeout}ms)`)
       }, timeout)
     }
@@ -81,7 +81,7 @@ HTTP.prototype = Gateway.extends({
     httpResponse
       .on('data', (chunk) => rawData.push(chunk))
       .on('end', () => {
-        if (this.cancelled) {
+        if (this.canceled) {
           return
         }
 
@@ -91,7 +91,7 @@ HTTP.prototype = Gateway.extends({
   },
 
   onError(e) {
-    if (this.cancelled) {
+    if (this.canceled) {
       return
     }
 

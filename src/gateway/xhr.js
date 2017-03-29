@@ -34,21 +34,43 @@ XHR.prototype = Gateway.extends({
   },
 
   configureTimeout(xmlHttpRequest) {
+    this.canceled = false
+    this.timer = null
+
     const timeout = this.request.timeout()
+
     if (timeout) {
       xmlHttpRequest.timeout = timeout
       xmlHttpRequest.addEventListener('timeout', () => {
+        this.canceled = true
+        clearTimeout(this.timer)
         this.dispatchClientError(`Timeout (${timeout}ms)`)
       })
+
+      // PhantomJS doesn't support timeout for XMLHttpRequest
+      this.timer = setTimeout(() => {
+        this.canceled = true
+        this.dispatchClientError(`Timeout (${timeout}ms)`)
+      }, timeout + 1)
     }
   },
 
   configureCallbacks(xmlHttpRequest) {
     xmlHttpRequest.addEventListener('load', () => {
+      if (this.canceled) {
+        return
+      }
+
+      clearTimeout(this.timer)
       this.dispatchResponse(this.createResponse(xmlHttpRequest))
     })
 
     xmlHttpRequest.addEventListener('error', () => {
+      if (this.canceled) {
+        return
+      }
+
+      clearTimeout(this.timer)
       this.dispatchClientError('Network error')
     })
 

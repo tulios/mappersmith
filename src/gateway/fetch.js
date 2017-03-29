@@ -60,18 +60,18 @@ Fetch.prototype = Gateway.extends({
     const timeout = this.request.timeout()
 
     let timer = null
-    let cancelled = false
+    let canceled = false
 
     if (timeout) {
       timer = setTimeout(() => {
-        cancelled = true
+        canceled = true
         this.dispatchClientError(`Timeout (${timeout}ms)`)
       }, timeout)
     }
 
     fetch(this.request.url(), init)
       .then((fetchResponse) => {
-        if (cancelled) {
+        if (canceled) {
           return
         }
 
@@ -81,7 +81,7 @@ Fetch.prototype = Gateway.extends({
         })
       })
       .catch((error) => {
-        if (cancelled) {
+        if (canceled) {
           return
         }
 
