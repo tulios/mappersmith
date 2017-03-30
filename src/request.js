@@ -157,10 +157,11 @@ Request.prototype = {
     const authKey = this.methodDescriptor.authAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
     const requestParams = assign({}, this.requestParams, extras.params)
+
     requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
-    requestParams[bodyKey] = extras.body
-    requestParams[authKey] = extras.auth
-    requestParams[timeoutKey] = extras.timeout
+    extras.body && (requestParams[bodyKey] = extras.body)
+    extras.auth && (requestParams[authKey] = extras.auth)
+    extras.timeout && (requestParams[timeoutKey] = extras.timeout)
 
     return new Request(this.methodDescriptor, requestParams)
   }

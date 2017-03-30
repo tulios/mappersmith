@@ -209,6 +209,24 @@ describe('Request', () => {
       expect(enhancedRequest.timeout()).toEqual(2000)
     })
 
+    it('does not remove previous assined "body"', () => {
+      const request = new Request(methodDescriptor, { body: 'test' })
+      const enhancedRequest = request.enhance({})
+      expect(enhancedRequest.body()).toEqual('test')
+    })
+
+    it('does not remove previous assined "auth"', () => {
+      const request = new Request(methodDescriptor, { auth: { username: 'a', password: 'b' } })
+      const enhancedRequest = request.enhance({})
+      expect(enhancedRequest.auth()).toEqual({ username: 'a', password: 'b' })
+    })
+
+    it('does not remove previous assined "timeout"', () => {
+      const request = new Request(methodDescriptor, { timeout: 1000 })
+      const enhancedRequest = request.enhance({})
+      expect(enhancedRequest.timeout()).toEqual(1000)
+    })
+
     describe('for requests with a different "headers" key', () => {
       beforeEach(() => {
         methodDescriptor = new MethodDescriptor({ headersAttr: 'snowflake' })
