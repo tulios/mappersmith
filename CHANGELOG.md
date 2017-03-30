@@ -1,5 +1,9 @@
 # Changelog
 
+# 2.2.1
+
+  - bugfix: body, auth and timeout were always being replaced by `request#enhance`
+
 # 2.2.0
 
   - Add support to basic auth for all gateways #46
