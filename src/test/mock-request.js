@@ -3,22 +3,23 @@ import Response from '../response'
 import { isPlainObject, toQueryString } from '../utils'
 
 /**
- * @param {Integer} id
- * @param {Object} props
- *   @param {String} props.method
- *   @param {String} props.url
- *   @param {String} props.body - request body
- *   @param {Object} props.response
- *     @param {String} props.response.body
- *     @param {Object} props.response.headers
- *     @param {Integer} props.response.status
+ * @param {number} id
+ * @param {object} props
+ *   @param {string} props.method
+ *   @param {string} props.url
+ *   @param {string} props.body - request body
+ *   @param {object} props.response
+ *     @param {string} props.response.body
+ *     @param {object} props.response.headers
+ *     @param {integer} props.response.status
  */
 function MockRequest(id, props) {
   this.id = id
 
   this.method = props.method || 'get'
   this.url = props.url
-  this.body = toQueryString(props.body)
+  this.bodyFunction = typeof props.body === 'function'
+  this.body = this.bodyFunction ? props.body : toQueryString(props.body)
   this.responseData = props.response.body
   this.responseHeaders = props.response.headers || {}
   this.responseStatus = props.response.status || 200
@@ -57,18 +58,22 @@ MockRequest.prototype = {
   /**
    * Checks if the request matches with the mock HTTP method, URL and body
    *
-   * @return {Boolean}
+   * @return {boolean}
    */
   isExactMatch(request) {
+    const bodyMatch = this.bodyFunction
+      ? this.body(request.body())
+      : this.body === toQueryString(request.body())
+
     return this.method === request.method() &&
       this.url === request.url() &&
-      this.body === toQueryString(request.body())
+      bodyMatch
   },
 
   /**
    * Checks if the request partially matches the mock HTTP method and URL
    *
-   * @return {Boolean}
+   * @return {boolean}
    */
   isPartialMatch(request) {
     return new RegExp(this.method).test(request.method()) &&

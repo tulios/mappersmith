@@ -97,9 +97,45 @@ export const lookupResponse = (request) => {
   )
 }
 
+/**
+ * List of match functions
+ */
+export const m = {
+  stringMatching: (regexp) => {
+    if (!(regexp instanceof RegExp)) {
+      throw new Error(`[Mappersmith Test] "stringMatching" received an invalid regexp (${regexp})`)
+    }
+    return (string) => regexp.test(string)
+  },
+
+  stringContaining: (sample) => {
+    if (typeof sample !== 'string') {
+      throw new Error(`[Mappersmith Test] "stringContaining" received an invalid string (${sample})`)
+    }
+
+    return (string) => string.includes(sample)
+  },
+
+  anything: () => () => true
+}
+
 const requestToLog = (request) => (
   `"${request.method().toUpperCase()} ${request.url()}" (body: "${toQueryString(request.body())}")`
 )
 const mockToLog = (requestMock) => (
   `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${requestMock.body}")`
 )
+
+// Polyfill for String#includes
+if (!String.prototype.includes) {
+  String.prototype.includes = (search, start) => {
+    if (typeof start !== 'number') {
+      start = 0
+    }
+
+    if (start + search.length > this.length) {
+      return false
+    }
+    return this.indexOf(search, start) !== -1
+  }
+}

@@ -7,7 +7,8 @@ import {
   install as installMock,
   uninstall as uninstallMock,
   mockClient,
-  mockRequest
+  mockRequest,
+  m
 } from 'src/test'
 
 describe('Test lib', () => {
@@ -147,6 +148,31 @@ describe('Test lib', () => {
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
         done.fail(`test failed with promise error: ${error}`)
+      })
+    })
+
+    it('accepts a matcher function as a body', (done) => {
+      mockClient(client)
+        .resource('Blog')
+        .method('post')
+        .with({ body: (body) => body === 'ok' })
+
+      client.Blog.post({ body: 'ok' }).then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+
+      client.Blog.post({ body: 'false' }).then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
       })
     })
 
@@ -314,6 +340,36 @@ describe('Test lib', () => {
         done.fail(`test failed with promise error: ${error}`)
       })
     })
+
+    it('accepts a matcher function as a body', (done) => {
+      mockRequest({
+        method: 'post',
+        url: 'http://example.org/blogs',
+        body: (body) => body === 'ok',
+        response: {
+          body: 'just text!'
+        }
+      })
+
+      client.Blog.post({ body: 'ok' }).then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+
+      client.Blog.post({ body: 'false' }).then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
+      })
+    })
   })
 
   describe('mock assert', () => {
@@ -351,6 +407,40 @@ describe('Test lib', () => {
           const error = response.rawData ? response.rawData() : response
           done.fail(`test failed with promise error: ${error}`)
         })
+    })
+  })
+
+  describe('match functions', () => {
+    describe('#stringMatching', () => {
+      it('returns true when it matches', () => {
+        const fn = m.stringMatching(/^valid$/)
+        expect(fn('random string')).toEqual(false)
+        expect(fn('valid')).toEqual(true)
+      })
+
+      it('throws an exception if the argument is not a regexp', () => {
+        expect(() => m.stringMatching({}))
+          .toThrowError('[Mappersmith Test] "stringMatching" received an invalid regexp ([object Object])')
+      })
+    })
+
+    describe('#stringContaining', () => {
+      it('returns true when it includes the substring', () => {
+        const fn = m.stringContaining('valid')
+        expect(fn('random string')).toEqual(false)
+        expect(fn('somevalidstuff')).toEqual(true)
+      })
+
+      it('throws an exception if the argument is not a string', () => {
+        expect(() => m.stringContaining({}))
+          .toThrowError('[Mappersmith Test] "stringContaining" received an invalid string ([object Object])')
+      })
+    })
+
+    describe('#anything', () => {
+      it('always returns true', () => {
+        expect(m.anything()()).toEqual(true)
+      })
     })
   })
 })
