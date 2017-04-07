@@ -1,5 +1,10 @@
 # Changelog
 
+# 2.3.0
+
+  - Allow `mockClient` and `mockRequest` to use match functions to check body #49
+  - Add match functions to the test module #49
+
 # 2.2.1
 
   - bugfix: body, auth and timeout were always being replaced by `request#enhance`
