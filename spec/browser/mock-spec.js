@@ -150,6 +150,31 @@ describe('Test lib', () => {
       })
     })
 
+    it('accepts a matcher function as a body', (done) => {
+      mockClient(client)
+        .resource('Blog')
+        .method('post')
+        .with({ body: (body) => body === 'ok' })
+
+      client.Blog.post({ body: 'ok' }).then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+
+      client.Blog.post({ body: 'false' }).then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
+      })
+    })
+
     describe('when client is using middlewares', () => {
       let params
 
@@ -312,6 +337,36 @@ describe('Test lib', () => {
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
         done.fail(`test failed with promise error: ${error}`)
+      })
+    })
+
+    it('accepts a matcher function as a body', (done) => {
+      mockRequest({
+        method: 'post',
+        url: 'http://example.org/blogs',
+        body: (body) => body === 'ok',
+        response: {
+          body: 'just text!'
+        }
+      })
+
+      client.Blog.post({ body: 'ok' }).then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+
+      client.Blog.post({ body: 'false' }).then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
       })
     })
   })
