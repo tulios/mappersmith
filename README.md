@@ -516,6 +516,7 @@ It accepts the methods:
 * `with(resourceMethodArguments)`, ex: `with({ id: 1 })`
 * `status(statusNumber)`, ex: `status(204)`
 * `response(responseData)`, ex: `response({ user: { id: 1 } })`
+* `assertObject()`
 
 Example using __jasmine__:
 
@@ -571,11 +572,40 @@ mockClient(client)
   // ...
 ```
 
+It's possible to use a match function to assert the body, example:
+
+```javascript
+import { m } from 'mappersmith/test'
+
+mockClient(client)
+  .with({
+    id: 'abc',
+    headers: { 'x-special': 'value'},
+    body: m.stringMatching(/token=[^&]+&other=true$/)
+  })
+```
+
+The assert object can be used to retrieve the requests, example:
+
+```javascript
+const mock = mockClient(client)
+  .resource('User')
+  .method('all')
+  .response({ allUsers: [{id: 1}] })
+  .assertObject()
+
+console.log(mock.mostRecentCall())
+console.log(mock.callsCount())
+console.log(mock.calls())
+```
+
 #### mockRequest
 
 `mockRequest` offers a low level abstraction, very useful for automations.
 
 It accepts the params: method, url, body and response
+
+It returns an assert object
 
 Example using __jasmine__:
 
@@ -622,6 +652,45 @@ mockRequest({
   }
 })
 // ...
+```
+
+Using the assert object:
+
+```javascript
+const mock = mockRequest({
+  method: 'get',
+  url: 'https://my.api.com/users?someParam=true',
+  response: {
+    body: { allUsers: [{id: 1}] }
+  }
+})
+
+console.log(mock.mostRecentCall())
+console.log(mock.callsCount())
+console.log(mock.calls())
+```
+
+#### Match functions
+
+`mockClient` and `mockRequest` accept a match function for body, the available Built-in match functions are:
+
+```javascript
+import { m } from 'mappersmith/test'
+
+m.stringMatching(/something/) // accepts a regexp
+m.stringContaining('some-string') // accepts a string
+m.anything()
+```
+
+A match function is a function which returns a boolean, example:
+
+```javascript
+mockClient(client)
+  .with({
+    id: 'abc',
+    headers: { 'x-special': 'value'},
+    body: (body) => body === 'something'
+  })
 ```
 
 ## <a name="gateways"></a> Gateways
