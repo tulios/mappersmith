@@ -1,5 +1,9 @@
 # Changelog
 
+# 2.3.1
+
+  - Adds Duration middleware
+  
 # 2.3.0
 
   - Allow `mockClient` and `mockRequest` to use match functions to check body #49
