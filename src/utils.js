@@ -13,7 +13,7 @@ if (typeof window !== 'undefined' && window !== null) {
 }
 
 let _process, getNanoSeconds, loadTime;
-try { _process = eval('typeof process === "object" ? process : null') } catch (e) {}
+try { _process = eval('typeof process === "object" ? process : undefined') } catch (e) {}
 
 const hasProcessHrtime = () => {
   return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime
