@@ -1,9 +1,13 @@
 # Changelog
 
-# 2.3.1
+# 2.3.2
 
   - Adds Duration middleware
-  
+
+# 2.3.1
+
+  - bugfix: eval('process') causes some problems in strict mode on PhantomJS #51
+
 # 2.3.0
 
   - Allow `mockClient` and `mockRequest` to use match functions to check body #49
