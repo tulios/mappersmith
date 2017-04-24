@@ -1,8 +1,8 @@
 # Changelog
 
-# 2.3.2
+# 2.4.0
 
-  - Adds Duration middleware
+  - Adds Duration middleware #50
 
 # 2.3.1
 
