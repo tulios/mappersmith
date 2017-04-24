@@ -1,5 +1,9 @@
 # Changelog
 
+# 2.3.2
+
+  - Adds Duration middleware
+
 # 2.3.1
 
   - bugfix: eval('process') causes some problems in strict mode on PhantomJS #51

@@ -486,6 +486,22 @@ const client = forge({
 })
 ```
 
+#### Duration
+
+Automatically adds `X-Started-At`, `X-Ended-At` and `X-Duration` headers to the response.
+
+```javascript
+import Duration from 'mappersmith/middlewares/duration'
+
+const client = forge({
+  middlewares: [ Duration ],
+  /* ... */
+})
+
+client.User.all({ body: { name: 'bob' } })
+// => headers: "X-Started-At=1492529128453;X-Ended-At=1492529128473;X-Duration=20"
+```
+
 ## <a name="testing-mappersmith"></a> Testing Mappersmith
 
 Mappersmith plays nice with all test frameworks, the generated client is a plain javascript object and all the methods can be mocked without any problem. However, this experience can be greatly improved with the test library.
