@@ -17,7 +17,8 @@
     "build-node": "rm -rf lib/* && ./node_modules/.bin/babel src -d lib",
     "build-browser": "rm -rf dist/* && ./node_modules/.bin/webpack --config webpack.conf.js",
     "build": "npm run build-node && npm run build-browser",
-    "release": "./scripts/release.sh"
+    "release": "./scripts/release.sh",
+    "lint": "./node_modules/.bin/eslint {src,spec}/*.js"
   },
   "repository": {
     "type": "git",
@@ -51,6 +52,12 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.18.0",
     "body-parser": "^1.15.2",
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "express": "^4.14.0",
     "faux-jax-tulios": "^5.0.5",
     "jasmine": "^2.5.2",
