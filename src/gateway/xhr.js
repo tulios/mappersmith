@@ -9,7 +9,7 @@ function XHR (request) {
 }
 
 XHR.prototype = Gateway.extends({
-  get() {
+  get () {
     const xmlHttpRequest = this.createXHR()
     xmlHttpRequest.open('get', this.request.url(), true)
     this.setHeaders(xmlHttpRequest, {})
@@ -17,23 +17,23 @@ XHR.prototype = Gateway.extends({
     xmlHttpRequest.send()
   },
 
-  post() {
+  post () {
     this.performRequest('post')
   },
 
-  put() {
+  put () {
     this.performRequest('put')
   },
 
-  patch() {
+  patch () {
     this.performRequest('patch')
   },
 
-  delete() {
+  delete () {
     this.performRequest('delete')
   },
 
-  configureTimeout(xmlHttpRequest) {
+  configureTimeout (xmlHttpRequest) {
     this.canceled = false
     this.timer = null
 
@@ -55,7 +55,7 @@ XHR.prototype = Gateway.extends({
     }
   },
 
-  configureCallbacks(xmlHttpRequest) {
+  configureCallbacks (xmlHttpRequest) {
     xmlHttpRequest.addEventListener('load', () => {
       if (this.canceled) {
         return
@@ -84,10 +84,10 @@ XHR.prototype = Gateway.extends({
     }
   },
 
-  performRequest(method) {
+  performRequest (method) {
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const xmlHttpRequest = this.createXHR()
-    xmlHttpRequest.open(requestMethod, this.request.url(), true);
+    xmlHttpRequest.open(requestMethod, this.request.url(), true)
 
     const customHeaders = {}
     const body = this.prepareBody(method, customHeaders)
@@ -100,7 +100,7 @@ XHR.prototype = Gateway.extends({
     xmlHttpRequest.send.apply(xmlHttpRequest, args)
   },
 
-  createResponse(xmlHttpRequest) {
+  createResponse (xmlHttpRequest) {
     const status = xmlHttpRequest.status
     const data = xmlHttpRequest.responseText
     const responseHeaders = parseResponseHeaders(xmlHttpRequest.getAllResponseHeaders())
@@ -112,7 +112,7 @@ XHR.prototype = Gateway.extends({
     )
   },
 
-  setHeaders(xmlHttpRequest, customHeaders) {
+  setHeaders (xmlHttpRequest, customHeaders) {
     const auth = this.request.auth()
     if (auth) {
       const username = auth.username || ''
@@ -128,8 +128,8 @@ XHR.prototype = Gateway.extends({
       })
   },
 
-  createXHR() {
-    const xmlHttpRequest = new XMLHttpRequest()
+  createXHR () {
+    const xmlHttpRequest = new XMLHttpRequest() // eslint-disable-line no-undef
     this.configureCallbacks(xmlHttpRequest)
     return xmlHttpRequest
   }

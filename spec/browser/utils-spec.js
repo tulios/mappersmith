@@ -64,9 +64,10 @@ describe('utils', () => {
   })
 
   describe('#parseResponseHeaders', () => {
-    let responseHeaders;
+    let responseHeaders
 
     beforeEach(() => {
+      /* eslint-disable */
       responseHeaders = 'X-RateLimit-Remaining: 57\
   \r\nLast-Modified: Mon, 09 Nov 2015 19:06:15 GMT\
   \r\nETag: W/"679e71e24e6d901f5b36a55c5d80a32d"\
@@ -75,6 +76,7 @@ describe('utils', () => {
   \r\nX-RateLimit-Reset: 1447102379\
   \r\nX-RateLimit-Limit: 60\
   '
+      /* eslint-enable */
     })
 
     it('returns an object with all headers with lowercase keys', () => {
@@ -91,22 +93,22 @@ describe('utils', () => {
 
   describe('#lowerCaseObjectKeys', () => {
     it('returns a new object with all keys in lowercase', () => {
-      const obj = { ABC: 1, DeF: 2, ghI: 3}
-      expect(lowerCaseObjectKeys(obj)).toEqual({ abc: 1, def: 2, ghi: 3})
+      const obj = { ABC: 1, DeF: 2, ghI: 3 }
+      expect(lowerCaseObjectKeys(obj)).toEqual({ abc: 1, def: 2, ghi: 3 })
       expect(obj.ABC).toEqual(1)
     })
   })
 
   describe('#performanceNow', () => {
     it('returns the same value as "performance.now()"', () => {
-      spyOn(performance, 'now').and.returnValue(999)
+      spyOn(performance, 'now').and.returnValue(999) // eslint-disable-line no-undef
       expect(performanceNow()).toEqual(999)
     })
   })
 
   describe('#isPlainObject', () => {
     it('returns true for plain objects', () => {
-      function Custom() {}
+      function Custom () {}
       expect(isPlainObject(new Custom())).toEqual(false)
       expect(isPlainObject({ plain: true })).toEqual(true)
     })

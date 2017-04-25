@@ -113,7 +113,7 @@ export const m = {
       throw new Error(`[Mappersmith Test] "stringContaining" received an invalid string (${sample})`)
     }
 
-    return (string) => string.includes(sample)
+    return (string) => stringIncludes(string, sample)
   },
 
   anything: () => () => true
@@ -126,16 +126,18 @@ const mockToLog = (requestMock) => (
   `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${requestMock.body}")`
 )
 
-// Polyfill for String#includes
-if (!String.prototype.includes) {
-  String.prototype.includes = (search, start) => {
-    if (typeof start !== 'number') {
-      start = 0
-    }
-
-    if (start + search.length > this.length) {
-      return false
-    }
-    return this.indexOf(search, start) !== -1
+const stringIncludes = (str, search, start) => {
+  if (typeof start !== 'number') {
+    start = 0
   }
+
+  if (typeof str.includes === 'function') {
+    return str.includes(search, start)
+  }
+
+  if (start + search.length > str.length) {
+    return false
+  }
+
+  return str.indexOf(search, start) !== -1
 }

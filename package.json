@@ -18,7 +18,7 @@
     "build-browser": "rm -rf dist/* && ./node_modules/.bin/webpack --config webpack.conf.js",
     "build": "npm run build-node && npm run build-browser",
     "release": "./scripts/release.sh",
-    "lint": "./node_modules/.bin/eslint {src,spec}/*.js"
+    "lint": "./node_modules/.bin/eslint {src,spec}/**/*.js"
   },
   "repository": {
     "type": "git",

@@ -2,7 +2,7 @@ import ClientBuilder from './client-builder'
 
 export const configs = {
   Promise: typeof Promise === 'function' ? Promise : null,
-  fetch: typeof fetch === 'function' ? fetch : null,
+  fetch: typeof fetch === 'function' ? fetch : null, // eslint-disable-line no-undef
 
   /**
    * Gateway implementation, it defaults to "lib/gateway/xhr" for browsers and
@@ -58,6 +58,6 @@ export const configs = {
 /**
  * @param {Object} manifest
  */
-export default function forge(manifest) {
+export default function forge (manifest) {
   return new ClientBuilder(manifest, () => configs.gateway).build()
 }

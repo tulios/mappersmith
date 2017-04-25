@@ -1,12 +1,12 @@
 var express = require('express')
 var bodyParser = require('body-parser')
-var multer  = require('multer')
+var multer = require('multer')
 var upload = multer({ storage: multer.memoryStorage() })
 
-var app = new express()
+var app = express()
 var responses = require('./support/responses')
 
-function extractRawBody(req, res, buf) {
+function extractRawBody (req, res, buf) {
   req.rawBody = buf.toString('utf-8')
 }
 
@@ -18,23 +18,23 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.get('/api/books.json', function(req, res) {
+app.get('/api/books.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiBooks' })
   res.send(responses.apiBooks)
 })
 
-app.get('/api/books/:id.json', function(req, res) {
+app.get('/api/books/:id.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiBooksById' })
   res.set({ 'X-Param-Id': req.params.id })
   res.send(responses.apiBooksById)
 })
 
-app.get('/api/plain-text', function(req, res) {
+app.get('/api/plain-text', function (req, res) {
   res.set({ 'X-Api-Response': 'apiPlainText' })
   res.send(responses.apiPlainText)
 })
 
-app.post('/api/pictures/upload', upload.any(), function(req, res) {
+app.post('/api/pictures/upload', upload.any(), function (req, res) {
   res.set({ 'X-Api-Response': 'apiPicturesUpload' })
   res.set({ 'X-Api-Content-Type': req.headers['content-type'] })
   res.set({ 'X-Api-files': JSON.stringify(req.files) })
@@ -42,7 +42,7 @@ app.post('/api/pictures/upload', upload.any(), function(req, res) {
   res.send(responses.apiPicturesUpload)
 })
 
-app.post('/api/pictures/:category', function(req, res) {
+app.post('/api/pictures/:category', function (req, res) {
   res.set({ 'X-Api-Response': 'apiPicturesCreate' })
   res.set({ 'X-Param-Category': req.params.category })
   res.set({ 'X-Body': JSON.stringify(req.body) })
@@ -50,7 +50,7 @@ app.post('/api/pictures/:category', function(req, res) {
   res.send(responses.apiPicturesCreate)
 })
 
-app.put('/api/pictures/:category', function(req, res) {
+app.put('/api/pictures/:category', function (req, res) {
   res.set({ 'X-Api-Response': 'apiPicturesAdd' })
   res.set({ 'X-Param-Category': req.params.category })
   res.set({ 'X-Body': JSON.stringify(req.body) })
@@ -58,37 +58,37 @@ app.put('/api/pictures/:category', function(req, res) {
   res.send(responses.apiPicturesAdd)
 })
 
-app.get('/api/failure.json', function(req, res) {
+app.get('/api/failure.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiFailure' })
   res.status(500)
   res.send(responses.apiFailure)
 })
 
 var number = 0
-app.get('/api/fail-on-odd.json', function(req, res) {
+app.get('/api/fail-on-odd.json', function (req, res) {
   number++
   res.set({ 'X-Api-Response': 'apiFailOnOdd' })
   res.status(number % 2 === 0 ? 200 : 500)
   res.send(responses.apiFailOnOdd)
 })
 
-app.get('/api/secure.json', function(req, res) {
+app.get('/api/secure.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiSecure' })
   res.set({ 'X-Header-Authorization': req.headers['authorization'] })
   res.send(responses.apiSecure)
 })
 
-app.get('/api/timeout.json', function(req, res) {
+app.get('/api/timeout.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiTimeout' })
   var waitTime = req.params.waitTime
     ? parseInt(req.params.waitTime, 10)
     : 100
 
-  setTimeout(function() {
+  setTimeout(function () {
     res.send(responses.apiTimeout)
   }, waitTime)
 })
 
-app.listen(9090, function() {
+app.listen(9090, function () {
   console.log('Integration backend listening on port 9090')
 })

@@ -12,9 +12,15 @@ let isLoggerEnabled = console && console.log
 let successLogger = defaultSuccessLogger
 let errorLogger = defaultErrorLogger
 
-export const setSuccessLogger = (logger) => successLogger = logger
-export const setErrorLogger = (logger) => errorLogger = logger
-export const setLoggerEnabled = (value) => isLoggerEnabled = value
+export const setSuccessLogger = (logger) => {
+  successLogger = logger
+}
+export const setErrorLogger = (logger) => {
+  errorLogger = logger
+}
+export const setLoggerEnabled = (value) => {
+  isLoggerEnabled = value
+}
 
 const log = (request, response) => {
   if (isLoggerEnabled) {
@@ -28,18 +34,18 @@ const log = (request, response) => {
     logger(`${direction} ${errorLabel}${httpCall}${extra}`)
   }
 
-  return response ? response : request
+  return response || request
 }
 
 /**
  * Log all requests and responses.
  */
 const ConsoleLogMiddleware = () => ({
-  request(request) {
+  request (request) {
     return log(request)
   },
 
-  response(next) {
+  response (next) {
     return next()
       .then((response) => log(response.request(), response))
       .catch((response) => {

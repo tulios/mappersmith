@@ -5,10 +5,10 @@ import { getManifest } from 'spec/helper'
 
 describe('ClientBuilder', () => {
   let manifest,
-      gatewayClass,
-      gatewayInstance,
-      clientBuilder,
-      client
+    gatewayClass,
+    gatewayInstance,
+    clientBuilder,
+    client
 
   beforeEach(() => {
     manifest = getManifest()

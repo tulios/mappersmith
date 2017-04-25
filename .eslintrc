@@ -1,6 +1,8 @@
 {
   "extends": ["standard"],
   "plugins": [],
-  "env":{},
+  "env":{
+    "jasmine": true
+  },
   "globals": {}
 }

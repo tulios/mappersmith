@@ -2,36 +2,36 @@ import url from 'url'
 import http from 'http'
 import https from 'https'
 
-import { toQueryString, assign } from '../utils'
+import { assign } from '../utils'
 import Gateway from '../gateway'
 import Response from '../response'
 
-function HTTP(request) {
+function HTTP (request) {
   Gateway.apply(this, arguments)
 }
 
 HTTP.prototype = Gateway.extends({
-  get() {
+  get () {
     this.performRequest('get')
   },
 
-  post() {
+  post () {
     this.performRequest('post')
   },
 
-  put() {
+  put () {
     this.performRequest('put')
   },
 
-  patch() {
+  patch () {
     this.performRequest('patch')
   },
 
-  delete() {
+  delete () {
     this.performRequest('delete')
   },
 
-  performRequest(method) {
+  performRequest (method) {
     const headers = {}
     const defaults = url.parse(this.request.url())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
@@ -75,7 +75,7 @@ HTTP.prototype = Gateway.extends({
     httpRequest.end()
   },
 
-  onResponse(httpResponse) {
+  onResponse (httpResponse) {
     const rawData = []
     httpResponse.setEncoding('utf8')
     httpResponse
@@ -90,7 +90,7 @@ HTTP.prototype = Gateway.extends({
       })
   },
 
-  onError(e) {
+  onError (e) {
     if (this.canceled) {
       return
     }
@@ -99,7 +99,7 @@ HTTP.prototype = Gateway.extends({
     this.dispatchClientError(e.message)
   },
 
-  createResponse(httpResponse, rawData) {
+  createResponse (httpResponse, rawData) {
     return new Response(
       this.request,
       httpResponse.statusCode,

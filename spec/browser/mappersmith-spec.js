@@ -1,12 +1,11 @@
-import forge from 'src/index'
-import { configs } from 'src/index'
+import forge, { configs } from 'src/index'
 
 describe('mappersmith', () => {
   describe('#forge', () => {
     let originalConfig,
-        manifest,
-        gatewayClass,
-        gatewayInstance
+      manifest,
+      gatewayClass,
+      gatewayInstance
 
     beforeEach(() => {
       if (!originalConfig) {

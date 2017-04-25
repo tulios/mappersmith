@@ -2,14 +2,16 @@ import { configs } from '../index'
 
 let handler = null
 
-export const setErrorHandler = (errorHandler) => handler = errorHandler
+export const setErrorHandler = (errorHandler) => {
+  handler = errorHandler
+}
 
 /**
  * Provides a catch-all function for all requests. If the catch-all
  * function returns `true` it prevents the original promise to continue.
  */
 const GlobalErrorHandler = () => ({
-  response(next) {
+  response (next) {
     return new configs.Promise((resolve, reject) => {
       next()
         .then((response) => resolve(response))

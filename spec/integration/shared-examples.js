@@ -1,6 +1,6 @@
 import createManifest from 'spec/integration/support/manifest'
 import apiResponses from 'spec/integration/support/responses'
-import { debugResponse, errorMessage } from 'spec/integration/support'
+import { errorMessage } from 'spec/integration/support'
 
 import forge, { configs } from 'src/index'
 import {
@@ -14,11 +14,11 @@ import {
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 import RetryMiddleware, { setRetryConfigs } from 'src/middlewares/retry'
 
-export default function IntegrationTestsForGateway(gateway, params, extraTests) {
+export default function IntegrationTestsForGateway (gateway, params, extraTests) {
   let successLogBuffer,
-      errorLogBuffer,
-      previousGateway,
-      Client
+    errorLogBuffer,
+    previousGateway,
+    Client
 
   beforeEach(() => {
     successLogBuffer = []
@@ -192,7 +192,7 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
         expect(successLogBuffer.length).toEqual(2) // request and response
         expect(successLogBuffer).toEqual([
           `-> GET ${params.host}/api/books.json`,
-          `<- GET ${params.host}/api/books.json status=200 \'[{"id":1,"title":"Lorem ipsum dolor sit amet","description":"consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"},{"id":2,"title":"Ut enim ad minim veniam","description":"quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"}]\'`
+          `<- GET ${params.host}/api/books.json status=200 '[{"id":1,"title":"Lorem ipsum dolor sit amet","description":"consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"},{"id":2,"title":"Ut enim ad minim veniam","description":"quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"}]'`
         ])
         done()
       })
@@ -211,7 +211,7 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
           expect(errorLogBuffer.length).toEqual(1) // only response
           expect(successLogBuffer).toEqual([`-> GET ${params.host}/api/failure.json`])
           expect(errorLogBuffer).toEqual([
-            `<- (ERROR) GET ${params.host}/api/failure.json status=500 \'{"errorMessage":"something went bad"}\'`
+            `<- (ERROR) GET ${params.host}/api/failure.json status=500 '{"errorMessage":"something went bad"}'`
           ])
           done()
         })

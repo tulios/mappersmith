@@ -13,7 +13,7 @@ import { isPlainObject, toQueryString } from '../utils'
  *     @param {object} props.response.headers
  *     @param {integer} props.response.status
  */
-function MockRequest(id, props) {
+function MockRequest (id, props) {
   this.id = id
 
   this.method = props.method || 'get'
@@ -38,7 +38,7 @@ MockRequest.prototype = {
   /**
    * @return {Response}
    */
-  call(request) {
+  call (request) {
     this.calls.push(request)
     return new Response(
       request,
@@ -51,7 +51,7 @@ MockRequest.prototype = {
   /**
    * @return {MockAssert}
    */
-  assertObject() {
+  assertObject () {
     return new MockAssert(this.calls)
   },
 
@@ -60,7 +60,7 @@ MockRequest.prototype = {
    *
    * @return {boolean}
    */
-  isExactMatch(request) {
+  isExactMatch (request) {
     const bodyMatch = this.bodyFunction
       ? this.body(request.body())
       : this.body === toQueryString(request.body())
@@ -75,7 +75,7 @@ MockRequest.prototype = {
    *
    * @return {boolean}
    */
-  isPartialMatch(request) {
+  isPartialMatch (request) {
     return new RegExp(this.method).test(request.method()) &&
       new RegExp(this.url).test(request.url())
   },
@@ -83,7 +83,7 @@ MockRequest.prototype = {
   /**
    * @return {MockRequest}
    */
-  toMockRequest() {
+  toMockRequest () {
     return this
   }
 }

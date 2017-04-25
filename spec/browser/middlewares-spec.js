@@ -13,10 +13,10 @@ import {
 
 describe('ClientBuilder middlewares', () => {
   let manifest,
-      gatewayInstance,
-      gatewayClass,
-      response,
-      responseValue
+    gatewayInstance,
+    gatewayClass,
+    response,
+    responseValue
 
   const createClient = () => new ClientBuilder(manifest, () => gatewayClass).build()
 

@@ -1,6 +1,4 @@
 import Gateway from '../gateway'
-import Response from '../response'
-import { assign, parseResponseHeaders } from '../utils'
 import { lookupResponse } from '../test'
 
 function Mock (request) {
@@ -8,27 +6,27 @@ function Mock (request) {
 }
 
 Mock.prototype = Gateway.extends({
-  get() {
+  get () {
     this.callMock()
   },
 
-  post() {
+  post () {
     this.callMock()
   },
 
-  put() {
+  put () {
     this.callMock()
   },
 
-  patch() {
+  patch () {
     this.callMock()
   },
 
-  delete() {
+  delete () {
     this.callMock()
   },
 
-  callMock(httpMethod) {
+  callMock (httpMethod) {
     this.dispatchResponse(lookupResponse(this.request))
   }
 })
