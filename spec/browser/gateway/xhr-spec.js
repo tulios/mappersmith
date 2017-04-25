@@ -215,7 +215,7 @@ describe('Gateway / XHR', () => {
       respondWith(httpResponse)
       assertSuccess()(done, (response) => {
         expect(response.status()).toEqual(200)
-        expect(configure).toHaveBeenCalledWith(jasmine.any(XMLHttpRequest))
+        expect(configure).toHaveBeenCalledWith(jasmine.any(XMLHttpRequest)) // eslint-disable-line no-undef
       })
     })
   })

@@ -1,7 +1,7 @@
 import GlobalErrorHandlerMiddleware, { setErrorHandler } from 'src/middlewares/global-error-handler'
 
 describe('Middleware / GlobalErrorHandlerMiddleware', () => {
-  let methodDescriptor, request, body, middleware
+  let middleware
 
   beforeEach(() => {
     middleware = GlobalErrorHandlerMiddleware()

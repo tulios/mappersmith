@@ -1,7 +1,5 @@
 import forge from 'src/index'
-import MockAssert from 'src/test/mock-assert'
-import EncodeJsonMiddleware from 'src/middlewares/encode-json'
-import { getManifest, headerMiddleware } from 'spec/helper'
+import { getManifest } from 'spec/helper'
 
 import {
   install as installMock,
@@ -41,9 +39,9 @@ describe('Test lib / mock assert', () => {
 
   it('returns the most recent call', (done) => {
     expect(mock.mostRecentCall()).toEqual(null)
-    client.User.all({ headers: { call: 1 }})
+    client.User.all({ headers: { call: 1 } })
       .then((response) => expect(mock.mostRecentCall().headers()).toEqual(response.request().headers()))
-      .then(() => client.User.all({ headers: { call: 2 }}))
+      .then(() => client.User.all({ headers: { call: 2 } }))
       .then((response) => expect(mock.mostRecentCall().headers()).toEqual(response.request().headers()))
       .then(() => done())
       .catch((response) => {

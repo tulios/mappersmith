@@ -1,13 +1,4 @@
-import forge from 'src/index'
-import MockAssert from 'src/test/mock-assert'
-import EncodeJsonMiddleware from 'src/middlewares/encode-json'
-import { getManifest, headerMiddleware } from 'spec/helper'
-
-import {
-  install as installMock,
-  uninstall as uninstallMock,
-  m
-} from 'src/test'
+import { m } from 'src/test'
 
 describe('Test lib / match functions', () => {
   describe('#stringMatching', () => {

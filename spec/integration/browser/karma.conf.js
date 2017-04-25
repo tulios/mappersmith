@@ -1,6 +1,6 @@
 const webpackConfig = require('../../../webpack.conf.js')
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     browsers: ['PhantomJS'],
     frameworks: ['jasmine'],
@@ -33,5 +33,5 @@ module.exports = function(config) {
     webpackMiddleware: {
       stats: 'errors-only'
     }
-  });
-};
+  })
+}

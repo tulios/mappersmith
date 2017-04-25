@@ -6,7 +6,7 @@ import { getManifest, headerMiddleware } from 'spec/helper'
 import {
   install as installMock,
   uninstall as uninstallMock,
-  mockClient,
+  mockClient
 } from 'src/test'
 
 describe('Test lib / mock resources', () => {
