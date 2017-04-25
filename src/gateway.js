@@ -2,25 +2,25 @@ import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
 import { configs } from './mappersmith'
 import Response from './response'
 
-function Gateway(request) {
+function Gateway (request) {
   this.request = request
-  this.successCallback = function() {}
-  this.failCallback = function() {}
+  this.successCallback = function () {}
+  this.failCallback = function () {}
 }
 
 Gateway.extends = (methods) => assign({}, Gateway.prototype, methods)
 
 Gateway.prototype = {
-  options() {
+  options () {
     return configs.gatewayConfigs
   },
 
-  shouldEmulateHTTP() {
+  shouldEmulateHTTP () {
     return this.options().emulateHTTP &&
       /^(delete|put|patch)/i.test(this.request.method())
   },
 
-  call() {
+  call () {
     const timeStart = performanceNow()
     return new configs.Promise((resolve, reject) => {
       this.successCallback = (response) => {
@@ -41,17 +41,17 @@ Gateway.prototype = {
     })
   },
 
-  dispatchResponse(response) {
+  dispatchResponse (response) {
     response.success()
       ? this.successCallback(response)
       : this.failCallback(response)
   },
 
-  dispatchClientError(message) {
+  dispatchClientError (message) {
     this.failCallback(new Response(this.request, 400, message))
   },
 
-  prepareBody(method, headers) {
+  prepareBody (method, headers) {
     let body = this.request.body()
 
     if (this.shouldEmulateHTTP()) {

@@ -41,12 +41,12 @@ export const setRetryConfigs = (newConfigs) => {
  * Parameters can be configured using the method `setRetryConfigs`.
  */
 const RetryMiddleware = () => ({
-  request(request) {
+  request (request) {
     this.enableRetry = (request.method() === 'get')
     return request
   },
 
-  response(next) {
+  response (next) {
     if (!this.enableRetry) {
       return next()
     }

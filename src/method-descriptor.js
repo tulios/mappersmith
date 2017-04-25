@@ -11,7 +11,7 @@
  *   @param {String} obj.authAttr - auth attribute name. Default: 'auth'
  *   @param {Number} obj.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
-export default function MethodDescriptor(obj) {
+export default function MethodDescriptor (obj) {
   this.host = obj.host
   this.path = obj.path
   this.method = obj.method || 'get'

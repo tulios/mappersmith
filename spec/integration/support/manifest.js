@@ -1,11 +1,11 @@
 import LogMiddleware from 'src/middlewares/log'
 
-export default function createManifest(host = null, middlewares = []) {
+export default function createManifest (host = null, middlewares = []) {
   return {
     host: host,
     resources: {
       Book: {
-        all:  { path: '/api/books.json' },
+        all: { path: '/api/books.json' },
         byId: { path: '/api/books/{id}.json' }
       },
       PlainText: {

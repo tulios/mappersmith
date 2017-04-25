@@ -4,12 +4,11 @@ import MethodDescriptor from 'src/method-descriptor'
 
 describe('Response', () => {
   let methodDescriptor,
-      request,
-      requestParams,
-      response,
-      responseStatus,
-      responseData,
-      responseHeaders
+    request,
+    requestParams,
+    responseStatus,
+    responseData,
+    responseHeaders
 
   const createResponse = () => new Response(
     request,

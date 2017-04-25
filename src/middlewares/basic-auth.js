@@ -12,7 +12,7 @@
  * // => header: "Authorization: Basic Ym9iOmJvYg=="
  */
 const BasicAuthMiddleware = (authConfig) => () => ({
-  request(request) {
+  request (request) {
     const auth = request.auth()
     return !auth // Keep the override
       ? request.enhance({ auth: authConfig })

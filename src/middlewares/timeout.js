@@ -11,7 +11,7 @@
  * client.User.all({ timeout: 100 })
  */
 const TimeoutMiddleware = (timeoutValue) => () => ({
-  request(request) {
+  request (request) {
     const timeout = request.timeout()
     return !timeout // Keep the override
       ? request.enhance({ timeout: timeoutValue })

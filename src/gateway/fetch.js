@@ -23,27 +23,27 @@ function Fetch (request) {
 }
 
 Fetch.prototype = Gateway.extends({
-  get() {
+  get () {
     this.performRequest('get')
   },
 
-  post() {
+  post () {
     this.performRequest('post')
   },
 
-  put() {
+  put () {
     this.performRequest('put')
   },
 
-  patch() {
+  patch () {
     this.performRequest('patch')
   },
 
-  delete() {
+  delete () {
     this.performRequest('delete')
   },
 
-  performRequest(method) {
+  performRequest (method) {
     const customHeaders = {}
     const body = this.prepareBody(method, customHeaders)
     const auth = this.request.auth()
@@ -90,10 +90,12 @@ Fetch.prototype = Gateway.extends({
       })
   },
 
-  createResponse(fetchResponse, data) {
+  createResponse (fetchResponse, data) {
     const status = fetchResponse.status
     const responseHeaders = {}
-    fetchResponse.headers.forEach((value, key) => responseHeaders[key] = value)
+    fetchResponse.headers.forEach((value, key) => {
+      responseHeaders[key] = value
+    })
 
     return new Response(
       this.request,

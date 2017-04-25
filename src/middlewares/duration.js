@@ -2,14 +2,14 @@
  * Adds started_at, ended_at and duration headers to the response
  */
 const DurationMiddleware = () => ({
-  request(request) {
+  request (request) {
     return request.enhance({
-      headers: { 'X-Started-At': Date.now() },
+      headers: { 'X-Started-At': Date.now() }
     })
   },
 
-  response(next) {
-    const endedAt = Date.now();
+  response (next) {
+    const endedAt = Date.now()
 
     return next().then((response) => {
       return response.enhance({

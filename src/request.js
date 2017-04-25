@@ -1,13 +1,13 @@
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
-const REGEXP_DYNAMIC_SEGMENT = new RegExp('\{([^\}]+)\}')
+const REGEXP_DYNAMIC_SEGMENT = new RegExp('{([^}]+)}')
 
 /**
  * @typedef Request
  * @param {MethodDescriptor} methodDescriptor
  * @param {Object} requestParams, defaults to an empty object ({})
  */
-function Request(methodDescriptor, requestParams) {
+function Request (methodDescriptor, requestParams) {
   this.methodDescriptor = methodDescriptor
   this.requestParams = requestParams || {}
 }
@@ -16,7 +16,7 @@ Request.prototype = {
   /**
    * @return {Object}
    */
-  params() {
+  params () {
     const params = assign(
       {},
       this.methodDescriptor.params,
@@ -45,7 +45,7 @@ Request.prototype = {
    *
    * @return {String}
    */
-  method() {
+  method () {
     return this.methodDescriptor.method.toLowerCase()
   },
 
@@ -55,7 +55,7 @@ Request.prototype = {
    *
    * @return {String}
    */
-  host() {
+  host () {
     return (this.methodDescriptor.host || '').replace(/\/$/, '')
   },
 
@@ -70,9 +70,8 @@ Request.prototype = {
    *
    * @return {String}
    */
-  path() {
+  path () {
     let path = this.methodDescriptor.path
-    const { headersAttr, bodyAttr } = this.methodDescriptor
 
     if (this.methodDescriptor.path[0] !== '/') {
       path = `/${this.methodDescriptor.path}`
@@ -81,10 +80,10 @@ Request.prototype = {
     const params = this.params()
     Object.keys(params).forEach((key) => {
       const value = params[key]
-      const pattern = '\{' + key + '\}'
+      const pattern = `{${key}}`
 
       if (new RegExp(pattern).test(path)) {
-        path = path.replace('\{' + key + '\}', value)
+        path = path.replace(`{${key}}`, value)
         delete params[key]
       }
     })
@@ -110,7 +109,7 @@ Request.prototype = {
    *
    * @return {String}
    */
-  url() {
+  url () {
     return `${this.host()}${this.path()}`
   },
 
@@ -120,7 +119,7 @@ Request.prototype = {
    *
    * @return {Object}
    */
-  headers() {
+  headers () {
     return lowerCaseObjectKeys(
       assign(
         {},
@@ -130,15 +129,15 @@ Request.prototype = {
     )
   },
 
-  body() {
+  body () {
     return this.requestParams[this.methodDescriptor.bodyAttr]
   },
 
-  auth() {
+  auth () {
     return this.requestParams[this.methodDescriptor.authAttr]
   },
 
-  timeout() {
+  timeout () {
     return this.requestParams[this.methodDescriptor.timeoutAttr]
   },
 
@@ -151,7 +150,7 @@ Request.prototype = {
    *   @param {Object} extras.auth - it will replace the current auth
    *   @param {Number} extras.timeout - it will replace the current timeout
    */
-  enhance(extras) {
+  enhance (extras) {
     const headerKey = this.methodDescriptor.headersAttr
     const bodyKey = this.methodDescriptor.bodyAttr
     const authKey = this.methodDescriptor.authAttr

@@ -1,19 +1,24 @@
 if (typeof window !== 'undefined' && window !== null) {
-  if (!window.performance) {
-    window.performance = {}
+  let { performance } = window
+
+  if (!performance) {
+    performance = {}
   }
+
   performance.now = (() => {
-    return performance.now       ||
-           performance.mozNow    ||
-           performance.msNow     ||
-           performance.oNow      ||
+    return performance.now ||
+           performance.mozNow ||
+           performance.msNow ||
+           performance.oNow ||
            performance.webkitNow ||
-           function() { return new Date().getTime() }
+           function () { return new Date().getTime() }
   })()
+
+  window.performance = performance
 }
 
-let _process, getNanoSeconds, loadTime;
-try { _process = eval('typeof process === "object" ? process : undefined') } catch (e) {}
+let _process, getNanoSeconds, loadTime
+try { _process = eval('typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
 
 const hasProcessHrtime = () => {
   return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime
@@ -34,9 +39,9 @@ const validKeys = (entry) => Object
     .filter((key) => entry[key] !== undefined && entry[key] !== null)
 
 const buildRecursive = (key, value, suffix) => {
-  suffix = suffix || '';
-  const isArray = Array.isArray(value);
-  const isObject = typeof value === 'object';
+  suffix = suffix || ''
+  const isArray = Array.isArray(value)
+  const isObject = typeof value === 'object'
 
   if (!isArray && !isObject) {
     return `${encodeURIComponent(key + suffix)}=${encodeURIComponent(value)}`
@@ -53,7 +58,7 @@ const buildRecursive = (key, value, suffix) => {
     .join('&')
 }
 
-export function toQueryString(entry) {
+export function toQueryString (entry) {
   if (!isPlainObject(entry)) {
     return entry
   }
@@ -68,12 +73,12 @@ export function toQueryString(entry) {
  * Gives time in miliseconds, but with sub-milisecond precision for Browser
  * and Nodejs
  */
-export function performanceNow() {
+export function performanceNow () {
   if (hasProcessHrtime()) {
-    return (getNanoSeconds() - loadTime) / 1e6;
+    return (getNanoSeconds() - loadTime) / 1e6
   }
 
-  return performance.now();
+  return performance.now() // eslint-disable-line no-undef
 }
 
 /**
@@ -83,8 +88,8 @@ export function performanceNow() {
  * {@link http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method}
  * This method parses that string into a user-friendly key/value pair object.
  */
-export function parseResponseHeaders(headerStr) {
-  const headers = {};
+export function parseResponseHeaders (headerStr) {
+  const headers = {}
   if (!headerStr) {
     return headers
   }
@@ -104,7 +109,7 @@ export function parseResponseHeaders(headerStr) {
   return headers
 }
 
-export function lowerCaseObjectKeys(obj) {
+export function lowerCaseObjectKeys (obj) {
   return Object
     .keys(obj)
     .reduce((target, key) => {
@@ -114,7 +119,7 @@ export function lowerCaseObjectKeys(obj) {
 }
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
-export const assign = Object.assign || function(target) {
+export const assign = Object.assign || function (target) {
   for (let i = 1; i < arguments.length; i++) {
     const source = arguments[i]
     for (let key in source) {
@@ -127,7 +132,7 @@ export const assign = Object.assign || function(target) {
 }
 
 const toString = Object.prototype.toString
-export function isPlainObject(value) {
+export function isPlainObject (value) {
   return toString.call(value) === '[object Object]' &&
     Object.getPrototypeOf(value) === Object.getPrototypeOf({})
 }
@@ -135,7 +140,7 @@ export function isPlainObject(value) {
 /**
  * borrowed from: {@link https://github.com/davidchambers/Base64.js}
  */
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
 export const btoa = (input) => {
   let output = ''
   let map = CHARS
@@ -150,7 +155,7 @@ export const btoa = (input) => {
     // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
     output += map.charAt(63 & block >> 8 - idx % 1 * 8)
   ) {
-    charCode = str.charCodeAt(idx += 3/4);
+    charCode = str.charCodeAt(idx += 3 / 4)
     if (charCode > 0xFF) {
       throw new Error("[Mappersmith] 'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.")
     }

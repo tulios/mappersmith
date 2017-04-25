@@ -22,7 +22,7 @@ module.exports = {
   apiPlainText: 'API-Plain-Text',
 
   apiPicturesCreate: {
-    picture_id: 3,
+    picture_id: 3
   },
 
   apiPicturesAdd: {

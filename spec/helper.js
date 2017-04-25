@@ -1,10 +1,8 @@
 import fauxJax from 'faux-jax-tulios'
 import Request from 'src/request'
 import Response from 'src/response'
-import MethodDescriptor from 'src/method-descriptor'
-import { assign } from 'src/utils'
 
-export function createGatewayAsserts(gatewayArgsGenerator) {
+export function createGatewayAsserts (gatewayArgsGenerator) {
   return {
     assertSuccess: () => {
       return createGatewaySuccessAssert(...gatewayArgsGenerator())
@@ -16,7 +14,7 @@ export function createGatewayAsserts(gatewayArgsGenerator) {
   }
 }
 
-export function createGatewaySuccessAssert(Gateway, methodDescriptor, requestParams) {
+export function createGatewaySuccessAssert (Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
     const gateway = new Gateway(request)
@@ -34,7 +32,7 @@ export function createGatewaySuccessAssert(Gateway, methodDescriptor, requestPar
   }
 }
 
-export function createGatewayFailureAssert(Gateway, methodDescriptor, requestParams) {
+export function createGatewayFailureAssert (Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
     const gateway = new Gateway(request)
@@ -52,7 +50,7 @@ export function createGatewayFailureAssert(Gateway, methodDescriptor, requestPar
   }
 }
 
-export function respondWith(responseObj, assertsCallback) {
+export function respondWith (responseObj, assertsCallback) {
   fauxJax.on('request', (fauxJaxRequest) => {
     assertsCallback && assertsCallback(fauxJaxRequest)
     fauxJaxRequest.respond(
@@ -64,7 +62,7 @@ export function respondWith(responseObj, assertsCallback) {
 }
 
 export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
-  request(request) {
+  request (request) {
     return request.enhance({
       headers: {
         'x-middleware-phase': 'request'
@@ -72,7 +70,7 @@ export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
     })
   },
 
-  response(next) {
+  response (next) {
     return next().then((response) => response.enhance({
       headers: {
         'x-middleware-phase': 'response',
@@ -94,11 +92,11 @@ export const resetCountMiddleware = () => {
 }
 
 export const countMiddleware = () => ({
-  request(request) {
+  request (request) {
     return request
   },
 
-  response(next) {
+  response (next) {
     return next().then((response) => {
       countMiddlewareStack.push(response.data())
       return new Response(response.request(), 200, ++countMiddlewareCurrent)

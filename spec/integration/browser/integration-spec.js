@@ -7,10 +7,9 @@ import createManifest from 'spec/integration/support/manifest'
 import XHR from 'src/gateway/xhr'
 import Fetch from 'src/gateway/fetch'
 import forge, { configs } from 'src/index'
+import fileUploadSpec from './file-upload'
 
 configs.fetch = window.fetch
-
-import fileUploadSpec from './file-upload'
 
 describe('integration', () => {
   describe('Fetch', () => {

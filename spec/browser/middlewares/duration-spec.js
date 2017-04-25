@@ -4,7 +4,6 @@ import Response from 'src/response'
 import MethodDescriptor from 'src/method-descriptor'
 
 describe('Middleware / DurationMiddleware', () => {
-
   let middleware
 
   const newRequest = (method) => new Request(

@@ -8,14 +8,14 @@ import { assign } from './utils'
  *   @param {String} obj.resources - default: {}
  *   @param {String} obj.middlewares - default: []
  */
-function Manifest(obj) {
+function Manifest (obj) {
   this.host = obj.host
   this.resources = obj.resources || {}
   this.middlewares = obj.middlewares || []
 }
 
 Manifest.prototype = {
-  eachResource(callback) {
+  eachResource (callback) {
     Object.keys(this.resources).forEach((resourceName) => {
       const methods = this.eachMethod(resourceName, (methodName) => ({
         name: methodName,
@@ -26,13 +26,13 @@ Manifest.prototype = {
     })
   },
 
-  eachMethod(resourceName, callback) {
+  eachMethod (resourceName, callback) {
     return Object
       .keys(this.resources[resourceName])
       .map((name) => callback(name))
   },
 
-  createMethodDescriptor(resourceName, methodName) {
+  createMethodDescriptor (resourceName, methodName) {
     const definition = this.resources[resourceName][methodName]
 
     if (!definition || !definition.path) {
@@ -55,7 +55,7 @@ Manifest.prototype = {
    *
    * @return {Array<Object>}
    */
-  createMiddlewares(args = {}) {
+  createMiddlewares (args = {}) {
     const createInstance = (middlewareFactory) => assign({
       request: (request) => request,
       response: (next) => next()

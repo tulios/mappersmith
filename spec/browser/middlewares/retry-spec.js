@@ -4,13 +4,10 @@ import Response from 'src/response'
 import MethodDescriptor from 'src/method-descriptor'
 
 describe('Middleware / RetryMiddleware', () => {
-  let methodDescriptor,
-      request,
-      body,
-      middleware,
-      retries,
-      headerRetryCount,
-      headerRetryTime
+  let middleware,
+    retries,
+    headerRetryCount,
+    headerRetryTime
 
   const newRequest = (method) => new Request(
     new MethodDescriptor({ host: 'example.com', path: '/', method }),
