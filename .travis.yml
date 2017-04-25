@@ -12,4 +12,5 @@ install:
   - npm rebuild phantom-prebuilt
 script:
   - node spec/integration/server.js &
+  - npm run lint
   - npm run test
