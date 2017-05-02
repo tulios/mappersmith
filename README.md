@@ -670,6 +670,21 @@ mockRequest({
 // ...
 ```
 
+It's possible to use a match function to assert the body and the URL, example:
+
+```javascript
+import { m } from 'mappersmith/test'
+
+mockRequest({
+  method: 'post',
+  url: m.stringMatching(/example\.org/),
+  body: m.anything(),
+  response: {
+    body: { allUsers: [{id: 1}] }
+  }
+})
+```
+
 Using the assert object:
 
 ```javascript

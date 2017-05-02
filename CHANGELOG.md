@@ -1,5 +1,9 @@
 # Changelog
 
+# [Unreleased]
+
+- Accept a matcher function as an URL in `mockRequest`
+
 # 2.4.0
 
   - Adds Duration middleware #50
