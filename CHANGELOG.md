@@ -1,8 +1,9 @@
 # Changelog
 
-# [Unreleased]
+# 2.5.0
 
 - Accept a matcher function as an URL in `mockRequest`
+- Add a `configure` callback to the `http` gateway
 
 # 2.4.0
 
