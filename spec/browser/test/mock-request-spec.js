@@ -5,7 +5,8 @@ import { getManifest } from 'spec/helper'
 import {
   install as installMock,
   uninstall as uninstallMock,
-  mockRequest
+  mockRequest,
+  m
 } from 'src/test'
 
 describe('Test lib / mock request', () => {
@@ -171,6 +172,27 @@ describe('Test lib / mock request', () => {
     })
     .catch((response) => {
       done()
+    })
+  })
+
+  it('accepts a matcher function as an url', (done) => {
+    mockRequest({
+      method: 'get',
+      url: m.stringMatching(/abc123def/),
+      response: {
+        body: 'just text!'
+      }
+    })
+
+    client.User.byId({ id: 'abc123def' }).then((response) => {
+      expect(response.request().method()).toEqual('get')
+      expect(response.status()).toEqual(200)
+      expect(response.data()).toEqual('just text!')
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
     })
   })
 })

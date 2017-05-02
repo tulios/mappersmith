@@ -6,8 +6,8 @@ import { isPlainObject, toQueryString } from '../utils'
  * @param {number} id
  * @param {object} props
  *   @param {string} props.method
- *   @param {string} props.url
- *   @param {string} props.body - request body
+ *   @param {string|function} props.url
+ *   @param {string|function} props.body - request body
  *   @param {object} props.response
  *     @param {string} props.response.body
  *     @param {object} props.response.headers
@@ -17,6 +17,7 @@ function MockRequest (id, props) {
   this.id = id
 
   this.method = props.method || 'get'
+  this.urlFunction = typeof props.url === 'function'
   this.url = props.url
   this.bodyFunction = typeof props.body === 'function'
   this.body = this.bodyFunction ? props.body : toQueryString(props.body)
@@ -65,9 +66,11 @@ MockRequest.prototype = {
       ? this.body(request.body())
       : this.body === toQueryString(request.body())
 
-    return this.method === request.method() &&
-      this.url === request.url() &&
-      bodyMatch
+    const urlMatch = this.urlFunction
+      ? this.url(request.url())
+      : this.url === request.url()
+
+    return this.method === request.method() && urlMatch && bodyMatch
   },
 
   /**
