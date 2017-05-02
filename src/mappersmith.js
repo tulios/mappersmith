@@ -30,8 +30,20 @@ export const configs = {
       withCredentials: false,
 
       /**
-       * To add aditional configurations to the XMLHttpRequest object.
+       * For aditional configurations to the XMLHttpRequest object.
        * @param {XMLHttpRequest} xhr
+       * @default null
+       */
+      configure: null
+    },
+
+    HTTP: {
+      /**
+       * For aditional configurations to the http/https module
+       * For http: https://nodejs.org/api/http.html#http_http_request_options_callback
+       * For https: https://nodejs.org/api/https.html#https_https_request_options_callback
+       *
+       * @param {object} options
        * @default null
        */
       configure: null

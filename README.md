@@ -737,6 +737,29 @@ configs.gateway = MyGateway
 
 It's possible to globally configure your gateway through the option `gatewayConfigs`.
 
+### HTTP
+
+When running with node.js you can configure the `configure` callback to further customize the `http/https` module, example:
+
+```javascript
+import fs from 'fs'
+import https from 'https'
+import { configs } from 'mappersmith'
+
+const key = fs.readFileSync('/path/to/my-key.pem')
+const cert =  fs.readFileSync('/path/to/my-cert.pem')
+
+configs.gatewayConfigs.HTTP = {
+  configure() {
+    return {
+      agent: new https.Agent({ key, cert })
+    }
+  }
+}
+```
+
+The new configurations will be merged. `configure` also receives the `requestParams` as a first argument.
+
 ### XHR
 
 When running in the browser you can configure `withCredentials` and `configure` to further customize the `XMLHttpRequest` object, example:

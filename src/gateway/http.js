@@ -59,6 +59,12 @@ HTTP.prototype = Gateway.extends({
       requestParams['auth'] = `${username}:${password}`
     }
 
+    const httpOptions = this.options().HTTP
+
+    if (httpOptions.configure) {
+      assign(requestParams, httpOptions.configure(requestParams))
+    }
+
     const httpRequest = handler
       .request(requestParams, (httpResponse) => this.onResponse(httpResponse))
 

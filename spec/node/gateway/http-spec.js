@@ -205,4 +205,18 @@ describe('Gateway / HTTP', () => {
       })
     })
   }
+
+  describe('with option "configure"', () => {
+    it('calls the callback with request params', (done) => {
+      methodDescriptor.method = 'get'
+      const configure = jasmine.createSpy('HTTPConfigureCallback')
+      configs.gatewayConfigs.HTTP.configure = configure
+
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+        expect(configure).toHaveBeenCalledWith(jasmine.any(Object))
+      })
+    })
+  })
 })
