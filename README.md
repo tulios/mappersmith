@@ -758,7 +758,7 @@ configs.gatewayConfigs.HTTP = {
 }
 ```
 
-The new configurations will be merged. `configure` also receives the `requestParams` as a first argument.
+The new configurations will be merged. `configure` also receives the `requestParams` as the first argument. Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappersmith.js) for more options.
 
 ### XHR
 
