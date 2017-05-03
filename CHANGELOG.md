@@ -1,5 +1,9 @@
 # Changelog
 
+# 2.5.1
+
+- Change the HTTP gateway to use the built-in  [request#setTimeout](https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback)
+
 # 2.5.0
 
 - Accept a matcher function as an URL in `mockRequest`
