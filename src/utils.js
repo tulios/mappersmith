@@ -1,22 +1,3 @@
-if (typeof window !== 'undefined' && window !== null) {
-  let { performance } = window
-
-  if (!performance) {
-    performance = {}
-  }
-
-  performance.now = (() => {
-    return performance.now ||
-           performance.mozNow ||
-           performance.msNow ||
-           performance.oNow ||
-           performance.webkitNow ||
-           function () { return new Date().getTime() }
-  })()
-
-  window.performance = performance
-}
-
 let _process, getNanoSeconds, loadTime
 try { _process = eval('typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
 
@@ -78,7 +59,7 @@ export function performanceNow () {
     return (getNanoSeconds() - loadTime) / 1e6
   }
 
-  return performance.now() // eslint-disable-line no-undef
+  return new Date().getTime()
 }
 
 /**

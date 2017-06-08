@@ -100,9 +100,10 @@ describe('utils', () => {
   })
 
   describe('#performanceNow', () => {
-    it('returns the same value as "performance.now()"', () => {
-      spyOn(performance, 'now').and.returnValue(999) // eslint-disable-line no-undef
-      expect(performanceNow()).toEqual(999)
+    it('returns the same value as "new Date().getTime()"', () => {
+      jasmine.clock().install()
+      expect(performanceNow()).toEqual(new Date().getTime())
+      jasmine.clock().uninstall()
     })
   })
 
