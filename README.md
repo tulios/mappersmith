@@ -806,16 +806,16 @@ Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappers
 ### Running unit tests:
 
 ```sh
-yarn test-browser
-yarn test-node
+yarn test:browser
+yarn test:node
 ```
 
 ### Running integration tests:
 
 ```sh
 node spec/integration/server.js &
-yarn test-browser-integration
-yarn test-node-integration
+yarn test:browser:integration
+yarn test:node:integration
 ```
 
 ### Running all tests

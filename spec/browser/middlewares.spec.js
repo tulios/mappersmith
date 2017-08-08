@@ -24,14 +24,12 @@ describe('ClientBuilder middlewares', () => {
     responseValue = 'success'
     manifest = getManifest()
 
-    gatewayInstance = jasmine.createSpyObj('gatewayInstance', ['call'])
-    gatewayClass = jasmine.createSpy('GatewayConstructor')
-      .and
-      .callFake((request) => {
-        response = new Response(request, 200, responseValue)
-        gatewayInstance.call.and.returnValue(Promise.resolve(response))
-        return gatewayInstance
-      })
+    gatewayInstance = { call: jest.fn() }
+    gatewayClass = jest.fn((request) => {
+      response = new Response(request, 200, responseValue)
+      gatewayInstance.call.mockReturnValue(Promise.resolve(response))
+      return gatewayInstance
+    })
 
     manifest.middlewares = [ headerMiddleware ]
   })
@@ -39,28 +37,26 @@ describe('ClientBuilder middlewares', () => {
   afterEach(() => resetCountMiddleware())
 
   it('receives an object with "resourceName" and "resourceMethod"', () => {
-    const middleware = jasmine.createSpy('middleware')
+    const middleware = jest.fn()
     manifest.middlewares = [ middleware ]
 
     createClient().User.byId({ id: 1 })
-    expect(middleware).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(middleware).toHaveBeenCalledWith(expect.objectContaining({
       resourceName: 'User',
       resourceMethod: 'byId'
     }))
   })
 
   it('calls request and response phase', () => {
-    const requestPhase = jasmine.createSpy('requestPhase')
-    const responsePhase = jasmine.createSpy('responsePhase')
-      .and
-      .returnValue(() => Promise.resolve())
+    const requestPhase = jest.fn()
+    const responsePhase = jest.fn(() => Promise.resolve())
 
     const middleware = () => ({ request: requestPhase, response: responsePhase })
     manifest.middlewares = [ middleware ]
 
     createClient().User.byId({ id: 1 })
-    expect(requestPhase).toHaveBeenCalledWith(jasmine.any(Request))
-    expect(responsePhase).toHaveBeenCalledWith(jasmine.any(Function))
+    expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
+    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function))
   })
 
   it('can change the final request object', (done) => {
@@ -68,7 +64,7 @@ describe('ClientBuilder middlewares', () => {
       .byId({ id: 1 })
       .then((response) => {
         expect(response.request().headers())
-          .toEqual(jasmine.objectContaining({ 'x-middleware-phase': 'request' }))
+          .toEqual(expect.objectContaining({ 'x-middleware-phase': 'request' }))
       })
       .then(() => done())
       .catch((response) => {
@@ -82,7 +78,7 @@ describe('ClientBuilder middlewares', () => {
       .byId({ id: 1 })
       .then((response) => {
         expect(response.headers())
-          .toEqual(jasmine.objectContaining({ 'x-middleware-phase': 'response' }))
+          .toEqual(expect.objectContaining({ 'x-middleware-phase': 'response' }))
       })
       .then(() => done())
       .catch((response) => {

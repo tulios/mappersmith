@@ -1,5 +1,5 @@
 let _process, getNanoSeconds, loadTime
-try { _process = eval('typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
+try { _process = eval('typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
 
 const hasProcessHrtime = () => {
   return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime
@@ -59,7 +59,7 @@ export function performanceNow () {
     return (getNanoSeconds() - loadTime) / 1e6
   }
 
-  return new Date().getTime()
+  return Date.now()
 }
 
 /**

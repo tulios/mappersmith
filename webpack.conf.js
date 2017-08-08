@@ -13,7 +13,10 @@ const devTool = (env === 'test')
 
 if (env === 'production') {
   plugins = [
-    new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: { warnings: false },
+      sourceMap: true
+    }),
     new webpack.BannerPlugin({
       banner: `/*!\n * Mappersmith ${version}\n * ${link}\n */`,
       raw: true,
@@ -32,7 +35,7 @@ module.exports = {
   },
   entry: './lib/index.js',
   output: {
-    path: 'dist/',
+    path: path.resolve(__dirname, 'dist/'),
     filename: 'mappersmith.js',
     sourceMapFilename: 'mappersmith.map',
     library: 'mappersmith',

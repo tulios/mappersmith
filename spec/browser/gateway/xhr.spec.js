@@ -1,23 +1,24 @@
 import fauxJax from 'faux-jax'
 
 import { configs } from 'src/index'
-import HTTP from 'src/gateway/http'
+import XHR from 'src/gateway/xhr'
 import MethodDescriptor from 'src/method-descriptor'
 import { btoa } from 'src/utils'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
 
-describe('Gateway / HTTP', () => {
+describe('Gateway / XHR', () => {
   let originalConfigs
   let methodDescriptor, requestParams, httpResponse
 
   const { assertSuccess, assertFailure } = createGatewayAsserts(() => [
-    HTTP,
+    XHR,
     methodDescriptor,
     requestParams
   ])
 
   beforeEach(() => {
+    jest.useRealTimers()
     fauxJax.install()
 
     if (!originalConfigs) {
@@ -207,15 +208,29 @@ describe('Gateway / HTTP', () => {
   }
 
   describe('with option "configure"', () => {
-    it('calls the callback with request params', (done) => {
+    it('calls the callback with xhr object', (done) => {
       methodDescriptor.method = 'get'
-      const configure = jasmine.createSpy('HTTPConfigureCallback')
-      configs.gatewayConfigs.HTTP.configure = configure
+      const configure = jasmine.createSpy('XHRConfigureCallback')
+      configs.gatewayConfigs.XHR.configure = configure
 
       respondWith(httpResponse)
       assertSuccess()(done, (response) => {
         expect(response.status()).toEqual(200)
-        expect(configure).toHaveBeenCalledWith(jasmine.any(Object))
+        expect(configure).toHaveBeenCalledWith(jasmine.any(XMLHttpRequest)) // eslint-disable-line no-undef
+      })
+    })
+  })
+
+  describe('with option "withCredentials"', () => {
+    it('sets the value', (done) => {
+      methodDescriptor.method = 'get'
+      configs.gatewayConfigs.XHR.withCredentials = true
+
+      respondWith(httpResponse, (fauxJaxRequest) => {
+        expect(fauxJaxRequest.withCredentials).toEqual(true)
+      })
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
       })
     })
   })

@@ -13,33 +13,33 @@ describe('ClientBuilder', () => {
   beforeEach(() => {
     manifest = getManifest()
 
-    gatewayInstance = jasmine.createSpyObj('gatewayInstance', ['call'])
-    gatewayClass = jasmine.createSpy('GatewayConstructor').and.returnValue(gatewayInstance)
+    gatewayInstance = { call: jest.fn() }
+    gatewayClass = jest.fn(() => gatewayInstance)
 
     clientBuilder = new ClientBuilder(manifest, () => gatewayClass)
     client = clientBuilder.build()
   })
 
   it('creates an object with all resources, methods, and a reference to the manifest', () => {
-    expect(client.User).toEqual(jasmine.any(Object))
-    expect(client.User.byId).toEqual(jasmine.any(Function))
+    expect(client.User).toEqual(expect.any(Object))
+    expect(client.User.byId).toEqual(expect.any(Function))
 
-    expect(client.Blog).toEqual(jasmine.any(Object))
-    expect(client.Blog.post).toEqual(jasmine.any(Function))
-    expect(client.Blog.addComment).toEqual(jasmine.any(Function))
+    expect(client.Blog).toEqual(expect.any(Object))
+    expect(client.Blog.post).toEqual(expect.any(Function))
+    expect(client.Blog.addComment).toEqual(expect.any(Function))
 
     expect(client._manifest instanceof Manifest).toEqual(true)
   })
 
   describe('when a resource method is called', () => {
     it('calls the gateway with the correct request', () => {
-      gatewayInstance.call.and.returnValue('Promise')
+      gatewayInstance.call.mockReturnValue('Promise')
       expect(client.User.byId({ id: 1 })).toEqual('Promise')
-      expect(gatewayClass).toHaveBeenCalledWith(jasmine.any(Request))
+      expect(gatewayClass).toHaveBeenCalledWith(expect.any(Request))
       expect(gatewayInstance.call).toHaveBeenCalled()
 
-      const request = gatewayClass.calls.argsFor(0)[0]
-      expect(request).toEqual(jasmine.any(Request))
+      const request = gatewayClass.mock.calls[0][0]
+      expect(request).toEqual(expect.any(Request))
       expect(request.method()).toEqual('get')
       expect(request.host()).toEqual('http://example.org')
       expect(request.path()).toEqual('/users/1')

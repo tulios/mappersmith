@@ -1,0 +1,17 @@
+{
+  "rootDir": "../../",
+  "testEnvironment": "node",
+  "timers": "fake",
+  "browser": false,
+  "testRegex": "\\.spec\\.js$",
+  "roots": [
+    "<rootDir>/src/",
+    "<rootDir>/spec/node/"
+  ],
+  "modulePaths": [
+    "<rootDir>"
+  ],
+  "setupFiles": [
+    "<rootDir>/jestSetup/index.js"
+  ]
+}
