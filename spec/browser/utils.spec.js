@@ -1,3 +1,5 @@
+import MockDate from 'mockdate'
+
 import {
   toQueryString,
   parseResponseHeaders,
@@ -101,9 +103,8 @@ describe('utils', () => {
 
   describe('#performanceNow', () => {
     it('returns the same value as "new Date().getTime()"', () => {
-      jasmine.clock().install()
-      expect(performanceNow()).toEqual(new Date().getTime())
-      jasmine.clock().uninstall()
+      MockDate.set('2017-08-08T20:57:00Z')
+      expect(performanceNow()).toEqual(Date.now())
     })
   })
 

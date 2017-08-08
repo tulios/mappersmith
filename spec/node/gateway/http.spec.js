@@ -1,23 +1,24 @@
 import fauxJax from 'faux-jax'
 
 import { configs } from 'src/index'
-import Fetch from 'src/gateway/fetch'
+import HTTP from 'src/gateway/http'
 import MethodDescriptor from 'src/method-descriptor'
 import { btoa } from 'src/utils'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
 
-describe('Gateway / Fetch', () => {
+describe('Gateway / HTTP', () => {
   let originalConfigs
   let methodDescriptor, requestParams, httpResponse
 
   const { assertSuccess, assertFailure } = createGatewayAsserts(() => [
-    Fetch,
+    HTTP,
     methodDescriptor,
     requestParams
   ])
 
   beforeEach(() => {
+    jest.useRealTimers()
     fauxJax.install()
 
     if (!originalConfigs) {
@@ -205,4 +206,18 @@ describe('Gateway / Fetch', () => {
       })
     })
   }
+
+  describe('with option "configure"', () => {
+    it('calls the callback with request params', (done) => {
+      methodDescriptor.method = 'get'
+      const configure = jasmine.createSpy('HTTPConfigureCallback')
+      configs.gatewayConfigs.HTTP.configure = configure
+
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+        expect(configure).toHaveBeenCalledWith(jasmine.any(Object))
+      })
+    })
+  })
 })

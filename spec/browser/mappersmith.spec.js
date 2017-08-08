@@ -20,8 +20,8 @@ describe('mappersmith', () => {
         }
       }
 
-      gatewayInstance = jasmine.createSpyObj('instance', ['call'])
-      gatewayClass = jasmine.createSpy('GatewayClass').and.returnValue(gatewayInstance)
+      gatewayInstance = { call: jest.fn() }
+      gatewayClass = jest.fn(() => gatewayInstance)
     })
 
     afterEach(() => {
@@ -32,8 +32,8 @@ describe('mappersmith', () => {
       configs.gateway = gatewayClass
 
       const client = forge(manifest)
-      expect(client.Test).toEqual(jasmine.any(Object))
-      expect(client.Test.method).toEqual(jasmine.any(Function))
+      expect(client.Test).toEqual(expect.any(Object))
+      expect(client.Test.method).toEqual(expect.any(Function))
 
       client.Test.method()
       expect(gatewayClass).toHaveBeenCalled()
@@ -47,15 +47,15 @@ describe('mappersmith', () => {
 
         client.Test.method()
         expect(gatewayClass).toHaveBeenCalled()
-        expect(gatewayClass.calls.count()).toEqual(1)
+        expect(gatewayClass.mock.calls.length).toEqual(1)
 
-        const newGatewayInstance = jasmine.createSpyObj('instance2', ['call'])
-        const newGatewayClass = jasmine.createSpy('GatewayClass2').and.returnValue(newGatewayInstance)
+        const newGatewayInstance = { call: jest.fn() }
+        const newGatewayClass = jest.fn(() => newGatewayInstance)
         configs.gateway = newGatewayClass
 
         client.Test.method()
         expect(newGatewayClass).toHaveBeenCalled()
-        expect(gatewayClass.calls.count()).toEqual(1)
+        expect(gatewayClass.mock.calls.length).toEqual(1)
       })
     })
   })

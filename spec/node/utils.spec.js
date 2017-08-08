@@ -3,6 +3,10 @@ import {
 } from 'src/utils'
 
 describe('#performanceNow', () => {
+  beforeEach(() => {
+    jest.useRealTimers()
+  })
+
   it('gives a positive time', () => {
     expect(performanceNow() > 0).toEqual(true)
   })

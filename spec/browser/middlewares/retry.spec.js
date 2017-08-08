@@ -19,6 +19,8 @@ describe('Middleware / RetryMiddleware', () => {
   }
 
   beforeEach(() => {
+    jest.useRealTimers()
+
     retries = 3
     headerRetryCount = 'X-Mappersmith-Retry-Count'
     headerRetryTime = 'X-Mappersmith-Retry-Time'
@@ -55,7 +57,7 @@ describe('Middleware / RetryMiddleware', () => {
         .response(() => Promise.resolve(response))
         .then((response) => {
           expect(response.header(headerRetryCount)).toEqual(0)
-          expect(response.header(headerRetryTime)).toEqual(jasmine.any(Number))
+          expect(response.header(headerRetryTime)).toEqual(expect.any(Number))
           done()
         })
         .catch(done.fail)
@@ -79,7 +81,7 @@ describe('Middleware / RetryMiddleware', () => {
         .response(next)
         .then((response) => {
           expect(response.header(headerRetryCount)).toEqual(2)
-          expect(response.header(headerRetryTime)).toEqual(jasmine.any(Number))
+          expect(response.header(headerRetryTime)).toEqual(expect.any(Number))
           done()
         })
         .catch(done.fail)
@@ -97,7 +99,7 @@ describe('Middleware / RetryMiddleware', () => {
         .then(() => done.fail('This test should reject the promise'))
         .catch((response) => {
           expect(response.header(headerRetryCount)).toEqual(retries)
-          expect(response.header(headerRetryTime)).toEqual(jasmine.any(Number))
+          expect(response.header(headerRetryTime)).toEqual(expect.any(Number))
           done()
         })
     })
