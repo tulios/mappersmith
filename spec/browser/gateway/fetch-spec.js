@@ -1,4 +1,4 @@
-import fauxJax from 'faux-jax-tulios'
+import fauxJax from 'faux-jax'
 
 import { configs } from 'src/index'
 import Fetch from 'src/gateway/fetch'

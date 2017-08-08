@@ -1,4 +1,4 @@
-import fauxJax from 'faux-jax-tulios'
+import fauxJax from 'faux-jax'
 import Request from 'src/request'
 import Response from 'src/response'
 
