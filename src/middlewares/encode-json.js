@@ -12,10 +12,11 @@ const EncodeJsonMiddleware = () => ({
   request (request) {
     try {
       if (request.body()) {
-        return request.enhance({
+        request.enhance({
           headers: { 'content-type': CONTENT_TYPE_JSON },
           body: JSON.stringify(request.body())
         })
+        return request
       }
     } catch (e) {}
     return request
