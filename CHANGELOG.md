@@ -1,49 +1,53 @@
 # Changelog
 
-# 2.6.0
+## 2.6.1
 
-- Remove `performance.now` polyfill to allow the use with web workers #55
+  - bufix: HTTP Gateway was calculating `content-length` wrongly #59
 
-# 2.5.1
+## 2.6.0
 
-- Change the HTTP gateway to use the built-in  [request#setTimeout](https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback)
+  - Remove `performance.now` polyfill to allow the use with web workers #55
 
-# 2.5.0
+## 2.5.1
 
-- Accept a matcher function as an URL in `mockRequest`
-- Add a `configure` callback to the `http` gateway
+  - Change the HTTP gateway to use the built-in  [request#setTimeout](https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback)
 
-# 2.4.0
+## 2.5.0
+
+  - Accept a matcher function as an URL in `mockRequest`
+  - Add a `configure` callback to the `http` gateway
+
+## 2.4.0
 
   - Adds Duration middleware #50
 
-# 2.3.1
+## 2.3.1
 
   - bugfix: eval('process') causes some problems in strict mode on PhantomJS #51
 
-# 2.3.0
+## 2.3.0
 
   - Allow `mockClient` and `mockRequest` to use match functions to check body #49
   - Add match functions to the test module #49
 
-# 2.2.1
+## 2.2.1
 
   - bugfix: body, auth and timeout were always being replaced by `request#enhance`
 
-# 2.2.0
+## 2.2.0
 
   - Add support to basic auth for all gateways #46
   - Add `BasicAuthMiddleware` to configure a default basic auth #46
   - Add support to timeout for all gateways #47
   - Add `TimeoutMiddleware` to configure a default timeout #47
 
-# 2.1.0
+## 2.1.0
 
   - Add a retry middleware with exponential retry time #38
   - Add a new gateway backed by `fetch` #42
   - Add `Request#header` to get a single header value by name
 
-# 2.0.1
+## 2.0.1
 
   - bugfix: Send `resourceName` and `resourceMethod` when running the test lib
   - Add flag (`mockRequest`) when executing the middlewares from the test lib
