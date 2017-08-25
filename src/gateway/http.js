@@ -41,7 +41,7 @@ HTTP.prototype = Gateway.extends({
     this.canceled = false
 
     if (body && typeof body.length === 'number') {
-      headers['content-length'] = body.length
+      headers['content-length'] = Buffer.byteLength(body)
     }
 
     const handler = (defaults.protocol === 'https:') ? https : http

@@ -139,6 +139,23 @@ describe('Gateway / HTTP', () => {
           expect(response.status()).toEqual(200)
         })
       })
+
+      it('adds "content-length" header', (done) => {
+        const body = { name: 'ÄÅÁÃÀÉ' }
+        requestParams = {
+          [methodDescriptor.bodyAttr]: JSON.stringify(body),
+          headers: { 'content-type': 'application/json' }
+        }
+
+        respondWith(httpResponse, (fauxJaxRequest) => {
+          expect(fauxJaxRequest.requestHeaders).toEqual(jasmine.objectContaining({ 'content-length': '23' }))
+          expect(fauxJaxRequest.requestBody).toEqual(JSON.stringify(body))
+        })
+
+        assertSuccess()(done, (response) => {
+          expect(response.status()).toEqual(200)
+        })
+      })
     })
   }
 
