@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.7.0
+
+  - Scope `gatewayConfigs` to allow different instances of mappersmith clients to use different configurations
+
 ## 2.6.1
 
   - bufix: HTTP Gateway was calculating `content-length` wrongly #59
