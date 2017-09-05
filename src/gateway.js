@@ -1,9 +1,10 @@
 import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
-import { configs } from './mappersmith'
+import { configs as defaultConfigs } from './mappersmith'
 import Response from './response'
 
-function Gateway (request) {
+function Gateway (request, configs) {
   this.request = request
+  this.configs = configs || defaultConfigs.gatewayConfigs
   this.successCallback = function () {}
   this.failCallback = function () {}
 }
@@ -12,7 +13,7 @@ Gateway.extends = (methods) => assign({}, Gateway.prototype, methods)
 
 Gateway.prototype = {
   options () {
-    return configs.gatewayConfigs
+    return this.configs
   },
 
   shouldEmulateHTTP () {
@@ -22,7 +23,7 @@ Gateway.prototype = {
 
   call () {
     const timeStart = performanceNow()
-    return new configs.Promise((resolve, reject) => {
+    return new defaultConfigs.Promise((resolve, reject) => {
       this.successCallback = (response) => {
         response.timeElapsed = performanceNow() - timeStart
         resolve(response)

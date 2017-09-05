@@ -5,11 +5,13 @@ import { assign } from './utils'
  * @typedef Manifest
  * @param {Object} obj
  *   @param {String} obj.host
- *   @param {String} obj.resources - default: {}
- *   @param {String} obj.middlewares - default: []
+ *   @param {Object} obj.gatewayConfigs - default: base values from mappersmith
+ *   @param {Object} obj.resources - default: {}
+ *   @param {Array}  obj.middlewares - default: []
  */
-function Manifest (obj) {
+function Manifest (obj, defaultGatewayConfigs = null) {
   this.host = obj.host
+  this.gatewayConfigs = assign({}, defaultGatewayConfigs, obj.gatewayConfigs)
   this.resources = obj.resources || {}
   this.middlewares = obj.middlewares || []
 }

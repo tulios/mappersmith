@@ -71,5 +71,6 @@ export const configs = {
  * @param {Object} manifest
  */
 export default function forge (manifest) {
-  return new ClientBuilder(manifest, () => configs.gateway).build()
+  const GatewayClassFactory = () => configs.gateway
+  return new ClientBuilder(manifest, GatewayClassFactory, configs.gatewayConfigs).build()
 }
