@@ -1,6 +1,7 @@
 import fauxJax from 'faux-jax'
 import Request from 'src/request'
 import Response from 'src/response'
+import { configs as defaultConfigs } from 'src/index'
 
 export function createGatewayAsserts (gatewayArgsGenerator) {
   return {
@@ -17,7 +18,7 @@ export function createGatewayAsserts (gatewayArgsGenerator) {
 export function createGatewaySuccessAssert (Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
-    const gateway = new Gateway(request)
+    const gateway = new Gateway(request, defaultConfigs.gatewayConfigs)
 
     gateway
       .call()
@@ -35,7 +36,7 @@ export function createGatewaySuccessAssert (Gateway, methodDescriptor, requestPa
 export function createGatewayFailureAssert (Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
-    const gateway = new Gateway(request)
+    const gateway = new Gateway(request, defaultConfigs.gatewayConfigs)
 
     gateway
       .call()

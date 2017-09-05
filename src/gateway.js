@@ -2,9 +2,9 @@ import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
 import { configs as defaultConfigs } from './mappersmith'
 import Response from './response'
 
-function Gateway (request, configs) {
+function Gateway (request, configs = {}) {
   this.request = request
-  this.configs = configs || defaultConfigs.gatewayConfigs
+  this.configs = configs
   this.successCallback = function () {}
   this.failCallback = function () {}
 }

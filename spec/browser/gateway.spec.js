@@ -21,8 +21,8 @@ describe('Gateway', () => {
   })
 
   describe('#options', () => {
-    it('returns gateway options from index/configs', () => {
-      expect(new Gateway(request).options()).toEqual(configs.gatewayConfigs)
+    it('returns gateway options', () => {
+      expect(new Gateway(request, configs.gatewayConfigs).options()).toEqual(configs.gatewayConfigs)
     })
   })
 
@@ -34,13 +34,13 @@ describe('Gateway', () => {
 
       it('returns true', () => {
         methodDescriptor.method = 'delete'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(true)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(true)
 
         methodDescriptor.method = 'put'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(true)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(true)
 
         methodDescriptor.method = 'patch'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(true)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(true)
       })
     })
 
@@ -51,10 +51,10 @@ describe('Gateway', () => {
 
       it('returns false', () => {
         methodDescriptor.method = 'get'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(false)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(false)
 
         methodDescriptor.method = 'post'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(false)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(false)
       })
     })
 
@@ -65,19 +65,19 @@ describe('Gateway', () => {
 
       it('returns false', () => {
         methodDescriptor.method = 'delete'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(false)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(false)
 
         methodDescriptor.method = 'put'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(false)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(false)
 
         methodDescriptor.method = 'patch'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(false)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(false)
 
         methodDescriptor.method = 'post'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(false)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(false)
 
         methodDescriptor.method = 'get'
-        expect(new Gateway(request).shouldEmulateHTTP()).toEqual(false)
+        expect(new Gateway(request, configs.gatewayConfigs).shouldEmulateHTTP()).toEqual(false)
       })
     })
   })
@@ -86,7 +86,7 @@ describe('Gateway', () => {
     let gateway
 
     beforeEach(() => {
-      gateway = new Gateway(request)
+      gateway = new Gateway(request, configs.gatewayConfigs)
       gateway.get = jasmine.createSpy('GatewayGET')
     })
 
