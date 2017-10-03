@@ -9,7 +9,7 @@ import { lowerCaseObjectKeys, assign } from './utils'
  */
 function Response (originalRequest, responseStatus, responseData, responseHeaders) {
   if (originalRequest.requestParams && originalRequest.requestParams.auth) {
-    Object.assign(originalRequest.requestParams.auth, { password: '***' })
+    assign(originalRequest.requestParams.auth, { password: '***' })
   }
   this.originalRequest = originalRequest
   this.responseStatus = responseStatus
