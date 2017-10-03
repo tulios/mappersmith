@@ -4,7 +4,7 @@
  * Example:
  * In your manifest:
  * {
- *   middlewares: [ BasicAuth({ username: 'bob', password: 'bob' }) ]
+ *   middlewares: [ BasicAuthMiddleware({ username: 'bob', password: 'bob' }) ]
  * }
  *
  * Making the call:

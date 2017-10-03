@@ -190,8 +190,10 @@ describe('Gateway / Fetch', () => {
       })
 
       it('adds "Authorization: Basic base64" header', (done) => {
+        const authData = { username: 'bob', password: 'bob' }
+        const maskedAuth = Object.assign({}, authData, { password: '***' })
         requestParams = {
-          [methodDescriptor.authAttr]: { username: 'bob', password: 'bob' }
+          [methodDescriptor.authAttr]: authData
         }
 
         respondWith(httpResponse, (fauxJaxRequest) => {
@@ -202,6 +204,7 @@ describe('Gateway / Fetch', () => {
 
         assertSuccess()(done, (response) => {
           expect(response.status()).toEqual(200)
+          expect(response.originalRequest.auth()).toEqual(maskedAuth)
         })
       })
     })

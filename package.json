@@ -5,7 +5,8 @@
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
     "Daniel Alves <alves.lopes.dan@gmail.com>",
-    "Roberto Soares <roberto.tech@gmail.com>"
+    "Roberto Soares <roberto.tech@gmail.com>",
+    "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
   "main": "index.js",
   "scripts": {
