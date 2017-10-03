@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.8.0
+
+  - Mask auth password in the Response object #60
+
 ## 2.7.0
 
   - Scope `gatewayConfigs` to allow different instances of mappersmith clients to use different configurations
