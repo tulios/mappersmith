@@ -3,7 +3,7 @@ import fauxJax from 'faux-jax'
 import { configs } from 'src/index'
 import HTTP from 'src/gateway/http'
 import MethodDescriptor from 'src/method-descriptor'
-import { btoa } from 'src/utils'
+import { btoa, assign } from 'src/utils'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
 
@@ -207,8 +207,10 @@ describe('Gateway / HTTP', () => {
       })
 
       it('adds "Authorization: Basic base64" header', (done) => {
+        const authData = { username: 'bob', password: 'bob' }
+        const maskedAuth = assign({}, authData, { password: '***' })
         requestParams = {
-          [methodDescriptor.authAttr]: { username: 'bob', password: 'bob' }
+          [methodDescriptor.authAttr]: authData
         }
 
         respondWith(httpResponse, (fauxJaxRequest) => {
@@ -219,6 +221,7 @@ describe('Gateway / HTTP', () => {
 
         assertSuccess()(done, (response) => {
           expect(response.status()).toEqual(200)
+          expect(response.originalRequest.auth()).toEqual(maskedAuth)
         })
       })
     })
