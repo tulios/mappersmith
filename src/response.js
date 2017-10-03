@@ -2,12 +2,15 @@ import { lowerCaseObjectKeys, assign } from './utils'
 
 /**
  * @typedef Response
- * @param {Request} originalRequest
+ * @param {Request} originalRequest, for auth it hides the password
  * @param {Integer} responseStatus
  * @param {String} responseData, defaults to null
  * @param {Object} responseHeaders, defaults to an empty object ({})
  */
 function Response (originalRequest, responseStatus, responseData, responseHeaders) {
+  if (originalRequest.requestParams && originalRequest.requestParams.auth) {
+    assign(originalRequest.requestParams.auth, { password: '***' })
+  }
   this.originalRequest = originalRequest
   this.responseStatus = responseStatus
   this.responseData = responseData !== undefined ? responseData : null
