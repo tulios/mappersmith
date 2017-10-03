@@ -1,7 +1,8 @@
 #!/bin/bash
-set -euv
+set -euvx
 
-yarn test:browser \
+yarn lint \
+  && yarn test:browser \
   && yarn test:node \
   && SINGLE_RUN=true yarn test:browser:integration \
   && SINGLE_RUN=true yarn test:node:integration
