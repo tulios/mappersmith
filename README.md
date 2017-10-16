@@ -17,6 +17,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     1. [Basic Auth](#basic-auth)
     1. [Timeout](#timeout)
     1. [Alternative host](#alternative-host)
+    1. [Binary data](#binary-data)
   1. [Promises](#promises)
   1. [Response object](#response-object)
   1. [Middlewares](#middlewares)
@@ -263,6 +264,20 @@ There are some cases where a resource method resides in another host, in those c
 // ...
 
 client.User.all() // http://old-api.com/users
+```
+
+### <a name="binary-data"></a> Binary data
+
+If the data being fetched is in binary form, such as a PDF, you may add the `binary` key, and set it to true. The response data will then be a [Buffer](https://nodejs.org/api/buffer.html) in NodeJS, and a [Blob](https://developer.mozilla.org/sv-SE/docs/Web/API/Blob) in the browser.
+
+```javascript
+
+// ...
+{
+  report: { path: '/report.pdf', binary: true }
+}
+// ...
+
 ```
 
 ## <a name="promises"></a> Promises
@@ -813,7 +828,7 @@ yarn test:node
 ### Running integration tests:
 
 ```sh
-node spec/integration/server.js &
+yarn integration-server &
 yarn test:browser:integration
 yarn test:node:integration
 ```

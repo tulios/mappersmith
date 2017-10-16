@@ -102,7 +102,7 @@ XHR.prototype = Gateway.extends({
 
   createResponse (xmlHttpRequest) {
     const status = xmlHttpRequest.status
-    const data = xmlHttpRequest.responseText
+    const data = this.request.isBinary() ? xmlHttpRequest.response : xmlHttpRequest.responseText
     const responseHeaders = parseResponseHeaders(xmlHttpRequest.getAllResponseHeaders())
     return new Response(
       this.request,
@@ -131,6 +131,9 @@ XHR.prototype = Gateway.extends({
   createXHR () {
     const xmlHttpRequest = new XMLHttpRequest() // eslint-disable-line no-undef
     this.configureCallbacks(xmlHttpRequest)
+    if (this.request.isBinary()) {
+      xmlHttpRequest.responseType = 'blob'
+    }
     return xmlHttpRequest
   }
 })

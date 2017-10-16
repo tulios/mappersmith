@@ -82,7 +82,11 @@ HTTP.prototype = Gateway.extends({
 
   onResponse (httpResponse) {
     const rawData = []
-    httpResponse.setEncoding('utf8')
+
+    if (!this.request.isBinary()) {
+      httpResponse.setEncoding('utf8')
+    }
+
     httpResponse
       .on('data', (chunk) => rawData.push(chunk))
       .on('end', () => {
@@ -106,7 +110,7 @@ HTTP.prototype = Gateway.extends({
     return new Response(
       this.request,
       httpResponse.statusCode,
-      rawData.join(''),
+      this.request.isBinary() ? Buffer.concat(rawData) : rawData.join(''),
       httpResponse.headers
     )
   }

@@ -10,6 +10,7 @@
   ],
   "main": "index.js",
   "scripts": {
+    "integration-server": "node spec/integration/server.js",
     "test:browser": "./node_modules/.bin/jest --config jestSetup/configs/config.web.json",
     "test:browser:integration": "npm run build:node && NODE_ENV=test ./node_modules/.bin/karma start spec/integration/browser/karma.conf.js",
     "test:browser:watch": "./node_modules/.bin/jest --config jestSetup/configs/config.web.json --watchAll",
@@ -67,6 +68,7 @@
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.5.2",
     "jest": "^20.0.4",
+    "js-md5": "^0.6.1",
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.0",
