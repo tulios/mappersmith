@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.9.0
+
+  - Add support to binary payloads #64
+  - Switch tests to chrome-headeless #63
+
 ## 2.8.0
 
   - Mask auth password in the Response object #60
