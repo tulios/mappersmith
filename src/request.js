@@ -163,6 +163,15 @@ Request.prototype = {
     extras.timeout && (requestParams[timeoutKey] = extras.timeout)
 
     return new Request(this.methodDescriptor, requestParams)
+  },
+
+  /**
+   * Identify the request expecting a binary response
+   *
+   * @return {Boolean}
+   */
+  isBinary () {
+    return this.methodDescriptor.binary
   }
 }
 

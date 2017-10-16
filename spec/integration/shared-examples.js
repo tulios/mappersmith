@@ -14,6 +14,8 @@ import {
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 import RetryMiddleware, { setRetryConfigs } from 'src/middlewares/retry'
 
+import md5 from 'js-md5'
+
 export default function IntegrationTestsForGateway (gateway, params, extraTests) {
   let successLogBuffer,
     errorLogBuffer,
@@ -72,6 +74,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
       expect(response.status()).toEqual(200)
       expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiPlainText' }))
       expect(response.data()).toEqual(apiResponses.apiPlainText)
+
       done()
     })
     .catch((response) => {
@@ -112,6 +115,19 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
           'x-raw-body': JSON.stringify({ name: 'test2' })
         }))
         expect(response.data()).toEqual(apiResponses.apiPicturesAdd)
+        done()
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
+    })
+  })
+
+  describe('with raw binary', () => {
+    it('GET /api/binary.pdf', (done) => {
+      Client.Binary.get().then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(md5(response.data())).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
         done()
       })
       .catch((response) => {

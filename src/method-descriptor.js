@@ -17,6 +17,7 @@ export default function MethodDescriptor (obj) {
   this.method = obj.method || 'get'
   this.headers = obj.headers
   this.params = obj.params
+  this.binary = obj.binary || false
 
   this.bodyAttr = obj.bodyAttr || 'body'
   this.headersAttr = obj.headersAttr || 'headers'

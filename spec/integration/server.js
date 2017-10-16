@@ -1,6 +1,8 @@
 var express = require('express')
 var bodyParser = require('body-parser')
 var multer = require('multer')
+var path = require('path')
+var fs = require('fs')
 var upload = multer({ storage: multer.memoryStorage() })
 
 var app = express()
@@ -87,6 +89,11 @@ app.get('/api/timeout.json', function (req, res) {
   setTimeout(function () {
     res.send(responses.apiTimeout)
   }, waitTime)
+})
+
+app.get('/api/binary.pdf', function (req, res) {
+  var pdf = fs.readFileSync(path.join(__dirname, './support/fixture/hello_world.pdf'))
+  res.send(pdf)
 })
 
 app.listen(9090, function () {

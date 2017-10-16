@@ -2979,6 +2979,10 @@ jest@^20.0.4:
   dependencies:
     jest-cli "^20.0.4"
 
+js-md5@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.npmjs.org/js-md5/-/js-md5-0.6.1.tgz#7765ad6b4be503b6493a04437d40cffd262195f5"
+
 js-tokens@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"

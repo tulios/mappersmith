@@ -25,6 +25,9 @@ export default function createManifest (host = null, middlewares = []) {
       },
       Timeout: {
         get: { path: '/api/timeout.json' }
+      },
+      Binary: {
+        get: { path: '/api/binary.pdf', binary: true }
       }
     },
     middlewares: [LogMiddleware].concat(middlewares)
