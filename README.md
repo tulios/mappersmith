@@ -828,7 +828,7 @@ yarn test:node
 ### Running integration tests:
 
 ```sh
-node spec/integration/server.js &
+yarn integration-server &
 yarn test:browser:integration
 yarn test:node:integration
 ```

@@ -13,7 +13,7 @@ addons:
 install:
   - yarn install
 script:
-  - node spec/integration/server.js &
+  - npm run integration-server &
   - env
   - npm run lint
   - npm run test
