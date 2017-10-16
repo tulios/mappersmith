@@ -82,6 +82,7 @@ HTTP.prototype = Gateway.extends({
 
   onResponse (httpResponse) {
     const rawData = []
+
     if (!this.request.isBinary()) {
       httpResponse.setEncoding('utf8')
     }

@@ -166,7 +166,7 @@ Request.prototype = {
   },
 
   /**
-   * Identify the request expecting a binary response
+   * Is the request expecting a binary response?
    *
    * @return {Boolean}
    */

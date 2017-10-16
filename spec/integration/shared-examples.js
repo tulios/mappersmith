@@ -72,7 +72,6 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
       expect(response.status()).toEqual(200)
       expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiPlainText' }))
       expect(response.data()).toEqual(apiResponses.apiPlainText)
-
       done()
     })
     .catch((response) => {
