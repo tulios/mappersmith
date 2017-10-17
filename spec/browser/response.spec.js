@@ -26,6 +26,19 @@ describe('Response', () => {
     responseHeaders = {}
   })
 
+  describe('.constructor', () => {
+    beforeEach(() => {
+      requestParams = { auth: { username: 'bob', password: 'bob' } }
+      request = new Request(methodDescriptor, requestParams)
+    })
+
+    it('changing the auth params does not mutate the original request', () => {
+      const newResponse = new Response(request, responseStatus, responseData, responseHeaders)
+      expect(newResponse.originalRequest.requestParams.auth.password).toEqual('***')
+      expect(request.requestParams.auth.password).toEqual('bob')
+    })
+  })
+
   describe('#request', () => {
     it('returns the original request', () => {
       expect(createResponse().request()).toEqual(request)

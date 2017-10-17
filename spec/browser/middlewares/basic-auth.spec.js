@@ -17,6 +17,12 @@ describe('Middleware / BasicAuth', () => {
     expect(newRequest.auth()).toEqual(authData)
   })
 
+  it('changing the request params does not mutate the configuration', () => {
+    const newRequest = middleware.request(request)
+    newRequest.requestParams.auth.password = 'foo'
+    expect(authData.password).toEqual('bob')
+  })
+
   describe('when the auth property is explicitly defined', () => {
     it('keeps the original auth data', () => {
       const authData2 = { username: 'bob', password: 'bill' }
