@@ -9,9 +9,12 @@ import { lowerCaseObjectKeys, assign } from './utils'
  */
 function Response (originalRequest, responseStatus, responseData, responseHeaders) {
   if (originalRequest.requestParams && originalRequest.requestParams.auth) {
-    assign(originalRequest.requestParams.auth, { password: '***' })
+    const maskedAuth = assign({}, originalRequest.requestParams.auth, { password: '***' })
+    this.originalRequest = originalRequest.enhance({ auth: maskedAuth })
+  } else {
+    this.originalRequest = originalRequest
   }
-  this.originalRequest = originalRequest
+
   this.responseStatus = responseStatus
   this.responseData = responseData !== undefined ? responseData : null
   this.responseHeaders = responseHeaders || {}

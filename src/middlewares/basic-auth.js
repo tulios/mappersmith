@@ -1,3 +1,5 @@
+import { assign } from '../utils'
+
 /**
  * Automatically configure your requests with basic auth
  *
@@ -15,7 +17,7 @@ const BasicAuthMiddleware = (authConfig) => () => ({
   request (request) {
     const auth = request.auth()
     return !auth // Keep the override
-      ? request.enhance({ auth: authConfig })
+      ? request.enhance({ auth: assign({}, authConfig) })
       : request
   }
 })

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.9.1
+
+  - Fix auth bug #65
+
 ## 2.9.0
 
   - Add support to binary payloads #64
