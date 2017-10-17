@@ -2,7 +2,7 @@
 
 ## 2.9.1
 
-  - Fix auth bug #65
+  - bugfix: Auth mask was mutating the auth config #65
 
 ## 2.9.0
 
