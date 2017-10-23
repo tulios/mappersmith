@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.9.2
+
+  - bugfix: Fix param matchers for mockClient
+
 ## 2.9.1
 
   - bugfix: Auth mask was mutating the auth config #65
@@ -7,7 +11,7 @@
 ## 2.9.0
 
   - Add support to binary payloads #64
-  - Switch tests to chrome-headeless #63
+  - Switch tests to chrome-headless #63
 
 ## 2.8.0
 
@@ -19,7 +23,7 @@
 
 ## 2.6.1
 
-  - bufix: HTTP Gateway was calculating `content-length` wrongly #59
+  - bugfix: HTTP Gateway was calculating `content-length` wrongly #59
 
 ## 2.6.0
 
