@@ -603,7 +603,7 @@ mockClient(client)
   // ...
 ```
 
-It's possible to use a match function to assert the body, example:
+It's possible to use a match function to assert params and body, example:
 
 ```javascript
 import { m } from 'mappersmith/test'
@@ -611,6 +611,7 @@ import { m } from 'mappersmith/test'
 mockClient(client)
   .with({
     id: 'abc',
+    name: m.stringContaining('john'),
     headers: { 'x-special': 'value'},
     body: m.stringMatching(/token=[^&]+&other=true$/)
   })
@@ -718,7 +719,7 @@ console.log(mock.calls())
 
 #### Match functions
 
-`mockClient` and `mockRequest` accept a match function for body, the available Built-in match functions are:
+`mockClient` and `mockRequest` accept match functions, the available built-in match functions are:
 
 ```javascript
 import { m } from 'mappersmith/test'
@@ -738,6 +739,10 @@ mockClient(client)
     body: (body) => body === 'something'
   })
 ```
+
+__Note__:  
+`mockClient` only accepts match functions for __body__ and __params__  
+`mockRequest` only accepts match functions for __body__ and __url__  
 
 ## <a name="gateways"></a> Gateways
 
