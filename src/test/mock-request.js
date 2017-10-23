@@ -67,7 +67,7 @@ MockRequest.prototype = {
       : this.body === toQueryString(request.body())
 
     const urlMatch = this.urlFunction
-      ? this.url(request.url())
+      ? this.url(request.url(), request.params())
       : this.url === request.url()
 
     return this.method === request.method() && urlMatch && bodyMatch

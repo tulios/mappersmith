@@ -173,6 +173,58 @@ describe('Test lib / mock resources', () => {
     })
   })
 
+  it('accepts a matcher function for path parameters', (done) => {
+    const id = 'match'
+    mockClient(client)
+      .resource('User')
+      .method('byId')
+      .with({ id: (value) => value === id })
+
+    client.User.byId({ id }).then((response) => {
+      expect(response.request().method()).toEqual('get')
+      expect(response.status()).toEqual(200)
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+
+    client.User.byId({ id: 'not_match' }).then((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`Expected this request to fail: ${error}`)
+    })
+    .catch((response) => {
+      done()
+    })
+  })
+
+  it('accepts a matcher function for query parameters', (done) => {
+    const query = 'match'
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .with({ q: (value) => value === query })
+
+    client.User.all({ q: query }).then((response) => {
+      expect(response.request().method()).toEqual('get')
+      expect(response.status()).toEqual(200)
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+
+    client.User.all({ q: 'not_match' }).then((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`Expected this request to fail: ${error}`)
+    })
+    .catch((response) => {
+      done()
+    })
+  })
+
   describe('when client is using middlewares', () => {
     let params
 
