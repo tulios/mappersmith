@@ -10,6 +10,7 @@ import XHR from 'src/gateway/xhr'
 import Fetch from 'src/gateway/fetch'
 import forge, { configs } from 'src/index'
 import fileUploadSpec from './file-upload'
+import csrfSpec from './csrf'
 
 configs.fetch = window.fetch
 
@@ -46,6 +47,12 @@ describe('integration', () => {
           done.fail(`test failed with promise error: ${errorMessage(response)}`)
         })
       })
+    })
+  })
+
+  describe('CSRF', () => {
+    integrationTestsForGateway(Fetch, { host: '/proxy' }, (gateway, params) => {
+      csrfSpec(forge(createManifest(params.host), gateway))
     })
   })
 })

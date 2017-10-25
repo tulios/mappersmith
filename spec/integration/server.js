@@ -8,6 +8,8 @@ var upload = multer({ storage: multer.memoryStorage() })
 var app = express()
 var responses = require('./support/responses')
 
+var CSRF_TOKEN = 'qwerty'
+
 function extractRawBody (req, res, buf) {
   req.rawBody = buf.toString('utf-8')
 }
@@ -94,6 +96,17 @@ app.get('/api/timeout.json', function (req, res) {
 app.get('/api/binary.pdf', function (req, res) {
   var pdf = fs.readFileSync(path.join(__dirname, './support/fixture/hello_world.pdf'))
   res.send(pdf)
+})
+
+app.get('/api/csrf', function (req, res) {
+  res.cookie('csrfToken', CSRF_TOKEN)
+  res.sendStatus(200)
+})
+
+app.get('/api/csrf/test', function (req, res) {
+  var csrf = req.headers['x-csrf-token']
+  res.cookie('csrfToken', CSRF_TOKEN)
+  res.sendStatus(csrf === CSRF_TOKEN ? 200 : 403)
 })
 
 app.listen(9090, function () {

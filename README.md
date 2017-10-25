@@ -517,6 +517,22 @@ client.User.all({ body: { name: 'bob' } })
 // => headers: "X-Started-At=1492529128453;X-Ended-At=1492529128473;X-Duration=20"
 ```
 
+#### <a name="csrf-middleware"></a> Csrf
+
+Automatically configure your requests by adding a header with the value of a cookie - If it exists.
+The name of the cookie (defaults to "csrfToken") and the header (defaults to "x-csrf-token") can be set as following;
+
+```javascript
+import Csrf from 'mappersmith/middlewares/csrf'
+
+const client = forge({
+  middlewares: [ Csrf('csrfToken', 'x-csrf-token') ],
+  /* ... */
+})
+
+client.User.all()
+```
+
 ## <a name="testing-mappersmith"></a> Testing Mappersmith
 
 Mappersmith plays nice with all test frameworks, the generated client is a plain javascript object and all the methods can be mocked without any problem. However, this experience can be greatly improved with the test library.
