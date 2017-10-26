@@ -253,4 +253,28 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
       })
     })
   })
+
+  describe('csrf middleware', () => {
+    it('adds x-csrf-token header with value of an existing csrfToken in document.cookie', (done) => {
+      if (typeof document === 'undefined') {
+        return done()
+      }
+      Client.Csrf.get().then((response) => {
+        expect(response.status()).toEqual(200)
+        if (document.cookie === '') {
+          return done()
+        }
+        Client.Csrf.test().then((response2) => {
+          expect(response2.status()).toEqual(200)
+          done()
+        })
+        .catch((response2) => {
+          done.fail(`test failed with promise error: ${errorMessage(response2)}`)
+        })
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
+    })
+  })
 }
