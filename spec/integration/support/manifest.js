@@ -1,4 +1,6 @@
 import LogMiddleware from 'src/middlewares/log'
+import CsrfMiddleware from 'src/middlewares/csrf'
+const Csrf = CsrfMiddleware('csrfToken', 'x-csrf-token')
 
 export default function createManifest (host = null, middlewares = []) {
   return {
@@ -28,8 +30,12 @@ export default function createManifest (host = null, middlewares = []) {
       },
       Binary: {
         get: { path: '/api/binary.pdf', binary: true }
+      },
+      Csrf: {
+        get: { path: '/api/csrf' },
+        test: { method: 'get', path: '/api/csrf/test' }
       }
     },
-    middlewares: [LogMiddleware].concat(middlewares)
+    middlewares: [LogMiddleware, Csrf].concat(middlewares)
   }
 }

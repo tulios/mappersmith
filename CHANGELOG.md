@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.10.0
+
+  - Adds CSRF middleware #68
+
 ## 2.9.2
 
   - bugfix: Fix param matchers for mockClient

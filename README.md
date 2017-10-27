@@ -517,6 +517,22 @@ client.User.all({ body: { name: 'bob' } })
 // => headers: "X-Started-At=1492529128453;X-Ended-At=1492529128473;X-Duration=20"
 ```
 
+#### <a name="csrf-middleware"></a> Csrf
+
+Automatically configure your requests by adding a header with the value of a cookie - If it exists.
+The name of the cookie (defaults to "csrfToken") and the header (defaults to "x-csrf-token") can be set as following;
+
+```javascript
+import Csrf from 'mappersmith/middlewares/csrf'
+
+const client = forge({
+  middlewares: [ Csrf('csrfToken', 'x-csrf-token') ],
+  /* ... */
+})
+
+client.User.all()
+```
+
 ## <a name="testing-mappersmith"></a> Testing Mappersmith
 
 Mappersmith plays nice with all test frameworks, the generated client is a plain javascript object and all the methods can be mocked without any problem. However, this experience can be greatly improved with the test library.
@@ -603,7 +619,7 @@ mockClient(client)
   // ...
 ```
 
-It's possible to use a match function to assert the body, example:
+It's possible to use a match function to assert params and body, example:
 
 ```javascript
 import { m } from 'mappersmith/test'
@@ -611,6 +627,7 @@ import { m } from 'mappersmith/test'
 mockClient(client)
   .with({
     id: 'abc',
+    name: m.stringContaining('john'),
     headers: { 'x-special': 'value'},
     body: m.stringMatching(/token=[^&]+&other=true$/)
   })
@@ -718,7 +735,7 @@ console.log(mock.calls())
 
 #### Match functions
 
-`mockClient` and `mockRequest` accept a match function for body, the available Built-in match functions are:
+`mockClient` and `mockRequest` accept match functions, the available built-in match functions are:
 
 ```javascript
 import { m } from 'mappersmith/test'
@@ -738,6 +755,10 @@ mockClient(client)
     body: (body) => body === 'something'
   })
 ```
+
+__Note__:  
+`mockClient` only accepts match functions for __body__ and __params__  
+`mockRequest` only accepts match functions for __body__ and __url__  
 
 ## <a name="gateways"></a> Gateways
 
