@@ -11,9 +11,9 @@ describe('Middleware / CSRF', () => {
   })
 
   it('adds a header if cookie is set in document.cookie', () => {
-    middleware = CsrfMiddleware('csrfToken', 'x-csrf-token')()
-    const token = 'xyz'
-    document.cookie = `csrfToken=${token}`
+    middleware = CsrfMiddleware()()
+    const token = 'eacb7710-3a75-49ab-a26a-cdffc5250f1c'
+    document.cookie = 'csrfToken=eacb7710-3a75-49ab-a26a-cdffc5250f1c; _ga=GAxx'
     const newRequest = middleware.request(request)
     expect(newRequest.headers()['x-csrf-token']).toEqual(token)
   })
@@ -22,12 +22,12 @@ describe('Middleware / CSRF', () => {
     beforeEach(() => {
       const data = {}
       data.attr = data
-      document.cookie = 'csrfToken='
       middleware = CsrfMiddleware('csrfToken', 'x-csrf-token')()
       request = new Request(methodDescriptor)
     })
 
     it('does not add "x-csrf-token"', () => {
+      document.cookie = 'csrfToken='
       const newRequest = middleware.request(request)
       expect(newRequest.headers()).toEqual({})
     })

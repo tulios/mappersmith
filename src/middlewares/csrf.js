@@ -7,12 +7,12 @@ const CsrfMiddleware = (cookieName = 'csrfToken', headerName = 'x-csrf-token') =
       return request
     }
 
-    const re = new RegExp(cookieName + '=')
-    const csrf = ((document.cookie || ''
-      .split(';')
-      .map(c => c.trim())
-      .filter(c => re.test(c))[0] || ''
-    ) || '').split('=')[1]
+    const getCookie = (cookieName) => {
+      const cookieString = new RegExp(cookieName + '[^;]+').exec((document || {}).cookie || '')
+      return cookieString ? decodeURIComponent(cookieString.toString().replace(/^[^=]+./, '')) : undefined
+    }
+
+    const csrf = getCookie(cookieName)
 
     return !csrf
       ? request
