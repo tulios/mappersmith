@@ -1,6 +1,11 @@
 # Changelog
 
+## 2.11.1
+
+  - Same content as `2.11.0`
+
 ## 2.11.0
+  __This version was removed from NPM because the build was corrupted__
 
   - Bugfix: fix CSRF middleware cookie parser #69
   - Add `uuid4` matcher to the test library
