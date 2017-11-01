@@ -1,14 +1,17 @@
 # Changelog
 
+## 2.11.2
+
+- Bugfix: fix CSRF middleware cookie parser #69
+- Add `uuid4` matcher to the test library
+
 ## 2.11.1
 
-  - Same content as `2.11.0`
+  __This version was removed from NPM because the test library wasn't included to the final bundle__
 
 ## 2.11.0
-  __This version was removed from NPM because the build was corrupted__
 
-  - Bugfix: fix CSRF middleware cookie parser #69
-  - Add `uuid4` matcher to the test library
+  __This version was removed from NPM because the test library wasn't included to the final bundle__
 
 ## 2.10.0
 
