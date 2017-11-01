@@ -743,6 +743,7 @@ import { m } from 'mappersmith/test'
 m.stringMatching(/something/) // accepts a regexp
 m.stringContaining('some-string') // accepts a string
 m.anything()
+m.uuid4()
 ```
 
 A match function is a function which returns a boolean, example:

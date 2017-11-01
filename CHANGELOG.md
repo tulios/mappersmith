@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.11.0
+
+  - Bugfix: fix CSRF middleware cookie parser #69
+  - Add `uuid4` matcher to the test library
+
 ## 2.10.0
 
   - Adds CSRF middleware #68
