@@ -116,6 +116,13 @@ export const m = {
     return (string) => stringIncludes(string, sample)
   },
 
+  uuid4: () => {
+    // NOTE: based on https://github.com/chriso/validator.js/blob/3443132beccddf06c3f0a5e88c1dd2ee6513b612/src/lib/isUUID.js
+    const uuid4Rx = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+
+    return string => uuid4Rx.test(string)
+  },
+
   anything: () => () => true
 }
 
