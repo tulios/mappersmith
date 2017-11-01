@@ -1,5 +1,5 @@
 import forge from 'src/index'
-import MockAssert from 'src/test/mock-assert'
+import MockAssert from 'src/mocks/mock-assert'
 import { getManifest } from 'spec/helper'
 
 import {

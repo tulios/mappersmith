@@ -1,5 +1,5 @@
-import MockRequest from './test/mock-request'
-import MockResource from './test/mock-resource'
+import MockRequest from './mocks/mock-request'
+import MockResource from './mocks/mock-resource'
 import MockGateway from './gateway/mock'
 import { configs } from './mappersmith'
 import { toQueryString } from './utils'
