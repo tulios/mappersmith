@@ -1,4 +1,5 @@
 var express = require('express')
+var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var multer = require('multer')
 var path = require('path')
@@ -14,6 +15,7 @@ function extractRawBody (req, res, buf) {
   req.rawBody = buf.toString('utf-8')
 }
 
+app.use(cookieParser())
 app.use(bodyParser.json({ verify: extractRawBody }))
 app.use(bodyParser.urlencoded({ extended: true, verify: extractRawBody }))
 
@@ -99,14 +101,15 @@ app.get('/api/binary.pdf', function (req, res) {
 })
 
 app.get('/api/csrf', function (req, res) {
-  res.cookie('csrfToken', CSRF_TOKEN)
+  res.cookie('csrfToken', CSRF_TOKEN, { httpOnly: false })
   res.sendStatus(200)
 })
 
 app.get('/api/csrf/test', function (req, res) {
-  var csrf = req.headers['x-csrf-token']
-  res.cookie('csrfToken', CSRF_TOKEN)
-  res.sendStatus(csrf === CSRF_TOKEN ? 200 : 403)
+  var csrfHeader = req.headers['x-csrf-token']
+  var csrfCookie = req.cookies['csrfToken']
+  res.cookie('csrfToken', CSRF_TOKEN, { httpOnly: false })
+  res.sendStatus(csrfHeader === csrfCookie ? 200 : 403)
 })
 
 app.listen(9090, function () {
