@@ -8,7 +8,7 @@ const CsrfMiddleware = (cookieName = 'csrfToken', headerName = 'x-csrf-token') =
     }
 
     const getCookie = (cookieName) => {
-      const cookieString = RegExp(cookieName + '[^;]+').exec((document || {}).cookie || '')
+      const cookieString = new RegExp(cookieName + '[^;]+').exec((document || {}).cookie || '')
       return cookieString ? decodeURIComponent(cookieString.toString().replace(/^[^=]+./, '')) : undefined
     }
 
