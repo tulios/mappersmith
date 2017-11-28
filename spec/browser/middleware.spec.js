@@ -11,7 +11,7 @@ import {
   getManifest
 } from 'spec/helper'
 
-describe('ClientBuilder middlewares', () => {
+describe('ClientBuilder middleware', () => {
   let manifest,
     gatewayInstance,
     gatewayClass,
@@ -31,14 +31,14 @@ describe('ClientBuilder middlewares', () => {
       return gatewayInstance
     })
 
-    manifest.middlewares = [ headerMiddleware ]
+    manifest.middleware = [ headerMiddleware ]
   })
 
   afterEach(() => resetCountMiddleware())
 
   it('receives an object with "resourceName" and "resourceMethod"', () => {
     const middleware = jest.fn()
-    manifest.middlewares = [ middleware ]
+    manifest.middleware = [ middleware ]
 
     createClient().User.byId({ id: 1 })
     expect(middleware).toHaveBeenCalledWith(expect.objectContaining({
@@ -52,7 +52,7 @@ describe('ClientBuilder middlewares', () => {
     const responsePhase = jest.fn(() => Promise.resolve())
 
     const middleware = () => ({ request: requestPhase, response: responsePhase })
-    manifest.middlewares = [ middleware ]
+    manifest.middleware = [ middleware ]
 
     createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
@@ -87,10 +87,10 @@ describe('ClientBuilder middlewares', () => {
       })
   })
 
-  it('calls all middlewares chainning the "next" function', (done) => {
+  it('calls all middleware chainning the "next" function', (done) => {
     responseValue = getCountMiddlewareCurrent()
 
-    manifest.middlewares = [
+    manifest.middleware = [
       countMiddleware,
       countMiddleware,
       countMiddleware,
@@ -110,7 +110,7 @@ describe('ClientBuilder middlewares', () => {
       })
   })
 
-  it('accepts middlewares with only one phase defined', (done) => {
+  it('accepts middleware with only one phase defined', (done) => {
     let m1RequestCalled = false
     let m2ResponseCalled = false
 
@@ -122,7 +122,7 @@ describe('ClientBuilder middlewares', () => {
       response: (next) => { m2ResponseCalled = true; return next() }
     })
 
-    manifest.middlewares = [ m1, m2 ]
+    manifest.middleware = [ m1, m2 ]
 
     createClient().User
       .byId({ id: 1 })
