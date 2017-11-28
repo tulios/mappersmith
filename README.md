@@ -361,7 +361,19 @@ client.User.all()
 // resourceMethod: 'all'
 ```
 
-### Built-in middlewares
+Finally, middleware can be defined globally, so new clients will automatically
+include the defined middleware:
+
+```javascript
+import forge, { configs } from 'mappersmith'
+
+configs.middleware = [MyMiddleware]
+
+// all clients defined from now on will automatically include MyMiddleware
+})
+```
+
+### Built-in middleware
 
 #### <a name="encode-json-middleware"></a> EncodeJson
 
