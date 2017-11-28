@@ -6,7 +6,7 @@ import { assign } from '../utils'
  * Example:
  * In your manifest:
  * {
- *   middlewares: [ BasicAuthMiddleware({ username: 'bob', password: 'bob' }) ]
+ *   middleware: [ BasicAuthMiddleware({ username: 'bob', password: 'bob' }) ]
  * }
  *
  * Making the call:

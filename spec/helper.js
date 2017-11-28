@@ -105,10 +105,10 @@ export const countMiddleware = () => ({
   }
 })
 
-export const getManifest = (middlewares = [], gatewayConfigs = null) => ({
+export const getManifest = (middleware = [], gatewayConfigs = null) => ({
   host: 'http://example.org',
   gatewayConfigs,
-  middlewares,
+  middleware,
   resources: {
     User: {
       all: { path: '/users' },

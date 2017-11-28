@@ -4,7 +4,7 @@
  * Example:
  * In your manifest:
  * {
- *   middlewares: [ TimeoutMiddleware(500) ]
+ *   middleware: [ TimeoutMiddleware(500) ]
  * }
  *
  * You can still override the default value:
