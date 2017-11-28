@@ -20,7 +20,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     1. [Binary data](#binary-data)
   1. [Promises](#promises)
   1. [Response object](#response-object)
-  1. [Middlewares](#middlewares)
+  1. [Middleware](#middleware)
   1. [Testing Mappersmith](#testing-mappersmith)
   1. [Gateways](#gateways)
 1. [Development](#development)
@@ -228,7 +228,7 @@ If `auth` is not possible as a special parameter for your API you can configure 
 client.User.all({ secret: { username: 'bob', password: 'bob' } })
 ```
 
-__NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#basic-auth-middleware), check the middlewares section below for more information.
+__NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#basic-auth-middleware), check the middleware section below for more information.
 
 ### <a name="timeout"></a> Timeout
 
@@ -250,7 +250,7 @@ If `timeout` is not possible as a special parameter for your API you can configu
 client.User.all({ maxWait: 500 })
 ```
 
-__NOTE__: A default timeout can be configured with the use of the [TimeoutMiddleware](#timeout-middleware), check the middlewares section below for more information.
+__NOTE__: A default timeout can be configured with the use of the [TimeoutMiddleware](#timeout-middleware), check the middleware section below for more information.
 
 ### <a name="alternative-host"></a> Alternative host
 
@@ -308,9 +308,9 @@ Mappersmith will provide an instance of its own `Response` object to the promise
 * `header(name)` - Returns the value of the header
 * `data()` - Returns the response data, if `Content-Type` is `application/json` it parses the response and returns an object
 
-## <a name="middlewares"></a> Middlewares
+## <a name="middleware"></a> Middleware
 
-The behavior between your client and the API can be customized with middlewares. A middleware is a function which returns an object with two methods: request and response.
+The behavior between your client and the API can be customized with middleware. A middleware is a function which returns an object with two methods: request and response.
 
 The `request` method receives an instance of the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
 
@@ -336,11 +336,11 @@ const MyMiddleware = () => ({
 })
 ```
 
-The middleware can be configured using the key `middlewares` in the manifest, example:
+The middleware can be configured using the key `middleware` in the manifest, example:
 
 ```javascript
 const client = forge({
-  middlewares: [ MyMiddleware ],
+  middleware: [ MyMiddleware ],
   resources: {
     User: {
       all: { path: '/users' }
@@ -361,17 +361,29 @@ client.User.all()
 // resourceMethod: 'all'
 ```
 
-### Built-in middlewares
+Finally, middleware can be defined globally, so new clients will automatically
+include the defined middleware:
+
+```javascript
+import forge, { configs } from 'mappersmith'
+
+configs.middleware = [MyMiddleware]
+
+// all clients defined from now on will automatically include MyMiddleware
+})
+```
+
+### Built-in middleware
 
 #### <a name="encode-json-middleware"></a> EncodeJson
 
 Automatically encode your objects into JSON
 
 ```javascript
-import EncodeJson from 'mappersmith/middlewares/encode-json'
+import EncodeJson from 'mappersmith/middleware/encode-json'
 
 const client = forge({
-  middlewares: [ EncodeJson ],
+  middleware: [ EncodeJson ],
   /* ... */
 })
 
@@ -385,7 +397,7 @@ client.User.all({ body: { name: 'bob' } })
 Provides a catch-all function for all requests. If the catch-all function returns `true` it prevents the original promise to continue.
 
 ```javascript
-import GlobalErrorHandler, { setErrorHandler } from 'mappersmith/middlewares/global-error-handler'
+import GlobalErrorHandler, { setErrorHandler } from 'mappersmith/middleware/global-error-handler'
 
 setErrorHandler((response) => {
   console.log('global error handler')
@@ -393,7 +405,7 @@ setErrorHandler((response) => {
 })
 
 const client = forge({
-  middlewares: [ GlobalErrorHandler ],
+  middleware: [ GlobalErrorHandler ],
   /* ... */
 })
 
@@ -416,10 +428,10 @@ client.User
 This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response.
 
 ```javascript
-import Retry from 'mappersmith/middlewares/retry'
+import Retry from 'mappersmith/middleware/retry'
 
 const client = forge({
-  middlewares: [ Retry ],
+  middleware: [ Retry ],
   /* ... */
 })
 ```
@@ -427,7 +439,7 @@ const client = forge({
 It's possible to configure the header names and parameters used in the calculation.
 
 ```javascript
-import { setRetryConfigs } from 'mappersmith/middlewares/retry'
+import { setRetryConfigs } from 'mappersmith/middleware/retry'
 
 // Using the default values as an example
 setRetryConfigs({
@@ -446,11 +458,11 @@ setRetryConfigs({
 Automatically configure your requests with basic auth
 
 ```javascript
-import BasicAuthMiddleware from 'mappersmith/middlewares/basic-auth'
+import BasicAuthMiddleware from 'mappersmith/middleware/basic-auth'
 const BasicAuth = BasicAuthMiddleware({ username: 'bob', password: 'bob' })
 
 const client = forge({
-  middlewares: [ BasicAuth ],
+  middleware: [ BasicAuth ],
   /* ... */
 })
 
@@ -470,11 +482,11 @@ client.User.all({ auth: { username: 'bill', password: 'bill' } })
 Automatically configure your requests with a default timeout
 
 ```javascript
-import TimeoutMiddleware from 'mappersmith/middlewares/timeout'
+import TimeoutMiddleware from 'mappersmith/middleware/timeout'
 const Timeout = TimeoutMiddleware(500)
 
 const client = forge({
-  middlewares: [ Timeout ],
+  middleware: [ Timeout ],
   /* ... */
 })
 
@@ -493,10 +505,10 @@ client.User.all({ timeout: 100 })
 Log all requests and responses. Might be useful in development mode.
 
 ```javascript
-import Log from 'mappersmith/middlewares/log'
+import Log from 'mappersmith/middleware/log'
 
 const client = forge({
-  middlewares: [ Log ],
+  middleware: [ Log ],
   /* ... */
 })
 ```
@@ -506,10 +518,10 @@ const client = forge({
 Automatically adds `X-Started-At`, `X-Ended-At` and `X-Duration` headers to the response.
 
 ```javascript
-import Duration from 'mappersmith/middlewares/duration'
+import Duration from 'mappersmith/middleware/duration'
 
 const client = forge({
-  middlewares: [ Duration ],
+  middleware: [ Duration ],
   /* ... */
 })
 
@@ -523,10 +535,10 @@ Automatically configure your requests by adding a header with the value of a coo
 The name of the cookie (defaults to "csrfToken") and the header (defaults to "x-csrf-token") can be set as following;
 
 ```javascript
-import Csrf from 'mappersmith/middlewares/csrf'
+import Csrf from 'mappersmith/middleware/csrf'
 
 const client = forge({
-  middlewares: [ Csrf('csrfToken', 'x-csrf-token') ],
+  middleware: [ Csrf('csrfToken', 'x-csrf-token') ],
   /* ... */
 })
 
@@ -757,9 +769,9 @@ mockClient(client)
   })
 ```
 
-__Note__:  
-`mockClient` only accepts match functions for __body__ and __params__  
-`mockRequest` only accepts match functions for __body__ and __url__  
+__Note__:
+`mockClient` only accepts match functions for __body__ and __params__
+`mockRequest` only accepts match functions for __body__ and __url__
 
 ## <a name="gateways"></a> Gateways
 
