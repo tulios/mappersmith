@@ -7,13 +7,15 @@ import { assign } from './utils'
  *   @param {String} obj.host
  *   @param {Object} obj.gatewayConfigs - default: base values from mappersmith
  *   @param {Object} obj.resources - default: {}
- *   @param {Array}  obj.middlewares - default: []
+ *   @param {Array}  obj.middleware or obj.middlewares - default: []
  */
-function Manifest (obj, defaultGatewayConfigs = null) {
+function Manifest (obj, defaultGatewayConfigs = null, defaultMiddleware = []) {
   this.host = obj.host
   this.gatewayConfigs = assign({}, defaultGatewayConfigs, obj.gatewayConfigs)
   this.resources = obj.resources || {}
-  this.middlewares = obj.middlewares || []
+
+  // TODO: deprecate obj.middlewares in favor of obj.middleware
+  this.middleware = [...(obj.middleware || obj.middlewares || []), ...defaultMiddleware]
 }
 
 Manifest.prototype = {
@@ -31,7 +33,7 @@ Manifest.prototype = {
   eachMethod (resourceName, callback) {
     return Object
       .keys(this.resources[resourceName])
-      .map((name) => callback(name))
+      .map(callback)
   },
 
   createMethodDescriptor (resourceName, methodName) {
@@ -57,14 +59,13 @@ Manifest.prototype = {
    *
    * @return {Array<Object>}
    */
-  createMiddlewares (args = {}) {
+  createMiddleware (args = {}) {
     const createInstance = (middlewareFactory) => assign({
       request: (request) => request,
       response: (next) => next()
     }, middlewareFactory(args))
 
-    return this.middlewares
-      .map((middleware) => createInstance(middleware))
+    return this.middleware.map(createInstance)
   }
 }
 
