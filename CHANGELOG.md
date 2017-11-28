@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.12.0
+
+  - Renames middlewares folder to middleware, but keep importable files
+  - Add globally defined middleware
+
 ## 2.11.2
 
 - Bugfix: fix CSRF middleware cookie parser #69
