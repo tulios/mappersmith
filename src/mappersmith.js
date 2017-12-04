@@ -1,6 +1,8 @@
 import ClientBuilder from './client-builder'
+import { assign } from './utils'
 
 export const configs = {
+  context: {},
   middleware: [],
   Promise: typeof Promise === 'function' ? Promise : null,
   fetch: typeof fetch === 'function' ? fetch : null, // eslint-disable-line no-undef
@@ -69,9 +71,16 @@ export const configs = {
 }
 
 /**
+ * @param {Object} context
+ */
+export const setContext = (context) => {
+  configs.context = assign(configs.context, context)
+}
+
+/**
  * @param {Object} manifest
  */
 export default function forge (manifest) {
   const GatewayClassFactory = () => configs.gateway
-  return new ClientBuilder(manifest, GatewayClassFactory, configs.gatewayConfigs, configs.middleware).build()
+  return new ClientBuilder(manifest, GatewayClassFactory, configs).build()
 }

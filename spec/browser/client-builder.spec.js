@@ -6,7 +6,7 @@ import { getManifest } from 'spec/helper'
 describe('ClientBuilder', () => {
   let manifest,
     gatewayClass,
-    defaultGatewayConfigs,
+    configs,
     gatewayInstance,
     GatewayClassFactory,
     clientBuilder,
@@ -17,10 +17,16 @@ describe('ClientBuilder', () => {
 
     gatewayInstance = { call: jest.fn() }
     gatewayClass = jest.fn(() => gatewayInstance)
-    defaultGatewayConfigs = { gateway: 'configs' }
+    configs = {
+      gatewayConfigs: {
+        gateway: 'configs'
+      },
+      middleware: [],
+      context: {}
+    }
 
     GatewayClassFactory = () => gatewayClass
-    clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, defaultGatewayConfigs)
+    clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, configs)
     client = clientBuilder.build()
   })
 
@@ -38,7 +44,7 @@ describe('ClientBuilder', () => {
   it('accepts custom gatewayConfigs', () => {
     const customGatewayConfigs = { custom: 'configs' }
     manifest = getManifest([], customGatewayConfigs)
-    clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, defaultGatewayConfigs)
+    clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, configs)
     client = clientBuilder.build()
 
     gatewayInstance.call.mockReturnValue('Promise')
@@ -55,7 +61,7 @@ describe('ClientBuilder', () => {
     it('calls the gateway with the correct request', () => {
       gatewayInstance.call.mockReturnValue('Promise')
       expect(client.User.byId({ id: 1 })).toEqual('Promise')
-      expect(gatewayClass).toHaveBeenCalledWith(expect.any(Request), defaultGatewayConfigs)
+      expect(gatewayClass).toHaveBeenCalledWith(expect.any(Request), configs.gatewayConfigs)
       expect(gatewayInstance.call).toHaveBeenCalled()
 
       const request = gatewayClass.mock.calls[0][0]
@@ -84,7 +90,7 @@ describe('ClientBuilder', () => {
   describe('when a resource path is not defined', () => {
     it('raises error', () => {
       manifest = { resources: { User: { all: { } } } }
-      expect(() => new ClientBuilder(manifest, gatewayClass).build())
+      expect(() => new ClientBuilder(manifest, gatewayClass, configs).build())
         .toThrowError('[Mappersmith] path is undefined for resource "User" method "all"')
     })
   })
