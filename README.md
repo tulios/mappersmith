@@ -449,7 +449,8 @@ setRetryConfigs({
   initialRetryTimeInSecs: 0.1,
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
-  retries: 5 // max retries
+  retries: 5, // max retries
+  validateRetry: () => true // a function that returns true if the request should be retried
 })
 ```
 
