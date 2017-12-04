@@ -7,7 +7,8 @@ describe('Middleware / RetryMiddleware', () => {
   let middleware,
     retries,
     headerRetryCount,
-    headerRetryTime
+    headerRetryTime,
+    validateRetry
 
   const newRequest = (method) => new Request(
     new MethodDescriptor({ host: 'example.com', path: '/', method }),
@@ -24,8 +25,9 @@ describe('Middleware / RetryMiddleware', () => {
     retries = 3
     headerRetryCount = 'X-Mappersmith-Retry-Count'
     headerRetryTime = 'X-Mappersmith-Retry-Time'
+    validateRetry = (response) => response.responseStatus !== 401
 
-    setRetryConfigs({ retries, headerRetryCount, headerRetryTime })
+    setRetryConfigs({ retries, headerRetryCount, headerRetryTime, validateRetry })
     middleware = RetryMiddleware()
   })
 
@@ -100,6 +102,22 @@ describe('Middleware / RetryMiddleware', () => {
         .catch((response) => {
           expect(response.header(headerRetryCount)).toEqual(retries)
           expect(response.header(headerRetryTime)).toEqual(expect.any(Number))
+          done()
+        })
+    })
+  })
+
+  describe('when the call fails and the retry validation fails', () => {
+    it('rejects the promise with a retryCount header of zero', (done) => {
+      const request = newRequest('get')
+      const response = newResponse(middleware.request(request), 401)
+      const next = () => Promise.reject(response)
+
+      middleware
+        .response(next)
+        .then(() => done.fail('This test should reject the promise'))
+        .catch((response) => {
+          expect(response.header(headerRetryCount)).toEqual(0)
           done()
         })
     })
