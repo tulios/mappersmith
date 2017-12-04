@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.13.0
+
+  - Add a retry validation callback to the Retry Middleware #72
+
 ## 2.12.0
 
   - Renames middlewares folder to middleware, but keep importable files
