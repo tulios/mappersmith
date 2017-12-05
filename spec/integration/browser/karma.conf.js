@@ -4,7 +4,7 @@ module.exports = function (config) {
   process.env.CHROME_BIN = require('puppeteer').executablePath()
 
   config.set({
-    browsers: ['ChromeHeadless'],
+    browsers: process.platform === 'win32' ? ['IE'] : ['ChromeHeadless'],
     frameworks: ['jasmine'],
     reporters: ['spec'],
 
@@ -13,6 +13,7 @@ module.exports = function (config) {
       'karma-jasmine',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
+      'karma-ie-launcher',
       'karma-spec-reporter'
     ],
 
