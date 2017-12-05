@@ -6,24 +6,35 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
 
 ## Table of Contents
 
-1. [Installation](#installation)
-1. [Usage](#usage)
-  1. [Commonjs](#commonjs)
-  1. [Configuring my resources](#resource-configuration)
-    1. [Parameters](#parameters)
-    1. [Default parameters](#default-parameters)
-    1. [Body](#body)
-    1. [Headers](#headers)
-    1. [Basic Auth](#basic-auth)
-    1. [Timeout](#timeout)
-    1. [Alternative host](#alternative-host)
-    1. [Binary data](#binary-data)
-  1. [Promises](#promises)
-  1. [Response object](#response-object)
-  1. [Middleware](#middleware)
-  1. [Testing Mappersmith](#testing-mappersmith)
-  1. [Gateways](#gateways)
-1. [Development](#development)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Commonjs](#commonjs)
+  - [Configuring my resources](#resource-configuration)
+    - [Parameters](#parameters)
+    - [Default parameters](#default-parameters)
+    - [Body](#body)
+    - [Headers](#headers)
+    - [Basic Auth](#basic-auth)
+    - [Timeout](#timeout)
+    - [Alternative host](#alternative-host)
+    - [Binary data](#binary-data)
+  - [Promises](#promises)
+  - [Response object](#response-object)
+  - [Middleware](#middleware)
+    - [Global middleware](#global-middleware)
+    - [Context](#context)
+    - [Built-in middleware](#built-in-middleware)
+      - [BasicAuth](#middleware-basic-auth)
+      - [CSRF](#middleware-csrf)
+      - [Duration](#middleware-duration)
+      - [EncodeJSON](#middleware-encode-json)
+      - [GlobalErrorHandler](#middleware-global-error-handler)
+      - [Log](#middleware-log)
+      - [Retry](#middleware-retry)
+      - [Timeout](#middleware-timeout)
+  - [Testing Mappersmith](#testing-mappersmith)
+  - [Gateways](#gateways)
+- [Development](#development)
 
 ## <a name="installation"></a> Installation
 
@@ -61,6 +72,7 @@ To create a client for your API you will need to provide a simple manifest. If y
 import forge from 'mappersmith'
 
 const github = forge({
+  clientId: 'github',
   host: 'https://status.github.com',
   resources: {
     Status: {
@@ -340,6 +352,7 @@ The middleware can be configured using the key `middleware` in the manifest, exa
 
 ```javascript
 const client = forge({
+  clientId: 'myClient',
   middleware: [ MyMiddleware ],
   resources: {
     User: {
@@ -349,33 +362,146 @@ const client = forge({
 })
 ```
 
-It can, optionally, receive the `resourceName` and `resourceMethod`, example:
+It can, optionally, receive `resourceName`, `resourceMethod`, [#context](`context`)
+and `clientId`. Example:
 
 ```javascript
-const MyMiddleware = ({ resourceName, resourceMethod }) => ({
+const MyMiddleware = ({ resourceName, resourceMethod, context, clientId }) => ({
   /* ... */
 })
 
 client.User.all()
 // resourceName: 'User'
 // resourceMethod: 'all'
+// clientId: 'myClient'
+// context: {}
 ```
 
-Finally, middleware can be defined globally, so new clients will automatically
+### <a name="global-middleware"></a> Global middleware
+
+Middleware can also be defined globally, so new clients will automatically
 include the defined middleware:
 
 ```javascript
 import forge, { configs } from 'mappersmith'
 
 configs.middleware = [MyMiddleware]
-
 // all clients defined from now on will automatically include MyMiddleware
-})
 ```
+
+### <a name="context"></a> Context
+
+Sometimes you may need to set data to be available to all your client's middleware. In this
+case you can use the `setContext` helper, like so:
+
+```javascript
+import { setContext } from 'mappersmith'
+
+const MyMiddleware = ({ context }) => ({
+  /* ... */
+})
+
+setContext({ some: 'data'})
+
+client.User.all()
+// context: { some: 'data' }
+```
+
+This is specially useful when using mappermith coupled with back-end services.
+For instance you could define a globally available correlation id middleware
+like this:
+
+```javascript
+import forge, { configs, setContext } from 'mappersmith'
+import express from 'express'
+
+const CorrelationIdMiddleware = ({ context }) => ({
+  request(request) {
+    return request.enhance({
+      headers: {
+        'correlation-id': context.correlationId
+      }
+    })
+  }
+})
+
+configs.middleware = [CorrelationIdMiddleware]
+
+const api = forge({ ... })
+
+const app = express()
+app.use((req, res, next) => {
+  setContext({
+    correlationId: req.headers['correlation-id']
+  })
+})
+
+// Then, when calling `api.User.all()` in any handler it will include the
+// `correlation-id` header automatically.
+```
+
+Note that setContext will merge the object provided with the current context
+instead of replacing it.
 
 ### Built-in middleware
 
-#### <a name="encode-json-middleware"></a> EncodeJson
+#### <a name="middleware-basic-auth"></a> BasicAuth
+
+Automatically configure your requests with basic auth
+
+```javascript
+import BasicAuthMiddleware from 'mappersmith/middleware/basic-auth'
+const BasicAuth = BasicAuthMiddleware({ username: 'bob', password: 'bob' })
+
+const client = forge({
+  middleware: [ BasicAuth ],
+  /* ... */
+})
+
+client.User.all()
+// => header: "Authorization: Basic Ym9iOmJvYg=="
+```
+
+** The default auth can be overridden with the explicit use of the auth parameter, example:
+
+```javascript
+client.User.all({ auth: { username: 'bill', password: 'bill' } })
+// auth will be { username: 'bill', password: 'bill' } instead of { username: 'bob', password: 'bob' }
+```
+
+#### <a name="middleware-csrf"></a> CSRF
+
+Automatically configure your requests by adding a header with the value of a cookie - If it exists.
+The name of the cookie (defaults to "csrfToken") and the header (defaults to "x-csrf-token") can be set as following;
+
+```javascript
+import CSRF from 'mappersmith/middleware/csrf'
+
+const client = forge({
+  middleware: [ CSRF('csrfToken', 'x-csrf-token') ],
+  /* ... */
+})
+
+client.User.all()
+```
+
+#### <a name="middleware-duration"></a> Duration
+
+Automatically adds `X-Started-At`, `X-Ended-At` and `X-Duration` headers to the response.
+
+```javascript
+import Duration from 'mappersmith/middleware/duration'
+
+const client = forge({
+  middleware: [ Duration ],
+  /* ... */
+})
+
+client.User.all({ body: { name: 'bob' } })
+// => headers: "X-Started-At=1492529128453;X-Ended-At=1492529128473;X-Duration=20"
+```
+
+#### <a name="middleware-encode-json"></a> EncodeJson
 
 Automatically encode your objects into JSON
 
@@ -392,7 +518,7 @@ client.User.all({ body: { name: 'bob' } })
 // => header: "Content-Type=application/json;charset=utf-8"
 ```
 
-#### GlobalErrorHandler
+#### <a name="middleware-global-error-handler"></a> GlobalErrorHandler
 
 Provides a catch-all function for all requests. If the catch-all function returns `true` it prevents the original promise to continue.
 
@@ -423,7 +549,20 @@ client.User
 //   -> global error handler
 ```
 
-#### Retry
+#### <a name="middleware-log"></a> Log
+
+Log all requests and responses. Might be useful in development mode.
+
+```javascript
+import Log from 'mappersmith/middleware/log'
+
+const client = forge({
+  middleware: [ Log ],
+  /* ... */
+})
+```
+
+#### <a name="middleware-retry"></a> Retry
 
 This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response.
 
@@ -454,31 +593,7 @@ setRetryConfigs({
 })
 ```
 
-#### <a name="basic-auth-middleware"></a> BasicAuth
-
-Automatically configure your requests with basic auth
-
-```javascript
-import BasicAuthMiddleware from 'mappersmith/middleware/basic-auth'
-const BasicAuth = BasicAuthMiddleware({ username: 'bob', password: 'bob' })
-
-const client = forge({
-  middleware: [ BasicAuth ],
-  /* ... */
-})
-
-client.User.all()
-// => header: "Authorization: Basic Ym9iOmJvYg=="
-```
-
-** The default auth can be overridden with the explicit use of the auth parameter, example:
-
-```javascript
-client.User.all({ auth: { username: 'bill', password: 'bill' } })
-// auth will be { username: 'bill', password: 'bill' } instead of { username: 'bob', password: 'bob' }
-```
-
-#### <a name="timeout-middleware"></a> Timeout
+#### <a name="middleware-timeout"></a> Timeout
 
 Automatically configure your requests with a default timeout
 
@@ -499,51 +614,6 @@ client.User.all()
 ```javascript
 client.User.all({ timeout: 100 })
 // timeout will be 100 instead of 500
-```
-
-#### Log
-
-Log all requests and responses. Might be useful in development mode.
-
-```javascript
-import Log from 'mappersmith/middleware/log'
-
-const client = forge({
-  middleware: [ Log ],
-  /* ... */
-})
-```
-
-#### Duration
-
-Automatically adds `X-Started-At`, `X-Ended-At` and `X-Duration` headers to the response.
-
-```javascript
-import Duration from 'mappersmith/middleware/duration'
-
-const client = forge({
-  middleware: [ Duration ],
-  /* ... */
-})
-
-client.User.all({ body: { name: 'bob' } })
-// => headers: "X-Started-At=1492529128453;X-Ended-At=1492529128473;X-Duration=20"
-```
-
-#### <a name="csrf-middleware"></a> Csrf
-
-Automatically configure your requests by adding a header with the value of a cookie - If it exists.
-The name of the cookie (defaults to "csrfToken") and the header (defaults to "x-csrf-token") can be set as following;
-
-```javascript
-import Csrf from 'mappersmith/middleware/csrf'
-
-const client = forge({
-  middleware: [ Csrf('csrfToken', 'x-csrf-token') ],
-  /* ... */
-})
-
-client.User.all()
 ```
 
 ## <a name="testing-mappersmith"></a> Testing Mappersmith
