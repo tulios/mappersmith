@@ -1,5 +1,8 @@
+/* global VERSION */
 import ClientBuilder from './client-builder'
 import { assign } from './utils'
+
+export const version = VERSION
 
 export const configs = {
   context: {},
