@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.14.1
+
+  - Add current version to main module
+
 ## 2.14.0
 
   - Add `clientId` to help identify different clients #73
@@ -16,8 +20,8 @@
 
 ## 2.11.2
 
-- Bugfix: fix CSRF middleware cookie parser #69
-- Add `uuid4` matcher to the test library
+  - Bugfix: fix CSRF middleware cookie parser #69
+  - Add `uuid4` matcher to the test library
 
 ## 2.11.1
 

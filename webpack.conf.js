@@ -5,14 +5,16 @@ const env = process.env.NODE_ENV || 'development'
 const version = packageJson.version
 const link = packageJson.homepage
 
-let plugins = []
+let plugins = [
+  new webpack.DefinePlugin({ VERSION: JSON.stringify(version) })
+]
 
 const devTool = (env === 'test')
   ? 'inline-source-map'
   : 'source-map'
 
 if (env === 'production') {
-  plugins = [
+  plugins = plugins.concat([
     new webpack.optimize.UglifyJsPlugin({
       compress: { warnings: false },
       sourceMap: true
@@ -22,7 +24,7 @@ if (env === 'production') {
       raw: true,
       entryOnly: true
     })
-  ]
+  ])
 }
 
 module.exports = {
