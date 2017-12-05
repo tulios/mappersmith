@@ -70,7 +70,6 @@
     "jasmine-core": "^2.5.2",
     "jest": "^20.0.4",
     "js-md5": "^0.6.1",
-    "json-loader": "^0.5.7",
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.0",
