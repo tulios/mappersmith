@@ -1,8 +1,8 @@
+/* global VERSION */
 import ClientBuilder from './client-builder'
 import { assign } from './utils'
-import pkg from './package.json'
 
-export const version = pkg.version
+export const version = VERSION
 
 export const configs = {
   context: {},
