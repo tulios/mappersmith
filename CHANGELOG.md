@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.14.0
+
+  - Add `clientId` to help identify different clients #73
+  - Add global context to help with request life cycle #73
+
 ## 2.13.0
 
   - Add a retry validation callback to the Retry Middleware #72
