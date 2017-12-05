@@ -1,6 +1,19 @@
-import forge, { configs } from 'src/index'
+import forge, { setContext, configs } from 'src/index'
 
 describe('mappersmith', () => {
+  describe('#setContext', () => {
+    it('changes configs context', () => {
+      configs.context = {}
+      setContext({ foo: 'bar' })
+      setContext({ bar: 'baz' })
+
+      expect(configs.context).toEqual({
+        foo: 'bar',
+        bar: 'baz'
+      })
+    })
+  })
+
   describe('#forge', () => {
     let originalConfig,
       manifest,

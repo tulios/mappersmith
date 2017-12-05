@@ -11,6 +11,7 @@ import { assign } from './utils'
  */
 function Manifest (obj, defaultGatewayConfigs = null, defaultMiddleware = []) {
   this.host = obj.host
+  this.clientId = obj.clientId || null
   this.gatewayConfigs = assign({}, defaultGatewayConfigs, obj.gatewayConfigs)
   this.resources = obj.resources || {}
 
@@ -53,8 +54,10 @@ Manifest.prototype = {
 
   /**
    * @param {Object} args
+   *   @param {String|Null} args.clientId
    *   @param {String} args.resourceName
    *   @param {String} args.resourceMethod
+   *   @param {Object} args.context
    *   @param {Boolean} args.mockRequest
    *
    * @return {Array<Object>}
@@ -63,7 +66,7 @@ Manifest.prototype = {
     const createInstance = (middlewareFactory) => assign({
       request: (request) => request,
       response: (next) => next()
-    }, middlewareFactory(args))
+    }, middlewareFactory(assign(args, { clientId: this.clientId })))
 
     return this.middleware.map(createInstance)
   }

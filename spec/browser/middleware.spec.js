@@ -1,4 +1,4 @@
-import ClientBuilder from 'src/client-builder'
+import forge, { setContext, configs } from 'src/mappersmith'
 import Request from 'src/request'
 import Response from 'src/response'
 
@@ -14,18 +14,17 @@ import {
 describe('ClientBuilder middleware', () => {
   let manifest,
     gatewayInstance,
-    gatewayClass,
     response,
     responseValue
 
-  const createClient = () => new ClientBuilder(manifest, () => gatewayClass).build()
+  const createClient = () => forge(manifest)
 
   beforeEach(() => {
     responseValue = 'success'
     manifest = getManifest()
 
     gatewayInstance = { call: jest.fn() }
-    gatewayClass = jest.fn((request) => {
+    configs.gateway = jest.fn((request) => {
       response = new Response(request, 200, responseValue)
       gatewayInstance.call.mockReturnValue(Promise.resolve(response))
       return gatewayInstance
@@ -36,15 +35,48 @@ describe('ClientBuilder middleware', () => {
 
   afterEach(() => resetCountMiddleware())
 
-  it('receives an object with "resourceName" and "resourceMethod"', () => {
+  it('receives an object with "resourceName", "resourceMethod" and empty "context"', () => {
     const middleware = jest.fn()
     manifest.middleware = [ middleware ]
 
     createClient().User.byId({ id: 1 })
     expect(middleware).toHaveBeenCalledWith(expect.objectContaining({
       resourceName: 'User',
-      resourceMethod: 'byId'
+      resourceMethod: 'byId',
+      context: {},
+      clientId: null
     }))
+  })
+
+  it('receives a clientId if present in manifest', () => {
+    const middleware = jest.fn()
+    const manifest = getManifest([middleware], null, 'someClient')
+    const client = forge(manifest)
+
+    client.User.byId({ id: 1 })
+
+    expect(middleware).toBeCalledWith(expect.objectContaining({ clientId: 'someClient' }))
+  })
+
+  it('receives current context', () => {
+    const middleware = jest.fn()
+    manifest.middleware = [ middleware ]
+
+    const client = createClient()
+
+    setContext({ foo: 'bar' })
+    client.User.byId({ id: 1 })
+
+    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
+
+    const client2 = createClient()
+    client2.User.byId({ id: 1 })
+    expect(middleware).lastCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
+    expect(middleware).toHaveBeenCalledTimes(2)
+
+    setContext({ foo: 'baz' })
+    client.User.byId({ id: 1 })
+    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'baz' } }))
   })
 
   it('calls request and response phase', () => {
