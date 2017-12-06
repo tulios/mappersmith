@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.14.3
+
+  - Bugfix: fix issue when mocking clients with middleware that use context #77
+
 ## 2.14.2
 
   - Bugfix: fix IE binary request by configuring responseType after open #76
