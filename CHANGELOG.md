@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.14.2
+
+  - Bugfix: fix IE binary request by configuring responseType after open #76
+  - Enable Windows integration tests via Appveyor #75
+
 ## 2.14.1
 
   - Add current version to main module
