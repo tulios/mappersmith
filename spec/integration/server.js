@@ -86,8 +86,8 @@ app.get('/api/secure.json', function (req, res) {
 
 app.get('/api/timeout.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiTimeout' })
-  var waitTime = req.params.waitTime
-    ? parseInt(req.params.waitTime, 10)
+  var waitTime = req.query.waitTime
+    ? parseInt(req.query.waitTime, 10)
     : 100
 
   setTimeout(function () {

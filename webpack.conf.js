@@ -35,7 +35,7 @@ module.exports = {
       __dirname
     ]
   },
-  entry: './lib/index.js',
+  entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist/'),
     filename: 'mappersmith.js',

@@ -151,12 +151,12 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
 
   describe('with timeout', () => {
     it('rejects the promise', (done) => {
-      Client.Timeout.get({ waitTime: 100, timeout: 50 }).then((response) => {
+      Client.Timeout.get({ waitTime: 1000, timeout: 100, cache: Date.now() }).then((response) => {
         done.fail(`Expected this request to fail: ${errorMessage(response)}`)
       })
       .catch((response) => {
         expect(response.status()).toEqual(400)
-        expect(response.data()).toEqual('Timeout (50ms)')
+        expect(response.data()).toEqual('Timeout (100ms)')
         done()
       })
     })
@@ -226,7 +226,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
     })
 
     it('retries failed GET requests', (done) => {
-      Client.Failure.onOdd().then((response) => {
+      Client.Failure.onOdd({ cache: Date.now() }).then((response) => {
         expect(response.headers()).toEqual(jasmine.objectContaining({
           'x-api-response': 'apiFailOnOdd',
           'x-mappersmith-retry-count': 1,
