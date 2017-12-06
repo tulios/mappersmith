@@ -9,14 +9,15 @@ import { assign } from './utils'
  *   @param {Object} obj.resources - default: {}
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
  */
-function Manifest (obj, defaultGatewayConfigs = null, defaultMiddleware = []) {
+function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }) {
   this.host = obj.host
   this.clientId = obj.clientId || null
-  this.gatewayConfigs = assign({}, defaultGatewayConfigs, obj.gatewayConfigs)
+  this.gatewayConfigs = assign({}, gatewayConfigs, obj.gatewayConfigs)
   this.resources = obj.resources || {}
+  this.context = context
 
   // TODO: deprecate obj.middlewares in favor of obj.middleware
-  this.middleware = [...(obj.middleware || obj.middlewares || []), ...defaultMiddleware]
+  this.middleware = [...(obj.middleware || obj.middlewares || []), ...middleware]
 }
 
 Manifest.prototype = {
@@ -66,7 +67,7 @@ Manifest.prototype = {
     const createInstance = (middlewareFactory) => assign({
       request: (request) => request,
       response: (next) => next()
-    }, middlewareFactory(assign(args, { clientId: this.clientId })))
+    }, middlewareFactory(assign(args, { clientId: this.clientId, context: assign({}, this.context) })))
 
     return this.middleware.map(createInstance)
   }

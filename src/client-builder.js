@@ -20,11 +20,7 @@ function ClientBuilder (manifest, GatewayClassFactory, configs) {
     )
   }
 
-  const defaultGatewayConfigs = configs.gatewayConfigs
-  const defaultMiddleware = configs.middleware
-  this.context = configs.context
-
-  this.manifest = new Manifest(manifest, defaultGatewayConfigs, defaultMiddleware)
+  this.manifest = new Manifest(manifest, configs)
   this.GatewayClassFactory = GatewayClassFactory
 }
 
@@ -49,8 +45,7 @@ ClientBuilder.prototype = {
   },
 
   invokeMiddlewares (resourceName, resourceMethod, initialRequest) {
-    const context = assign({}, this.context)
-    const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod, context })
+    const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod })
     const finalRequest = middleware
       .reduce((request, middleware) => middleware.request(request), initialRequest)
 
