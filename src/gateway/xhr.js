@@ -14,6 +14,7 @@ XHR.prototype = Gateway.extends({
     xmlHttpRequest.open('get', this.request.url(), true)
     this.setHeaders(xmlHttpRequest, {})
     this.configureTimeout(xmlHttpRequest)
+    this.configureBinary(xmlHttpRequest)
     xmlHttpRequest.send()
   },
 
@@ -31,6 +32,12 @@ XHR.prototype = Gateway.extends({
 
   delete () {
     this.performRequest('delete')
+  },
+
+  configureBinary (xmlHttpRequest) {
+    if (this.request.isBinary()) {
+      xmlHttpRequest.responseType = 'blob'
+    }
   },
 
   configureTimeout (xmlHttpRequest) {
@@ -93,6 +100,7 @@ XHR.prototype = Gateway.extends({
     const body = this.prepareBody(method, customHeaders)
     this.setHeaders(xmlHttpRequest, customHeaders)
     this.configureTimeout(xmlHttpRequest)
+    this.configureBinary(xmlHttpRequest)
 
     const args = []
     body && args.push(body)
@@ -131,9 +139,6 @@ XHR.prototype = Gateway.extends({
   createXHR () {
     const xmlHttpRequest = new XMLHttpRequest() // eslint-disable-line no-undef
     this.configureCallbacks(xmlHttpRequest)
-    if (this.request.isBinary()) {
-      xmlHttpRequest.responseType = 'blob'
-    }
     return xmlHttpRequest
   }
 })
