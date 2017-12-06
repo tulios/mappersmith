@@ -1,4 +1,4 @@
-import forge from 'src/index'
+import forge, { setContext } from 'src/index'
 import MockAssert from 'src/mocks/mock-assert'
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 import { getManifest, headerMiddleware } from 'spec/helper'
@@ -256,6 +256,45 @@ describe('Test lib / mock resources', () => {
           expect(response.headers()['x-middleware-phase']).toEqual('response')
           expect(response.headers()['x-resource-name']).toEqual('Blog')
           expect(response.headers()['x-resource-method']).toEqual('post')
+          done()
+        })
+        .catch((response) => {
+          done.fail(response.data())
+        })
+    })
+  })
+
+  describe('when client is using middlewares with context', () => {
+    let params
+
+    beforeEach(() => {
+      const ContextMiddleware = ({ context }) => ({
+        request: req => req.enhance({ headers: { 'x-context': context.headerFromContext } })
+      })
+      client = forge(getManifest([ContextMiddleware]))
+      params = {
+        body: {
+          title: 'blog title',
+          text: 'lorem ipsum'
+        }
+      }
+    })
+
+    it('executes the middlewares using context', (done) => {
+      mockClient(client)
+        .resource('Blog')
+        .method('post')
+        .with(params)
+        .status(200)
+        .response({ ok: true })
+
+      setContext({ headerFromContext: 'header from context' })
+
+      client.Blog
+        .post(params)
+        .then((response) => {
+          expect(response.status()).toEqual(200)
+          expect(response.request().headers()['x-context']).toEqual('header from context')
           done()
         })
         .catch((response) => {
