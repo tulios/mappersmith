@@ -1,5 +1,6 @@
 [![npm version](https://badge.fury.io/js/mappersmith.svg)](http://badge.fury.io/js/mappersmith)
 [![Build Status](https://travis-ci.org/tulios/mappersmith.svg?branch=master)](https://travis-ci.org/tulios/mappersmith)
+[![Windows Tests](https://img.shields.io/appveyor/ci/tulios/mappersmith.svg?label=Windows%20Tests)](https://ci.appveyor.com/project/tulios/mappersmith)
 # Mappersmith
 
 __Mappersmith__ is a lightweight rest client for node.js and the browser. It creates a client for your API, gathering all configurations into a single place, freeing your code from HTTP configurations.
