@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.15.0
+
+  - Add option to ignore global middleware
+  - Bugfix: Ignore Node.js files when bundling the client
+
 ## 2.14.3
 
   - Bugfix: fix issue when mocking clients with middleware that use context #77
