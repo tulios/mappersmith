@@ -46,6 +46,7 @@
   "tonicExampleFilename": "example.js",
   "browser": {
     "./lib/gateway/http.js": false,
+    "./src/gateway/http.js": false,
     "./gateway/http.js": false
   },
   "devDependencies": {
