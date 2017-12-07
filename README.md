@@ -390,6 +390,23 @@ configs.middleware = [MyMiddleware]
 // all clients defined from now on will automatically include MyMiddleware
 ```
 
+* Global middleware can be disable for specific clients with the option `ignoreGlobalMiddleware`, e.g:
+
+```javascript
+forge({
+  clientId: 'github',
+  ignoreGlobalMiddleware: true,
+  host: 'https://status.github.com',
+  resources: {
+    Status: {
+      current: { path: '/api/status.json' },
+      messages: { path: '/api/messages.json' },
+      lastMessage: { path: '/api/last-message.json' }
+    }
+  }
+})
+```
+
 ### <a name="context"></a> Context
 
 Sometimes you may need to set data to be available to all your client's middleware. In this

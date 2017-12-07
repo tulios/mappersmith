@@ -6,8 +6,10 @@ import { assign } from './utils'
  * @param {Object} obj
  *   @param {String} obj.host
  *   @param {Object} obj.gatewayConfigs - default: base values from mappersmith
+ *   @param {Object} obj.ignoreGlobalMiddleware - default: false
  *   @param {Object} obj.resources - default: {}
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
+ * @param {Object} globalConfigs
  */
 function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }) {
   this.host = obj.host
@@ -16,8 +18,14 @@ function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }
   this.resources = obj.resources || {}
   this.context = context
 
+  const clientMiddleware = obj.middleware || obj.middlewares || []
+
   // TODO: deprecate obj.middlewares in favor of obj.middleware
-  this.middleware = [...(obj.middleware || obj.middlewares || []), ...middleware]
+  if (obj.ignoreGlobalMiddleware) {
+    this.middleware = clientMiddleware
+  } else {
+    this.middleware = [...clientMiddleware, ...middleware]
+  }
 }
 
 Manifest.prototype = {
