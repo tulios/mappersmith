@@ -390,20 +390,12 @@ configs.middleware = [MyMiddleware]
 // all clients defined from now on will automatically include MyMiddleware
 ```
 
-* Global middleware can be disable for specific clients with the option `ignoreGlobalMiddleware`, e.g:
+* Global middleware can be disabled for specific clients with the option `ignoreGlobalMiddleware`, e.g:
 
 ```javascript
 forge({
-  clientId: 'github',
   ignoreGlobalMiddleware: true,
-  host: 'https://status.github.com',
-  resources: {
-    Status: {
-      current: { path: '/api/status.json' },
-      messages: { path: '/api/messages.json' },
-      lastMessage: { path: '/api/last-message.json' }
-    }
-  }
+  // + the usual configurations
 })
 ```
 
