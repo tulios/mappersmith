@@ -574,7 +574,7 @@ const client = forge({
 
 #### <a name="middleware-retry"></a> Retry
 
-This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response.
+This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default on requests with response statuses >= 500 will be retried.
 
 ```javascript
 import Retry from 'mappersmith/middleware/retry'
@@ -599,7 +599,7 @@ setRetryConfigs({
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
   retries: 5, // max retries
-  validateRetry: (response) => true // a function that returns true if the request should be retried
+  validateRetry: (response) => response.responseStatus >= 500 // a function that returns true if the request should be retried
 })
 ```
 
