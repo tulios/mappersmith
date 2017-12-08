@@ -7,8 +7,7 @@ describe('Middleware / RetryMiddleware', () => {
   let middleware,
     retries,
     headerRetryCount,
-    headerRetryTime,
-    validateRetry
+    headerRetryTime
 
   const newRequest = (method) => new Request(
     new MethodDescriptor({ host: 'example.com', path: '/', method }),
@@ -25,9 +24,8 @@ describe('Middleware / RetryMiddleware', () => {
     retries = 3
     headerRetryCount = 'X-Mappersmith-Retry-Count'
     headerRetryTime = 'X-Mappersmith-Retry-Time'
-    validateRetry = (response) => response.responseStatus !== 401
 
-    setRetryConfigs({ retries, headerRetryCount, headerRetryTime, validateRetry })
+    setRetryConfigs({ retries, headerRetryCount, headerRetryTime })
     middleware = RetryMiddleware()
   })
 
@@ -69,11 +67,11 @@ describe('Middleware / RetryMiddleware', () => {
   describe('when the call succeeds within the configured number of retries', () => {
     it('resolves the promise adding the number of retries as a header', (done) => {
       const request = newRequest('get')
-      const response = newResponse(middleware.request(request), 400)
+      const response = newResponse(middleware.request(request), 500)
       let callsCount = 0
 
       const next = () => {
-        response.responseStatus = (++callsCount < 3) ? 400 : 200
+        response.responseStatus = (++callsCount < 3) ? 500 : 200
         return response.status() !== 200
           ? Promise.reject(response)
           : Promise.resolve(response)
@@ -93,7 +91,7 @@ describe('Middleware / RetryMiddleware', () => {
   describe('when the call fails after the configured number of retries', () => {
     it('rejects the promise adding the number of retries as a header', (done) => {
       const request = newRequest('get')
-      const response = newResponse(middleware.request(request), 400)
+      const response = newResponse(middleware.request(request), 500)
       const next = () => Promise.reject(response)
 
       middleware
