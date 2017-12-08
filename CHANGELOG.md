@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.15.1
+
+  - Retry middleware: by default don't retry requests with statuses < 500 #78
+
 ## 2.15.0
 
   - Add option to ignore global middleware
