@@ -12,7 +12,7 @@ import {
 } from 'src/middlewares/log'
 
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
-import RetryMiddleware, { setRetryConfigs } from 'src/middlewares/retry'
+import RetryMiddleware from 'src/middlewares/retry/v2'
 
 export default function IntegrationTestsForGateway (gateway, params, extraTests) {
   let successLogBuffer,
@@ -221,8 +221,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
 
   describe('retry middleware', () => {
     beforeEach(() => {
-      setRetryConfigs({ initialRetryTimeInSecs: 0.05, retries: 3 })
-      Client = forge(createManifest(params.host, [RetryMiddleware]), gateway)
+      Client = forge(createManifest(params.host, [RetryMiddleware({ initialRetryTimeInSecs: 0.05, retries: 3 })]), gateway)
     })
 
     it('retries failed GET requests', (done) => {
