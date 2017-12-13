@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.16.0
+
+  - Add Retry middleware v2 which doesn't use a global retry configuration #79
+
 ## 2.15.1
 
   - Retry middleware: by default don't retry requests with statuses < 500 #78
