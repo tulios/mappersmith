@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.16.1
+
+  - Bugfix: Use uppercase HTTP methods with XHR. CORS preflight requests will fail if the method name doesn't match #80
+
 ## 2.16.0
 
   - Add Retry middleware v2 which doesn't use a global retry configuration #79
