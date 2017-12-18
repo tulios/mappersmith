@@ -11,7 +11,7 @@ function XHR (request) {
 XHR.prototype = Gateway.extends({
   get () {
     const xmlHttpRequest = this.createXHR()
-    xmlHttpRequest.open('get', this.request.url(), true)
+    xmlHttpRequest.open('GET', this.request.url(), true)
     this.setHeaders(xmlHttpRequest, {})
     this.configureTimeout(xmlHttpRequest)
     this.configureBinary(xmlHttpRequest)
@@ -94,7 +94,7 @@ XHR.prototype = Gateway.extends({
   performRequest (method) {
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const xmlHttpRequest = this.createXHR()
-    xmlHttpRequest.open(requestMethod, this.request.url(), true)
+    xmlHttpRequest.open(requestMethod.toUpperCase(), this.request.url(), true)
 
     const customHeaders = {}
     const body = this.prepareBody(method, customHeaders)
