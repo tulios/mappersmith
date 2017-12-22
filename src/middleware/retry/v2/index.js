@@ -34,27 +34,27 @@ export const defaultRetryConfigs = {
  *   @param {Number} retryConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} retryConfigs.retries (default: 5) - max retries
  */
-const RetryMiddleware = (customConfigs = {}) => () => ({
-  request (request) {
-    this.enableRetry = (request.method() === 'get')
-    return request
-  },
+export default (customConfigs = {}) => function RetryMiddleware() {
+  return {
+    request (request) {
+      this.enableRetry = (request.method() === 'get')
+      return request
+    },
 
-  response (next) {
-    const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
+    response (next) {
+      const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
 
-    if (!this.enableRetry) {
-      return next()
+      if (!this.enableRetry) {
+        return next()
+      }
+
+      return new configs.Promise((resolve, reject) => {
+        const retryTime = retryConfigs.initialRetryTimeInSecs * 1000
+        retriableRequest(resolve, reject, next)(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
+      })
     }
-
-    return new configs.Promise((resolve, reject) => {
-      const retryTime = retryConfigs.initialRetryTimeInSecs * 1000
-      retriableRequest(resolve, reject, next)(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
-    })
   }
-})
-
-export default RetryMiddleware
+}
 
 const retriableRequest = (resolve, reject, next) => {
   const retry = (retryTime, retryCount, retryConfigs) => {
