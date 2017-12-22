@@ -12,6 +12,10 @@ describe('Middleware / EncodeJson', () => {
     middleware = EncodeJsonMiddleware()
   })
 
+  it('exposes name', () => {
+    expect(EncodeJsonMiddleware.name).toEqual('EncodeJsonMiddleware')
+  })
+
   it('stringify the body and add "content-type" application/json', () => {
     const newRequest = middleware.request(request)
     expect(newRequest.body()).toEqual(JSON.stringify(body))

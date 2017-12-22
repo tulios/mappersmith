@@ -10,6 +10,10 @@ describe('Middleware / CSRF', () => {
     request = new Request(methodDescriptor)
   })
 
+  it('exposes name', () => {
+    expect(CsrfMiddleware().name).toEqual('CsrfMiddleware')
+  })
+
   it('adds a header if cookie is set in document.cookie', () => {
     middleware = CsrfMiddleware()()
     const token = 'eacb7710-3a75-49ab-a26a-cdffc5250f1c'

@@ -7,6 +7,10 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
     middleware = GlobalErrorHandlerMiddleware()
   })
 
+  it('exposes name', () => {
+    expect(GlobalErrorHandlerMiddleware.name).toEqual('GlobalErrorHandlerMiddleware')
+  })
+
   describe('when it succeeds', () => {
     it('allows the promise to proceed with the original response', (done) => {
       const originalResponse = { response: true }

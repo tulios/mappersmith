@@ -11,6 +11,10 @@ describe('Middleware / Timeout', () => {
     middleware = TimeoutMiddleware(100)()
   })
 
+  it('exposes name', () => {
+    expect(TimeoutMiddleware(100).name).toEqual('TimeoutMiddleware')
+  })
+
   it('configures the timeout', () => {
     const newRequest = middleware.request(request)
     expect(newRequest.timeout()).toEqual(100)
