@@ -11,13 +11,13 @@
  * client.User.all({ timeout: 100 })
  */
 export default timeoutValue =>
-  function TimeoutMiddleware() {
+  function TimeoutMiddleware () {
     return {
-      request(request) {
+      request (request) {
         const timeout = request.timeout()
         return !timeout // Keep the override
           ? request.enhance({ timeout: timeoutValue })
           : request
-      },
+      }
     }
   }

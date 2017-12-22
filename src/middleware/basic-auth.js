@@ -14,13 +14,13 @@ import { assign } from '../utils'
  * // => header: "Authorization: Basic Ym9iOmJvYg=="
  */
 export default authConfig =>
-  function BasicAuthMiddleware() {
+  function BasicAuthMiddleware () {
     return {
-      request(request) {
+      request (request) {
         const auth = request.auth()
         return !auth // Keep the override
           ? request.enhance({ auth: assign({}, authConfig) })
           : request
-      },
+      }
     }
   }
