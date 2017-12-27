@@ -37,7 +37,7 @@ export const setRetryConfigs = (newConfigs) => {
  *
  * Parameters can be configured using the method `setRetryConfigs`.
  */
-const RetryMiddleware = () => RetryMiddlewareV2(retryConfigs)()
+const RetryMiddleware = RetryMiddlewareV2(retryConfigs)
 
 export default RetryMiddleware
 

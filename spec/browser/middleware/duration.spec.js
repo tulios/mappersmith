@@ -19,6 +19,10 @@ describe('Middleware / DurationMiddleware', () => {
     middleware = DurationMiddleware()
   })
 
+  it('exposes name', () => {
+    expect(DurationMiddleware.name).toEqual('DurationMiddleware')
+  })
+
   it('adds started_at, ended_at and duration response headers', (done) => {
     const request = newRequest('get')
     const response = newResponse(middleware.request(request))

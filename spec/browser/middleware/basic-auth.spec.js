@@ -12,6 +12,10 @@ describe('Middleware / BasicAuth', () => {
     middleware = BasicAuthMiddleware(authData)()
   })
 
+  it('exposes name', () => {
+    expect(BasicAuthMiddleware(authData).name).toEqual('BasicAuthMiddleware')
+  })
+
   it('configures the auth data', () => {
     const newRequest = middleware.request(request)
     expect(newRequest.auth()).toEqual(authData)
