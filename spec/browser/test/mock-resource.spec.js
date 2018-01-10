@@ -75,7 +75,7 @@ describe('Test lib / mock resources', () => {
     })
   })
 
-  it('triggers the catch block on http errors', (done) => {
+  it('triggers the catch block on http errors', async () => {
     mockClient(client)
       .resource('User')
       .method('byId')
@@ -83,15 +83,12 @@ describe('Test lib / mock resources', () => {
       .status(422)
       .response({ invalid: true })
 
-    client.User.byId({ id: 1 }).then((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`Expected this request to fail: ${error}`)
-    })
-    .catch((response) => {
+    try {
+      await client.User.byId({ id: 1 })
+    } catch (response) {
       expect(response.status()).toEqual(422)
       expect(response.data()).toEqual({ invalid: true })
-      done()
-    })
+    }
   })
 
   it('works with different http methods', (done) => {

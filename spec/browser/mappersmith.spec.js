@@ -33,7 +33,7 @@ describe('mappersmith', () => {
         }
       }
 
-      gatewayInstance = { call: jest.fn() }
+      gatewayInstance = { call: jest.fn(() => Promise.resolve('response')) }
       gatewayClass = jest.fn(() => gatewayInstance)
     })
 
@@ -41,32 +41,32 @@ describe('mappersmith', () => {
       configs.gateway = originalConfig
     })
 
-    it('builds a new client with the configured gateway', () => {
+    it('builds a new client with the configured gateway', async () => {
       configs.gateway = gatewayClass
 
       const client = forge(manifest)
       expect(client.Test).toEqual(expect.any(Object))
       expect(client.Test.method).toEqual(expect.any(Function))
 
-      client.Test.method()
+      await client.Test.method()
       expect(gatewayClass).toHaveBeenCalled()
       expect(gatewayInstance.call).toHaveBeenCalled()
     })
 
     describe('when config.gateway changes', () => {
-      it('make calls using the new configuration', () => {
+      it('make calls using the new configuration', async () => {
         configs.gateway = gatewayClass
         const client = forge(manifest)
 
-        client.Test.method()
+        await client.Test.method()
         expect(gatewayClass).toHaveBeenCalled()
         expect(gatewayClass.mock.calls.length).toEqual(1)
 
-        const newGatewayInstance = { call: jest.fn() }
+        const newGatewayInstance = { call: jest.fn(() => Promise.resolve('response')) }
         const newGatewayClass = jest.fn(() => newGatewayInstance)
         configs.gateway = newGatewayClass
 
-        client.Test.method()
+        await client.Test.method()
         expect(newGatewayClass).toHaveBeenCalled()
         expect(gatewayClass.mock.calls.length).toEqual(1)
       })
