@@ -35,11 +35,11 @@ describe('ClientBuilder middleware', () => {
 
   afterEach(() => resetCountMiddleware())
 
-  it('receives an object with "resourceName", "resourceMethod" and empty "context"', () => {
+  it('receives an object with "resourceName", "resourceMethod" and empty "context"', async () => {
     const middleware = jest.fn()
     manifest.middleware = [ middleware ]
 
-    createClient().User.byId({ id: 1 })
+    await createClient().User.byId({ id: 1 })
     expect(middleware).toHaveBeenCalledWith(expect.objectContaining({
       resourceName: 'User',
       resourceMethod: 'byId',
@@ -48,78 +48,63 @@ describe('ClientBuilder middleware', () => {
     }))
   })
 
-  it('receives a clientId if present in manifest', () => {
+  it('receives a clientId if present in manifest', async () => {
     const middleware = jest.fn()
     const manifest = getManifest([middleware], null, 'someClient')
     const client = forge(manifest)
 
-    client.User.byId({ id: 1 })
-
+    await client.User.byId({ id: 1 })
     expect(middleware).toBeCalledWith(expect.objectContaining({ clientId: 'someClient' }))
   })
 
-  it('receives current context', () => {
+  it('receives current context', async () => {
     const middleware = jest.fn()
     manifest.middleware = [ middleware ]
 
     const client = createClient()
 
     setContext({ foo: 'bar' })
-    client.User.byId({ id: 1 })
+    await client.User.byId({ id: 1 })
 
     expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
 
     const client2 = createClient()
-    client2.User.byId({ id: 1 })
+    await client2.User.byId({ id: 1 })
     expect(middleware).lastCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
     expect(middleware).toHaveBeenCalledTimes(2)
 
     setContext({ foo: 'baz' })
-    client.User.byId({ id: 1 })
+    await client.User.byId({ id: 1 })
     expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'baz' } }))
   })
 
-  it('calls request and response phase', () => {
+  it('calls request and response phase', async () => {
     const requestPhase = jest.fn()
     const responsePhase = jest.fn(() => Promise.resolve())
 
     const middleware = () => ({ request: requestPhase, response: responsePhase })
     manifest.middleware = [ middleware ]
 
-    createClient().User.byId({ id: 1 })
+    await createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
     expect(responsePhase).toHaveBeenCalledWith(expect.any(Function))
   })
 
-  it('can change the final request object', (done) => {
-    createClient().User
-      .byId({ id: 1 })
-      .then((response) => {
-        expect(response.request().headers())
-          .toEqual(expect.objectContaining({ 'x-middleware-phase': 'request' }))
-      })
-      .then(() => done())
-      .catch((response) => {
-        const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
-      })
+  it('can change the final request object', async () => {
+    const response = await createClient().User.byId({ id: 1 })
+    expect(response.request().headers()).toEqual(
+      expect.objectContaining({ 'x-middleware-phase': 'request' })
+    )
   })
 
-  it('can change the final response object', (done) => {
-    createClient().User
-      .byId({ id: 1 })
-      .then((response) => {
-        expect(response.headers())
-          .toEqual(expect.objectContaining({ 'x-middleware-phase': 'response' }))
-      })
-      .then(() => done())
-      .catch((response) => {
-        const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
-      })
+  it('can change the final response object', async () => {
+    const response = await createClient().User.byId({ id: 1 })
+    expect(response.headers()).toEqual(
+      expect.objectContaining({ 'x-middleware-phase': 'response' })
+    )
   })
 
-  it('calls all middleware chainning the "next" function', (done) => {
+  it('calls all middleware chainning the "next" function', async () => {
     responseValue = getCountMiddlewareCurrent()
 
     manifest.middleware = [
@@ -129,20 +114,12 @@ describe('ClientBuilder middleware', () => {
       countMiddleware
     ]
 
-    createClient().User
-      .byId({ id: 1 })
-      .then((response) => {
-        expect(response.data()).toEqual(4)
-        expect(getCountMiddlewareStack()).toEqual([0, 1, 2, 3])
-      })
-      .then(() => done())
-      .catch((response) => {
-        const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
-      })
+    const response = await createClient().User.byId({ id: 1 })
+    expect(response.data()).toEqual(4)
+    expect(getCountMiddlewareStack()).toEqual([0, 1, 2, 3])
   })
 
-  it('accepts middleware with only one phase defined', (done) => {
+  it('accepts middleware with only one phase defined', async () => {
     let m1RequestCalled = false
     let m2ResponseCalled = false
 
@@ -156,17 +133,22 @@ describe('ClientBuilder middleware', () => {
 
     manifest.middleware = [ m1, m2 ]
 
-    createClient().User
-      .byId({ id: 1 })
-      .then((response) => {
-        expect(response.data()).toEqual(responseValue)
-        expect(m1RequestCalled).toEqual(true)
-        expect(m2ResponseCalled).toEqual(true)
-      })
-      .then(() => done())
-      .catch((response) => {
-        const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
-      })
+    const response = await createClient().User.byId({ id: 1 })
+    expect(response.data()).toEqual(responseValue)
+    expect(m1RequestCalled).toEqual(true)
+    expect(m2ResponseCalled).toEqual(true)
+  })
+
+  it('accepts async request phase', async () => {
+    const m1 = () => ({
+      request: (request) => Promise.resolve(request.enhance({
+        headers: { token: 'abc' }
+      }))
+    })
+
+    manifest.middleware = [ m1 ]
+
+    const response = await createClient().User.byId({ id: 1 })
+    expect(response.request().headers()).toEqual(expect.objectContaining({ token: 'abc' }))
   })
 })

@@ -18,6 +18,7 @@ describe('ClientBuilder', () => {
     gatewayInstance = { call: jest.fn() }
     gatewayClass = jest.fn(() => gatewayInstance)
     configs = {
+      Promise,
       gatewayConfigs: {
         gateway: 'configs'
       },
@@ -41,14 +42,15 @@ describe('ClientBuilder', () => {
     expect(client._manifest instanceof Manifest).toEqual(true)
   })
 
-  it('accepts custom gatewayConfigs', () => {
+  it('accepts custom gatewayConfigs', async () => {
     const customGatewayConfigs = { custom: 'configs' }
     manifest = getManifest([], customGatewayConfigs)
     clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, configs)
     client = clientBuilder.build()
 
-    gatewayInstance.call.mockReturnValue('Promise')
-    expect(client.User.byId({ id: 1 })).toEqual('Promise')
+    gatewayInstance.call.mockReturnValue(Promise.resolve('value'))
+    const response = await client.User.byId({ id: 1 })
+    expect(response).toEqual('value')
     expect(gatewayClass).toHaveBeenCalledWith(expect.any(Request), expect.objectContaining({
       custom: 'configs',
       gateway: 'configs'
@@ -58,9 +60,10 @@ describe('ClientBuilder', () => {
   })
 
   describe('when a resource method is called', () => {
-    it('calls the gateway with the correct request', () => {
-      gatewayInstance.call.mockReturnValue('Promise')
-      expect(client.User.byId({ id: 1 })).toEqual('Promise')
+    it('calls the gateway with the correct request', async () => {
+      gatewayInstance.call.mockReturnValue(Promise.resolve('value'))
+      const response = await client.User.byId({ id: 1 })
+      expect(response).toEqual('value')
       expect(gatewayClass).toHaveBeenCalledWith(expect.any(Request), configs.gatewayConfigs)
       expect(gatewayInstance.call).toHaveBeenCalled()
 

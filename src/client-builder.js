@@ -20,6 +20,7 @@ function ClientBuilder (manifest, GatewayClassFactory, configs) {
     )
   }
 
+  this.Promise = configs.Promise
   this.manifest = new Manifest(manifest, configs)
   this.GatewayClassFactory = GatewayClassFactory
 }
@@ -46,20 +47,29 @@ ClientBuilder.prototype = {
 
   invokeMiddlewares (resourceName, resourceMethod, initialRequest) {
     const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod })
-    const finalRequest = middleware
-      .reduce((request, middleware) => middleware.request(request), initialRequest)
-
     const GatewayClass = this.GatewayClassFactory()
     const gatewayConfigs = this.manifest.gatewayConfigs
-    const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
+    const chainRequestPhase = (requestPromise, middleware) => {
+      return requestPromise
+        .then(request => middleware.request(request))
+        .then(request => this.Promise.resolve(request))
+    }
+    const chainResponsePhase = (next, middleware) => () => middleware.response(next)
 
-    const execute = middleware
-      .reduce(
-        (next, middleware) => () => middleware.response(next),
-        callGateway
-      )
+    return new this.Promise((resolve, reject) => {
+      return middleware
+        .reduce(
+          chainRequestPhase,
+          this.Promise.resolve(initialRequest)
+        )
+        .then(finalRequest => {
+          const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
+          const execute = middleware.reduce(chainResponsePhase, callGateway)
 
-    return execute()
+          return execute().then(response => resolve(response))
+        })
+        .catch(reject)
+    })
   }
 }
 
