@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.17.0
+
+  - Add support to async middleware request phase #86
+  - Ensures all middleware expose name #83
+
 ## 2.16.1
 
   - Bugfix: Use uppercase HTTP methods with XHR. CORS preflight requests will fail if the method name doesn't match #80
