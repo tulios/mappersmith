@@ -378,6 +378,20 @@ client.User.all()
 // context: {}
 ```
 
+__NOTE__: The request phase can be asynchronous, just return a promise resolving a request. Example:
+
+```javascript
+const MyMiddleware = () => ({
+  request(request) {
+    return Promise.resolve(
+      request.enhance({
+        headers: { 'x-special-token': 'abc123' }
+      })
+    )
+  }
+})
+```
+
 ### <a name="global-middleware"></a> Global middleware
 
 Middleware can also be defined globally, so new clients will automatically
