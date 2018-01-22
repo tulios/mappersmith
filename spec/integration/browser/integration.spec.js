@@ -16,9 +16,26 @@ configs.fetch = window.fetch
 
 describe('integration', () => {
   describe('Fetch', () => {
-    integrationTestsForGateway(Fetch, { host: '/proxy' }, (gateway, params) => {
+    const gateway = Fetch
+    const params = { host: '/proxy' }
+
+    integrationTestsForGateway(gateway, params, (gateway, params) => {
       describe('file upload', () => {
         fileUploadSpec(forge(createManifest(params.host), gateway))
+      })
+    })
+
+    describe('with raw binary', () => {
+      it('GET /api/binary.pdf', (done) => {
+        const Client = forge(createManifest(params.host), gateway)
+        Client.Binary.get().then((response) => {
+          expect(response.status()).toEqual(200)
+          expect(md5(response.data())).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
+          done()
+        })
+        .catch((response) => {
+          done.fail(`test failed with promise error: ${errorMessage(response)}`)
+        })
       })
     })
   })
