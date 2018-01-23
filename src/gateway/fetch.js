@@ -76,7 +76,19 @@ Fetch.prototype = Gateway.extends({
         }
 
         clearTimeout(timer)
-        fetchResponse.text().then((data) => {
+
+        let responseData
+        if (this.request.isBinary()) {
+          if (typeof fetchResponse.buffer === 'function') {
+            responseData = fetchResponse.buffer()
+          } else {
+            responseData = fetchResponse.arrayBuffer()
+          }
+        } else {
+          responseData = fetchResponse.text()
+        }
+
+        responseData.then(data => {
           this.dispatchResponse(this.createResponse(fetchResponse, data))
         })
       })
