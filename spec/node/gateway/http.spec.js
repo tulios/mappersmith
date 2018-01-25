@@ -43,7 +43,7 @@ describe('Gateway / HTTP', () => {
     configs.gatewayConfigs = originalConfigs
   })
 
-  for (let methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
+  for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
     describe(`#${methodName}`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -200,7 +200,7 @@ describe('Gateway / HTTP', () => {
     })
   }
 
-  for (let methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
+  for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
     describe(`#${methodName} with request.auth() configured`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -226,6 +226,76 @@ describe('Gateway / HTTP', () => {
       })
     })
   }
+
+  describe('#head', () => {
+    beforeEach(() => {
+      methodDescriptor.method = 'head'
+      httpResponse = { status: 200 }
+    })
+
+    it('resolves the promise with the response', (done) => {
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.request().method()).toEqual('head')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('')
+        expect(response.headers()).toEqual(jasmine.objectContaining({ 'content-type': 'application/json' }))
+        expect(response.timeElapsed).not.toBeNull()
+      })
+    })
+
+    it('sends all defined headers', (done) => {
+      requestParams = {
+        [methodDescriptor.headersAttr]: { authorization: 'token' }
+      }
+
+      respondWith(httpResponse, (fauxJaxRequest) => {
+        expect(fauxJaxRequest.requestHeaders).toEqual(jasmine.objectContaining({
+          authorization: 'token'
+        }))
+      })
+
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+      })
+    })
+
+    describe('when the request fails', () => {
+      it('rejects the promise with the response', (done) => {
+        respondWith({ status: 404 })
+
+        assertFailure()(done, (response) => {
+          expect(response.status()).toEqual(404)
+          expect(response.timeElapsed).not.toBeNull()
+          expect(response.data()).toEqual('')
+          expect(response.headers()).toEqual(jasmine.objectContaining({
+            'content-type': 'application/json'
+          }))
+        })
+      })
+    })
+
+    describe(`with request.auth() configured`, () => {
+      it('adds "Authorization: Basic base64" header', (done) => {
+        const authData = { username: 'bob', password: 'bob' }
+        const maskedAuth = assign({}, authData, { password: '***' })
+        requestParams = {
+          [methodDescriptor.authAttr]: authData
+        }
+
+        respondWith(httpResponse, (fauxJaxRequest) => {
+          expect(fauxJaxRequest.requestHeaders).toEqual(jasmine.objectContaining({
+            authorization: `Basic ${btoa('bob:bob')}`
+          }))
+        })
+
+        assertSuccess()(done, (response) => {
+          expect(response.status()).toEqual(200)
+          expect(response.originalRequest.auth()).toEqual(maskedAuth)
+        })
+      })
+    })
+  })
 
   describe('with option "configure"', () => {
     it('calls the callback with request params', (done) => {
