@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.18.0
+
+  - Add support to binary payloads when using fetch gateway #89
+
 ## 2.17.0
 
   - Add support to async middleware request phase #86
