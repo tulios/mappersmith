@@ -10,6 +10,10 @@ Mock.prototype = Gateway.extends({
     this.callMock()
   },
 
+  head () {
+    this.callMock()
+  },
+
   post () {
     this.callMock()
   },

@@ -14,7 +14,7 @@ export function retryMiddlewareExamples (middleware, retries, headerRetryCount, 
     jest.useRealTimers()
   })
 
-  describe('when the call is not HTTP GET', () => {
+  describe('when the call is not HTTP GET or HEAD', () => {
     for (let methodName of ['post', 'put', 'delete', 'patch']) {
       it(`resolves the promise without retries for ${methodName.toUpperCase()}`, done => {
         const request = newRequest(methodName)

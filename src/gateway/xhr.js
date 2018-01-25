@@ -18,6 +18,15 @@ XHR.prototype = Gateway.extends({
     xmlHttpRequest.send()
   },
 
+  head () {
+    const xmlHttpRequest = this.createXHR()
+    xmlHttpRequest.open('HEAD', this.request.url(), true)
+    this.setHeaders(xmlHttpRequest, {})
+    this.configureTimeout(xmlHttpRequest)
+    this.configureBinary(xmlHttpRequest)
+    xmlHttpRequest.send()
+  },
+
   post () {
     this.performRequest('post')
   },
