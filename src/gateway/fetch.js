@@ -27,6 +27,10 @@ Fetch.prototype = Gateway.extends({
     this.performRequest('get')
   },
 
+  head () {
+    this.performRequest('head')
+  },
+
   post () {
     this.performRequest('post')
   },

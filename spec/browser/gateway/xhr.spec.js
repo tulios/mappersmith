@@ -43,7 +43,7 @@ describe('Gateway / XHR', () => {
     configs.gatewayConfigs = originalConfigs
   })
 
-  for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
+  for (let methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
     describe(`#${methodName}`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -183,7 +183,7 @@ describe('Gateway / XHR', () => {
     })
   }
 
-  for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
+  for (let methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
     describe(`#${methodName} with request.auth() configured`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
