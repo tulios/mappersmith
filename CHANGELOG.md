@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.19.0
+
+  - Add support for HEAD HTTP method #90
+  - Bugfix: Calculate `Ended-At` after evaluating `next` in the duration middleware
+
 ## 2.18.0
 
   - Add support to binary payloads when using fetch gateway #89
