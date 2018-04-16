@@ -66,7 +66,9 @@ const retriableRequest = (resolve, reject, next) => {
 
     next()
       .then((response) => {
-        resolve(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
+        shouldRetry && retryConfigs.validateRetry(response)
+          ? scheduleRequest()
+          : resolve(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
       })
       .catch((response) => {
         shouldRetry && retryConfigs.validateRetry(response)
