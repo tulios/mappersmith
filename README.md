@@ -392,6 +392,64 @@ const MyMiddleware = () => ({
 })
 ```
 
+The response phase can optionally receive a function called "renew". This function can be used to rerun the
+middleware stack. This feature is useful in some scenarios, for example, automatically refreshing an expired access token.
+Example:
+
+```javascript
+const AccessTokenMiddleware = () => {
+  // maybe this is stored elsewhere, here for simplicity
+  let accessToken = null
+
+  return () => ({
+    request(request) {
+      return Promise
+        .resolve(accessToken)
+        .then((token) => token || fetchAccessToken())
+        .then((token) => {
+          accessToken = token
+          return request.enhance({
+            headers: { 'Authorization': `Token ${token}` }
+          })
+        })
+    },
+    response(next, renew) {
+      return next().catch(response => {
+        if (response.status() === 401) { // token expired
+          accessToken = null
+          return renew()
+        }
+
+        return next()
+      })
+    }
+  })
+}
+```
+
+Then:
+
+```javascript
+const AccessToken = AccessTokenMiddleware()
+const client = forge({
+  // ...
+  middleware: [ AccessToken ],
+  // ...
+})
+```
+
+"renew" can only be invoked sometimes before it's considered an infinite loop, make sure your middleware
+can distinguish an error from a "renew". By default, mappersmith will allow 2 calls to "renew". This can
+be configured with `configs.maxMiddlewareStackExecutionAllowed`. It's advised to keep this number low.
+Example:
+
+```javascript
+import { configs } from 'mappersmith'
+configs.maxMiddlewareStackExecutionAllowed = 3
+```
+
+If an infinite loop is detected, mappersmith will throw an error.
+
 ### <a name="global-middleware"></a> Global middleware
 
 Middleware can also be defined globally, so new clients will automatically
