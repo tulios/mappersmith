@@ -23,6 +23,7 @@ function ClientBuilder (manifest, GatewayClassFactory, configs) {
   this.Promise = configs.Promise
   this.manifest = new Manifest(manifest, configs)
   this.GatewayClassFactory = GatewayClassFactory
+  this.maxMiddlewareStackExecutionAllowed = configs.maxMiddlewareStackExecutionAllowed
 }
 
 ClientBuilder.prototype = {
@@ -49,25 +50,38 @@ ClientBuilder.prototype = {
     const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod })
     const GatewayClass = this.GatewayClassFactory()
     const gatewayConfigs = this.manifest.gatewayConfigs
+
     const chainRequestPhase = (requestPromise, middleware) => {
       return requestPromise
         .then(request => middleware.request(request))
         .then(request => this.Promise.resolve(request))
     }
-    const chainResponsePhase = (next, middleware) => () => middleware.response(next)
+
+    let executions = 0
+
+    const executeMiddlewareStack = () => middleware
+      .reduce(
+        chainRequestPhase,
+        this.Promise.resolve(initialRequest)
+      )
+      .then(finalRequest => {
+        executions++
+
+        if (executions > this.maxMiddlewareStackExecutionAllowed) {
+          throw new Error(
+            `[Mappersmith] infinite loop detected (middleware stack invoked ${executions} times). Check the use of "renew" in one of the middleware.`
+          )
+        }
+
+        const chainResponsePhase = (next, middleware) => () => middleware.response(next, executeMiddlewareStack)
+        const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
+        const execute = middleware.reduce(chainResponsePhase, callGateway)
+        return execute()
+      })
 
     return new this.Promise((resolve, reject) => {
-      return middleware
-        .reduce(
-          chainRequestPhase,
-          this.Promise.resolve(initialRequest)
-        )
-        .then(finalRequest => {
-          const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
-          const execute = middleware.reduce(chainResponsePhase, callGateway)
-
-          return execute().then(response => resolve(response))
-        })
+      executeMiddlewareStack()
+        .then(response => resolve(response))
         .catch(reject)
     })
   }

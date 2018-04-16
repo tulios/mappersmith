@@ -11,6 +11,17 @@ export const configs = {
   fetch: typeof fetch === 'function' ? fetch : null, // eslint-disable-line no-undef
 
   /**
+   * The maximum amount of executions allowed before it is considered an infinite loop.
+   * In the response phase of middleware, it's possible to execute a function called "renew",
+   * which can be used to rerun the middleware stack. This feature is useful in some scenarios,
+   * for example, re-fetching an invalid access token.
+
+   * This configuration is used to detect infinite loops, don't increase this value too much
+   * @default 2
+   */
+  maxMiddlewareStackExecutionAllowed: 2,
+
+  /**
    * Gateway implementation, it defaults to "lib/gateway/xhr" for browsers and
    * "lib/gateway/http" for node
    */
