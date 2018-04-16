@@ -138,6 +138,14 @@ describe('Request', () => {
     })
   })
 
+  describe('#header', () => {
+    it('returns the value of the given header name', () => {
+      methodDescriptor.headers = { Authorization: 'token-123' }
+      const request = new Request(methodDescriptor)
+      expect(request.header('authorization')).toEqual('token-123')
+    })
+  })
+
   describe('#body', () => {
     it('returns the configured body param from params', () => {
       methodDescriptor.bodyAttr = 'differentParam'
