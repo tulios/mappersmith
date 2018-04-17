@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.20.0
+
+  - Allow retries on successful calls
+  - Add the ability to re-run the middleware stack from the response phase (renew)
+  - Add Request#header to get a single header value by name
+
 ## 2.19.0
 
   - Add support for HEAD HTTP method #90
@@ -141,7 +147,7 @@
 
   - Add a retry middleware with exponential retry time #38
   - Add a new gateway backed by `fetch` #42
-  - Add `Request#header` to get a single header value by name
+  - Add `Response#header` to get a single header value by name
 
 ## 2.0.1
 
