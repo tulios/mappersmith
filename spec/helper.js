@@ -1,6 +1,7 @@
 import fauxJax from 'faux-jax'
 import Request from 'src/request'
 import Response from 'src/response'
+import MethodDescriptor from 'src/method-descriptor'
 import { configs as defaultConfigs } from 'src/index'
 
 export function createGatewayAsserts (gatewayArgsGenerator) {
@@ -121,3 +122,5 @@ export const getManifest = (middleware = [], gatewayConfigs = null, clientId = n
     }
   }
 })
+
+export const createRequest = (args = {}) => new Request(new MethodDescriptor(args))

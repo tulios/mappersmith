@@ -50,10 +50,34 @@ ClientBuilder.prototype = {
     const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod })
     const GatewayClass = this.GatewayClassFactory()
     const gatewayConfigs = this.manifest.gatewayConfigs
+    let requestPhaseExecutionFailed = false
 
     const chainRequestPhase = (requestPromise, middleware) => {
       return requestPromise
         .then(request => middleware.request(request))
+        .catch(e => {
+          if (requestPhaseExecutionFailed) {
+            throw e
+          }
+
+          requestPhaseExecutionFailed = true
+          const error = new Error(`[Mappersmith] middleware "${middleware.__name}" failed in the request phase: ${e.message}`)
+          error.stack = e.stack
+          throw error
+        })
+        .then(request => {
+          if (request instanceof Request) {
+            return request
+          }
+
+          requestPhaseExecutionFailed = true
+          const typeValue = typeof request
+          const prettyType = (typeValue === 'object' || typeValue === 'function')
+            ? request.name || typeValue
+            : typeValue
+
+          throw new Error(`[Mappersmith] middleware "${middleware.__name}" should return "Request" but returned "${prettyType}"`)
+        })
         .then(request => this.Promise.resolve(request))
     }
 
