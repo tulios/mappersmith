@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.21.0
+
+  - Throw errors when the middleware request phase fails
+      * If the request phase throws an error (e.g.: `[Mappersmith] middleware "MyMiddleware" failed in the request phase: <Original error message>`)
+      * If the request phase returns something different than a mappersmith Request object (e.g.: `[Mappersmith] middleware "MyMiddleware" should return "Request" but returned "boolean"`)
+
 ## 2.20.0
 
   - Allow retries on successful calls
