@@ -81,13 +81,20 @@ XHR.prototype = Gateway.extends({
       this.dispatchResponse(this.createResponse(xmlHttpRequest))
     })
 
-    xmlHttpRequest.addEventListener('error', () => {
+    xmlHttpRequest.addEventListener('error', (e) => {
       if (this.canceled) {
         return
       }
 
       clearTimeout(this.timer)
-      this.dispatchClientError('Network error')
+      const guessedErrorCause = e
+          ? e.message || e.name
+          : xmlHttpRequest.responseText
+
+      const errorMessage = 'Network error'
+      const enhancedMessage = guessedErrorCause ? `: ${guessedErrorCause}` : ''
+      const error = new Error(`${errorMessage}${enhancedMessage}`)
+      this.dispatchClientError(errorMessage, error)
     })
 
     const xhrOptions = this.options().XHR
