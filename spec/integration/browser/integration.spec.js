@@ -47,7 +47,7 @@ describe('integration', () => {
         })
         .catch((response) => {
           expect(response.status()).toEqual(400)
-          expect(response.error()).toMatch(/failed to fetch/i)
+          expect(response.error()).toMatch(/Error/i)
           done()
         })
       })
