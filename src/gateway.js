@@ -37,7 +37,7 @@ Gateway.prototype = {
       try {
         this[this.request.method()].apply(this, arguments)
       } catch (e) {
-        this.dispatchClientError(e.message)
+        this.dispatchClientError(e.message, e)
       }
     })
   },
@@ -48,8 +48,8 @@ Gateway.prototype = {
       : this.failCallback(response)
   },
 
-  dispatchClientError (message) {
-    this.failCallback(new Response(this.request, 400, message))
+  dispatchClientError (message, error) {
+    this.failCallback(new Response(this.request, 400, message, {}, [error]))
   },
 
   prepareBody (method, headers) {

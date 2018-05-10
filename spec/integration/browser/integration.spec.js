@@ -4,7 +4,7 @@ import md5 from 'js-md5'
 
 import integrationTestsForGateway from 'spec/integration/shared-examples'
 import createManifest from 'spec/integration/support/manifest'
-import { errorMessage } from 'spec/integration/support'
+import { errorMessage, INVALID_ADDRESS } from 'spec/integration/support'
 
 import XHR from 'src/gateway/xhr'
 import Fetch from 'src/gateway/fetch'
@@ -38,16 +38,32 @@ describe('integration', () => {
         })
       })
     })
+
+    describe('on network errors', () => {
+      it('returns the original error', (done) => {
+        const Client = forge(createManifest(INVALID_ADDRESS), gateway)
+        Client.PlainText.get().then((response) => {
+          done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+        })
+        .catch((response) => {
+          expect(response.status()).toEqual(400)
+          expect(response.error()).toMatch(/Error/i)
+          done()
+        })
+      })
+    })
   })
 
   describe('XHR', () => {
     const gateway = XHR
     const params = { host: '/proxy' }
+
     integrationTestsForGateway(gateway, params, (gateway, params) => {
       describe('file upload', () => {
         fileUploadSpec(forge(createManifest(params.host), gateway))
       })
     })
+
     describe('with raw binary', () => {
       it('GET /api/binary.pdf', (done) => {
         const Client = forge(createManifest(params.host), gateway)
@@ -62,6 +78,20 @@ describe('integration', () => {
         })
         .catch((response) => {
           done.fail(`test failed with promise error: ${errorMessage(response)}`)
+        })
+      })
+    })
+
+    describe('on network errors', () => {
+      it('returns the original error', (done) => {
+        const Client = forge(createManifest(INVALID_ADDRESS), gateway)
+        Client.PlainText.get().then((response) => {
+          done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+        })
+        .catch((response) => {
+          expect(response.status()).toEqual(400)
+          expect(response.error()).toMatch(/network error/i)
+          done()
         })
       })
     })
