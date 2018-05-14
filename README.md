@@ -320,6 +320,7 @@ Mappersmith will provide an instance of its own `Response` object to the promise
 * `headers()` - Returns an object with all headers, keys in lower case
 * `header(name)` - Returns the value of the header
 * `data()` - Returns the response data, if `Content-Type` is `application/json` it parses the response and returns an object
+* `error()` - Returns the last error instance that caused the request to fail or `null`
 
 ## <a name="middleware"></a> Middleware
 

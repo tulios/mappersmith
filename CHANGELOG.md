@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.22.0
+
+  - Improve "network error" handling #99
+  - Send error instance to `gateway#dispatchClientError` #99
+
 ## 2.21.0
 
   - Throw errors when the middleware request phase fails

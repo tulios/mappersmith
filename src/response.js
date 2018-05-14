@@ -104,7 +104,7 @@ Response.prototype = {
   /**
    * Returns the last error instance that caused the request to fail
    *
-   * @return {Error}
+   * @return {Error|null}
    */
   error () {
     const lastError = this.errors[this.errors.length - 1] || null
