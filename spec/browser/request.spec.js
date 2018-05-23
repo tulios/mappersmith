@@ -66,11 +66,27 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json?id=1&title=test')
     })
 
+    it('renames the params according to their queryParamAlias when appending them to the query string', () => {
+      methodDescriptor.path = '/api/example.json'
+      methodDescriptor.params = { userId: 1, transactionId: 2 }
+      methodDescriptor.queryParamAlias = { userId: 'user_id' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json?user_id=1&transactionId=2')
+    })
+
     it('interpolates paths with dynamic sections', () => {
       methodDescriptor.path = '/api/example/{id}.json'
       methodDescriptor.params = { id: 1, title: 'test' }
       const path = new Request(methodDescriptor).path()
       expect(path).toEqual('/api/example/1.json?title=test')
+    })
+
+    it('does not apply queryParamAlias to interpolated dynamic sections', () => {
+      methodDescriptor.path = '/api/example/{userId}.json'
+      methodDescriptor.params = { userId: 1 }
+      methodDescriptor.queryParamAlias = { userId: 'user_id' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example/1.json')
     })
 
     describe('when dynamic section is not provided', () => {

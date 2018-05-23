@@ -120,7 +120,11 @@ const client = forge({
       create: { method: 'post', path: '/blogs', headers: { 'X-Special-Header': 'value' } },
 
       // There are no restrictions for dynamic segments and HTTP methods
-      addComment: { method: 'put', path: '/blogs/{id}/comment' }
+      addComment: { method: 'put', path: '/blogs/{id}/comment' },
+
+      // `queryParamAlias` will map parameter names to their alias when
+      // constructing the query string
+      bySubject: { path: '/blogs', queryParamAlias: { subjectId: 'subject_id' } }
     }
   }
 })
@@ -164,6 +168,16 @@ And, of course, we can override the defaults:
 
 ```javascript
 client.User.byGroup({ group: 'cool' }) // https://my.api.com/users/groups/cool
+```
+
+### <a name="aliased-parameters"></a> Renaming query parameters
+
+Sometimes the expected format of your query parameters doesn't match that of your codebase. For example, maybe you're using `camelCase` in your code but the API your calling expects `snake_case`. In that case, set `queryParamAlias` in the definition to an object that describes a mapping between your input parameter and the desired output format.
+
+This mapping will not be applied to params in the URL.
+
+```javascript
+client.Blog.all({ subjectId: 10 }) // https://my.api.com/blogs?subject_id=10
 ```
 
 ### <a name="body"></a> Body

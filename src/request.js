@@ -95,7 +95,13 @@ Request.prototype = {
       )
     }
 
-    const queryString = toQueryString(params)
+    const aliasedParams = Object.keys(params).reduce((aliased, key) => {
+      const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
+      aliased[aliasedKey] = params[key]
+      return aliased
+    }, {})
+
+    const queryString = toQueryString(aliasedParams)
     if (queryString.length !== 0) {
       path += `?${queryString}`
     }
