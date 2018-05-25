@@ -77,6 +77,7 @@ HTTP.prototype = Gateway.extends({
     if (timeout) {
       httpRequest.setTimeout(timeout, () => {
         this.canceled = true
+        httpRequest.abort()
         const error = new Error(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
       })
