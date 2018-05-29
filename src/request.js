@@ -1,6 +1,7 @@
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
-const REGEXP_DYNAMIC_SEGMENT = new RegExp('{([^}]+)}')
+const REGEXP_DYNAMIC_SEGMENT = /{([^}]+)}/
+const REGEXP_TRAILING_SLASH = /\/$/
 
 /**
  * @typedef Request
@@ -56,7 +57,7 @@ Request.prototype = {
    * @return {String}
    */
   host () {
-    return (this.methodDescriptor.host || '').replace(/\/$/, '')
+    return (this.methodDescriptor.host || '').replace(REGEXP_TRAILING_SLASH, '')
   },
 
   /**
