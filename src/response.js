@@ -122,7 +122,7 @@ Response.prototype = {
    *
    * @param {Object} extras
    *   @param {Integer} extras.status - it will replace the current status
-   *   @param {String} extras.rawData - it will replace the current rawStatus
+   *   @param {String} extras.rawData - it will replace the current rawData
    *   @param {Object} extras.headers - it will be merged with current headers
    *   @param {Error} extras.error    - it will be added to the list of errors
    *
