@@ -6,6 +6,7 @@
  *   @param {String} obj.method
  *   @param {Object} obj.headers
  *   @param {Object} obj.params
+ *   @param {Object} obj.queryParamAlias
  *   @param {String} obj.bodyAttr - body attribute name. Default: 'body'
  *   @param {String} obj.headersAttr - headers attribute name. Default: 'headers'
  *   @param {String} obj.authAttr - auth attribute name. Default: 'auth'
@@ -17,6 +18,7 @@ export default function MethodDescriptor (obj) {
   this.method = obj.method || 'get'
   this.headers = obj.headers
   this.params = obj.params
+  this.queryParamAlias = obj.queryParamAlias || {}
   this.binary = obj.binary || false
 
   this.bodyAttr = obj.bodyAttr || 'body'
