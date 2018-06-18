@@ -2,6 +2,8 @@ import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
 import { configs as defaultConfigs } from './mappersmith'
 import Response from './response'
 
+const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
+
 function Gateway (request, configs = {}) {
   this.request = request
   this.configs = configs
@@ -18,7 +20,7 @@ Gateway.prototype = {
 
   shouldEmulateHTTP () {
     return this.options().emulateHTTP &&
-      /^(delete|put|patch)/i.test(this.request.method())
+      REGEXP_EMULATE_HTTP.test(this.request.method())
   },
 
   call () {

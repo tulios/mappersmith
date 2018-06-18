@@ -1,5 +1,7 @@
 import { lowerCaseObjectKeys, assign } from './utils'
 
+const REGEXP_CONTENT_TYPE_JSON = /^application\/json/
+
 /**
  * @typedef Response
  * @param {Request} originalRequest, for auth it hides the password
@@ -98,7 +100,7 @@ Response.prototype = {
   },
 
   isContentTypeJSON () {
-    return /application\/json/.test(this.headers()['content-type'])
+    return REGEXP_CONTENT_TYPE_JSON.test(this.headers()['content-type'])
   },
 
   /**
@@ -120,7 +122,7 @@ Response.prototype = {
    *
    * @param {Object} extras
    *   @param {Integer} extras.status - it will replace the current status
-   *   @param {String} extras.rawData - it will replace the current rawStatus
+   *   @param {String} extras.rawData - it will replace the current rawData
    *   @param {Object} extras.headers - it will be merged with current headers
    *   @param {Error} extras.error    - it will be added to the list of errors
    *

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.22.2
+
+  - Cache some RegExp to improve overall performance
+
+## 2.22.1
+
+  - Bugfix: Abort requests on timeout (http gateway)
+
 ## 2.22.0
 
   - Improve "network error" handling #99
