@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.23.0
+
+  - Add a way to rename queryparams (`queryParamAlias`) #102
+
 ## 2.22.2
 
   - Cache some RegExp to improve overall performance
