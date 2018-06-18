@@ -172,7 +172,7 @@ client.User.byGroup({ group: 'cool' }) // https://my.api.com/users/groups/cool
 
 ### <a name="aliased-parameters"></a> Renaming query parameters
 
-Sometimes the expected format of your query parameters doesn't match that of your codebase. For example, maybe you're using `camelCase` in your code but the API your calling expects `snake_case`. In that case, set `queryParamAlias` in the definition to an object that describes a mapping between your input parameter and the desired output format.
+Sometimes the expected format of your query parameters doesn't match that of your codebase. For example, maybe you're using `camelCase` in your code but the API you are calling expects `snake_case`. In that case, set `queryParamAlias` in the definition to an object that describes a mapping between your input parameter and the desired output format.
 
 This mapping will not be applied to params in the URL.
 
