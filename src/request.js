@@ -1,6 +1,7 @@
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
-const REGEXP_DYNAMIC_SEGMENT = new RegExp('{([^}]+)}')
+const REGEXP_DYNAMIC_SEGMENT = /{([^}]+)}/
+const REGEXP_TRAILING_SLASH = /\/$/
 
 /**
  * @typedef Request
@@ -56,7 +57,7 @@ Request.prototype = {
    * @return {String}
    */
   host () {
-    return (this.methodDescriptor.host || '').replace(/\/$/, '')
+    return (this.methodDescriptor.host || '').replace(REGEXP_TRAILING_SLASH, '')
   },
 
   /**
@@ -95,7 +96,13 @@ Request.prototype = {
       )
     }
 
-    const queryString = toQueryString(params)
+    const aliasedParams = Object.keys(params).reduce((aliased, key) => {
+      const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
+      aliased[aliasedKey] = params[key]
+      return aliased
+    }, {})
+
+    const queryString = toQueryString(aliasedParams)
     if (queryString.length !== 0) {
       path += `?${queryString}`
     }
@@ -127,6 +134,17 @@ Request.prototype = {
         this.requestParams[this.methodDescriptor.headersAttr]
       )
     )
+  },
+
+  /**
+   * Utility method to get a header value by name
+   *
+   * @param {String} name
+   *
+   * @return {String|Undefined}
+   */
+  header (name) {
+    return this.headers()[name.toLowerCase()]
   },
 
   body () {

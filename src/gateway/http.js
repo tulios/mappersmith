@@ -77,7 +77,9 @@ HTTP.prototype = Gateway.extends({
     if (timeout) {
       httpRequest.setTimeout(timeout, () => {
         this.canceled = true
-        this.dispatchClientError(`Timeout (${timeout}ms)`)
+        httpRequest.abort()
+        const error = new Error(`Timeout (${timeout}ms)`)
+        this.dispatchClientError(error.message, error)
       })
     }
 
@@ -107,7 +109,7 @@ HTTP.prototype = Gateway.extends({
       return
     }
 
-    this.dispatchClientError(e.message)
+    this.dispatchClientError(e.message, e)
   },
 
   createResponse (httpResponse, rawData) {

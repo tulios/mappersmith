@@ -1,13 +1,16 @@
 import { lowerCaseObjectKeys, assign } from './utils'
 
+const REGEXP_CONTENT_TYPE_JSON = /^application\/json/
+
 /**
  * @typedef Response
  * @param {Request} originalRequest, for auth it hides the password
  * @param {Integer} responseStatus
  * @param {String} responseData, defaults to null
  * @param {Object} responseHeaders, defaults to an empty object ({})
+ * @param {Array<Error>} errors, defaults to an empty array ([])
  */
-function Response (originalRequest, responseStatus, responseData, responseHeaders) {
+function Response (originalRequest, responseStatus, responseData, responseHeaders, errors) {
   if (originalRequest.requestParams && originalRequest.requestParams.auth) {
     const maskedAuth = assign({}, originalRequest.requestParams.auth, { password: '***' })
     this.originalRequest = originalRequest.enhance({ auth: maskedAuth })
@@ -18,6 +21,7 @@ function Response (originalRequest, responseStatus, responseData, responseHeader
   this.responseStatus = responseStatus
   this.responseData = responseData !== undefined ? responseData : null
   this.responseHeaders = responseHeaders || {}
+  this.errors = errors || []
   this.timeElapsed = null
 }
 
@@ -96,7 +100,21 @@ Response.prototype = {
   },
 
   isContentTypeJSON () {
-    return /application\/json/.test(this.headers()['content-type'])
+    return REGEXP_CONTENT_TYPE_JSON.test(this.headers()['content-type'])
+  },
+
+  /**
+   * Returns the last error instance that caused the request to fail
+   *
+   * @return {Error|null}
+   */
+  error () {
+    const lastError = this.errors[this.errors.length - 1] || null
+    if (typeof lastError === 'string') {
+      return new Error(lastError)
+    }
+
+    return lastError
   },
 
   /**
@@ -104,8 +122,9 @@ Response.prototype = {
    *
    * @param {Object} extras
    *   @param {Integer} extras.status - it will replace the current status
-   *   @param {String} extras.rawData - it will replace the current rawStatus
+   *   @param {String} extras.rawData - it will replace the current rawData
    *   @param {Object} extras.headers - it will be merged with current headers
+   *   @param {Error} extras.error    - it will be added to the list of errors
    *
    * @return {Response}
    */
@@ -114,7 +133,8 @@ Response.prototype = {
       this.request(),
       extras.status || this.status(),
       extras.rawData || this.rawData(),
-      assign({}, this.headers(), extras.headers)
+      assign({}, this.headers(), extras.headers),
+      [...this.errors, extras.error]
     )
   }
 }

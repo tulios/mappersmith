@@ -8,7 +8,8 @@ import {
   getCountMiddlewareCurrent,
   getCountMiddlewareStack,
   resetCountMiddleware,
-  getManifest
+  getManifest,
+  createRequest
 } from 'spec/helper'
 
 describe('ClientBuilder middleware', () => {
@@ -79,7 +80,7 @@ describe('ClientBuilder middleware', () => {
   })
 
   it('calls request and response phase', async () => {
-    const requestPhase = jest.fn()
+    const requestPhase = jest.fn(() => createRequest())
     const responsePhase = jest.fn(() => Promise.resolve())
 
     const middleware = () => ({ request: requestPhase, response: responsePhase })
@@ -87,7 +88,7 @@ describe('ClientBuilder middleware', () => {
 
     await createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
-    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function))
+    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
   })
 
   it('can change the final request object', async () => {
@@ -150,5 +151,78 @@ describe('ClientBuilder middleware', () => {
 
     const response = await createClient().User.byId({ id: 1 })
     expect(response.request().headers()).toEqual(expect.objectContaining({ token: 'abc' }))
+  })
+
+  it('can renew the request from the response phase', async () => {
+    let token = 'not-renewed'
+    const m1 = () => ({
+      request: (request) => request.enhance({ headers: { 'Token': token } })
+    })
+
+    const m2 = () => ({
+      response: (next, renew) => {
+        return next().then((response) => {
+          if (response.request().header('token') === 'not-renewed') {
+            token = 'renewed'
+            return renew()
+          }
+
+          return response
+        })
+      }
+    })
+
+    manifest.middleware = [ m1, m2 ]
+
+    const response = await createClient().User.byId({ id: 1 })
+    expect(response.request().header('token')).toEqual('renewed')
+  })
+
+  it('prevents renew to cause infinite loops', async () => {
+    let executionCount = 0
+    const m1 = () => ({
+      response: (next, renew) => {
+        executionCount++
+        return executionCount < 5 ? renew() : next()
+      }
+    })
+
+    manifest.middleware = [ m1 ]
+
+    await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
+      'message',
+      '[Mappersmith] infinite loop detected (middleware stack invoked 3 times). Check the use of "renew" in one of the middleware.'
+    )
+  })
+
+  describe('when a middleware throws an error in the request phase', () => {
+    it('rethrows the error with the middleware name', async () => {
+      const m1 = () => ({
+        request: (request) => {
+          throw new Error('Random error!')
+        }
+      })
+
+      manifest.middleware = [ m1 ]
+
+      await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
+        'message',
+        '[Mappersmith] middleware "m1" failed in the request phase: Random error!'
+      )
+    })
+  })
+
+  describe('when a middleware pass a non-request object to the next phase', () => {
+    it('throws an error with the middleware name and type', async () => {
+      const m1 = () => ({ request: (request) => true })
+      const m2 = () => ({ request: (request) => request.enhance() })
+
+      manifest.middleware = [ m1, m2 ]
+
+      await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
+        'message',
+        '[Mappersmith] middleware "m1" should return "Request" but returned "boolean"'
+      )
+    })
   })
 })

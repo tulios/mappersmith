@@ -1,5 +1,39 @@
 # Changelog
 
+## 2.23.0
+
+  - Add a way to rename queryparams (`queryParamAlias`) #102
+
+## 2.22.2
+
+  - Cache some RegExp to improve overall performance
+
+## 2.22.1
+
+  - Bugfix: Abort requests on timeout (http gateway)
+
+## 2.22.0
+
+  - Improve "network error" handling #99
+  - Send error instance to `gateway#dispatchClientError` #99
+
+## 2.21.0
+
+  - Throw errors when the middleware request phase fails
+      * If the request phase throws an error (e.g.: `[Mappersmith] middleware "MyMiddleware" failed in the request phase: <Original error message>`)
+      * If the request phase returns something different than a mappersmith Request object (e.g.: `[Mappersmith] middleware "MyMiddleware" should return "Request" but returned "boolean"`)
+
+## 2.20.0
+
+  - Allow retries on successful calls
+  - Add the ability to re-run the middleware stack from the response phase (renew)
+  - Add Request#header to get a single header value by name
+
+## 2.19.0
+
+  - Add support for HEAD HTTP method #90
+  - Bugfix: Calculate `Ended-At` after evaluating `next` in the duration middleware
+
 ## 2.18.0
 
   - Add support to binary payloads when using fetch gateway #89
@@ -136,7 +170,7 @@
 
   - Add a retry middleware with exponential retry time #38
   - Add a new gateway backed by `fetch` #42
-  - Add `Request#header` to get a single header value by name
+  - Add `Response#header` to get a single header value by name
 
 ## 2.0.1
 

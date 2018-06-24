@@ -69,7 +69,8 @@ Fetch.prototype = Gateway.extends({
     if (timeout) {
       timer = setTimeout(() => {
         canceled = true
-        this.dispatchClientError(`Timeout (${timeout}ms)`)
+        const error = new Error(`Timeout (${timeout}ms)`)
+        this.dispatchClientError(error.message, error)
       }, timeout)
     }
 
@@ -102,7 +103,7 @@ Fetch.prototype = Gateway.extends({
         }
 
         clearTimeout(timer)
-        this.dispatchClientError(error.message)
+        this.dispatchClientError(error.message, error)
       })
   },
 

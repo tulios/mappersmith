@@ -10,11 +10,12 @@ describe('Response', () => {
     responseData,
     responseHeaders
 
-  const createResponse = () => new Response(
+  const createResponse = (errors) => new Response(
     request,
     responseStatus,
     responseData,
-    responseHeaders
+    responseHeaders,
+    errors
   )
 
   beforeEach(() => {
@@ -136,6 +137,29 @@ describe('Response', () => {
     })
   })
 
+  describe('#error', () => {
+    it('returns null by default', () => {
+      expect(createResponse().error()).toEqual(null)
+    })
+
+    it('returns the last error', () => {
+      const lastError = new Error('third error')
+      const response = createResponse([
+        new Error('first error'),
+        new Error('second error'),
+        lastError
+      ])
+
+      expect(response.error()).toEqual(lastError)
+    })
+
+    describe('when the error is just a string', () => {
+      it('returns an instance of error', () => {
+        expect(createResponse(['string error']).error()).toEqual(new Error('string error'))
+      })
+    })
+  })
+
   describe('#enhance', () => {
     it('creates a new response based on the current response replacing status', () => {
       const response = createResponse()
@@ -157,6 +181,15 @@ describe('Response', () => {
       const enhancedResponse = response.enhance({ headers: { 'x-special': 'yes' } })
       expect(enhancedResponse).not.toEqual(response)
       expect(enhancedResponse.headers()).toEqual({ 'x-old': 'no', 'x-special': 'yes' })
+    })
+
+    it('creates a new response based on the current response adding new errors to the stack', () => {
+      const originalError = new Error('original error')
+      const newError = new Error('new error')
+      const response = createResponse([originalError])
+      const enhancedResponse = response.enhance({ error: newError })
+      expect(enhancedResponse.error()).toEqual(newError)
+      expect(enhancedResponse.errors).toEqual([originalError, newError])
     })
   })
 })

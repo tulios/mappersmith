@@ -9,14 +9,15 @@ const DurationMiddleware = () => ({
   },
 
   response (next) {
-    const endedAt = Date.now()
-
     return next().then((response) => {
+      const endedAt = Date.now()
+      const startedAt = response.request().headers()['x-started-at']
+
       return response.enhance({
         headers: {
-          'X-Started-At': response.request().headers()['x-started-at'],
+          'X-Started-At': startedAt,
           'X-Ended-At': endedAt,
-          'X-Duration': endedAt - response.request().headers()['x-started-at']
+          'X-Duration': endedAt - startedAt
         }
       })
     })

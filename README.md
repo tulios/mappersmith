@@ -120,7 +120,11 @@ const client = forge({
       create: { method: 'post', path: '/blogs', headers: { 'X-Special-Header': 'value' } },
 
       // There are no restrictions for dynamic segments and HTTP methods
-      addComment: { method: 'put', path: '/blogs/{id}/comment' }
+      addComment: { method: 'put', path: '/blogs/{id}/comment' },
+
+      // `queryParamAlias` will map parameter names to their alias when
+      // constructing the query string
+      bySubject: { path: '/blogs', queryParamAlias: { subjectId: 'subject_id' } }
     }
   }
 })
@@ -164,6 +168,16 @@ And, of course, we can override the defaults:
 
 ```javascript
 client.User.byGroup({ group: 'cool' }) // https://my.api.com/users/groups/cool
+```
+
+### <a name="aliased-parameters"></a> Renaming query parameters
+
+Sometimes the expected format of your query parameters doesn't match that of your codebase. For example, maybe you're using `camelCase` in your code but the API you are calling expects `snake_case`. In that case, set `queryParamAlias` in the definition to an object that describes a mapping between your input parameter and the desired output format.
+
+This mapping will not be applied to params in the URL.
+
+```javascript
+client.Blog.all({ subjectId: 10 }) // https://my.api.com/blogs?subject_id=10
 ```
 
 ### <a name="body"></a> Body
@@ -320,6 +334,7 @@ Mappersmith will provide an instance of its own `Response` object to the promise
 * `headers()` - Returns an object with all headers, keys in lower case
 * `header(name)` - Returns the value of the header
 * `data()` - Returns the response data, if `Content-Type` is `application/json` it parses the response and returns an object
+* `error()` - Returns the last error instance that caused the request to fail or `null`
 
 ## <a name="middleware"></a> Middleware
 
@@ -391,6 +406,64 @@ const MyMiddleware = () => ({
   }
 })
 ```
+
+The response phase can optionally receive a function called "renew". This function can be used to rerun the
+middleware stack. This feature is useful in some scenarios, for example, automatically refreshing an expired access token.
+Example:
+
+```javascript
+const AccessTokenMiddleware = () => {
+  // maybe this is stored elsewhere, here for simplicity
+  let accessToken = null
+
+  return () => ({
+    request(request) {
+      return Promise
+        .resolve(accessToken)
+        .then((token) => token || fetchAccessToken())
+        .then((token) => {
+          accessToken = token
+          return request.enhance({
+            headers: { 'Authorization': `Token ${token}` }
+          })
+        })
+    },
+    response(next, renew) {
+      return next().catch(response => {
+        if (response.status() === 401) { // token expired
+          accessToken = null
+          return renew()
+        }
+
+        return next()
+      })
+    }
+  })
+}
+```
+
+Then:
+
+```javascript
+const AccessToken = AccessTokenMiddleware()
+const client = forge({
+  // ...
+  middleware: [ AccessToken ],
+  // ...
+})
+```
+
+"renew" can only be invoked sometimes before it's considered an infinite loop, make sure your middleware
+can distinguish an error from a "renew". By default, mappersmith will allow 2 calls to "renew". This can
+be configured with `configs.maxMiddlewareStackExecutionAllowed`. It's advised to keep this number low.
+Example:
+
+```javascript
+import { configs } from 'mappersmith'
+configs.maxMiddlewareStackExecutionAllowed = 3
+```
+
+If an infinite loop is detected, mappersmith will throw an error.
 
 ### <a name="global-middleware"></a> Global middleware
 
