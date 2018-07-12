@@ -772,7 +772,7 @@ It accepts the methods:
 * `method(resourceMethodName)`, ex: `method('byId')`
 * `with(resourceMethodArguments)`, ex: `with({ id: 1 })`
 * `status(statusNumber)`, ex: `status(204)`
-* `response(responseData)`, ex: `response({ user: { id: 1 } })`
+* `response(responseData | responseHandler)`, ex: `response({ user: { id: 1 } })` or `response(request => ({ user: { id: request.body().id } }))`
 * `assertObject()`
 
 Example using __jasmine__:
@@ -855,6 +855,28 @@ const mock = mockClient(client)
 console.log(mock.mostRecentCall())
 console.log(mock.callsCount())
 console.log(mock.calls())
+```
+
+`response` can accept a function to generate the response body. This can be useful when you want to return different responses for the same request being made several times.
+
+```javascript
+const generateResponse = () => {
+  let calls = 0
+
+  return request => {
+    calls++
+    if (calls === 1) {
+      return {}
+    }
+
+    return { user: { id: 1 } }
+  }
+}
+
+const mock = mockClient(client)
+  .resource('User')
+  .method('create')
+  .response(generateResponse())
 ```
 
 #### mockRequest
