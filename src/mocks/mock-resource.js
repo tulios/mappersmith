@@ -21,6 +21,7 @@ function MockResource (id, client) {
   this.responseHandler = null
   this.responseHeaders = {}
   this.responseStatus = 200
+  this.responseStatusHandler = null
   this.mockRequest = null
 }
 
@@ -60,8 +61,12 @@ MockResource.prototype = {
   /**
    * @return {MockResource}
    */
-  status (responseStatus) {
-    this.responseStatus = responseStatus
+  status (responder) {
+    if (typeof responder === 'function') {
+      this.responseStatusHandler = responder
+    } else {
+      this.responseStatus = responder
+    }
     return this
   },
 
@@ -113,12 +118,16 @@ MockResource.prototype = {
         ? this.responseHandler(finalRequest)
         : this.responseData
 
+      const responseStatus = this.responseStatusHandler
+        ? this.responseStatusHandler(finalRequest)
+        : this.responseStatus
+
       this.mockRequest = new MockRequest(this.id, {
         method: finalRequest.method(),
         url,
         body: finalRequest.body(),
         response: {
-          status: this.responseStatus,
+          status: responseStatus,
           headers: this.responseHeaders,
           body: responseBody
         }

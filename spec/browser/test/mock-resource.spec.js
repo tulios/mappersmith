@@ -132,12 +132,13 @@ describe('Test lib / mock resources', () => {
       .resource('Blog')
       .method('post')
       .response(() => 'Handler ran.')
+      .status(() => 204)
 
     client.Blog
       .post()
       .then((response) => {
         expect(response.request().method()).toEqual('post')
-        expect(response.status()).toEqual(200)
+        expect(response.status()).toEqual(204)
         expect(response.data()).toEqual('Handler ran.')
         done()
       })
