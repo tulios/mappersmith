@@ -18,6 +18,7 @@ function MockResource (id, client) {
   this.methodName = null
   this.requestParams = {}
   this.responseData = null
+  this.responseHandler = null
   this.responseHeaders = {}
   this.responseStatus = 200
   this.mockRequest = null
@@ -67,8 +68,12 @@ MockResource.prototype = {
   /**
    * @return {MockResource}
    */
-  response (responseData) {
-    this.responseData = responseData
+  response (responder) {
+    if (typeof responder === 'function') {
+      this.responseHandler = responder
+    } else {
+      this.responseData = responder
+    }
     return this
   },
 
@@ -104,6 +109,10 @@ MockResource.prototype = {
 
       const url = hasParamMatchers ? urlMatcher : finalRequest.url()
 
+      const responseBody = (this.responseHandler)
+        ? this.responseHandler(finalRequest)
+        : this.responseData
+
       this.mockRequest = new MockRequest(this.id, {
         method: finalRequest.method(),
         url,
@@ -111,7 +120,7 @@ MockResource.prototype = {
         response: {
           status: this.responseStatus,
           headers: this.responseHeaders,
-          body: this.responseData
+          body: responseBody
         }
       })
     }

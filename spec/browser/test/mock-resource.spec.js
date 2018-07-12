@@ -127,6 +127,26 @@ describe('Test lib / mock resources', () => {
     })
   })
 
+  it('works with functional responses', (done) => {
+    mockClient(client)
+      .resource('Blog')
+      .method('post')
+      .response(() => 'Handler ran.')
+
+    client.Blog
+      .post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('Handler ran.')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
   it('works without a response', (done) => {
     mockClient(client)
       .resource('Blog')
