@@ -93,17 +93,15 @@ MockResource.prototype = {
    * @return {MockRequest}
    */
   toMockRequest () {
-    if (!this.mockRequest) {
-      const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
-      const initialRequest = new Request(methodDescriptor, this.requestParams)
-      const middleware = this.manifest.createMiddleware({
-        resourceName: this.resourceName,
-        resourceMethod: this.methodName,
-        mockRequest: true
-      })
-      const finalRequest = middleware
-        .reduce((request, middleware) => middleware.request(request), initialRequest)
+    const finalRequest = this.createRequest()
+    const responseStatus = this.responseStatusHandler
+      ? this.responseStatusHandler(finalRequest)
+      : this.responseStatus
+    const responseData = this.responseHandler
+      ? this.responseHandler(finalRequest)
+      : this.responseData
 
+    if (!this.mockRequest) {
       const params = finalRequest.params()
       const hasParamMatchers = Object.keys(params).find((key) => typeof params[key] === 'function')
       const urlMatcher = (requestUrl, requestParams) => {
@@ -114,14 +112,6 @@ MockResource.prototype = {
 
       const url = hasParamMatchers ? urlMatcher : finalRequest.url()
 
-      const responseBody = (this.responseHandler)
-        ? this.responseHandler(finalRequest)
-        : this.responseData
-
-      const responseStatus = this.responseStatusHandler
-        ? this.responseStatusHandler(finalRequest)
-        : this.responseStatus
-
       this.mockRequest = new MockRequest(this.id, {
         method: finalRequest.method(),
         url,
@@ -129,10 +119,13 @@ MockResource.prototype = {
         response: {
           status: responseStatus,
           headers: this.responseHeaders,
-          body: responseBody
+          body: responseData
         }
       })
     }
+
+    this.mockRequest.responseStatus = responseStatus
+    this.mockRequest.responseData = responseData
 
     return this.mockRequest
   },
@@ -150,6 +143,21 @@ MockResource.prototype = {
       }
       return obj
     }, {})
+  },
+
+  /**
+   * @private
+   */
+  createRequest () {
+    const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
+    const initialRequest = new Request(methodDescriptor, this.requestParams)
+    const middleware = this.manifest.createMiddleware({
+      resourceName: this.resourceName,
+      resourceMethod: this.methodName,
+      mockRequest: true
+    })
+    return middleware
+      .reduce((request, middleware) => middleware.request(request), initialRequest)
   }
 }
 
