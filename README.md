@@ -771,7 +771,7 @@ It accepts the methods:
 * `resource(resourceName)`, ex: `resource('Users')`
 * `method(resourceMethodName)`, ex: `method('byId')`
 * `with(resourceMethodArguments)`, ex: `with({ id: 1 })`
-* `status(statusNumber)`, ex: `status(204)`
+* `status(statusNumber | statusHandler)`, ex: `status(204)` or `status(request => 200)`
 * `response(responseData | responseHandler)`, ex: `response({ user: { id: 1 } })` or `response(request => ({ user: { id: request.body().id } }))`
 * `assertObject()`
 
@@ -857,7 +857,7 @@ console.log(mock.callsCount())
 console.log(mock.calls())
 ```
 
-`response` can accept a function to generate the response body. This can be useful when you want to return different responses for the same request being made several times.
+`response` and `status` can accept functions to generate response body or status. This can be useful when you want to return different responses for the same request being made several times.
 
 ```javascript
 const generateResponse = () => {

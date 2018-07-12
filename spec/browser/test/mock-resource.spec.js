@@ -128,17 +128,39 @@ describe('Test lib / mock resources', () => {
   })
 
   it('works with functional responses', (done) => {
+    const getStatus = (function * statusGenerator () {
+      yield 204
+      yield 200
+    })()
+    const getResponse = (function * responseGenerator () {
+      yield 'first'
+      yield 'second'
+    })()
+
     mockClient(client)
       .resource('Blog')
       .method('post')
-      .response(() => 'Handler ran.')
+      .response(() => getResponse.next().value)
+      .status(() => getStatus.next().value)
 
     client.Blog
       .post()
       .then((response) => {
         expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(204)
+        expect(response.data()).toEqual('first')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+
+    client.Blog
+      .post()
+      .then((response) => {
         expect(response.status()).toEqual(200)
-        expect(response.data()).toEqual('Handler ran.')
+        expect(response.data()).toEqual('second')
         done()
       })
       .catch((response) => {
