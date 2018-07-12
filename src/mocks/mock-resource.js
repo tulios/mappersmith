@@ -109,9 +109,9 @@ MockResource.prototype = {
 
       const url = hasParamMatchers ? urlMatcher : finalRequest.url()
 
-      const responseBody = (this.responseHandler)?
-        this.responseHandler(finalRequest) :
-        this.responseData
+      const responseBody = (this.responseHandler)
+        ? this.responseHandler(finalRequest)
+        : this.responseData
 
       this.mockRequest = new MockRequest(this.id, {
         method: finalRequest.method(),
