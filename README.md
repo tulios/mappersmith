@@ -771,8 +771,8 @@ It accepts the methods:
 * `resource(resourceName)`, ex: `resource('Users')`
 * `method(resourceMethodName)`, ex: `method('byId')`
 * `with(resourceMethodArguments)`, ex: `with({ id: 1 })`
-* `status(statusNumber | statusHandler)`, ex: `status(204)` or `status(request => 200)`
-* `response(responseData | responseHandler)`, ex: `response({ user: { id: 1 } })` or `response(request => ({ user: { id: request.body().id } }))`
+* `status(statusNumber | statusHandler)`, ex: `status(204)` or `status((request, mock) => 200)`
+* `response(responseData | responseHandler)`, ex: `response({ user: { id: 1 } })` or `response((request, mock) => ({ user: { id: request.body().id } }))`
 * `assertObject()`
 
 Example using __jasmine__:
@@ -861,16 +861,9 @@ console.log(mock.calls())
 
 ```javascript
 const generateResponse = () => {
-  let calls = 0
-
-  return request => {
-    calls++
-    if (calls === 1) {
-      return {}
-    }
-
-    return { user: { id: 1 } }
-  }
+  return (request, mock) => mock.callsCount() === 0
+    ? {}
+    : { user: { id: 1 } }
 }
 
 const mock = mockClient(client)

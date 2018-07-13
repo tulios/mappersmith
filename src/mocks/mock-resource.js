@@ -1,4 +1,5 @@
 import MockRequest from './mock-request'
+import MockAssert from './mock-assert'
 import Request from '../request'
 
 const VALUE_NOT_MATCHED = '<MAPPERSMITH_VALUE_NOT_MATCHED>'
@@ -94,11 +95,16 @@ MockResource.prototype = {
    */
   toMockRequest () {
     const finalRequest = this.createRequest()
+    const assertObject = this.mockRequest
+      ? this.mockRequest.assertObject()
+      : new MockAssert([])
+
     const responseStatus = this.responseStatusHandler
-      ? this.responseStatusHandler(finalRequest)
+      ? this.responseStatusHandler(finalRequest, assertObject)
       : this.responseStatus
+
     const responseData = this.responseHandler
-      ? this.responseHandler(finalRequest)
+      ? this.responseHandler(finalRequest, assertObject)
       : this.responseData
 
     if (!this.mockRequest) {
