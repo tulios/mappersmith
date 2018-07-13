@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.24.0
+
+  - Add response callback support to `mockClient` #91
+  - Add status callback support to `mockClient` #105
+
 ## 2.23.0
 
   - Add a way to rename queryparams (`queryParamAlias`) #102
