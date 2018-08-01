@@ -127,6 +127,39 @@ describe('Test lib / mock resources', () => {
     })
   })
 
+  it('sets responseData and content type correctly over multiple mock requests', (done) => {
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .response({key: 'value'})
+
+    Promise
+      .resolve()
+      .then(() => client.User.all())
+      .then((response) => {
+        expect(response.responseData).toEqual('{"key":"value"}')
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'content-type': 'application/json'
+        }))
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+      .then(() => client.User.all())
+      .then((response) => {
+        expect(response.responseData).toEqual('{"key":"value"}')
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'content-type': 'application/json'
+        }))
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
   it('works with functional responses', (done) => {
     const getStatus = (request, mock) => mock.callsCount() === 0 ? 204 : 200
     const getResponse = (request, mock) => mock.callsCount() === 0 ? 'first' : 'second'
