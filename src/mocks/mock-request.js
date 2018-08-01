@@ -21,21 +21,30 @@ function MockRequest (id, props) {
   this.url = props.url
   this.bodyFunction = typeof props.body === 'function'
   this.body = this.bodyFunction ? props.body : toQueryString(props.body)
-  this.responseData = props.response.body
   this.responseHeaders = props.response.headers || {}
+  this.setResponseData(props.response.body)
   this.responseStatus = props.response.status || 200
 
   this.calls = []
-
-  if (isPlainObject(this.responseData)) {
-    this.responseData = JSON.stringify(this.responseData)
-    if (!this.responseHeaders['content-type']) {
-      this.responseHeaders['content-type'] = 'application/json'
-    }
-  }
 }
 
 MockRequest.prototype = {
+  /**
+   * If passed a plain object, the data is stringified and the content-type header is set to JSON
+   *
+   * @public
+   */
+  setResponseData (responseData) {
+    if (isPlainObject(responseData)) {
+      this.responseData = JSON.stringify(responseData)
+      if (!this.responseHeaders['content-type']) {
+        this.responseHeaders['content-type'] = 'application/json'
+      }
+    } else {
+      this.responseData = responseData
+    }
+  },
+
   /**
    * @return {Response}
    */

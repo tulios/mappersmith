@@ -131,7 +131,7 @@ MockResource.prototype = {
     }
 
     this.mockRequest.responseStatus = responseStatus
-    this.mockRequest.responseData = responseData
+    this.mockRequest.setResponseData(responseData)
 
     return this.mockRequest
   },
