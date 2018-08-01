@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.24.1
+
+  - Bugfix: Plain object response data is not stringified on subsequent mock requests #107
+
 ## 2.24.0
 
   - Add response callback support to `mockClient` #91
