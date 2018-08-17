@@ -155,7 +155,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
         done.fail(`Expected this request to fail: ${errorMessage(response)}`)
       })
       .catch((response) => {
-        expect(response.status()).toEqual(400)
+        expect(response.status()).toEqual(408)
         expect(response.data()).toEqual('Timeout (100ms)')
         done()
       })

@@ -3,6 +3,7 @@ import Response from '../response'
 import { configs } from '../mappersmith'
 // Fetch can be used in nodejs, so it should always use the btoa util
 import { assign, btoa } from '../utils'
+import TimeoutError from './timeout-error'
 
 const fetch = configs.fetch
 
@@ -69,7 +70,7 @@ Fetch.prototype = Gateway.extends({
     if (timeout) {
       timer = setTimeout(() => {
         canceled = true
-        const error = new Error(`Timeout (${timeout}ms)`)
+        const error = new TimeoutError(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
       }, timeout)
     }
