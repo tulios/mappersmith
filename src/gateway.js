@@ -52,7 +52,7 @@ Gateway.prototype = {
   },
 
   dispatchClientError (message, error) {
-    if (TimeoutError.isTimeoutError(error)) {
+    if (TimeoutError.isTimeoutError(error) && this.options().enableHTTP408OnTimeouts) {
       this.failCallback(new Response(this.request, 408, message, {}, [error]))
     } else {
       this.failCallback(new Response(this.request, 400, message, {}, [error]))

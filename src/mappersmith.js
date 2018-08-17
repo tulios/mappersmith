@@ -34,6 +34,13 @@ export const configs = {
      */
     emulateHTTP: false,
 
+    /**
+     * Setting this option will return HTTP status 408 (Request Timeout) when a request times
+     * out. When "false", HTTP status 400 (Bad Request) will be used instead.
+     * @default false
+     */
+    enableHTTP408OnTimeouts: false,
+
     XHR: {
       /**
        * Indicates whether or not cross-site Access-Control requests should be made using credentials

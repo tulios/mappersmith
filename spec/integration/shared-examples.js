@@ -18,6 +18,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
   let successLogBuffer,
     errorLogBuffer,
     previousGateway,
+    previousGatewayConfigs,
     Client
 
   beforeEach(() => {
@@ -27,13 +28,16 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
     setSuccessLogger((message) => successLogBuffer.push(message))
     setErrorLogger((message) => errorLogBuffer.push(message))
 
+    previousGatewayConfigs = configs.gatewayConfigs
     previousGateway = configs.gateway
     configs.gateway = gateway
+
     Client = forge(createManifest(params.host), gateway)
   })
 
   afterEach(() => {
     configs.gateway = previousGateway
+    configs.gatewayConfigs = previousGatewayConfigs
     setSuccessLogger(defaultSuccessLogger)
     setErrorLogger(defaultErrorLogger)
   })
@@ -149,16 +153,32 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
     })
   })
 
-  describe('with timeout', () => {
+  describe('with timeout and enableHTTP408OnTimeouts=false (default)', () => {
     it('rejects the promise', (done) => {
       Client.Timeout.get({ waitTime: 1000, timeout: 100, cache: Date.now() }).then((response) => {
         done.fail(`Expected this request to fail: ${errorMessage(response)}`)
       })
       .catch((response) => {
-        expect(response.status()).toEqual(408)
+        expect(response.status()).toEqual(400)
         expect(response.data()).toEqual('Timeout (100ms)')
         done()
       })
+    })
+  })
+
+  fdescribe('with timeout and enableHTTP408OnTimeouts=true', () => {
+    it('rejects the promise', (done) => {
+      configs.gatewayConfigs.enableHTTP408OnTimeouts = true
+      Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)
+
+      Client.Timeout.get({ waitTime: 1000, timeout: 100, cache: Date.now() }).then((response) => {
+        done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+      })
+        .catch((response) => {
+          expect(response.status()).toEqual(408)
+          expect(response.data()).toEqual('Timeout (100ms)')
+          done()
+        })
     })
   })
 
