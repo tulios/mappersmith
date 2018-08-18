@@ -18,7 +18,6 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
   let successLogBuffer,
     errorLogBuffer,
     previousGateway,
-    previousGatewayConfigs,
     Client
 
   beforeEach(() => {
@@ -28,7 +27,6 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
     setSuccessLogger((message) => successLogBuffer.push(message))
     setErrorLogger((message) => errorLogBuffer.push(message))
 
-    previousGatewayConfigs = configs.gatewayConfigs
     previousGateway = configs.gateway
     configs.gateway = gateway
 
@@ -37,7 +35,6 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
 
   afterEach(() => {
     configs.gateway = previousGateway
-    configs.gatewayConfigs = previousGatewayConfigs
     setSuccessLogger(defaultSuccessLogger)
     setErrorLogger(defaultErrorLogger)
   })
@@ -166,7 +163,17 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
     })
   })
 
-  fdescribe('with timeout and enableHTTP408OnTimeouts=true', () => {
+  describe('with timeout and enableHTTP408OnTimeouts=true', () => {
+    let previousEnableHTTP408OnTimeouts
+
+    beforeEach(() => {
+      previousEnableHTTP408OnTimeouts = configs.gatewayConfigs.enableHTTP408OnTimeouts
+    })
+
+    afterEach(() => {
+      configs.gatewayConfigs.enableHTTP408OnTimeouts = previousEnableHTTP408OnTimeouts
+    })
+
     it('rejects the promise', (done) => {
       configs.gatewayConfigs.enableHTTP408OnTimeouts = true
       Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)
