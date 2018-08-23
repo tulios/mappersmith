@@ -29,6 +29,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
 
     previousGateway = configs.gateway
     configs.gateway = gateway
+
     Client = forge(createManifest(params.host), gateway)
   })
 
@@ -149,7 +150,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
     })
   })
 
-  describe('with timeout', () => {
+  describe('with timeout and enableHTTP408OnTimeouts=false (default)', () => {
     it('rejects the promise', (done) => {
       Client.Timeout.get({ waitTime: 1000, timeout: 100, cache: Date.now() }).then((response) => {
         done.fail(`Expected this request to fail: ${errorMessage(response)}`)
@@ -159,6 +160,32 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
         expect(response.data()).toEqual('Timeout (100ms)')
         done()
       })
+    })
+  })
+
+  describe('with timeout and enableHTTP408OnTimeouts=true', () => {
+    let previousEnableHTTP408OnTimeouts
+
+    beforeEach(() => {
+      previousEnableHTTP408OnTimeouts = configs.gatewayConfigs.enableHTTP408OnTimeouts
+    })
+
+    afterEach(() => {
+      configs.gatewayConfigs.enableHTTP408OnTimeouts = previousEnableHTTP408OnTimeouts
+    })
+
+    it('rejects the promise', (done) => {
+      configs.gatewayConfigs.enableHTTP408OnTimeouts = true
+      Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)
+
+      Client.Timeout.get({ waitTime: 1000, timeout: 100, cache: Date.now() }).then((response) => {
+        done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+      })
+        .catch((response) => {
+          expect(response.status()).toEqual(408)
+          expect(response.data()).toEqual('Timeout (100ms)')
+          done()
+        })
     })
   })
 

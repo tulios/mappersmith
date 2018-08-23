@@ -1,4 +1,5 @@
 import MockRequest from './mock-request'
+import MockAssert from './mock-assert'
 import Request from '../request'
 
 const VALUE_NOT_MATCHED = '<MAPPERSMITH_VALUE_NOT_MATCHED>'
@@ -21,6 +22,7 @@ function MockResource (id, client) {
   this.responseHandler = null
   this.responseHeaders = {}
   this.responseStatus = 200
+  this.responseStatusHandler = null
   this.mockRequest = null
 }
 
@@ -60,8 +62,12 @@ MockResource.prototype = {
   /**
    * @return {MockResource}
    */
-  status (responseStatus) {
-    this.responseStatus = responseStatus
+  status (responder) {
+    if (typeof responder === 'function') {
+      this.responseStatusHandler = responder
+    } else {
+      this.responseStatus = responder
+    }
     return this
   },
 
@@ -88,17 +94,20 @@ MockResource.prototype = {
    * @return {MockRequest}
    */
   toMockRequest () {
-    if (!this.mockRequest) {
-      const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
-      const initialRequest = new Request(methodDescriptor, this.requestParams)
-      const middleware = this.manifest.createMiddleware({
-        resourceName: this.resourceName,
-        resourceMethod: this.methodName,
-        mockRequest: true
-      })
-      const finalRequest = middleware
-        .reduce((request, middleware) => middleware.request(request), initialRequest)
+    const finalRequest = this.createRequest()
+    const assertObject = this.mockRequest
+      ? this.mockRequest.assertObject()
+      : new MockAssert([])
 
+    const responseStatus = this.responseStatusHandler
+      ? this.responseStatusHandler(finalRequest, assertObject)
+      : this.responseStatus
+
+    const responseData = this.responseHandler
+      ? this.responseHandler(finalRequest, assertObject)
+      : this.responseData
+
+    if (!this.mockRequest) {
       const params = finalRequest.params()
       const hasParamMatchers = Object.keys(params).find((key) => typeof params[key] === 'function')
       const urlMatcher = (requestUrl, requestParams) => {
@@ -109,21 +118,20 @@ MockResource.prototype = {
 
       const url = hasParamMatchers ? urlMatcher : finalRequest.url()
 
-      const responseBody = (this.responseHandler)
-        ? this.responseHandler(finalRequest)
-        : this.responseData
-
       this.mockRequest = new MockRequest(this.id, {
         method: finalRequest.method(),
         url,
         body: finalRequest.body(),
         response: {
-          status: this.responseStatus,
+          status: responseStatus,
           headers: this.responseHeaders,
-          body: responseBody
+          body: responseData
         }
       })
     }
+
+    this.mockRequest.responseStatus = responseStatus
+    this.mockRequest.setResponseData(responseData)
 
     return this.mockRequest
   },
@@ -141,6 +149,21 @@ MockResource.prototype = {
       }
       return obj
     }, {})
+  },
+
+  /**
+   * @private
+   */
+  createRequest () {
+    const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
+    const initialRequest = new Request(methodDescriptor, this.requestParams)
+    const middleware = this.manifest.createMiddleware({
+      resourceName: this.resourceName,
+      resourceMethod: this.methodName,
+      mockRequest: true
+    })
+    return middleware
+      .reduce((request, middleware) => middleware.request(request), initialRequest)
   }
 }
 

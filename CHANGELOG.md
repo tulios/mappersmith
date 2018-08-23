@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.25.0
+
+  - Returns HTTP 408 (instead of 400) when request times out #88
+
+## 2.24.1
+
+  - Bugfix: Plain object response data is not stringified on subsequent mock requests #107
+
+## 2.24.0
+
+  - Add response callback support to `mockClient` #91
+  - Add status callback support to `mockClient` #105
+
 ## 2.23.0
 
   - Add a way to rename queryparams (`queryParamAlias`) #102
