@@ -127,18 +127,74 @@ describe('Test lib / mock resources', () => {
     })
   })
 
+  it('sets responseData and content type correctly over multiple mock requests', (done) => {
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .response({key: 'value'})
+
+    Promise
+      .resolve()
+      .then(() => client.User.all())
+      .then((response) => {
+        expect(response.responseData).toEqual('{"key":"value"}')
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'content-type': 'application/json'
+        }))
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+      .then(() => client.User.all())
+      .then((response) => {
+        expect(response.responseData).toEqual('{"key":"value"}')
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'content-type': 'application/json'
+        }))
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
   it('works with functional responses', (done) => {
+    const getStatus = (request, mock) => mock.callsCount() === 0 ? 204 : 200
+    const getResponse = (request, mock) => mock.callsCount() === 0 ? 'first' : 'second'
+
     mockClient(client)
       .resource('Blog')
       .method('post')
-      .response(() => 'Handler ran.')
+      .status(getStatus)
+      .response(getResponse)
 
-    client.Blog
-      .post()
-      .then((response) => {
+    Promise
+      .resolve()
+      .then(() => client.Blog.post())
+      .then((response) => { // returns first value of yield
         expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(204)
+        expect(response.data()).toEqual('first')
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+      .then(() => client.Blog.post())
+      .then((response) => { // returns second value of yield
         expect(response.status()).toEqual(200)
-        expect(response.data()).toEqual('Handler ran.')
+        expect(response.data()).toEqual('second')
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+      .then(() => client.Blog.post())
+      .then((response) => { // keeps returning second value
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('second')
         done()
       })
       .catch((response) => {
