@@ -11,9 +11,7 @@ describe('Middleware / RetryMiddleware', () => {
     expect(RetryMiddleware({}).name).toEqual('RetryMiddleware')
   })
 
-  it('should behave like retry examples', () => {
-    retryMiddlewareExamples(middleware, retries, headerRetryCount, headerRetryTime)
-  })
+  retryMiddlewareExamples(middleware, retries, headerRetryCount, headerRetryTime)
 })
 
 describe('calculateExponentialRetryTime', () => {
