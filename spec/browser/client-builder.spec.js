@@ -1,7 +1,7 @@
 import ClientBuilder from 'src/client-builder'
 import Manifest from 'src/manifest'
 import Request from 'src/request'
-import { getManifest } from 'spec/helper'
+import { getManifest, getManifestWithResourceConf } from 'spec/helper'
 
 describe('ClientBuilder', () => {
   let manifest,
@@ -57,6 +57,38 @@ describe('ClientBuilder', () => {
     }))
 
     expect(gatewayInstance.call).toHaveBeenCalled()
+  })
+
+  it('accepts manifest level resource configs', async () => {
+    manifest = getManifestWithResourceConf()
+
+    gatewayInstance = { call: jest.fn() }
+    gatewayClass = jest.fn(() => gatewayInstance)
+    configs = {
+      Promise,
+      gatewayConfigs: {
+        gateway: 'configs'
+      },
+      middleware: [],
+      context: {}
+    }
+
+    GatewayClassFactory = () => gatewayClass
+    clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, configs)
+    client = clientBuilder.build()
+
+    gatewayInstance.call.mockReturnValue(Promise.resolve('value'))
+    const response = await client.Blog.post({ customAttr: 'blog post' })
+    expect(response).toEqual('value')
+    expect(gatewayClass).toHaveBeenCalledWith(expect.any(Request), configs.gatewayConfigs)
+    expect(gatewayInstance.call).toHaveBeenCalled()
+
+    const request = gatewayClass.mock.calls[0][0]
+    expect(request).toEqual(expect.any(Request))
+    expect(request.method()).toEqual('post')
+    expect(request.host()).toEqual('http://example.org')
+    expect(request.path()).toEqual('/blogs')
+    expect(request.body()).toEqual('blog post')
   })
 
   describe('when a resource method is called', () => {
