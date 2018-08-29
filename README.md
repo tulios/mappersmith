@@ -211,6 +211,7 @@ client.Blog.create({
 ```
 
 __NOTE__: It's possible to post body as JSON, check the [EncodeJsonMiddleware](#encode-json-middleware) below for more information
+__NOTE__: The `bodyAttr` param can be set at manifest level.
 
 ### <a name="headers"></a> Headers
 
@@ -231,6 +232,8 @@ If `headers` is not possible as a special parameter for your API you can configu
 
 client.User.all({ h: { Authorization: 'token 1d1435k' } })
 ```
+
+__NOTE__: The `headersAttr` param can be set at manifest level.
 
 ### <a name="basic-auth"></a> Basic auth
 
@@ -256,6 +259,7 @@ client.User.all({ secret: { username: 'bob', password: 'bob' } })
 ```
 
 __NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#basic-auth-middleware), check the middleware section below for more information.
+__NOTE__: The `authAttr` param can be set at manifest level.
 
 ### <a name="timeout"></a> Timeout
 
@@ -278,6 +282,7 @@ client.User.all({ maxWait: 500 })
 ```
 
 __NOTE__: A default timeout can be configured with the use of the [TimeoutMiddleware](#timeout-middleware), check the middleware section below for more information.
+__NOTE__: The `timeoutAttr` param can be set at manifest level.
 
 ### <a name="alternative-host"></a> Alternative host
 
