@@ -10,18 +10,14 @@ describe('Middleware / RetryMiddleware', () => {
   const headerRetryTime = 'X-Mappersmith-Retry-Time'
   let middleware
 
-  beforeEach(() => {
-    setRetryConfigs({ retries, headerRetryCount, headerRetryTime })
-    middleware = RetryMiddleware()
-  })
+  setRetryConfigs({ retries, headerRetryCount, headerRetryTime })
+  middleware = RetryMiddleware()
 
   it('exposes name', () => {
     expect(RetryMiddleware.name).toEqual('RetryMiddleware')
   })
 
-  it('should behave like retry examples', () => {
-    retryMiddlewareExamples(middleware, retries, headerRetryCount, headerRetryTime)
-  })
+  retryMiddlewareExamples(middleware, retries, headerRetryCount, headerRetryTime)
 })
 
 describe('calculateExponentialRetryTime', () => {
