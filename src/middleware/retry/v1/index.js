@@ -17,9 +17,10 @@ let retryConfigs = assign({}, defaultRetryConfigs)
  *   @param {Number} newConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} newConfigs.retries (default: 5) - max retries
  */
-export const setRetryConfigs = (newConfigs) => {
+export const setRetryConfigs = newConfigs => {
   console.warn('The use of setRetryConfigs is deprecated - use RetryMiddleware v2 instead.')
   retryConfigs = assign({}, retryConfigs, newConfigs)
+  middlewareInstance = RetryMiddlewareV2(retryConfigs)()
 }
 
 /**
@@ -37,9 +38,18 @@ export const setRetryConfigs = (newConfigs) => {
  *
  * Parameters can be configured using the method `setRetryConfigs`.
  */
-const RetryMiddleware = RetryMiddlewareV2(retryConfigs)
+let middlewareInstance = RetryMiddlewareV2(retryConfigs)()
 
-export default RetryMiddleware
+export default function RetryMiddleware () {
+  return {
+    request (request) {
+      return middlewareInstance.request(request)
+    },
+    response (next) {
+      return middlewareInstance.response(next)
+    }
+  }
+}
 
 /**
  * Increases the retry time for each attempt using a randomization function that grows exponentially.
