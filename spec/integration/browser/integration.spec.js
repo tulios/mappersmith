@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import 'whatwg-fetch'
 import md5 from 'js-md5'
 

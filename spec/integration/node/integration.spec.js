@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import '@babel/polyfill'
 import md5 from 'js-md5'
 import integrationTestsForGateway from 'spec/integration/shared-examples'
 
