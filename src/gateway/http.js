@@ -5,7 +5,7 @@ import https from 'https'
 import { assign } from '../utils'
 import Gateway from '../gateway'
 import Response from '../response'
-import TimeoutError from './timeout-error'
+import { createTimeoutError } from './timeout-error'
 
 function HTTP (request) {
   Gateway.apply(this, arguments)
@@ -79,7 +79,7 @@ HTTP.prototype = Gateway.extends({
       httpRequest.setTimeout(timeout, () => {
         this.canceled = true
         httpRequest.abort()
-        const error = new TimeoutError(`Timeout (${timeout}ms)`)
+        const error = createTimeoutError(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
       })
     }

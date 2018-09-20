@@ -1,7 +1,7 @@
 import { performanceNow, assign, toQueryString, isPlainObject } from './utils'
 import { configs as defaultConfigs } from './mappersmith'
 import Response from './response'
-import TimeoutError from './gateway/timeout-error'
+import { isTimeoutError } from './gateway/timeout-error'
 
 const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 
@@ -52,7 +52,7 @@ Gateway.prototype = {
   },
 
   dispatchClientError (message, error) {
-    if (TimeoutError.isTimeoutError(error) && this.options().enableHTTP408OnTimeouts) {
+    if (isTimeoutError(error) && this.options().enableHTTP408OnTimeouts) {
       this.failCallback(new Response(this.request, 408, message, {}, [error]))
     } else {
       this.failCallback(new Response(this.request, 400, message, {}, [error]))

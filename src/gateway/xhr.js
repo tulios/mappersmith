@@ -1,7 +1,7 @@
 import Gateway from '../gateway'
 import Response from '../response'
 import { assign, parseResponseHeaders, btoa } from '../utils'
-import TimeoutError from './timeout-error'
+import { createTimeoutError } from './timeout-error'
 
 const toBase64 = window.btoa || btoa
 
@@ -61,14 +61,14 @@ XHR.prototype = Gateway.extends({
       xmlHttpRequest.addEventListener('timeout', () => {
         this.canceled = true
         clearTimeout(this.timer)
-        const error = new TimeoutError(`Timeout (${timeout}ms)`)
+        const error = createTimeoutError(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
       })
 
       // PhantomJS doesn't support timeout for XMLHttpRequest
       this.timer = setTimeout(() => {
         this.canceled = true
-        const error = new TimeoutError(`Timeout (${timeout}ms)`)
+        const error = createTimeoutError(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
       }, timeout + 1)
     }
