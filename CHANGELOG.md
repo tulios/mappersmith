@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.25.1
+
+  - Allow setting of some resource configs at manifest level #114
+  - Bugfix: Reject the promise when using the retry middleware and another middleware on the stack throws an error #118
+
 ## 2.25.0
 
   - Returns HTTP 408 (instead of 400) when request times out #88
