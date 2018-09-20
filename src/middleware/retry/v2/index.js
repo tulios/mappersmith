@@ -1,5 +1,6 @@
 import { configs } from '../../../index'
 import { assign } from '../../../utils'
+import Response from '../../../response'
 
 export const defaultRetryConfigs = {
   headerRetryCount: 'X-Mappersmith-Retry-Count',
@@ -38,6 +39,7 @@ export default (customConfigs = {}) => function RetryMiddleware () {
   return {
     request (request) {
       this.enableRetry = (request.method() === 'get')
+      this.inboundRequest = request
       return request
     },
 
@@ -50,13 +52,13 @@ export default (customConfigs = {}) => function RetryMiddleware () {
 
       return new configs.Promise((resolve, reject) => {
         const retryTime = retryConfigs.initialRetryTimeInSecs * 1000
-        retriableRequest(resolve, reject, next)(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
+        retriableRequest(resolve, reject, next, this.inboundRequest)(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
       })
     }
   }
 }
 
-const retriableRequest = (resolve, reject, next) => {
+const retriableRequest = (resolve, reject, next, request) => {
   const retry = (retryTime, retryCount, retryConfigs) => {
     const nextRetryTime = calculateExponentialRetryTime(retryTime, retryConfigs)
     const shouldRetry = retryCount < retryConfigs.retries
@@ -66,14 +68,28 @@ const retriableRequest = (resolve, reject, next) => {
 
     next()
       .then((response) => {
-        shouldRetry && retryConfigs.validateRetry(response)
-          ? scheduleRequest()
-          : resolve(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
+        if (shouldRetry && retryConfigs.validateRetry(response)) {
+          scheduleRequest()
+        } else {
+          try {
+            resolve(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
+          } catch (e) {
+            const errorMessage = response instanceof Error ? response.message : e.message
+            reject(new Response(request, 400, errorMessage, {}, [response]))
+          }
+        }
       })
       .catch((response) => {
-        shouldRetry && retryConfigs.validateRetry(response)
-          ? scheduleRequest()
-          : reject(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
+        if (shouldRetry && retryConfigs.validateRetry(response)) {
+          scheduleRequest()
+        } else {
+          try {
+            reject(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
+          } catch (e) {
+            const errorMessage = response instanceof Error ? response.message : e.message
+            reject(new Response(request, 400, errorMessage, {}, [response]))
+          }
+        }
       })
   }
 
