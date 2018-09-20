@@ -278,5 +278,28 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
         done()
       })
     })
+
+    describe('a response earlier in the middleware chain throws', () => {
+      beforeEach(() => {
+        const BrokenMiddleware = () => ({
+          response: (next) => next().then(response => {
+            throw new Error('💣')
+          })
+        })
+        Client = forge(createManifest(params.host, [BrokenMiddleware, RetryMiddleware({ initialRetryTimeInSecs: 0.05, retries: 3 })]), gateway)
+      })
+
+      it('should handle the promise rejection', (done) => {
+        Client.Failure.onOdd({ cache: Date.now() }).then((response) => {
+          done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+        })
+        .catch((response) => {
+          expect(response.status()).toEqual(400)
+          expect(response.errors.length).toEqual(1)
+          expect(response.errors[0].message).toEqual('💣')
+          done()
+        })
+      })
+    })
   })
 }

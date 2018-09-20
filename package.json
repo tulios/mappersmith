@@ -70,7 +70,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "express": "^4.15.4",
-    "faux-jax": "^5.0.6",
+    "faux-jax-tulios": "^5.0.8",
     "jasmine": "^2.5.2",
     "jasmine-core": "^2.5.2",
     "jest": "^23.5.0",

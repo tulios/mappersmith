@@ -1,4 +1,4 @@
-import fauxJax from 'faux-jax'
+import fauxJax from 'faux-jax-tulios'
 
 import { configs } from 'src/index'
 import XHR from 'src/gateway/xhr'

@@ -2653,14 +2653,14 @@ fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
 
-faux-jax@^5.0.6:
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/faux-jax/-/faux-jax-5.0.6.tgz#29931f1784e7c3772268f6d442762c4b1d846dde"
+faux-jax-tulios@^5.0.8:
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/faux-jax-tulios/-/faux-jax-tulios-5.0.8.tgz#d5a66c9f5d59f4cb01ce2e3ea94fb1011a244799"
   dependencies:
     bowser "^1.4.5"
     lodash "^4.16.3"
     lodash-compat "^3.10.2"
-    mitm "^1.3.2"
+    mitm-papandreou "^1.3.3-patch5"
     writable-window-method "1.0.3"
 
 faye-websocket@^0.10.0:
@@ -4542,10 +4542,11 @@ minizlib@^1.1.0:
   dependencies:
     minipass "^2.2.1"
 
-mitm@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/mitm/-/mitm-1.3.2.tgz#188d8620601a1569133d9e7085fcf011e799265d"
+mitm-papandreou@^1.3.3-patch5:
+  version "1.3.3-patch5"
+  resolved "https://registry.yarnpkg.com/mitm-papandreou/-/mitm-papandreou-1.3.3-patch5.tgz#3fb5205e8d0f693b06789848b4698551a4de2c7f"
   dependencies:
+    semver ">= 5 < 6"
     underscore ">= 1.1.6 < 1.6"
 
 mixin-deep@^1.2.0:
@@ -5752,7 +5753,7 @@ semver@5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
-semver@^5.4.1, semver@^5.5.0:
+"semver@>= 5 < 6", semver@^5.4.1, semver@^5.5.0:
   version "5.5.1"
   resolved "https://registry.npmjs.org/semver/-/semver-5.5.1.tgz#7dfdd8814bdb7cabc7be0fb1d734cfb66c940477"
 
