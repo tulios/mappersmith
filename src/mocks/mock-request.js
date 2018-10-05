@@ -1,6 +1,6 @@
 import MockAssert from './mock-assert'
 import Response from '../response'
-import { isPlainObject, toQueryString } from '../utils'
+import { isPlainObject, sortedUrl, toSortedQueryString } from '../utils'
 
 /**
  * @param {number} id
@@ -20,7 +20,7 @@ function MockRequest (id, props) {
   this.urlFunction = typeof props.url === 'function'
   this.url = props.url
   this.bodyFunction = typeof props.body === 'function'
-  this.body = this.bodyFunction ? props.body : toQueryString(props.body)
+  this.body = this.bodyFunction ? props.body : toSortedQueryString(props.body)
   this.responseHeaders = props.response.headers || {}
   this.setResponseData(props.response.body)
   this.responseStatus = props.response.status || 200
@@ -73,11 +73,11 @@ MockRequest.prototype = {
   isExactMatch (request) {
     const bodyMatch = this.bodyFunction
       ? this.body(request.body())
-      : this.body === toQueryString(request.body())
+      : this.body === toSortedQueryString(request.body())
 
     const urlMatch = this.urlFunction
       ? this.url(request.url(), request.params())
-      : this.url === request.url()
+      : sortedUrl(this.url) === sortedUrl(request.url())
 
     return this.method === request.method() && urlMatch && bodyMatch
   },

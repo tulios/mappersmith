@@ -2,6 +2,7 @@ import MockDate from 'mockdate'
 
 import {
   toQueryString,
+  sortedUrl,
   parseResponseHeaders,
   lowerCaseObjectKeys,
   performanceNow,
@@ -61,6 +62,22 @@ describe('utils', () => {
           const params = decodeURIComponent(toQueryString({a: [1, [2, [3, 4]]]}))
           expect(params).toEqual('a[]=1&a[][]=2&a[][][]=3&a[][][]=4')
         })
+      })
+    })
+  })
+
+  describe('#sortedUrl', () => {
+    describe('url has no query params', () => {
+      it('should return the url unchanged', () => {
+        expect(sortedUrl('http://example.com/example')).toEqual('http://example.com/example')
+        expect(sortedUrl('http://example.com/example?')).toEqual('http://example.com/example?')
+      })
+    })
+
+    describe('url has query params', () => {
+      it('should sort the query params', () => {
+        expect(sortedUrl('http://example.com/example?a=1')).toEqual('http://example.com/example?a=1')
+        expect(sortedUrl('http://example.com/example?b=2&a=1')).toEqual('http://example.com/example?a=1&b=2')
       })
     })
   })

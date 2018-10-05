@@ -50,6 +50,35 @@ export function toQueryString (entry) {
     .replace(R20, '+')
 }
 
+export function toSortedQueryString (entry) {
+  if (!isPlainObject(entry)) {
+    return entry
+  }
+
+  return validKeys(entry)
+    .sort()
+    .map((key) => buildRecursive(key, entry[key]))
+    .join('&')
+    .replace(R20, '+')
+}
+
+/**
+ * Sort the query params on a URL based on the 'key=value' string value.
+ * E.g. /example?b=2&a=1 will become /example?a=1&b=2
+ *
+ * @param {String} url - a URL that should be sorted (with or without query params)
+ */
+export function sortedUrl (url) {
+  const urlParts = url.split('?')
+  if (urlParts.length > 1) {
+    const query = urlParts[1]
+    const sortedQuery = query.split('&').sort().join('&')
+    return `${urlParts[0]}?${sortedQuery}`
+  } else {
+    return urlParts[0]
+  }
+}
+
 /**
  * Gives time in miliseconds, but with sub-milisecond precision for Browser
  * and Nodejs

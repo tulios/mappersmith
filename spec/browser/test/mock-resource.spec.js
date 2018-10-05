@@ -298,6 +298,56 @@ describe('Test lib / mock resources', () => {
     })
   })
 
+  it('matches the body params independent of order', (done) => {
+    mockClient(client)
+      .resource('Blog')
+      .method('post')
+      .with({ body: { param1: 'value1', param2: 'value2' } })
+
+    client.Blog.post({ body: { param1: 'value1', param2: 'value2' } }).then((response) => {
+      expect(response.status()).toEqual(200)
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+
+    client.Blog.post({ body: { param2: 'value2', param1: 'value1' } }).then((response) => {
+      expect(response.status()).toEqual(200)
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+  })
+
+  it('matches the query params independent of order', (done) => {
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .with({ param1: 'value1', param2: 'value2' })
+
+    client.User.all({ param1: 'value1', param2: 'value2' }).then((response) => {
+      expect(response.status()).toEqual(200)
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+
+    client.User.all({ param2: 'value2', param1: 'value1' }).then((response) => {
+      expect(response.status()).toEqual(200)
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+  })
+
   describe('when client is using middlewares', () => {
     let params
 

@@ -175,6 +175,37 @@ describe('Test lib / mock request', () => {
     })
   })
 
+  it('matches the body params independent of order', (done) => {
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      body: { param1: 'value1', param2: 'value2' },
+      response: {
+        body: 'just text!'
+      }
+    })
+
+    client.Blog.post({ body: { param1: 'value1', param2: 'value2' } }).then((response) => {
+      expect(response.status()).toEqual(200)
+      expect(response.data()).toEqual('just text!')
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+
+    client.Blog.post({ body: { param2: 'value2', param1: 'value1' } }).then((response) => {
+      expect(response.status()).toEqual(200)
+      expect(response.data()).toEqual('just text!')
+      done()
+    })
+    .catch((response) => {
+      const error = response.rawData ? response.rawData() : response
+      done.fail(`test failed with promise error: ${error}`)
+    })
+  })
+
   it('accepts a matcher function as an url', (done) => {
     mockRequest({
       method: 'get',
