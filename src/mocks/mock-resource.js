@@ -166,7 +166,7 @@ MockResource.prototype = {
     }, {})
   },
 
-    /**
+  /**
    * @private
    */
   createRequest () {
