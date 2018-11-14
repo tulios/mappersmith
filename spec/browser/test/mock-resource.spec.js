@@ -1,7 +1,7 @@
 import forge, { setContext } from 'src/index'
 import MockAssert from 'src/mocks/mock-assert'
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
-import { getManifest, headerMiddleware } from 'spec/helper'
+import { getManifest, headerMiddleware, asyncHeaderMiddleware } from 'spec/helper'
 
 import {
   install as installMock,
@@ -384,6 +384,39 @@ describe('Test lib / mock resources', () => {
         .catch((response) => {
           done.fail(response.data())
         })
+    })
+  })
+
+  describe('when client is using middleware with async request', () => {
+    let params
+
+    beforeEach(() => {
+      // client is using the `EncodeJson` middleware which will change the request body.
+      // The mock request must go through the same transformation in order for them to match
+      client = forge(getManifest([EncodeJsonMiddleware, asyncHeaderMiddleware]))
+      params = {
+        body: {
+          title: 'blog title',
+          text: 'lorem ipsum'
+        }
+      }
+    })
+
+    it('executes the middlewares to modify the request and response', async () => {
+      await mockClient(client)
+        .resource('Blog')
+        .method('post')
+        .with(params)
+        .status(200)
+        .response({ ok: true })
+        .assertObjectAsync()
+
+      const response = await client.Blog.post(params)
+      expect(response.status()).toEqual(200)
+      expect(response.request().headers()['x-middleware-phase']).toEqual('request')
+      expect(response.headers()['x-middleware-phase']).toEqual('response')
+      expect(response.headers()['x-resource-name']).toEqual('Blog')
+      expect(response.headers()['x-resource-method']).toEqual('post')
     })
   })
 
