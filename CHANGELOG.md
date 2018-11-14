@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.26.0
+
+  - Add async middleware requests support to mocked clients
+
 ## 2.25.1
 
   - Allow setting of some resource configs at manifest level #114

@@ -1,3 +1,4 @@
+import { configs } from '../mappersmith'
 import MockRequest from './mock-request'
 import MockAssert from './mock-assert'
 import Request from '../request'
@@ -24,6 +25,7 @@ function MockResource (id, client) {
   this.responseStatus = 200
   this.responseStatusHandler = null
   this.mockRequest = null
+  this.asyncFinalRequest = null
 }
 
 MockResource.prototype = {
@@ -84,6 +86,16 @@ MockResource.prototype = {
   },
 
   /**
+   * @return {Promise<MockAssert>}
+   */
+  assertObjectAsync () {
+    return this.createAsyncRequest().then((finalRequest) => {
+      this.asyncFinalRequest = finalRequest
+      return this.toMockRequest().assertObject()
+    })
+  },
+
+  /**
    * @return {MockAssert}
    */
   assertObject () {
@@ -94,7 +106,10 @@ MockResource.prototype = {
    * @return {MockRequest}
    */
   toMockRequest () {
-    const finalRequest = this.createRequest()
+    const finalRequest = this.asyncFinalRequest
+      ? this.asyncFinalRequest
+      : this.createRequest()
+
     const assertObject = this.mockRequest
       ? this.mockRequest.assertObject()
       : new MockAssert([])
@@ -164,6 +179,25 @@ MockResource.prototype = {
     })
     return middleware
       .reduce((request, middleware) => middleware.request(request), initialRequest)
+  },
+
+  /**
+   * @private
+   */
+  createAsyncRequest () {
+    const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
+    const initialRequest = new Request(methodDescriptor, this.requestParams)
+    const middleware = this.manifest.createMiddleware({
+      resourceName: this.resourceName,
+      resourceMethod: this.methodName,
+      mockRequest: true
+    })
+    return middleware
+      .reduce(
+        (requestPromise, middleware) =>
+          requestPromise.then(request => middleware.request(request)),
+        configs.Promise.resolve(initialRequest)
+      )
   }
 }
 
