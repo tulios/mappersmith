@@ -337,7 +337,7 @@ describe('Test lib / mock resources', () => {
     })
   })
 
-  describe.only('when client is using middleware with async request', () => {
+  describe('when client is using middleware with async request', () => {
     let params
 
     beforeEach(() => {
