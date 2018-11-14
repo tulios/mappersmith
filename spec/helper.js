@@ -83,6 +83,26 @@ export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
   }
 })
 
+export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
+  async request (request) {
+    return request.enhance({
+      headers: {
+        'x-middleware-phase': 'request'
+      }
+    })
+  },
+
+  response (next) {
+    return next().then((response) => response.enhance({
+      headers: {
+        'x-middleware-phase': 'response',
+        'x-resource-name': resourceName,
+        'x-resource-method': resourceMethod
+      }
+    }))
+  }
+})
+
 let countMiddlewareCurrent = 0
 let countMiddlewareStack = []
 
