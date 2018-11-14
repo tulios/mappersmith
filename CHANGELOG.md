@@ -2,7 +2,7 @@
 
 ## 2.26.0
 
-  - Add async middleware requests support to mocked clients
+  - Add async middleware requests support to mocked clients #122
 
 ## 2.25.1
 
