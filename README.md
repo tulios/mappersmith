@@ -258,7 +258,7 @@ If `auth` is not possible as a special parameter for your API you can configure 
 client.User.all({ secret: { username: 'bob', password: 'bob' } })
 ```
 
-__NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#basic-auth-middleware), check the middleware section below for more information.
+__NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#middleware-basic-auth), check the middleware section below for more information.
 __NOTE__: The `authAttr` param can be set at manifest level.
 
 ### <a name="timeout"></a> Timeout
