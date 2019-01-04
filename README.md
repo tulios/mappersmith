@@ -258,7 +258,7 @@ If `auth` is not possible as a special parameter for your API you can configure 
 client.User.all({ secret: { username: 'bob', password: 'bob' } })
 ```
 
-__NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#basic-auth-middleware), check the middleware section below for more information.
+__NOTE__: A default basic auth can be configured with the use of the [BasicAuthMiddleware](#middleware-basic-auth), check the middleware section below for more information.
 __NOTE__: The `authAttr` param can be set at manifest level.
 
 ### <a name="timeout"></a> Timeout
@@ -779,6 +779,7 @@ It accepts the methods:
 * `status(statusNumber | statusHandler)`, ex: `status(204)` or `status((request, mock) => 200)`
 * `response(responseData | responseHandler)`, ex: `response({ user: { id: 1 } })` or `response((request, mock) => ({ user: { id: request.body().id } }))`
 * `assertObject()`
+* `assertObjectAsync()`
 
 Example using __jasmine__:
 
@@ -856,6 +857,20 @@ const mock = mockClient(client)
   .method('all')
   .response({ allUsers: [{id: 1}] })
   .assertObject()
+
+console.log(mock.mostRecentCall())
+console.log(mock.callsCount())
+console.log(mock.calls())
+```
+
+If you have a middleware with an async request phase use `assertObjectAsync` to await for the middleware execution, example:
+
+```javascript
+const mock = await mockClient(client)
+  .resource('User')
+  .method('all')
+  .response({ allUsers: [{id: 1}] })
+  .assertObjectAsync()
 
 console.log(mock.mostRecentCall())
 console.log(mock.callsCount())
