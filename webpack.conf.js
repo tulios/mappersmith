@@ -1,5 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
 const packageJson = require('./package.json')
 const env = process.env.NODE_ENV || 'development'
 const version = packageJson.version
@@ -15,10 +17,6 @@ const devTool = (env === 'test')
 
 if (env === 'production') {
   plugins = plugins.concat([
-    new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false },
-      sourceMap: true
-    }),
     new webpack.BannerPlugin({
       banner: `/*!\n * Mappersmith ${version}\n * ${link}\n */`,
       raw: true,
@@ -28,6 +26,7 @@ if (env === 'production') {
 }
 
 module.exports = {
+  mode: env === 'production' ? 'production' : 'development',
   context: __dirname,
   resolve: {
     modules: [
@@ -47,11 +46,21 @@ module.exports = {
   node: {
     process: false
   },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        uglifyOptions: {
+          compress: { warnings: false }
+        }
+      })
+    ]
+  },
   plugins: plugins,
   devtool: devTool,
   module: {
-    loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+    rules: [
+      { test: /\.js$/, exclude: /node_modules/, use: 'babel-loader' }
     ]
   }
 }
