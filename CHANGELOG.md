@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.26.1
+
+  - Bugfix: Extra query string when path already contains query string #128
+
 ## 2.26.0
 
   - Add async middleware requests support to mocked clients #122
