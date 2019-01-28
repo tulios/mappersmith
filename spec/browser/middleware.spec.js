@@ -4,10 +4,15 @@ import Response from 'src/response'
 
 import {
   headerMiddleware,
+  headerMiddlewareV2,
   countMiddleware,
   getCountMiddlewareCurrent,
   getCountMiddlewareStack,
   resetCountMiddleware,
+  countPrepareRequestMiddleware,
+  getCountPrepareRequestMiddlewareCurrent,
+  getCountPrepareRequestMiddlewareStack,
+  resetCountPrepareRequestMiddleware,
   getManifest,
   createRequest
 } from 'spec/helper'
@@ -34,7 +39,10 @@ describe('ClientBuilder middleware', () => {
     manifest.middleware = [ headerMiddleware ]
   })
 
-  afterEach(() => resetCountMiddleware())
+  afterEach(() => {
+    resetCountMiddleware()
+    resetCountPrepareRequestMiddleware()
+  })
 
   it('receives an object with "resourceName", "resourceMethod" and empty "context"', async () => {
     const middleware = jest.fn()
@@ -84,6 +92,32 @@ describe('ClientBuilder middleware', () => {
     const responsePhase = jest.fn(() => Promise.resolve())
 
     const middleware = () => ({ request: requestPhase, response: responsePhase })
+    manifest.middleware = [ middleware ]
+
+    await createClient().User.byId({ id: 1 })
+    expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
+    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+  })
+
+  it('calls request and response phase with a different "this" configured', async () => {
+    const requestPhase = jest.fn()
+    const responsePhase = jest.fn()
+
+    const myRequestFn = request => {
+      requestPhase(request)
+      return request
+    }
+
+    const myResponseFn = (next, renew) => {
+      responsePhase(next, renew)
+      return next()
+    }
+
+    const middleware = () => ({
+      request: myRequestFn,
+      response: myResponseFn
+    })
+
     manifest.middleware = [ middleware ]
 
     await createClient().User.byId({ id: 1 })
@@ -222,6 +256,97 @@ describe('ClientBuilder middleware', () => {
       await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
         'message',
         '[Mappersmith] middleware "m1" should return "Request" but returned "boolean"'
+      )
+    })
+  })
+
+  it('calls prepareRequest phase', async () => {
+    const prepareRequestPhase = jest.fn(() => Promise.resolve(createRequest()))
+    const responsePhase = jest.fn(() => Promise.resolve())
+
+    const middleware = () => ({ prepareRequest: prepareRequestPhase, response: responsePhase })
+    manifest.middleware = [ middleware ]
+
+    await createClient().User.byId({ id: 1 })
+    expect(prepareRequestPhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+  })
+
+  describe('#prepareRequest', () => {
+    beforeEach(() => {
+      manifest.middleware = [ headerMiddlewareV2 ]
+    })
+
+    it('can change the final request object', async () => {
+      const response = await createClient().User.byId({ id: 1 })
+      expect(response.request().headers()).toEqual(
+        expect.objectContaining({ 'x-middleware-phase': 'prepare-request' })
+      )
+    })
+
+    it('calls all middleware chainning the "next" function', async () => {
+      responseValue = getCountPrepareRequestMiddlewareCurrent()
+
+      manifest.middleware = [
+        countPrepareRequestMiddleware,
+        countPrepareRequestMiddleware,
+        countPrepareRequestMiddleware,
+        countPrepareRequestMiddleware
+      ]
+
+      const response = await createClient().User.byId({ id: 1, headers: { 'x-count': 0 } })
+      expect(response.request().header('x-count')).toEqual(4)
+      expect(getCountPrepareRequestMiddlewareStack()).toEqual([0, 1, 2, 3])
+    })
+
+    it('accepts middleware with only one phase defined', async () => {
+      let m1RequestCalled = false
+
+      const m1 = () => ({
+        prepareRequest: (next) => { m1RequestCalled = true; return next() }
+      })
+
+      manifest.middleware = [ m1 ]
+
+      const response = await createClient().User.byId({ id: 1 })
+      expect(response.data()).toEqual(responseValue)
+      expect(m1RequestCalled).toEqual(true)
+    })
+
+    it('can stop the middleware execution with a custom error', async () => {
+      const middleware = () => ({
+        prepareRequest: (_, abort) => {
+          abort(new Error('failed to fetch access token'))
+        }
+      })
+
+      manifest.middleware = [ middleware ]
+
+      await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
+        'message',
+        'failed to fetch access token'
+      )
+    })
+
+    it('can capture errors from other middlewares', async () => {
+      const buggy = () => ({
+        request: (request) => {
+          throw new Error('from buggy')
+        }
+      })
+      const errorMapper = () => ({
+        prepareRequest: (next, abort) => {
+          return next().catch(e => {
+            abort(new Error(`wrapped error: ${e.message}`))
+          })
+        }
+      })
+
+      manifest.middleware = [ buggy, errorMapper ]
+
+      await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
+        'message',
+        'wrapped error: from buggy'
       )
     })
   })

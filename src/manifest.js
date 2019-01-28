@@ -83,8 +83,18 @@ Manifest.prototype = {
   createMiddleware (args = {}) {
     const createInstance = (middlewareFactory) => assign({
       __name: middlewareFactory.name || middlewareFactory.toString(),
-      request: (request) => request,
-      response: (next) => next()
+      /**
+       * @deprecated
+       * @since 2.27.0
+       * Request phase is deprecated in favor of prepareRequest
+       */
+      request (request) { return request },
+      response (next) { return next() },
+      prepareRequest (next) {
+        return this.request
+          ? next().then(req => this.request(req))
+          : next()
+      }
     }, middlewareFactory(assign(args, { clientId: this.clientId, context: assign({}, this.context) })))
 
     return this.middleware.map(createInstance)
