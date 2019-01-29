@@ -67,6 +67,23 @@ export const clear = () => {
 }
 
 /**
+ * Similar to "lookupResponse" but it also runs the request/prepareRequest phase of the middleware
+ * stack
+ *
+ * @param {Request} request
+ * @return {Promise<Response>}
+ * @throws Will throw an error if it doesn't find a mock to match the given request
+ */
+export const lookupResponseAsync = async (request) => {
+  const mocksPendingMiddlewareExecution = store.filter(mock => mock.pendingMiddlewareExecution)
+  await configs.Promise.all(
+    mocksPendingMiddlewareExecution.map(async mock => mock.executeMiddlewareStack())
+  )
+
+  return lookupResponse(request)
+}
+
+/**
  * @param {Request} request
  * @return {Response}
  * @throws Will throw an error if it doesn't find a mock to match the given request

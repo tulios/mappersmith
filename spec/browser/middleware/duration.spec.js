@@ -23,21 +23,17 @@ describe('Middleware / DurationMiddleware', () => {
     expect(DurationMiddleware.name).toEqual('DurationMiddleware')
   })
 
-  it('adds started_at, ended_at and duration response headers', (done) => {
+  it('adds started_at, ended_at and duration response headers', async () => {
     const request = newRequest('get')
-    const response = newResponse(middleware.request(request))
+    const finalRequest = await middleware.prepareRequest(() => Promise.resolve(request))
+    const response = newResponse(finalRequest)
 
-    middleware
-      .response(() => Promise.resolve(response))
-      .then((response) => {
-        const startedAt = response.header('x-started-at')
-        const endedAt = response.header('x-ended-at')
+    const finalResponse = await middleware.response(() => Promise.resolve(response))
+    const startedAt = finalResponse.header('x-started-at')
+    const endedAt = finalResponse.header('x-ended-at')
 
-        expect(startedAt).toEqual(jasmine.anything())
-        expect(endedAt).toEqual(jasmine.anything())
-        expect(response.header('x-duration')).toEqual(endedAt - startedAt)
-        done()
-      })
-      .catch(done.fail)
+    expect(startedAt).toEqual(jasmine.anything())
+    expect(endedAt).toEqual(jasmine.anything())
+    expect(finalResponse.header('x-duration')).toEqual(endedAt - startedAt)
   })
 })

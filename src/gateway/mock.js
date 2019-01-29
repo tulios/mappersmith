@@ -1,5 +1,5 @@
 import Gateway from '../gateway'
-import { lookupResponse } from '../test'
+import { lookupResponseAsync } from '../test'
 
 function Mock (request) {
   Gateway.apply(this, arguments)
@@ -31,7 +31,9 @@ Mock.prototype = Gateway.extends({
   },
 
   callMock (httpMethod) {
-    this.dispatchResponse(lookupResponse(this.request))
+    return lookupResponseAsync(this.request)
+      .then(request => this.dispatchResponse(request))
+      .catch(e => this.dispatchClientError(e.message, e))
   }
 })
 

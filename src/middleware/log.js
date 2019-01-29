@@ -41,8 +41,8 @@ const log = (request, response) => {
  * Log all requests and responses.
  */
 const ConsoleLogMiddleware = () => ({
-  request (request) {
-    return log(request)
+  prepareRequest (next) {
+    return next().then(request => log(request))
   },
 
   response (next) {
