@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.27.0
+
+  - Add `prepareRequest` phase to middleware #129
+
 ## 2.26.1
 
   - Bugfix: Extra query string when path already contains query string #128
