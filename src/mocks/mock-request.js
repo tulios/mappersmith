@@ -1,6 +1,7 @@
 import MockAssert from './mock-assert'
 import Response from '../response'
-import { isPlainObject, sortedUrl, toSortedQueryString } from '../utils'
+import { isPlainObject } from '../utils'
+import { sortedUrl, toSortedQueryString } from './mock-utils'
 
 /**
  * @param {number} id

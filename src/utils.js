@@ -15,11 +15,11 @@ if (hasProcessHrtime()) {
 
 const R20 = /%20/g
 
-const validKeys = (entry) => Object
+export const validKeys = (entry) => Object
     .keys(entry)
     .filter((key) => entry[key] !== undefined && entry[key] !== null)
 
-const buildRecursive = (key, value, suffix) => {
+export const buildRecursive = (key, value, suffix) => {
   suffix = suffix || ''
   const isArray = Array.isArray(value)
   const isObject = typeof value === 'object'
@@ -48,35 +48,6 @@ export function toQueryString (entry) {
     .map((key) => buildRecursive(key, entry[key]))
     .join('&')
     .replace(R20, '+')
-}
-
-export function toSortedQueryString (entry) {
-  if (!isPlainObject(entry)) {
-    return entry
-  }
-
-  return validKeys(entry)
-    .sort()
-    .map((key) => buildRecursive(key, entry[key]))
-    .join('&')
-    .replace(R20, '+')
-}
-
-/**
- * Sort the query params on a URL based on the 'key=value' string value.
- * E.g. /example?b=2&a=1 will become /example?a=1&b=2
- *
- * @param {String} url - a URL that should be sorted (with or without query params)
- */
-export function sortedUrl (url) {
-  const urlParts = url.split('?')
-  if (urlParts.length > 1) {
-    const query = urlParts[1]
-    const sortedQuery = query.split('&').sort().join('&')
-    return `${urlParts[0]}?${sortedQuery}`
-  } else {
-    return urlParts[0]
-  }
 }
 
 /**
