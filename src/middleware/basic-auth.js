@@ -16,11 +16,13 @@ import { assign } from '../utils'
 export default authConfig =>
   function BasicAuthMiddleware () {
     return {
-      request (request) {
-        const auth = request.auth()
-        return !auth // Keep the override
-          ? request.enhance({ auth: assign({}, authConfig) })
-          : request
+      prepareRequest (next) {
+        return next().then(request => {
+          const auth = request.auth()
+          return !auth // Keep the override
+            ? request.enhance({ auth: assign({}, authConfig) })
+            : request
+        })
       }
     }
   }

@@ -66,6 +66,13 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json?id=1&title=test')
     })
 
+    it('appends the query string with a leading & if the path has a hard-coded query string', () => {
+      methodDescriptor.path = '/api/example.json?id=1'
+      methodDescriptor.params = { title: 'test' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json?id=1&title=test')
+    })
+
     it('renames the params according to their queryParamAlias when appending them to the query string', () => {
       methodDescriptor.path = '/api/example.json'
       methodDescriptor.params = { userId: 1, transactionId: 2 }

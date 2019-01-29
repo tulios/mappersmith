@@ -15,15 +15,15 @@ describe('Middleware / Timeout', () => {
     expect(TimeoutMiddleware(100).name).toEqual('TimeoutMiddleware')
   })
 
-  it('configures the timeout', () => {
-    const newRequest = middleware.request(request)
+  it('configures the timeout', async () => {
+    const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
     expect(newRequest.timeout()).toEqual(100)
   })
 
   describe('when the timeout property is explicitly defined', () => {
-    it('keeps the original timeout value', () => {
+    it('keeps the original timeout value', async () => {
       request = new Request(methodDescriptor, { timeout: 500 })
-      const newRequest = middleware.request(request)
+      const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
       expect(newRequest.timeout()).toEqual(500)
     })
   })

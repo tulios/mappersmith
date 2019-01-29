@@ -9,18 +9,20 @@ export default (cookieName = 'csrfToken', headerName = 'x-csrf-token') => functi
   }
 
   return {
-    request (request) {
-      if (typeof document === 'undefined') {
-        return request
-      }
+    prepareRequest (next) {
+      return next().then(request => {
+        if (typeof document === 'undefined') {
+          return request
+        }
 
-      const csrf = getCookie()
+        const csrf = getCookie()
 
-      return !csrf
-        ? request
-        : request.enhance({
-          headers: { [headerName]: csrf }
-        })
+        return !csrf
+          ? request
+          : request.enhance({
+            headers: { [headerName]: csrf }
+          })
+      })
     }
   }
 }
