@@ -83,6 +83,26 @@ export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
   }
 })
 
+export const headerMiddlewareV2 = ({ resourceName, resourceMethod }) => ({
+  prepareRequest (next) {
+    return next().then(request => request.enhance({
+      headers: {
+        'x-middleware-phase': 'prepare-request'
+      }
+    }))
+  },
+
+  response (next) {
+    return next().then((response) => response.enhance({
+      headers: {
+        'x-middleware-phase': 'response',
+        'x-resource-name': resourceName,
+        'x-resource-method': resourceMethod
+      }
+    }))
+  }
+})
+
 export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
   async request (request) {
     return request.enhance({
@@ -123,6 +143,30 @@ export const countMiddleware = () => ({
       countMiddlewareStack.push(response.data())
       return new Response(response.request(), 200, ++countMiddlewareCurrent)
     })
+  }
+})
+
+let countPrepareRequestMiddlewareCurrent = 0
+let countPrepareRequestMiddlewareStack = []
+
+export const getCountPrepareRequestMiddlewareCurrent = () => countPrepareRequestMiddlewareCurrent
+export const getCountPrepareRequestMiddlewareStack = () => countPrepareRequestMiddlewareStack
+export const resetCountPrepareRequestMiddleware = () => {
+  countPrepareRequestMiddlewareCurrent = 0
+  countPrepareRequestMiddlewareStack = []
+}
+
+export const countPrepareRequestMiddleware = () => ({
+  prepareRequest (next) {
+    return next().then((request) => {
+      const count = parseInt(request.header('x-count'), 10)
+      countPrepareRequestMiddlewareStack.push(count)
+      return request.enhance({ headers: { 'x-count': count + 1 } })
+    })
+  },
+
+  response (next) {
+    return next()
   }
 })
 

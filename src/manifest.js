@@ -83,8 +83,16 @@ Manifest.prototype = {
   createMiddleware (args = {}) {
     const createInstance = (middlewareFactory) => assign({
       __name: middlewareFactory.name || middlewareFactory.toString(),
-      request: (request) => request,
-      response: (next) => next()
+      response (next) { return next() },
+      /**
+       * @since 2.27.0
+       * Replaced the request method
+       */
+      prepareRequest (next) {
+        return this.request
+          ? next().then(req => this.request(req))
+          : next()
+      }
     }, middlewareFactory(assign(args, { clientId: this.clientId, context: assign({}, this.context) })))
 
     return this.middleware.map(createInstance)

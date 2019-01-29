@@ -26,6 +26,7 @@ function MockResource (id, client) {
   this.responseStatusHandler = null
   this.mockRequest = null
   this.asyncFinalRequest = null
+  this.pendingMiddlewareExecution = true
 }
 
 MockResource.prototype = {
@@ -91,6 +92,7 @@ MockResource.prototype = {
   assertObjectAsync () {
     return this.createAsyncRequest().then((finalRequest) => {
       this.asyncFinalRequest = finalRequest
+      this.pendingMiddlewareExecution = false
       return this.toMockRequest().assertObject()
     })
   },
@@ -99,6 +101,8 @@ MockResource.prototype = {
    * @return {MockAssert}
    */
   assertObject () {
+    // The middleware "prepareRequest" phase is always async, so the middleware
+    // stack will never run when assertObject is used
     return this.toMockRequest().assertObject()
   },
 
@@ -123,19 +127,9 @@ MockResource.prototype = {
       : this.responseData
 
     if (!this.mockRequest) {
-      const params = finalRequest.params()
-      const hasParamMatchers = Object.keys(params).find((key) => typeof params[key] === 'function')
-      const urlMatcher = (requestUrl, requestParams) => {
-        const expandedParams = this.expandParams(params, requestParams)
-        const testRequest = finalRequest.enhance({ params: expandedParams })
-        return testRequest.url() === requestUrl
-      }
-
-      const url = hasParamMatchers ? urlMatcher : finalRequest.url()
-
       this.mockRequest = new MockRequest(this.id, {
         method: finalRequest.method(),
-        url,
+        url: this.generateUrlMatcher(finalRequest),
         body: finalRequest.body(),
         response: {
           status: responseStatus,
@@ -149,6 +143,36 @@ MockResource.prototype = {
     this.mockRequest.setResponseData(responseData)
 
     return this.mockRequest
+  },
+
+  /**
+   * @private
+   */
+  generateUrlMatcher (finalRequest) {
+    const params = finalRequest.params()
+    const hasParamMatchers = Object.keys(params).find((key) => typeof params[key] === 'function')
+    const urlMatcher = (requestUrl, requestParams) => {
+      const expandedParams = this.expandParams(params, requestParams)
+      const testRequest = finalRequest.enhance({ params: expandedParams })
+      return testRequest.url() === requestUrl
+    }
+
+    return hasParamMatchers ? urlMatcher : finalRequest.url()
+  },
+
+  /**
+   * @private
+   */
+  executeMiddlewareStack () {
+    return this.createAsyncRequest().then((finalRequest) => {
+      this.asyncFinalRequest = finalRequest
+
+      if (this.mockRequest) {
+        const urlMatcher = this.generateUrlMatcher(finalRequest)
+        this.mockRequest.url = urlMatcher
+        this.pendingMiddlewareExecution = false
+      }
+    })
   },
 
   /**
@@ -192,12 +216,20 @@ MockResource.prototype = {
       resourceMethod: this.methodName,
       mockRequest: true
     })
-    return middleware
+    const abort = (error) => {
+      throw error
+    }
+    const getInitialRequest = () => configs.Promise.resolve(initialRequest)
+    const prepareRequest = middleware
       .reduce(
-        (requestPromise, middleware) =>
-          requestPromise.then(request => middleware.request(request)),
-        configs.Promise.resolve(initialRequest)
+        (next, middleware) => () =>
+          configs.Promise
+            .resolve()
+            .then(() => middleware.prepareRequest(next, abort)),
+        getInitialRequest
       )
+
+    return prepareRequest()
   }
 }
 
