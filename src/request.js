@@ -104,7 +104,8 @@ Request.prototype = {
 
     const queryString = toQueryString(aliasedParams)
     if (queryString.length !== 0) {
-      path += `?${queryString}`
+      const hasQuery = path.includes('?')
+      path += `${hasQuery ? '&' : '?'}${queryString}`
     }
 
     return path

@@ -50,27 +50,28 @@ ClientBuilder.prototype = {
     const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod })
     const GatewayClass = this.GatewayClassFactory()
     const gatewayConfigs = this.manifest.gatewayConfigs
-    let requestPhaseExecutionFailed = false
+    const requestPhaseFailureContext = {
+      middleware: null,
+      returnedInvalidRequest: false,
+      abortExecution: false
+    }
 
-    const chainRequestPhase = (requestPromise, middleware) => {
-      return requestPromise
-        .then(request => middleware.request(request))
-        .catch(e => {
-          if (requestPhaseExecutionFailed) {
-            throw e
-          }
+    const getInitialRequest = () => this.Promise.resolve(initialRequest)
+    const chainRequestPhase = (next, middleware) => () => {
+      const abort = (error) => {
+        requestPhaseFailureContext.abortExecution = true
+        throw error
+      }
 
-          requestPhaseExecutionFailed = true
-          const error = new Error(`[Mappersmith] middleware "${middleware.__name}" failed in the request phase: ${e.message}`)
-          error.stack = e.stack
-          throw error
-        })
+      return this.Promise
+        .resolve()
+        .then(() => middleware.prepareRequest(next, abort))
         .then(request => {
           if (request instanceof Request) {
             return request
           }
 
-          requestPhaseExecutionFailed = true
+          requestPhaseFailureContext.returnedInvalidRequest = true
           const typeValue = typeof request
           const prettyType = (typeValue === 'object' || typeValue === 'function')
             ? request.name || typeValue
@@ -78,16 +79,26 @@ ClientBuilder.prototype = {
 
           throw new Error(`[Mappersmith] middleware "${middleware.__name}" should return "Request" but returned "${prettyType}"`)
         })
-        .then(request => this.Promise.resolve(request))
+        .catch(e => {
+          requestPhaseFailureContext.middleware = middleware.__name
+          throw e
+        })
     }
 
+    const prepareRequest = middleware.reduce(chainRequestPhase, getInitialRequest)
     let executions = 0
 
-    const executeMiddlewareStack = () => middleware
-      .reduce(
-        chainRequestPhase,
-        this.Promise.resolve(initialRequest)
-      )
+    const executeMiddlewareStack = () => prepareRequest()
+      .catch(e => {
+        const { returnedInvalidRequest, abortExecution, middleware } = requestPhaseFailureContext
+        if (returnedInvalidRequest || abortExecution) {
+          throw e
+        }
+
+        const error = new Error(`[Mappersmith] middleware "${middleware}" failed in the request phase: ${e.message}`)
+        error.stack = e.stack
+        throw error
+      })
       .then(finalRequest => {
         executions++
 
@@ -97,7 +108,8 @@ ClientBuilder.prototype = {
           )
         }
 
-        const chainResponsePhase = (next, middleware) => () => middleware.response(next, executeMiddlewareStack)
+        const renew = executeMiddlewareStack
+        const chainResponsePhase = (next, middleware) => () => middleware.response(next, renew)
         const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
         const execute = middleware.reduce(chainResponsePhase, callGateway)
         return execute()

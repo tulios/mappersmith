@@ -16,18 +16,18 @@ describe('Middleware / EncodeJson', () => {
     expect(EncodeJsonMiddleware.name).toEqual('EncodeJsonMiddleware')
   })
 
-  it('stringify the body and add "content-type" application/json', () => {
-    const newRequest = middleware.request(request)
+  it('stringify the body and add "content-type" application/json', async () => {
+    const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
     expect(newRequest.body()).toEqual(JSON.stringify(body))
     expect(newRequest.headers()['content-type']).toEqual(CONTENT_TYPE_JSON)
   })
 
   describe('when the request does not have a body', () => {
-    it('returns the original request', () => {
+    it('returns the original request', async () => {
       request = new Request(new MethodDescriptor({ method: 'get' }))
       expect(request.body()).toBeUndefined()
 
-      const newRequest = middleware.request(request)
+      const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
       expect(newRequest.body()).toBeUndefined()
       expect(newRequest.headers()['content-type']).toBeUndefined()
     })
@@ -41,8 +41,8 @@ describe('Middleware / EncodeJson', () => {
       request = new Request(methodDescriptor, { body })
     })
 
-    it('keeps the original request', () => {
-      const newRequest = middleware.request(request)
+    it('keeps the original request', async () => {
+      const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
       expect(newRequest.body()).toEqual(body)
       expect(newRequest.headers()).toEqual({})
     })

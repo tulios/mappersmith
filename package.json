@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "2.26.0",
+  "version": "2.27.0",
   "description": "It is a lightweight rest client for node.js and the browser",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
@@ -57,7 +57,7 @@
     "@babel/register": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.4.2",
-    "babel-loader": "^8.0.0",
+    "babel-loader": "^8.0.5",
     "babel-plugin-minify-replace": "^0.4.3",
     "body-parser": "^1.15.2",
     "concurrently": "^3.5.1",
@@ -85,8 +85,10 @@
     "mockdate": "^2.0.1",
     "multer": "^1.2.0",
     "puppeteer": "^0.12.0",
-    "webpack": "^3.5.1",
-    "webpack-dev-server": "^2.7.1",
+    "uglifyjs-webpack-plugin": "^2.1.1",
+    "webpack": "^4.28.1",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.11",
     "whatwg-fetch": "^2.0.2"
   }
 }

@@ -347,6 +347,8 @@ The behavior between your client and the API can be customized with middleware. 
 
 The `request` method receives an instance of the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
 
+__NOTE__: Since version `2.27.0` a new method was introduced: `prepareRequest`. This method aims to replace the `request` method in future versions of mappersmith, it has a similar signature as the `response` method and it is always async. All previous middleware are backward compatible, the default implementation of `prepareRequest` will call the `request` method if it exists. The `prepareRequest` method receives a function which returns a `Promise` resolving the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js). This function must return a `Promise` resolving the request. The method `enhance` can be used to generate a new request based on the previous one.
+
 The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to generate a new response based on the previous one.
 
 You don't need to implement both methods, you can define only the phase you need.
@@ -359,6 +361,24 @@ const MyMiddleware = () => ({
     return request.enhance({
       headers: { 'x-special-request': '->' }
     })
+  },
+
+  response(next) {
+    return next().then((response) => response.enhance({
+      headers: { 'x-special-response': '<-' }
+    }))
+  }
+})
+```
+
+__NOTE:__ If you are running mappersmith `2.27.0` or greater use the following instead:
+
+```javascript
+const MyMiddleware = () => ({
+  prepareRequest(next) {
+    return next().then(request => request.enhance({
+      headers: { 'x-special-request': '->' }
+    }))
   },
 
   response(next) {
@@ -412,7 +432,25 @@ const MyMiddleware = () => ({
 })
 ```
 
-The response phase can optionally receive a function called "renew". This function can be used to rerun the
+__NOTE 2__: If you are using mappersmith `2.27.0` or greater take a look at `prepareRequest`, which is always async.
+
+
+The `prepareRequest` phase can optionally receive a function called "abort". This function can be used to abort the middleware execution early-on and throw a custom error to the user.
+Example:
+
+```javascript
+const MyMiddleware = () => {
+  prepareRequest(next, abort) {
+    return next().then(request =>
+      request.header('x-special')
+        ? response
+        : abort(new Error('"x-special" must be set!'))
+    )
+  }
+}
+```
+
+The `response` phase can optionally receive a function called "renew". This function can be used to rerun the
 middleware stack. This feature is useful in some scenarios, for example, automatically refreshing an expired access token.
 Example:
 

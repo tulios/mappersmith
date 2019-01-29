@@ -63,7 +63,7 @@ export const configs = {
 
     HTTP: {
       /**
-       * For aditional configurations to the http/https module
+       * For additional configurations to the http/https module
        * For http: https://nodejs.org/api/http.html#http_http_request_options_callback
        * For https: https://nodejs.org/api/https.html#https_https_request_options_callback
        *
