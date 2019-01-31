@@ -1,8 +1,12 @@
 # Changelog
 
+## 2.27.2
+
+  - Bugfix: Fix "ReferenceError: regeneratorRuntime is not defined" when importing "mappersmith/test" #131
+
 ## 2.27.1
 
-  - Bugfix: `mockRequest` would attempt to run the old request phase without considering async definitions #130 
+  - Bugfix: `mockRequest` would attempt to run the old request phase without considering async definitions #130
 
 ## 2.27.0
 
