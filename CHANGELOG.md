@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.27.1
+
+  - Bugfix: `mockRequest` would attempt to run the old request phase without considering async definitions #130 
+
 ## 2.27.0
 
   - Add `prepareRequest` phase to middleware #129
