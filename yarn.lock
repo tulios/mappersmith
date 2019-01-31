@@ -1372,8 +1372,9 @@ boom@2.x.x:
     hoek "2.x.x"
 
 bowser@^1.4.5:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/bowser/-/bowser-1.7.1.tgz#a4de8f18a1a0dc9531eb2a92a1521fb6a9ba96a5"
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-1.9.4.tgz#890c58a2813a9d3243704334fa81b96a5c150c9a"
+  integrity sha512-9IdMmj2KjigRq6oWhmwv1W36pDuA4STQZ8q6YO9um+x07xgYNCD3Oou+WP/3L1HNz7iqythGet3/p4wvc8AAwQ==
 
 brace-expansion@^1.1.7:
   version "1.1.8"
@@ -3001,13 +3002,14 @@ fast-levenshtein@~2.0.4:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
 
 faux-jax-tulios@^5.0.8:
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/faux-jax-tulios/-/faux-jax-tulios-5.0.8.tgz#d5a66c9f5d59f4cb01ce2e3ea94fb1011a244799"
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/faux-jax-tulios/-/faux-jax-tulios-5.0.9.tgz#e44beedb5ac3acab7e6d5ef87a0c431db7153ab9"
+  integrity sha512-o0rhtYECYChYPP1LB40GAVDq1gh8spD0+k33Nac16msdtcqcHV7jtDt4/ZvyBAUvdvdEBLxjCrxYoCLNo3LY5g==
   dependencies:
     bowser "^1.4.5"
     lodash "^4.16.3"
     lodash-compat "^3.10.2"
-    mitm-papandreou "^1.3.3-patch5"
+    mitm "^1.7.0"
     writable-window-method "1.0.3"
 
 faye-websocket@^0.10.0:
@@ -4804,10 +4806,12 @@ locate-path@^3.0.0:
 lodash-compat@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/lodash-compat/-/lodash-compat-3.5.0.tgz#75f105fa4fe829896db0ca0662fdf3970c98f5f5"
+  integrity sha1-dfEF+k/oKYltsMoGYv3zlwyY9fU=
 
 lodash-compat@^3.10.2:
   version "3.10.2"
   resolved "https://registry.yarnpkg.com/lodash-compat/-/lodash-compat-3.10.2.tgz#c6940128a9d30f8e902cd2cf99fd0cba4ecfc183"
+  integrity sha1-xpQBKKnTD46QLNLPmf0Muk7PwYM=
 
 lodash.cond@^4.3.0:
   version "4.5.2"
@@ -4825,7 +4829,7 @@ lodash@^3.8.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.16.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.5.0, lodash@^4.5.1, lodash@^4.6.1:
+lodash@^4.0.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.5.0, lodash@^4.5.1, lodash@^4.6.1:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4833,7 +4837,7 @@ lodash@^4.13.1, lodash@^4.17.10:
   version "4.17.10"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
-lodash@^4.17.5:
+lodash@^4.16.3, lodash@^4.17.5:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
@@ -5099,9 +5103,10 @@ mississippi@^3.0.0:
     stream-each "^1.1.0"
     through2 "^2.0.0"
 
-mitm-papandreou@^1.3.3-patch5:
-  version "1.3.3-patch5"
-  resolved "https://registry.yarnpkg.com/mitm-papandreou/-/mitm-papandreou-1.3.3-patch5.tgz#3fb5205e8d0f693b06789848b4698551a4de2c7f"
+mitm@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/mitm/-/mitm-1.7.0.tgz#da03b8448090168bc68bcd847c6e014fde320829"
+  integrity sha512-O6EjnhSf7dDq+pveB5WlRbaz34cZgQuRfey7RonqsD2QB//eVXniYnH5u8QMB6bG7BUIJofL7UPaopE3iYkKlA==
   dependencies:
     semver ">= 5 < 6"
     underscore ">= 1.1.6 < 1.6"
@@ -6477,13 +6482,13 @@ semver@5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
-"semver@>= 5 < 6", semver@^5.4.1, semver@^5.5.0:
-  version "5.5.1"
-  resolved "https://registry.npmjs.org/semver/-/semver-5.5.1.tgz#7dfdd8814bdb7cabc7be0fb1d734cfb66c940477"
-
-semver@^5.6.0:
+"semver@>= 5 < 6", semver@^5.6.0:
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.6.0.tgz#7e74256fbaa49c75aa7c7a205cc22799cac80004"
+
+semver@^5.4.1, semver@^5.5.0:
+  version "5.5.1"
+  resolved "https://registry.npmjs.org/semver/-/semver-5.5.1.tgz#7dfdd8814bdb7cabc7be0fb1d734cfb66c940477"
 
 semver@~4.3.3:
   version "4.3.6"
@@ -7309,6 +7314,7 @@ ultron@~1.1.0:
 "underscore@>= 1.1.6 < 1.6":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.5.2.tgz#1335c5e4f5e6d33bbb4b006ba8c86a00f556de08"
+  integrity sha1-EzXF5PXm0zu7SwBrqMhqAPVW3gg=
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
@@ -7732,6 +7738,7 @@ wrappy@1:
 writable-window-method@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/writable-window-method/-/writable-window-method-1.0.3.tgz#c8d390614cad0af44f48ec9b179d3f69f57c265e"
+  integrity sha1-yNOQYUytCvRPSOybF50/afV8Jl4=
   dependencies:
     lodash-compat "3.5.0"
 
