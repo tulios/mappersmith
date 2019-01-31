@@ -170,6 +170,7 @@ MockResource.prototype = {
       if (this.mockRequest) {
         const urlMatcher = this.generateUrlMatcher(finalRequest)
         this.mockRequest.url = urlMatcher
+        this.mockRequest.body = finalRequest.body()
         this.pendingMiddlewareExecution = false
       }
     })
@@ -192,21 +193,16 @@ MockResource.prototype = {
 
   /**
    * @private
+   * It never runs the middleware stack
    */
   createRequest () {
     const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
-    const initialRequest = new Request(methodDescriptor, this.requestParams)
-    const middleware = this.manifest.createMiddleware({
-      resourceName: this.resourceName,
-      resourceMethod: this.methodName,
-      mockRequest: true
-    })
-    return middleware
-      .reduce((request, middleware) => middleware.request(request), initialRequest)
+    return new Request(methodDescriptor, this.requestParams)
   },
 
   /**
    * @private
+   * Always runs the middleware stack
    */
   createAsyncRequest () {
     const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
