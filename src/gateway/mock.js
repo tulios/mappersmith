@@ -32,7 +32,7 @@ Mock.prototype = Gateway.extends({
 
   callMock (httpMethod) {
     return lookupResponseAsync(this.request)
-      .then(request => this.dispatchResponse(request))
+      .then(response => this.dispatchResponse(response))
       .catch(e => this.dispatchClientError(e.message, e))
   }
 })

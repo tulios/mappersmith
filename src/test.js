@@ -74,13 +74,11 @@ export const clear = () => {
  * @return {Promise<Response>}
  * @throws Will throw an error if it doesn't find a mock to match the given request
  */
-export const lookupResponseAsync = async (request) => {
+export const lookupResponseAsync = (request) => {
   const mocksPendingMiddlewareExecution = store.filter(mock => mock.pendingMiddlewareExecution)
-  await configs.Promise.all(
-    mocksPendingMiddlewareExecution.map(async mock => mock.executeMiddlewareStack())
-  )
-
-  return lookupResponse(request)
+  return configs
+    .Promise.all(mocksPendingMiddlewareExecution.map(mock => mock.executeMiddlewareStack()))
+    .then(() => lookupResponse(request))
 }
 
 /**
