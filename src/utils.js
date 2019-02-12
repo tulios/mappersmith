@@ -15,11 +15,11 @@ if (hasProcessHrtime()) {
 
 const R20 = /%20/g
 
-const validKeys = (entry) => Object
+export const validKeys = (entry) => Object
     .keys(entry)
     .filter((key) => entry[key] !== undefined && entry[key] !== null)
 
-const buildRecursive = (key, value, suffix) => {
+export const buildRecursive = (key, value, suffix) => {
   suffix = suffix || ''
   const isArray = Array.isArray(value)
   const isObject = typeof value === 'object'
