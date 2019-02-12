@@ -349,5 +349,16 @@ describe('ClientBuilder middleware', () => {
         'wrapped error: from buggy'
       )
     })
+
+    it('support old middlewares with async request phases', async () => {
+      const asyncRequest = () => ({
+        request: (request) => Promise.resolve(request)
+      })
+
+      manifest.middleware = [ asyncRequest, headerMiddlewareV2 ]
+
+      await createClient().User.byId({ id: 1 })
+      expect(response.data()).toEqual(responseValue)
+    })
   })
 })

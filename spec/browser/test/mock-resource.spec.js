@@ -1,7 +1,7 @@
 import forge, { setContext } from 'src/index'
 import MockAssert from 'src/mocks/mock-assert'
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
-import { getManifest, headerMiddleware, asyncHeaderMiddleware } from 'spec/helper'
+import { getManifest, headerMiddleware, headerMiddlewareV2, asyncHeaderMiddleware } from 'spec/helper'
 
 import {
   install as installMock,
@@ -326,6 +326,32 @@ describe('Test lib / mock resources', () => {
         .then((response) => {
           expect(response.status()).toEqual(200)
           expect(response.request().headers()['x-middleware-phase']).toEqual('request')
+          expect(response.headers()['x-middleware-phase']).toEqual('response')
+          expect(response.headers()['x-resource-name']).toEqual('Blog')
+          expect(response.headers()['x-resource-method']).toEqual('post')
+          done()
+        })
+        .catch((response) => {
+          done.fail(response.data())
+        })
+    })
+
+    it('executes async middlewares', (done) => {
+      client = forge(getManifest([EncodeJsonMiddleware, headerMiddlewareV2]))
+
+      mockClient(client)
+        .resource('Blog')
+        .method('post')
+        .with(params)
+        .status(200)
+        .response({ ok: true })
+        .assertObject()
+
+      client.Blog
+        .post(params)
+        .then((response) => {
+          expect(response.status()).toEqual(200)
+          expect(response.request().headers()['x-middleware-phase']).toEqual('prepare-request')
           expect(response.headers()['x-middleware-phase']).toEqual('response')
           expect(response.headers()['x-resource-name']).toEqual('Blog')
           expect(response.headers()['x-resource-method']).toEqual('post')
