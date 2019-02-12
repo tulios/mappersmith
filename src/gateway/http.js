@@ -69,8 +69,34 @@ HTTP.prototype = Gateway.extends({
       assign(requestParams, httpOptions.configure(requestParams))
     }
 
+    if (httpOptions.onRequestWillStart) {
+      httpOptions.onRequestWillStart(requestParams)
+    }
+
     const httpRequest = handler
-      .request(requestParams, (httpResponse) => this.onResponse(httpResponse))
+      .request(requestParams, (httpResponse) => this.onResponse(httpResponse, httpOptions, requestParams))
+
+    httpRequest.on('socket', socket => {
+      if (httpOptions.onRequestSocketAssigned) {
+        httpOptions.onRequestSocketAssigned(requestParams)
+      }
+
+      socket.on('lookup', () => {
+        if (httpOptions.onSocketLookup) {
+          httpOptions.onSocketLookup(requestParams)
+        }
+      })
+      socket.on('connect', () => {
+        if (httpOptions.onSocketConnect) {
+          httpOptions.onSocketConnect(requestParams)
+        }
+      })
+      socket.on('secureConnect', () => {
+        if (httpOptions.onSocketSecureConnect) {
+          httpOptions.onSocketSecureConnect(requestParams)
+        }
+      })
+    })
 
     httpRequest.on('error', (e) => this.onError(e))
     body && httpRequest.write(body)
@@ -87,12 +113,18 @@ HTTP.prototype = Gateway.extends({
     httpRequest.end()
   },
 
-  onResponse (httpResponse) {
+  onResponse (httpResponse, httpOptions, requestParams) {
     const rawData = []
 
     if (!this.request.isBinary()) {
       httpResponse.setEncoding('utf8')
     }
+
+    httpResponse.once('readable', () => {
+      if (httpOptions.onResponseReadable) {
+        httpOptions.onResponseReadable(requestParams)
+      }
+    })
 
     httpResponse
       .on('data', (chunk) => rawData.push(chunk))
@@ -103,6 +135,12 @@ HTTP.prototype = Gateway.extends({
 
         this.dispatchResponse(this.createResponse(httpResponse, rawData))
       })
+
+    httpResponse.on('end', () => {
+      if (httpOptions.onResponseEnd) {
+        httpOptions.onResponseEnd(requestParams)
+      }
+    })
   },
 
   onError (e) {

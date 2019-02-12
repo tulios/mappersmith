@@ -310,4 +310,20 @@ describe('Gateway / HTTP', () => {
       })
     })
   })
+
+  describe('with event callbacks', () => {
+    for (let callbackName of ['onRequestWillStart', 'onRequestSocketAssigned', 'onResponseReadable', 'onResponseEnd']) {
+      it(`calls the ${callbackName} callback with request params`, (done) => {
+        methodDescriptor.method = 'get'
+        const callback = jasmine.createSpy(callbackName)
+        configs.gatewayConfigs.HTTP[callbackName] = callback
+
+        respondWith(httpResponse)
+        assertSuccess()(done, (response) => {
+          expect(response.status()).toEqual(200)
+          expect(callback).toHaveBeenCalledWith(jasmine.any(Object))
+        })
+      })
+    }
+  })
 })

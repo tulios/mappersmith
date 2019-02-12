@@ -1080,6 +1080,32 @@ configs.gatewayConfigs.HTTP = {
 
 The new configurations will be merged. `configure` also receives the `requestParams` as the first argument. Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappersmith.js) for more options.
 
+The HTTP gatewayConfigs also provides several callback functions that will be called when various events are emitted on the `request`, `socket`, and `response` EventEmitters. These callbacks can be used as a hook into the event cycle to execute any custom code. 
+For example, you may want to time how long each stage of the request or response takes.
+These callback functions will receive the `requestParams` as the first argument.
+
+The following callbacks are supported: 
+* `onRequestWillStart` - This callback is not based on a event emitted by Node but is called just before the `request` method is called.
+* `onRequestSocketAssigned` - Called when the 'socket' event is emitted on the `request`
+* `onSocketLookup` - Called when the `lookup` event is emitted on the `socket`
+* `onSocketConnect` - Called when the `connect` event is emitted on the `socket`
+* `onSocketSecureConnect` - Called when the `secureConnect` event is emitted on the `socket`
+* `onResponseReadable` - Called when the `readable` event is emitted on the `response`
+* `onResponseEnd` - Called when the `end` event is emitted on the `response`
+
+```javascript
+let startTime
+
+configs.gatewayConfigs.HTTP = {
+  onRequestWillStart() {
+    startTime = Date.now()
+  }
+  onResponseReadable() {
+    console.log('Time to first byte', Date.now() - startTime)
+  }
+}
+```
+
 ### XHR
 
 When running in the browser you can configure `withCredentials` and `configure` to further customize the `XMLHttpRequest` object, example:
