@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.28.0
+
+  - Add socket and response callbacks to the HTTP Gateway to allow for timing request stages #127
+  - Allow use of `mockRequest` and `mockClient` with params/body that are independent of order #121
+
 ## 2.27.2
 
   - Bugfix: Fix "ReferenceError: regeneratorRuntime is not defined" when importing "mappersmith/test" #131
