@@ -18,10 +18,7 @@ import {
 } from 'spec/helper'
 
 describe('ClientBuilder middleware', () => {
-  let manifest,
-    gatewayInstance,
-    response,
-    responseValue
+  let manifest, gatewayInstance, response, responseValue
 
   const createClient = () => forge(manifest)
 
@@ -30,13 +27,13 @@ describe('ClientBuilder middleware', () => {
     manifest = getManifest()
 
     gatewayInstance = { call: jest.fn() }
-    configs.gateway = jest.fn((request) => {
+    configs.gateway = jest.fn(request => {
       response = new Response(request, 200, responseValue)
       gatewayInstance.call.mockReturnValue(Promise.resolve(response))
       return gatewayInstance
     })
 
-    manifest.middleware = [ headerMiddleware ]
+    manifest.middleware = [headerMiddleware]
   })
 
   afterEach(() => {
@@ -46,15 +43,17 @@ describe('ClientBuilder middleware', () => {
 
   it('receives an object with "resourceName", "resourceMethod" and empty "context"', async () => {
     const middleware = jest.fn()
-    manifest.middleware = [ middleware ]
+    manifest.middleware = [middleware]
 
     await createClient().User.byId({ id: 1 })
-    expect(middleware).toHaveBeenCalledWith(expect.objectContaining({
-      resourceName: 'User',
-      resourceMethod: 'byId',
-      context: {},
-      clientId: null
-    }))
+    expect(middleware).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resourceName: 'User',
+        resourceMethod: 'byId',
+        context: {},
+        clientId: null
+      })
+    )
   })
 
   it('receives a clientId if present in manifest', async () => {
@@ -63,40 +62,54 @@ describe('ClientBuilder middleware', () => {
     const client = forge(manifest)
 
     await client.User.byId({ id: 1 })
-    expect(middleware).toBeCalledWith(expect.objectContaining({ clientId: 'someClient' }))
+    expect(middleware).toBeCalledWith(
+      expect.objectContaining({ clientId: 'someClient' })
+    )
   })
 
   it('receives current context', async () => {
     const middleware = jest.fn()
-    manifest.middleware = [ middleware ]
+    manifest.middleware = [middleware]
 
     const client = createClient()
 
     setContext({ foo: 'bar' })
     await client.User.byId({ id: 1 })
 
-    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
+    expect(middleware).toBeCalledWith(
+      expect.objectContaining({ context: { foo: 'bar' } })
+    )
 
     const client2 = createClient()
     await client2.User.byId({ id: 1 })
-    expect(middleware).lastCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
+    expect(middleware).lastCalledWith(
+      expect.objectContaining({ context: { foo: 'bar' } })
+    )
     expect(middleware).toHaveBeenCalledTimes(2)
 
     setContext({ foo: 'baz' })
     await client.User.byId({ id: 1 })
-    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'baz' } }))
+    expect(middleware).toBeCalledWith(
+      expect.objectContaining({ context: { foo: 'baz' } })
+    )
   })
 
   it('calls request and response phase', async () => {
     const requestPhase = jest.fn(() => createRequest())
     const responsePhase = jest.fn(() => Promise.resolve())
 
-    const middleware = () => ({ request: requestPhase, response: responsePhase })
-    manifest.middleware = [ middleware ]
+    const middleware = () => ({
+      request: requestPhase,
+      response: responsePhase
+    })
+    manifest.middleware = [middleware]
 
     await createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
-    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+    expect(responsePhase).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function)
+    )
   })
 
   it('calls request and response phase with a different "this" configured', async () => {
@@ -118,11 +131,14 @@ describe('ClientBuilder middleware', () => {
       response: myResponseFn
     })
 
-    manifest.middleware = [ middleware ]
+    manifest.middleware = [middleware]
 
     await createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
-    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+    expect(responsePhase).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function)
+    )
   })
 
   it('can change the final request object', async () => {
@@ -139,7 +155,7 @@ describe('ClientBuilder middleware', () => {
     )
   })
 
-  it('calls all middleware chainning the "next" function', async () => {
+  it('calls all middleware chaining the "next" function', async () => {
     responseValue = getCountMiddlewareCurrent()
 
     manifest.middleware = [
@@ -159,14 +175,20 @@ describe('ClientBuilder middleware', () => {
     let m2ResponseCalled = false
 
     const m1 = () => ({
-      request: (request) => { m1RequestCalled = true; return request }
+      request: request => {
+        m1RequestCalled = true
+        return request
+      }
     })
 
     const m2 = () => ({
-      response: (next) => { m2ResponseCalled = true; return next() }
+      response: next => {
+        m2ResponseCalled = true
+        return next()
+      }
     })
 
-    manifest.middleware = [ m1, m2 ]
+    manifest.middleware = [m1, m2]
 
     const response = await createClient().User.byId({ id: 1 })
     expect(response.data()).toEqual(responseValue)
@@ -176,26 +198,31 @@ describe('ClientBuilder middleware', () => {
 
   it('accepts async request phase', async () => {
     const m1 = () => ({
-      request: (request) => Promise.resolve(request.enhance({
-        headers: { token: 'abc' }
-      }))
+      request: request =>
+        Promise.resolve(
+          request.enhance({
+            headers: { token: 'abc' }
+          })
+        )
     })
 
-    manifest.middleware = [ m1 ]
+    manifest.middleware = [m1]
 
     const response = await createClient().User.byId({ id: 1 })
-    expect(response.request().headers()).toEqual(expect.objectContaining({ token: 'abc' }))
+    expect(response.request().headers()).toEqual(
+      expect.objectContaining({ token: 'abc' })
+    )
   })
 
   it('can renew the request from the response phase', async () => {
     let token = 'not-renewed'
     const m1 = () => ({
-      request: (request) => request.enhance({ headers: { 'Token': token } })
+      request: request => request.enhance({ headers: { Token: token } })
     })
 
     const m2 = () => ({
       response: (next, renew) => {
-        return next().then((response) => {
+        return next().then(response => {
           if (response.request().header('token') === 'not-renewed') {
             token = 'renewed'
             return renew()
@@ -206,7 +233,7 @@ describe('ClientBuilder middleware', () => {
       }
     })
 
-    manifest.middleware = [ m1, m2 ]
+    manifest.middleware = [m1, m2]
 
     const response = await createClient().User.byId({ id: 1 })
     expect(response.request().header('token')).toEqual('renewed')
@@ -221,7 +248,7 @@ describe('ClientBuilder middleware', () => {
       }
     })
 
-    manifest.middleware = [ m1 ]
+    manifest.middleware = [m1]
 
     await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
       'message',
@@ -232,12 +259,12 @@ describe('ClientBuilder middleware', () => {
   describe('when a middleware throws an error in the request phase', () => {
     it('rethrows the error with the middleware name', async () => {
       const m1 = () => ({
-        request: (request) => {
+        request: request => {
           throw new Error('Random error!')
         }
       })
 
-      manifest.middleware = [ m1 ]
+      manifest.middleware = [m1]
 
       await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
         'message',
@@ -248,10 +275,10 @@ describe('ClientBuilder middleware', () => {
 
   describe('when a middleware pass a non-request object to the next phase', () => {
     it('throws an error with the middleware name and type', async () => {
-      const m1 = () => ({ request: (request) => true })
-      const m2 = () => ({ request: (request) => request.enhance() })
+      const m1 = () => ({ request: request => true })
+      const m2 = () => ({ request: request => request.enhance() })
 
-      manifest.middleware = [ m1, m2 ]
+      manifest.middleware = [m1, m2]
 
       await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
         'message',
@@ -264,17 +291,26 @@ describe('ClientBuilder middleware', () => {
     const prepareRequestPhase = jest.fn(() => Promise.resolve(createRequest()))
     const responsePhase = jest.fn(() => Promise.resolve())
 
-    const middleware = () => ({ prepareRequest: prepareRequestPhase, response: responsePhase })
-    manifest.middleware = [ middleware ]
+    const middleware = () => ({
+      prepareRequest: prepareRequestPhase,
+      response: responsePhase
+    })
+    manifest.middleware = [middleware]
 
     await createClient().User.byId({ id: 1 })
-    expect(prepareRequestPhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
-    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+    expect(prepareRequestPhase).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function)
+    )
+    expect(responsePhase).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function)
+    )
   })
 
   describe('#prepareRequest', () => {
     beforeEach(() => {
-      manifest.middleware = [ headerMiddlewareV2 ]
+      manifest.middleware = [headerMiddlewareV2]
     })
 
     it('can change the final request object', async () => {
@@ -284,7 +320,7 @@ describe('ClientBuilder middleware', () => {
       )
     })
 
-    it('calls all middleware chainning the "next" function', async () => {
+    it('calls all middleware chaining the "next" function', async () => {
       responseValue = getCountPrepareRequestMiddlewareCurrent()
 
       manifest.middleware = [
@@ -294,7 +330,10 @@ describe('ClientBuilder middleware', () => {
         countPrepareRequestMiddleware
       ]
 
-      const response = await createClient().User.byId({ id: 1, headers: { 'x-count': 0 } })
+      const response = await createClient().User.byId({
+        id: 1,
+        headers: { 'x-count': 0 }
+      })
       expect(response.request().header('x-count')).toEqual(4)
       expect(getCountPrepareRequestMiddlewareStack()).toEqual([0, 1, 2, 3])
     })
@@ -303,10 +342,13 @@ describe('ClientBuilder middleware', () => {
       let m1RequestCalled = false
 
       const m1 = () => ({
-        prepareRequest: (next) => { m1RequestCalled = true; return next() }
+        prepareRequest: next => {
+          m1RequestCalled = true
+          return next()
+        }
       })
 
-      manifest.middleware = [ m1 ]
+      manifest.middleware = [m1]
 
       const response = await createClient().User.byId({ id: 1 })
       expect(response.data()).toEqual(responseValue)
@@ -320,7 +362,7 @@ describe('ClientBuilder middleware', () => {
         }
       })
 
-      manifest.middleware = [ middleware ]
+      manifest.middleware = [middleware]
 
       await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
         'message',
@@ -330,7 +372,7 @@ describe('ClientBuilder middleware', () => {
 
     it('can capture errors from other middlewares', async () => {
       const buggy = () => ({
-        request: (request) => {
+        request: request => {
           throw new Error('from buggy')
         }
       })
@@ -342,7 +384,7 @@ describe('ClientBuilder middleware', () => {
         }
       })
 
-      manifest.middleware = [ buggy, errorMapper ]
+      manifest.middleware = [buggy, errorMapper]
 
       await expect(createClient().User.byId({ id: 1 })).rejects.toHaveProperty(
         'message',
@@ -350,12 +392,12 @@ describe('ClientBuilder middleware', () => {
       )
     })
 
-    it('support old middlewares with async request phases', async () => {
+    it('supports old middlewares with async request phases', async () => {
       const asyncRequest = () => ({
-        request: (request) => Promise.resolve(request)
+        request: request => Promise.resolve(request)
       })
 
-      manifest.middleware = [ asyncRequest, headerMiddlewareV2 ]
+      manifest.middleware = [asyncRequest, headerMiddlewareV2]
 
       await createClient().User.byId({ id: 1 })
       expect(response.data()).toEqual(responseValue)
