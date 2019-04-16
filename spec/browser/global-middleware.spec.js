@@ -45,15 +45,9 @@ describe('when global middleware is present', () => {
       })
 
       callOrder = []
-      resourceMiddleware = jest
-        .fn()
-        .mockImplementation(() => callOrder.push('resourceMiddleware'))
-      clientMiddleware = jest
-        .fn()
-        .mockImplementation(() => callOrder.push('clientMiddleware'))
-      globalMiddleware = jest
-        .fn()
-        .mockImplementation(() => callOrder.push('globalMiddleware'))
+      resourceMiddleware = jest.fn().mockImplementation(() => callOrder.push('resourceMiddleware'))
+      clientMiddleware = jest.fn().mockImplementation(() => callOrder.push('clientMiddleware'))
+      globalMiddleware = jest.fn().mockImplementation(() => callOrder.push('globalMiddleware'))
       configs.middleware = [globalMiddleware]
 
       const manifest = getManifest([clientMiddleware])
@@ -68,11 +62,7 @@ describe('when global middleware is present', () => {
       expect(clientMiddleware).toHaveBeenCalled()
       expect(resourceMiddleware).toHaveBeenCalled()
 
-      expect(callOrder).toEqual([
-        'resourceMiddleware',
-        'clientMiddleware',
-        'globalMiddleware'
-      ])
+      expect(callOrder).toEqual(['resourceMiddleware', 'clientMiddleware', 'globalMiddleware'])
     })
   })
 })

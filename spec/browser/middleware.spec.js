@@ -62,9 +62,7 @@ describe('ClientBuilder middleware', () => {
     const client = forge(manifest)
 
     await client.User.byId({ id: 1 })
-    expect(middleware).toBeCalledWith(
-      expect.objectContaining({ clientId: 'someClient' })
-    )
+    expect(middleware).toBeCalledWith(expect.objectContaining({ clientId: 'someClient' }))
   })
 
   it('receives current context', async () => {
@@ -76,22 +74,16 @@ describe('ClientBuilder middleware', () => {
     setContext({ foo: 'bar' })
     await client.User.byId({ id: 1 })
 
-    expect(middleware).toBeCalledWith(
-      expect.objectContaining({ context: { foo: 'bar' } })
-    )
+    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
 
     const client2 = createClient()
     await client2.User.byId({ id: 1 })
-    expect(middleware).lastCalledWith(
-      expect.objectContaining({ context: { foo: 'bar' } })
-    )
+    expect(middleware).lastCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
     expect(middleware).toHaveBeenCalledTimes(2)
 
     setContext({ foo: 'baz' })
     await client.User.byId({ id: 1 })
-    expect(middleware).toBeCalledWith(
-      expect.objectContaining({ context: { foo: 'baz' } })
-    )
+    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'baz' } }))
   })
 
   it('calls request and response phase', async () => {
@@ -106,10 +98,7 @@ describe('ClientBuilder middleware', () => {
 
     await createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
-    expect(responsePhase).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.any(Function)
-    )
+    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
   })
 
   it('calls request and response phase with a different "this" configured', async () => {
@@ -135,10 +124,7 @@ describe('ClientBuilder middleware', () => {
 
     await createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
-    expect(responsePhase).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.any(Function)
-    )
+    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
   })
 
   it('can change the final request object', async () => {
@@ -158,12 +144,7 @@ describe('ClientBuilder middleware', () => {
   it('calls all middleware chaining the "next" function', async () => {
     responseValue = getCountMiddlewareCurrent()
 
-    manifest.middleware = [
-      countMiddleware,
-      countMiddleware,
-      countMiddleware,
-      countMiddleware
-    ]
+    manifest.middleware = [countMiddleware, countMiddleware, countMiddleware, countMiddleware]
 
     const response = await createClient().User.byId({ id: 1 })
     expect(response.data()).toEqual(4)
@@ -209,9 +190,7 @@ describe('ClientBuilder middleware', () => {
     manifest.middleware = [m1]
 
     const response = await createClient().User.byId({ id: 1 })
-    expect(response.request().headers()).toEqual(
-      expect.objectContaining({ token: 'abc' })
-    )
+    expect(response.request().headers()).toEqual(expect.objectContaining({ token: 'abc' }))
   })
 
   it('can renew the request from the response phase', async () => {
@@ -298,14 +277,8 @@ describe('ClientBuilder middleware', () => {
     manifest.middleware = [middleware]
 
     await createClient().User.byId({ id: 1 })
-    expect(prepareRequestPhase).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.any(Function)
-    )
-    expect(responsePhase).toHaveBeenCalledWith(
-      expect.any(Function),
-      expect.any(Function)
-    )
+    expect(prepareRequestPhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
   })
 
   describe('#prepareRequest', () => {
@@ -409,12 +382,8 @@ describe('ClientBuilder middleware', () => {
 
     beforeEach(() => {
       callOrder = []
-      resourceMiddleware = jest
-        .fn()
-        .mockImplementation(() => callOrder.push('resourceMiddleware'))
-      clientMiddleware = jest
-        .fn()
-        .mockImplementation(() => callOrder.push('clientMiddleware'))
+      resourceMiddleware = jest.fn().mockImplementation(() => callOrder.push('resourceMiddleware'))
+      clientMiddleware = jest.fn().mockImplementation(() => callOrder.push('clientMiddleware'))
       manifest = getManifest([clientMiddleware])
       manifest.resources.User.byId.middleware = [resourceMiddleware]
       client = forge(manifest)

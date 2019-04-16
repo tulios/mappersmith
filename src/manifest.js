@@ -11,10 +11,7 @@ import { assign } from './utils'
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
  * @param {Object} globalConfigs
  */
-function Manifest (
-  obj,
-  { gatewayConfigs = null, middleware = [], context = {} }
-) {
+function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }) {
   this.host = obj.host
   this.bodyAttr = obj.bodyAttr
   this.headersAttr = obj.headersAttr
@@ -108,11 +105,8 @@ Manifest.prototype = {
         )
       )
 
-    const resourceMiddleware = this.createMethodDescriptor(
-      args.resourceName,
-      args.resourceMethod
-    ).middleware
-
+    const { resourceName: name, resourceMethod: method } = args
+    const resourceMiddleware = this.createMethodDescriptor(name, method).middleware
     const middlewares = [...resourceMiddleware, ...this.middleware]
 
     return middlewares.map(createInstance)
