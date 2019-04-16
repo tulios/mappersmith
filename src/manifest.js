@@ -108,7 +108,14 @@ Manifest.prototype = {
         )
       )
 
-    return this.middleware.map(createInstance)
+    const resourceMiddleware = this.createMethodDescriptor(
+      args.resourceName,
+      args.resourceMethod
+    ).middleware
+
+    const middlewares = [...resourceMiddleware, ...this.middleware]
+
+    return middlewares.map(createInstance)
   }
 }
 

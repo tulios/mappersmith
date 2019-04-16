@@ -403,4 +403,30 @@ describe('ClientBuilder middleware', () => {
       expect(response.data()).toEqual(responseValue)
     })
   })
+
+  describe('with middleware on resource', () => {
+    let callOrder, client, clientMiddleware, resourceMiddleware
+
+    beforeEach(() => {
+      callOrder = []
+      resourceMiddleware = jest
+        .fn()
+        .mockImplementation(() => callOrder.push('resourceMiddleware'))
+      clientMiddleware = jest
+        .fn()
+        .mockImplementation(() => callOrder.push('clientMiddleware'))
+      manifest = getManifest([clientMiddleware])
+      manifest.resources.User.byId.middleware = [resourceMiddleware]
+      client = forge(manifest)
+    })
+
+    it('invokes middlewares in correct order', async () => {
+      await client.User.byId({ id: 1 })
+
+      expect(clientMiddleware).toHaveBeenCalled()
+      expect(resourceMiddleware).toHaveBeenCalled()
+
+      expect(callOrder).toEqual(['resourceMiddleware', 'clientMiddleware'])
+    })
+  })
 })

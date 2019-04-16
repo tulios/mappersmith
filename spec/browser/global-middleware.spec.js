@@ -1,4 +1,5 @@
 import forge, { configs } from 'src/mappersmith'
+import Response from 'src/response'
 import { getManifest } from 'spec/helper'
 
 describe('when global middleware is present', () => {
@@ -24,5 +25,54 @@ describe('when global middleware is present', () => {
 
     expect(client1._manifest.middleware).toEqual(['first'])
     expect(client2._manifest.middleware).toEqual(['second'])
+  })
+
+  describe('with middleware on resource', () => {
+    let gatewayInstance,
+      response,
+      callOrder,
+      client,
+      globalMiddleware,
+      clientMiddleware,
+      resourceMiddleware
+
+    beforeEach(() => {
+      gatewayInstance = { call: jest.fn() }
+      configs.gateway = jest.fn(request => {
+        response = new Response(request, 200, 'success')
+        gatewayInstance.call.mockReturnValue(Promise.resolve(response))
+        return gatewayInstance
+      })
+
+      callOrder = []
+      resourceMiddleware = jest
+        .fn()
+        .mockImplementation(() => callOrder.push('resourceMiddleware'))
+      clientMiddleware = jest
+        .fn()
+        .mockImplementation(() => callOrder.push('clientMiddleware'))
+      globalMiddleware = jest
+        .fn()
+        .mockImplementation(() => callOrder.push('globalMiddleware'))
+      configs.middleware = [globalMiddleware]
+
+      const manifest = getManifest([clientMiddleware])
+      manifest.resources.User.byId.middleware = [resourceMiddleware]
+      client = forge(manifest)
+    })
+
+    it('invokes middlewares in correct order', async () => {
+      await client.User.byId({ id: 1 })
+
+      expect(globalMiddleware).toHaveBeenCalled()
+      expect(clientMiddleware).toHaveBeenCalled()
+      expect(resourceMiddleware).toHaveBeenCalled()
+
+      expect(callOrder).toEqual([
+        'resourceMiddleware',
+        'clientMiddleware',
+        'globalMiddleware'
+      ])
+    })
   })
 })
