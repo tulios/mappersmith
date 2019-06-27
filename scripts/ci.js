@@ -10,5 +10,6 @@ function exec (command, cwd) {
 exec('yarn lint', rootDir)
 exec('yarn test:browser', rootDir)
 exec('yarn test:node', rootDir)
+exec('yarn test:typings', rootDir)
 exec('cross-env SINGLE_RUN=true yarn test:browser:integration', rootDir)
 exec('cross-env SINGLE_RUN=true yarn test:node:integration', rootDir)

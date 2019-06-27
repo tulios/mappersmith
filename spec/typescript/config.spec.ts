@@ -1,0 +1,38 @@
+import { configs, setContext, Middleware } from 'mappersmith'
+
+const MyMiddleware: Middleware = () => ({
+  prepareRequest(next) {
+    return next().then(response => response.enhance({
+      headers: { 'x-special-request': '->' }
+    }))
+  },
+
+  response(next) {
+    return next().then(response => response.enhance({
+      headers: { 'x-special-response': '<-' }
+    }))
+  }
+})
+
+setContext({ some: 'data'})
+
+configs.maxMiddlewareStackExecutionAllowed = 2
+configs.middleware = [MyMiddleware]
+configs.fetch = fetch
+configs.gatewayConfigs.Mock = {}
+configs.gatewayConfigs.Fetch = {
+  credentials: 'same-origin'
+}
+configs.gatewayConfigs.HTTP = {
+  configure() {
+    return {
+      agent: "something"
+    }
+  }
+}
+configs.gatewayConfigs.XHR = {
+  withCredentials: true,
+  configure(xhr) {
+    xhr.ontimeout = () => console.error('timeout!')
+  }
+}
