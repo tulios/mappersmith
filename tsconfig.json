@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true
+  },
+  "include": [
+    "typings",
+    "spec/typescript/*",
+    "spec/typescript/**/*"
+  ]
+}

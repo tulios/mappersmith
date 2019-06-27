@@ -35,6 +35,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
       - [Timeout](#middleware-timeout)
   - [Testing Mappersmith](#testing-mappersmith)
   - [Gateways](#gateways)
+  - [TypeScript](#typescript)
 - [Development](#development)
 
 ## <a name="installation"></a> Installation
@@ -1146,6 +1147,64 @@ configs.gatewayConfigs.Fetch = {
 ```
 
 Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappersmith.js) for more options.
+
+### <a name="typescript"></a> TypeScript
+
+__Mappersmith__ also supports TypeScript (>=3.5). In the following sections there are some common examples for using TypeScript with Mappersmith where it is not too obvious how typings are properly applied.
+
+#### Create a middleware with TypeScript
+
+To create a middleware using TypeScript you just have to add the `Middleware` interface to your middleware object:
+
+```typescript
+import { Middleware } from 'mappersmith'
+
+const MyMiddleware: Middleware = () => ({
+  prepareRequest(next) {
+    return next().then(request => request.enhance({
+      headers: { 'x-special-request': '->' }
+    }))
+  },
+
+  response(next) {
+    return next().then(response => response.enhance({
+      headers: { 'x-special-response': '<-' }
+    }))
+  }
+})
+```
+
+#### Use the `mockClient` with TypeScript
+
+To use the `mockClient` with proper types you need to pass a typeof your client as generic to the `mockClient` function:
+
+```typescript
+import forge from 'mappersmith'
+import { mockClient } from 'mappersmith/test'
+
+const github = forge({
+  clientId: 'github',
+  host: 'https://status.github.com',
+  resources: {
+    Status: {
+      current: { path: '/api/status.json' },
+      messages: { path: '/api/messages.json' },
+      lastMessage: { path: '/api/last-message.json' },
+    },
+  },
+})
+
+const mock = mockClient<typeof github>(github)
+  .resource('Status')
+  .method('current')
+  .with({ id: 'abc' })
+  .response({ allUsers: [] })
+  .assertObject()
+
+console.log(mock.mostRecentCall())
+console.log(mock.callsCount())
+console.log(mock.calls())
+```
 
 ## <a name="development"></a> Development
 

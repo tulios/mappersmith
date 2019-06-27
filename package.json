@@ -9,6 +9,7 @@
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
   "main": "index.js",
+  "types": "typings/index.d.ts",
   "scripts": {
     "integration-server": "node spec/integration/server.js",
     "test:browser": "./node_modules/.bin/jest --config jestSetup/configs/config.web.json",
@@ -17,6 +18,7 @@
     "test:node": "./node_modules/.bin/jest --config jestSetup/configs/config.node.json",
     "test:node:integration": "cross-env NODE_ENV=test cross-env NODE_PATH=. cross-env JASMINE_CONFIG_PATH=spec/integration/node/support/jasmine.json jasmine",
     "test:node:watch": "./node_modules/.bin/jest --config jestSetup/configs/config.node.json --watchAll",
+    "test:typings": "./node_modules/.bin/tsc",
     "test": "concurrently --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn integration-server\"",
     "build:node": "rm -rf lib/* && ./node_modules/.bin/babel src -d lib",
     "build:browser": "rm -rf dist/* && ./node_modules/.bin/webpack --config webpack.conf.js",
@@ -85,6 +87,7 @@
     "mockdate": "^2.0.1",
     "multer": "^1.2.0",
     "puppeteer": "^0.12.0",
+    "typescript": "^3.5.2",
     "uglifyjs-webpack-plugin": "^2.1.1",
     "webpack": "^4.28.1",
     "webpack-cli": "^3.2.1",
