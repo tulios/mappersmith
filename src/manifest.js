@@ -34,8 +34,8 @@ function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }
 
 Manifest.prototype = {
   eachResource (callback) {
-    Object.keys(this.resources).forEach((resourceName) => {
-      const methods = this.eachMethod(resourceName, (methodName) => ({
+    Object.keys(this.resources).forEach(resourceName => {
+      const methods = this.eachMethod(resourceName, methodName => ({
         name: methodName,
         descriptor: this.createMethodDescriptor(resourceName, methodName)
       }))
@@ -45,9 +45,7 @@ Manifest.prototype = {
   },
 
   eachMethod (resourceName, callback) {
-    return Object
-      .keys(this.resources[resourceName])
-      .map(callback)
+    return Object.keys(this.resources[resourceName]).map(callback)
   },
 
   createMethodDescriptor (resourceName, methodName) {
@@ -60,13 +58,16 @@ Manifest.prototype = {
     }
 
     return new MethodDescriptor(
-      assign({
-        host: this.host,
-        bodyAttr: this.bodyAttr,
-        headersAttr: this.headersAttr,
-        authAttr: this.authAttr,
-        timeoutAttr: this.timeoutAttr
-      }, definition)
+      assign(
+        {
+          host: this.host,
+          bodyAttr: this.bodyAttr,
+          headersAttr: this.headersAttr,
+          authAttr: this.authAttr,
+          timeoutAttr: this.timeoutAttr
+        },
+        definition
+      )
     )
   },
 
@@ -81,21 +82,34 @@ Manifest.prototype = {
    * @return {Array<Object>}
    */
   createMiddleware (args = {}) {
-    const createInstance = (middlewareFactory) => assign({
-      __name: middlewareFactory.name || middlewareFactory.toString(),
-      response (next) { return next() },
-      /**
-       * @since 2.27.0
-       * Replaced the request method
-       */
-      prepareRequest (next) {
-        return this.request
-          ? next().then(req => this.request(req))
-          : next()
-      }
-    }, middlewareFactory(assign(args, { clientId: this.clientId, context: assign({}, this.context) })))
+    const createInstance = middlewareFactory =>
+      assign(
+        {
+          __name: middlewareFactory.name || middlewareFactory.toString(),
+          response (next) {
+            return next()
+          },
+          /**
+           * @since 2.27.0
+           * Replaced the request method
+           */
+          prepareRequest (next) {
+            return this.request ? next().then(req => this.request(req)) : next()
+          }
+        },
+        middlewareFactory(
+          assign(args, {
+            clientId: this.clientId,
+            context: assign({}, this.context)
+          })
+        )
+      )
 
-    return this.middleware.map(createInstance)
+    const { resourceName: name, resourceMethod: method } = args
+    const resourceMiddleware = this.createMethodDescriptor(name, method).middleware
+    const middlewares = [...resourceMiddleware, ...this.middleware]
+
+    return middlewares.map(createInstance)
   }
 }
 
