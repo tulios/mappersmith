@@ -25,4 +25,7 @@ export default function MethodDescriptor (obj) {
   this.headersAttr = obj.headersAttr || 'headers'
   this.authAttr = obj.authAttr || 'auth'
   this.timeoutAttr = obj.timeoutAttr || 'timeout'
+
+  const resourceMiddleware = obj.middleware || obj.middlewares || []
+  this.middleware = resourceMiddleware
 }

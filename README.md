@@ -22,8 +22,15 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
   - [Promises](#promises)
   - [Response object](#response-object)
   - [Middleware](#middleware)
-    - [Global middleware](#global-middleware)
-    - [Context](#context)
+    - [Creating middleware](#creating-middleware)
+      - [Context](#context)
+      - [Optional arguments](#creating-middleware-optional-arguments)
+        - [Abort](#creating-middleware-optional-arguments-abort)
+        - [Renew](#creating-middleware-optional-arguments-renew)
+    - [Configuring middleware](#configuring-middleware)
+      - [Resource level middleware](#resource-middleware)
+      - [Client level middleware](#client-middleware)
+      - [Global middleware](#global-middleware)
     - [Built-in middleware](#built-in-middleware)
       - [BasicAuth](#middleware-basic-auth)
       - [CSRF](#middleware-csrf)
@@ -33,6 +40,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
       - [Log](#middleware-log)
       - [Retry](#middleware-retry)
       - [Timeout](#middleware-timeout)
+    - [Middleware legacy notes](#middleware-legacy-notes)
   - [Testing Mappersmith](#testing-mappersmith)
   - [Gateways](#gateways)
   - [TypeScript](#typescript)
@@ -346,33 +354,11 @@ Mappersmith will provide an instance of its own `Response` object to the promise
 
 The behavior between your client and the API can be customized with middleware. A middleware is a function which returns an object with two methods: request and response.
 
-The `request` method receives an instance of the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
+### <a name="creating-middleware"></a> Creating middleware
 
-__NOTE__: Since version `2.27.0` a new method was introduced: `prepareRequest`. This method aims to replace the `request` method in future versions of mappersmith, it has a similar signature as the `response` method and it is always async. All previous middleware are backward compatible, the default implementation of `prepareRequest` will call the `request` method if it exists. The `prepareRequest` method receives a function which returns a `Promise` resolving the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js). This function must return a `Promise` resolving the request. The method `enhance` can be used to generate a new request based on the previous one.
+The `prepareRequest` method receives a function which returns a `Promise` resolving the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js). This function must return a `Promise` resolving the request. The method `enhance` can be used to generate a new request based on the previous one.
 
 The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to generate a new response based on the previous one.
-
-You don't need to implement both methods, you can define only the phase you need.
-
-Example:
-
-```javascript
-const MyMiddleware = () => ({
-  request(request) {
-    return request.enhance({
-      headers: { 'x-special-request': '->' }
-    })
-  },
-
-  response(next) {
-    return next().then((response) => response.enhance({
-      headers: { 'x-special-response': '<-' }
-    }))
-  }
-})
-```
-
-__NOTE:__ If you are running mappersmith `2.27.0` or greater use the following instead:
 
 ```javascript
 const MyMiddleware = () => ({
@@ -390,147 +376,7 @@ const MyMiddleware = () => ({
 })
 ```
 
-The middleware can be configured using the key `middleware` in the manifest, example:
-
-```javascript
-const client = forge({
-  clientId: 'myClient',
-  middleware: [ MyMiddleware ],
-  resources: {
-    User: {
-      all: { path: '/users' }
-    }
-  }
-})
-```
-
-It can, optionally, receive `resourceName`, `resourceMethod`, [#context](`context`)
-and `clientId`. Example:
-
-```javascript
-const MyMiddleware = ({ resourceName, resourceMethod, context, clientId }) => ({
-  /* ... */
-})
-
-client.User.all()
-// resourceName: 'User'
-// resourceMethod: 'all'
-// clientId: 'myClient'
-// context: {}
-```
-
-__NOTE__: The request phase can be asynchronous, just return a promise resolving a request. Example:
-
-```javascript
-const MyMiddleware = () => ({
-  request(request) {
-    return Promise.resolve(
-      request.enhance({
-        headers: { 'x-special-token': 'abc123' }
-      })
-    )
-  }
-})
-```
-
-__NOTE 2__: If you are using mappersmith `2.27.0` or greater take a look at `prepareRequest`, which is always async.
-
-
-The `prepareRequest` phase can optionally receive a function called "abort". This function can be used to abort the middleware execution early-on and throw a custom error to the user.
-Example:
-
-```javascript
-const MyMiddleware = () => {
-  prepareRequest(next, abort) {
-    return next().then(request =>
-      request.header('x-special')
-        ? response
-        : abort(new Error('"x-special" must be set!'))
-    )
-  }
-}
-```
-
-The `response` phase can optionally receive a function called "renew". This function can be used to rerun the
-middleware stack. This feature is useful in some scenarios, for example, automatically refreshing an expired access token.
-Example:
-
-```javascript
-const AccessTokenMiddleware = () => {
-  // maybe this is stored elsewhere, here for simplicity
-  let accessToken = null
-
-  return () => ({
-    request(request) {
-      return Promise
-        .resolve(accessToken)
-        .then((token) => token || fetchAccessToken())
-        .then((token) => {
-          accessToken = token
-          return request.enhance({
-            headers: { 'Authorization': `Token ${token}` }
-          })
-        })
-    },
-    response(next, renew) {
-      return next().catch(response => {
-        if (response.status() === 401) { // token expired
-          accessToken = null
-          return renew()
-        }
-
-        return next()
-      })
-    }
-  })
-}
-```
-
-Then:
-
-```javascript
-const AccessToken = AccessTokenMiddleware()
-const client = forge({
-  // ...
-  middleware: [ AccessToken ],
-  // ...
-})
-```
-
-"renew" can only be invoked sometimes before it's considered an infinite loop, make sure your middleware
-can distinguish an error from a "renew". By default, mappersmith will allow 2 calls to "renew". This can
-be configured with `configs.maxMiddlewareStackExecutionAllowed`. It's advised to keep this number low.
-Example:
-
-```javascript
-import { configs } from 'mappersmith'
-configs.maxMiddlewareStackExecutionAllowed = 3
-```
-
-If an infinite loop is detected, mappersmith will throw an error.
-
-### <a name="global-middleware"></a> Global middleware
-
-Middleware can also be defined globally, so new clients will automatically
-include the defined middleware:
-
-```javascript
-import forge, { configs } from 'mappersmith'
-
-configs.middleware = [MyMiddleware]
-// all clients defined from now on will automatically include MyMiddleware
-```
-
-* Global middleware can be disabled for specific clients with the option `ignoreGlobalMiddleware`, e.g:
-
-```javascript
-forge({
-  ignoreGlobalMiddleware: true,
-  // + the usual configurations
-})
-```
-
-### <a name="context"></a> Context
+#### <a name="context"></a> Context
 
 Sometimes you may need to set data to be available to all your client's middleware. In this
 case you can use the `setContext` helper, like so:
@@ -584,7 +430,155 @@ app.use((req, res, next) => {
 Note that setContext will merge the object provided with the current context
 instead of replacing it.
 
-### Built-in middleware
+#### <a name="creating-middleware-optional-arguments"></a> Optional arguments
+
+It can, optionally, receive `resourceName`, `resourceMethod`, [#context](`context`) and `clientId`. Example:
+
+```javascript
+const MyMiddleware = ({ resourceName, resourceMethod, context, clientId }) => ({
+  /* ... */
+})
+
+client.User.all()
+// resourceName: 'User'
+// resourceMethod: 'all'
+// clientId: 'myClient'
+// context: {}
+```
+
+##### <a name="creating-middleware-optional-arguments-abort"></a> Abort
+
+The `prepareRequest` phase can optionally receive a function called "abort". This function can be used to abort the middleware execution early-on and throw a custom error to the user. Example:
+
+```javascript
+const MyMiddleware = () => {
+  prepareRequest(next, abort) {
+    return next().then(request =>
+      request.header('x-special')
+        ? response
+        : abort(new Error('"x-special" must be set!'))
+    )
+  }
+}
+```
+
+##### <a name="creating-middleware-optional-arguments-renew"></a> Renew
+
+The `response` phase can optionally receive a function called "renew". This function can be used to rerun the middleware stack. This feature is useful in some scenarios, for example, automatically refreshing an expired access token. Example:
+
+```javascript
+const AccessTokenMiddleware = () => {
+  // maybe this is stored elsewhere, here for simplicity
+  let accessToken = null
+
+  return () => ({
+    request(request) {
+      return Promise
+        .resolve(accessToken)
+        .then((token) => token || fetchAccessToken())
+        .then((token) => {
+          accessToken = token
+          return request.enhance({
+            headers: { 'Authorization': `Token ${token}` }
+          })
+        })
+    },
+    response(next, renew) {
+      return next().catch(response => {
+        if (response.status() === 401) { // token expired
+          accessToken = null
+          return renew()
+        }
+
+        return next()
+      })
+    }
+  })
+}
+```
+
+Then:
+
+```javascript
+const AccessToken = AccessTokenMiddleware()
+const client = forge({
+  // ...
+  middleware: [ AccessToken ],
+  // ...
+})
+```
+
+"renew" can only be invoked sometimes before it's considered an infinite loop, make sure your middleware can distinguish an error from a "renew". By default, mappersmith will allow 2 calls to "renew". This can be configured with `configs.maxMiddlewareStackExecutionAllowed`. It's advised to keep this number low. Example:
+
+```javascript
+import { configs } from 'mappersmith'
+configs.maxMiddlewareStackExecutionAllowed = 3
+```
+
+If an infinite loop is detected, mappersmith will throw an error.
+
+### <a name="configuring-middleware"></a> Configuring middleware
+
+Middleware scope can be Global, Client or on Resource level. The order will be applied in this order: Resource level applies first, then Client level, and finally Global level. The subsections below describes the differences and how to use them correctly.
+
+#### <a name="resource-middleware"></a> Resource level middleware
+
+Resource middleware are configured using the key `middleware` in the resource level of manifest, example:
+
+```javascript
+const client = forge({
+  clientId: 'myClient',
+  resources: {
+    User: {
+      all: {
+        // only the `all` resource will include MyMiddleware:
+        middleware: [ MyMiddleware ],
+        path: '/users'
+      }
+    }
+  }
+})
+```
+
+#### <a name="client-middleware"></a> Client level middleware
+
+Client middleware are configured using the key `middleware` in the root level of manifest, example:
+
+```javascript
+const client = forge({
+  clientId: 'myClient',
+  // all resources in this client will include MyMiddleware:
+  middleware: [ MyMiddleware ],
+  resources: {
+    User: {
+      all: { path: '/users' }
+    }
+  }
+})
+```
+
+#### <a name="global-middleware"></a> Global middleware
+
+Global middleware are configured on a config level, and all new clients will automatically
+include the defined middleware, example:
+
+```javascript
+import forge, { configs } from 'mappersmith'
+
+configs.middleware = [MyMiddleware]
+// all clients defined from now on will include MyMiddleware
+```
+
+* Global middleware can be disabled for specific clients with the option `ignoreGlobalMiddleware`, e.g:
+
+```javascript
+forge({
+  ignoreGlobalMiddleware: true,
+  // + the usual configurations
+})
+```
+
+### <a name="built-in-middleware"></a> Built-in middleware
 
 #### <a name="middleware-basic-auth"></a> BasicAuth
 
@@ -785,6 +779,46 @@ client.User.all()
 ```javascript
 client.User.all({ timeout: 100 })
 // timeout will be 100 instead of 500
+```
+
+### <a name="middleware-legacy-notes"></a> Middleware legacy notes
+
+This section is only relevant for mappersmith versions older than but not including `2.27.0`, when the method `prepareRequest` did not exist. This section describes how to create a middleware using older versions.
+
+Since version `2.27.0` a new method was introduced: `prepareRequest`. This method aims to replace the `request` method in future versions of mappersmith, it has a similar signature as the `response` method and it is always async. All previous middleware are backward compatible, the default implementation of `prepareRequest` will call the `request` method if it exists.
+
+The `request` method receives an instance of the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js) object and it must return a Request. The method `enhance` can be used to generate a new request based on the previous one.
+
+Example:
+
+```javascript
+const MyMiddleware = () => ({
+  request(request) {
+    return request.enhance({
+      headers: { 'x-special-request': '->' }
+    })
+  },
+
+  response(next) {
+    return next().then((response) => response.enhance({
+      headers: { 'x-special-response': '<-' }
+    }))
+  }
+})
+```
+
+The request phase can be asynchronous, just return a promise resolving a request. Example:
+
+```javascript
+const MyMiddleware = () => ({
+  request(request) {
+    return Promise.resolve(
+      request.enhance({
+        headers: { 'x-special-token': 'abc123' }
+      })
+    )
+  }
+})
 ```
 
 ## <a name="testing-mappersmith"></a> Testing Mappersmith
@@ -1081,11 +1115,11 @@ configs.gatewayConfigs.HTTP = {
 
 The new configurations will be merged. `configure` also receives the `requestParams` as the first argument. Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappersmith.js) for more options.
 
-The HTTP gatewayConfigs also provides several callback functions that will be called when various events are emitted on the `request`, `socket`, and `response` EventEmitters. These callbacks can be used as a hook into the event cycle to execute any custom code. 
+The HTTP gatewayConfigs also provides several callback functions that will be called when various events are emitted on the `request`, `socket`, and `response` EventEmitters. These callbacks can be used as a hook into the event cycle to execute any custom code.
 For example, you may want to time how long each stage of the request or response takes.
 These callback functions will receive the `requestParams` as the first argument.
 
-The following callbacks are supported: 
+The following callbacks are supported:
 * `onRequestWillStart` - This callback is not based on a event emitted by Node but is called just before the `request` method is called.
 * `onRequestSocketAssigned` - Called when the 'socket' event is emitted on the `request`
 * `onSocketLookup` - Called when the `lookup` event is emitted on the `socket`
