@@ -12,18 +12,19 @@ const fileUploadSpec = (Client) => {
     const formData = new FormData() // eslint-disable-line no-undef
     formData.append('myfile', mockFile)
 
-    Client.Pictures.upload({ body: formData }).then((response) => {
-      expect(response.headers()).toEqual(jasmine.objectContaining({
-        'x-api-response': 'apiPicturesUpload',
-        'x-api-files': expectedFileOutputOnTheServer
-      }))
-      expect(response.headers()['x-api-content-type']).toMatch(/^multipart\/form-data; boundary=/)
-      expect(response.data()).toEqual(apiResponses.apiPicturesUpload)
-      done()
-    })
-    .catch((response) => {
-      done.fail(`test failed with promise error: ${errorMessage(response)}`)
-    })
+    Client.Pictures.upload({ body: formData })
+      .then((response) => {
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'x-api-response': 'apiPicturesUpload',
+          'x-api-files': expectedFileOutputOnTheServer
+        }))
+        expect(response.headers()['x-api-content-type']).toMatch(/^multipart\/form-data; boundary=/)
+        expect(response.data()).toEqual(apiResponses.apiPicturesUpload)
+        done()
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
   })
 }
 

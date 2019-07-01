@@ -12,6 +12,7 @@ describe('#performanceNow', () => {
   })
 
   it('two subsequent calls returns an increasing number', () => {
+    // eslint-disable-next-line no-self-compare
     expect(performanceNow() < performanceNow()).toEqual(true)
   })
 

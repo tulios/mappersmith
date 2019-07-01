@@ -20,7 +20,7 @@ module.exports = function (config) {
     singleRun: process.env.SINGLE_RUN || false,
 
     files: [
-      {pattern: '*.spec.js', watched: false}
+      { pattern: '*.spec.js', watched: false }
     ],
 
     preprocessors: {

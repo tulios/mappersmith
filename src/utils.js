@@ -16,8 +16,8 @@ if (hasProcessHrtime()) {
 const R20 = /%20/g
 
 export const validKeys = (entry) => Object
-    .keys(entry)
-    .filter((key) => entry[key] !== undefined && entry[key] !== null)
+  .keys(entry)
+  .filter((key) => entry[key] !== undefined && entry[key] !== null)
 
 export const buildRecursive = (key, value, suffix) => {
   suffix = suffix || ''

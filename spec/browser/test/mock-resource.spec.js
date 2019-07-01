@@ -39,19 +39,20 @@ describe('Test lib / mock resources', () => {
       .method('all')
       .response({ ok1: true })
 
-    client.User.all().then((response) => {
-      expect(response.request().method()).toEqual('get')
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual({ ok1: true })
-      expect(response.headers()).toEqual(jasmine.objectContaining({
-        'content-type': 'application/json'
-      }))
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.all()
+      .then((response) => {
+        expect(response.request().method()).toEqual('get')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual({ ok1: true })
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'content-type': 'application/json'
+        }))
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('accepts custom status, headers, and params', (done) => {
@@ -63,16 +64,17 @@ describe('Test lib / mock resources', () => {
       .status(204)
       .response({ ok2: true })
 
-    client.User.byId({ id: 1 }).then((response) => {
-      expect(response.status()).toEqual(204)
-      expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-test': 'mock' }))
-      expect(response.data()).toEqual({ ok2: true })
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.byId({ id: 1 })
+      .then((response) => {
+        expect(response.status()).toEqual(204)
+        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-test': 'mock' }))
+        expect(response.data()).toEqual({ ok2: true })
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('triggers the catch block on http errors', async () => {
@@ -97,16 +99,17 @@ describe('Test lib / mock resources', () => {
       .method('post')
       .response({ created: true })
 
-    client.Blog.post().then((response) => {
-      expect(response.request().method()).toEqual('post')
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual({ created: true })
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual({ created: true })
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('works with text responses', (done) => {
@@ -115,23 +118,24 @@ describe('Test lib / mock resources', () => {
       .method('post')
       .response('just text!')
 
-    client.Blog.post().then((response) => {
-      expect(response.request().method()).toEqual('post')
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual('just text!')
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('sets responseData and content type correctly over multiple mock requests', (done) => {
     mockClient(client)
       .resource('User')
       .method('all')
-      .response({key: 'value'})
+      .response({ key: 'value' })
 
     Promise
       .resolve()
@@ -209,16 +213,17 @@ describe('Test lib / mock resources', () => {
       .method('post')
       .status(204)
 
-    client.Blog.post().then((response) => {
-      expect(response.request().method()).toEqual('post')
-      expect(response.status()).toEqual(204)
-      expect(response.data()).toBeNull()
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(204)
+        expect(response.data()).toBeNull()
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('accepts a matcher function as a body', (done) => {
@@ -227,23 +232,25 @@ describe('Test lib / mock resources', () => {
       .method('post')
       .with({ body: (body) => body === 'ok' })
 
-    client.Blog.post({ body: 'ok' }).then((response) => {
-      expect(response.request().method()).toEqual('post')
-      expect(response.status()).toEqual(200)
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post({ body: 'ok' })
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
 
-    client.Blog.post({ body: 'false' }).then((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`Expected this request to fail: ${error}`)
-    })
-    .catch((response) => {
-      done()
-    })
+    client.Blog.post({ body: 'false' })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
+      })
   })
 
   it('accepts a matcher function for path parameters', (done) => {
@@ -253,23 +260,25 @@ describe('Test lib / mock resources', () => {
       .method('byId')
       .with({ id: (value) => value === id })
 
-    client.User.byId({ id }).then((response) => {
-      expect(response.request().method()).toEqual('get')
-      expect(response.status()).toEqual(200)
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.byId({ id })
+      .then((response) => {
+        expect(response.request().method()).toEqual('get')
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
 
-    client.User.byId({ id: 'not_match' }).then((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`Expected this request to fail: ${error}`)
-    })
-    .catch((response) => {
-      done()
-    })
+    client.User.byId({ id: 'not_match' })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
+      })
   })
 
   it('accepts a matcher function for query parameters', (done) => {
@@ -279,23 +288,25 @@ describe('Test lib / mock resources', () => {
       .method('all')
       .with({ q: (value) => value === query })
 
-    client.User.all({ q: query }).then((response) => {
-      expect(response.request().method()).toEqual('get')
-      expect(response.status()).toEqual(200)
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.all({ q: query })
+      .then((response) => {
+        expect(response.request().method()).toEqual('get')
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
 
-    client.User.all({ q: 'not_match' }).then((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`Expected this request to fail: ${error}`)
-    })
-    .catch((response) => {
-      done()
-    })
+    client.User.all({ q: 'not_match' })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
+      })
   })
 
   it('matches the body params independent of order', (done) => {
@@ -304,23 +315,25 @@ describe('Test lib / mock resources', () => {
       .method('post')
       .with({ body: { param1: 'value1', param2: 'value2' } })
 
-    client.Blog.post({ body: { param1: 'value1', param2: 'value2' } }).then((response) => {
-      expect(response.status()).toEqual(200)
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post({ body: { param1: 'value1', param2: 'value2' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
 
-    client.Blog.post({ body: { param2: 'value2', param1: 'value1' } }).then((response) => {
-      expect(response.status()).toEqual(200)
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post({ body: { param2: 'value2', param1: 'value1' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('matches the query params independent of order', (done) => {
@@ -329,23 +342,25 @@ describe('Test lib / mock resources', () => {
       .method('all')
       .with({ param1: 'value1', param2: 'value2' })
 
-    client.User.all({ param1: 'value1', param2: 'value2' }).then((response) => {
-      expect(response.status()).toEqual(200)
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.all({ param1: 'value1', param2: 'value2' })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
 
-    client.User.all({ param2: 'value2', param1: 'value1' }).then((response) => {
-      expect(response.status()).toEqual(200)
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.all({ param2: 'value2', param1: 'value1' })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   describe('when client is using middlewares', () => {

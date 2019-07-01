@@ -91,8 +91,8 @@ XHR.prototype = Gateway.extends({
 
       clearTimeout(this.timer)
       const guessedErrorCause = e
-          ? e.message || e.name
-          : xmlHttpRequest.responseText
+        ? e.message || e.name
+        : xmlHttpRequest.responseText
 
       const errorMessage = 'Network error'
       const enhancedMessage = guessedErrorCause ? `: ${guessedErrorCause}` : ''
