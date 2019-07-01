@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.29.0
+
+  - Ability to define middleware on resource level #134
+  - Add TypeScript definitions #136 
+
 ## 2.28.0
 
   - Add socket and response callbacks to the HTTP Gateway to allow for timing request stages #127
