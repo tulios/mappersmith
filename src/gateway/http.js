@@ -38,6 +38,7 @@ HTTP.prototype = Gateway.extends({
 
   performRequest (method) {
     const headers = {}
+    // eslint-disable-next-line node/no-deprecated-api
     const defaults = url.parse(this.request.url())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const body = this.prepareBody(method, headers)
