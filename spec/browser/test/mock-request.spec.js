@@ -42,19 +42,20 @@ describe('Test lib / mock request', () => {
       }
     })
 
-    client.User.all({ sort: 'desc' }).then((response) => {
-      expect(response.request().method()).toEqual('get')
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual({ ok3: true })
-      expect(response.headers()).toEqual(jasmine.objectContaining({
-        'content-type': 'application/json'
-      }))
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.all({ sort: 'desc' })
+      .then((response) => {
+        expect(response.request().method()).toEqual('get')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual({ ok3: true })
+        expect(response.headers()).toEqual(jasmine.objectContaining({
+          'content-type': 'application/json'
+        }))
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('accepts custom status, headers, and params', (done) => {
@@ -67,16 +68,17 @@ describe('Test lib / mock request', () => {
       }
     })
 
-    client.User.byId({ id: 16 }).then((response) => {
-      expect(response.status()).toEqual(201)
-      expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-test-response': 'mock' }))
-      expect(response.data()).toEqual({ ok4: true })
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.byId({ id: 16 })
+      .then((response) => {
+        expect(response.status()).toEqual(201)
+        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-test-response': 'mock' }))
+        expect(response.data()).toEqual({ ok4: true })
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('triggers the catch block on http errors', (done) => {
@@ -89,15 +91,16 @@ describe('Test lib / mock request', () => {
       }
     })
 
-    client.User.byId({ id: 15 }).then((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`Expected this request to fail: ${error}`)
-    })
-    .catch((response) => {
-      expect(response.status()).toEqual(503)
-      expect(response.data()).toEqual({ error: true })
-      done()
-    })
+    client.User.byId({ id: 15 })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        expect(response.status()).toEqual(503)
+        expect(response.data()).toEqual({ error: true })
+        done()
+      })
   })
 
   it('works with different http methods', (done) => {
@@ -133,16 +136,17 @@ describe('Test lib / mock request', () => {
       }
     })
 
-    client.Blog.post().then((response) => {
-      expect(response.request().method()).toEqual('post')
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual('just text!')
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('accepts a matcher function as a body', (done) => {
@@ -155,24 +159,26 @@ describe('Test lib / mock request', () => {
       }
     })
 
-    client.Blog.post({ body: 'ok' }).then((response) => {
-      expect(response.request().method()).toEqual('post')
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual('just text!')
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post({ body: 'ok' })
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
 
-    client.Blog.post({ body: 'false' }).then((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`Expected this request to fail: ${error}`)
-    })
-    .catch((response) => {
-      done()
-    })
+    client.Blog.post({ body: 'false' })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
+      })
   })
 
   it('matches the body params independent of order', (done) => {
@@ -185,25 +191,27 @@ describe('Test lib / mock request', () => {
       }
     })
 
-    client.Blog.post({ body: { param1: 'value1', param2: 'value2' } }).then((response) => {
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual('just text!')
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post({ body: { param1: 'value1', param2: 'value2' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
 
-    client.Blog.post({ body: { param2: 'value2', param1: 'value1' } }).then((response) => {
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual('just text!')
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.Blog.post({ body: { param2: 'value2', param1: 'value1' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 
   it('accepts a matcher function as an url', (done) => {
@@ -215,15 +223,16 @@ describe('Test lib / mock request', () => {
       }
     })
 
-    client.User.byId({ id: 'abc123def' }).then((response) => {
-      expect(response.request().method()).toEqual('get')
-      expect(response.status()).toEqual(200)
-      expect(response.data()).toEqual('just text!')
-      done()
-    })
-    .catch((response) => {
-      const error = response.rawData ? response.rawData() : response
-      done.fail(`test failed with promise error: ${error}`)
-    })
+    client.User.byId({ id: 'abc123def' })
+      .then((response) => {
+        expect(response.request().method()).toEqual('get')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
   })
 })

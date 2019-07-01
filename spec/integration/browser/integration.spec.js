@@ -28,28 +28,30 @@ describe('integration', () => {
     describe('with raw binary', () => {
       it('GET /api/binary.pdf', (done) => {
         const Client = forge(createManifest(params.host), gateway)
-        Client.Binary.get().then((response) => {
-          expect(response.status()).toEqual(200)
-          expect(md5(response.data())).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
-          done()
-        })
-        .catch((response) => {
-          done.fail(`test failed with promise error: ${errorMessage(response)}`)
-        })
+        Client.Binary.get()
+          .then((response) => {
+            expect(response.status()).toEqual(200)
+            expect(md5(response.data())).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
+            done()
+          })
+          .catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
       })
     })
 
     describe('on network errors', () => {
       it('returns the original error', (done) => {
         const Client = forge(createManifest(INVALID_ADDRESS), gateway)
-        Client.PlainText.get().then((response) => {
-          done.fail(`Expected this request to fail: ${errorMessage(response)}`)
-        })
-        .catch((response) => {
-          expect(response.status()).toEqual(400)
-          expect(response.error()).toMatch(/Error/i)
-          done()
-        })
+        Client.PlainText.get()
+          .then((response) => {
+            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+          })
+          .catch((response) => {
+            expect(response.status()).toEqual(400)
+            expect(response.error()).toMatch(/Error/i)
+            done()
+          })
       })
     })
   })
@@ -67,32 +69,34 @@ describe('integration', () => {
     describe('with raw binary', () => {
       it('GET /api/binary.pdf', (done) => {
         const Client = forge(createManifest(params.host), gateway)
-        Client.Binary.get().then((response) => {
-          expect(response.status()).toEqual(200)
-          const reader = new window.FileReader()
-          reader.addEventListener('loadend', function () {
-            expect(md5(reader.result)).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
-            done()
+        Client.Binary.get()
+          .then((response) => {
+            expect(response.status()).toEqual(200)
+            const reader = new window.FileReader()
+            reader.addEventListener('loadend', function () {
+              expect(md5(reader.result)).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
+              done()
+            })
+            reader.readAsArrayBuffer(response.data())
           })
-          reader.readAsArrayBuffer(response.data())
-        })
-        .catch((response) => {
-          done.fail(`test failed with promise error: ${errorMessage(response)}`)
-        })
+          .catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
       })
     })
 
     describe('on network errors', () => {
       it('returns the original error', (done) => {
         const Client = forge(createManifest(INVALID_ADDRESS), gateway)
-        Client.PlainText.get().then((response) => {
-          done.fail(`Expected this request to fail: ${errorMessage(response)}`)
-        })
-        .catch((response) => {
-          expect(response.status()).toEqual(400)
-          expect(response.error()).toMatch(/network error/i)
-          done()
-        })
+        Client.PlainText.get()
+          .then((response) => {
+            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+          })
+          .catch((response) => {
+            expect(response.status()).toEqual(400)
+            expect(response.error()).toMatch(/network error/i)
+            done()
+          })
       })
     })
   })

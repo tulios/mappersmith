@@ -97,14 +97,15 @@ describe('Gateway', () => {
 
     describe('when successCallback is called', () => {
       it('assigns response.timeElapsed and resolve the promise', (done) => {
-        gateway.call().then((response) => {
-          expect(response.timeElapsed).not.toBeNull()
-          done()
-        })
-        .catch((response) => {
-          const error = response.rawData ? response.rawData() : response
-          done.fail(`test failed with promise error: ${error}`)
-        })
+        gateway.call()
+          .then((response) => {
+            expect(response.timeElapsed).not.toBeNull()
+            done()
+          })
+          .catch((response) => {
+            const error = response.rawData ? response.rawData() : response
+            done.fail(`test failed with promise error: ${error}`)
+          })
 
         gateway.successCallback(new Response({}))
       })
@@ -112,13 +113,14 @@ describe('Gateway', () => {
 
     describe('when failCallback is called', () => {
       it('assigns response.timeElapsed and reject the promise', (done) => {
-        gateway.call().then((response) => {
-          done.fail(`Expected this promise to fail: ${response}`)
-        })
-        .catch((response) => {
-          expect(response.timeElapsed).not.toBeNull()
-          done()
-        })
+        gateway.call()
+          .then((response) => {
+            done.fail(`Expected this promise to fail: ${response}`)
+          })
+          .catch((response) => {
+            expect(response.timeElapsed).not.toBeNull()
+            done()
+          })
 
         gateway.failCallback(new Response({}))
       })

@@ -21,15 +21,15 @@ describe('utils', () => {
 
     describe('for objects', () => {
       it('ignores undefined or null values', () => {
-        expect(toQueryString({a: 1, b: undefined, c: null})).toEqual('a=1')
+        expect(toQueryString({ a: 1, b: undefined, c: null })).toEqual('a=1')
       })
 
       it('appends & for multiple values', () => {
-        expect(toQueryString({a: 1, b: 'val', c: true})).toEqual('a=1&b=val&c=true')
+        expect(toQueryString({ a: 1, b: 'val', c: true })).toEqual('a=1&b=val&c=true')
       })
 
       it('encodes "%20" to "+"', () => {
-        const params = {a: 'some big string'}
+        const params = { a: 'some big string' }
         expect(toQueryString(params)).toEqual('a=some+big+string')
       })
 
@@ -41,24 +41,24 @@ describe('utils', () => {
 
       describe('with object values', () => {
         it('converts the keys to "key[another-key]" pattern', () => {
-          const params = decodeURIComponent(toQueryString({a: {b: 1, c: 2}}))
+          const params = decodeURIComponent(toQueryString({ a: { b: 1, c: 2 } }))
           expect(params).toEqual('a[b]=1&a[c]=2')
         })
 
         it('works with nested objects', () => {
-          const params = decodeURIComponent(toQueryString({a: {b: 1, c: {d: 2}}, e: 3}))
+          const params = decodeURIComponent(toQueryString({ a: { b: 1, c: { d: 2 } }, e: 3 }))
           expect(params).toEqual('a[b]=1&a[c][d]=2&e=3')
         })
       })
 
       describe('with array values', () => {
         it('converts the keys to "key[]" pattern', () => {
-          const params = decodeURIComponent(toQueryString({a: [1, 2, 3]}))
+          const params = decodeURIComponent(toQueryString({ a: [1, 2, 3] }))
           expect(params).toEqual('a[]=1&a[]=2&a[]=3')
         })
 
         it('works with nested arrays', () => {
-          const params = decodeURIComponent(toQueryString({a: [1, [2, [3, 4]]]}))
+          const params = decodeURIComponent(toQueryString({ a: [1, [2, [3, 4]]] }))
           expect(params).toEqual('a[]=1&a[][]=2&a[][][]=3&a[][][]=4')
         })
       })
@@ -83,13 +83,13 @@ describe('utils', () => {
 
     it('returns an object with all headers with lowercase keys', () => {
       const headers = parseResponseHeaders(responseHeaders)
-      expect(headers).toEqual(jasmine.objectContaining({'x-ratelimit-remaining': '57'}))
-      expect(headers).toEqual(jasmine.objectContaining({'last-modified': 'Mon, 09 Nov 2015 19:06:15 GMT'}))
-      expect(headers).toEqual(jasmine.objectContaining({'etag': 'W/"679e71e24e6d901f5b36a55c5d80a32d"'}))
-      expect(headers).toEqual(jasmine.objectContaining({'content-type': 'application/json; charset=utf-8'}))
-      expect(headers).toEqual(jasmine.objectContaining({'cache-control': 'public, max-age=60, s-maxage=60'}))
-      expect(headers).toEqual(jasmine.objectContaining({'x-ratelimit-reset': '1447102379'}))
-      expect(headers).toEqual(jasmine.objectContaining({'x-ratelimit-limit': '60'}))
+      expect(headers).toEqual(jasmine.objectContaining({ 'x-ratelimit-remaining': '57' }))
+      expect(headers).toEqual(jasmine.objectContaining({ 'last-modified': 'Mon, 09 Nov 2015 19:06:15 GMT' }))
+      expect(headers).toEqual(jasmine.objectContaining({ 'etag': 'W/"679e71e24e6d901f5b36a55c5d80a32d"' }))
+      expect(headers).toEqual(jasmine.objectContaining({ 'content-type': 'application/json; charset=utf-8' }))
+      expect(headers).toEqual(jasmine.objectContaining({ 'cache-control': 'public, max-age=60, s-maxage=60' }))
+      expect(headers).toEqual(jasmine.objectContaining({ 'x-ratelimit-reset': '1447102379' }))
+      expect(headers).toEqual(jasmine.objectContaining({ 'x-ratelimit-limit': '60' }))
     })
   })
 
