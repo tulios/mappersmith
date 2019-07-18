@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.29.2
+
+  - Add `clear` and `m` TypeScript definitions
+
 ## 2.29.1
 
   - Add `mockRequest` TypeScript definitions
