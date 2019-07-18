@@ -1,9 +1,13 @@
 # Changelog
 
+## 2.29.1
+
+  - Add `mockRequest` TypeScript definitions
+
 ## 2.29.0
 
   - Ability to define middleware on resource level #134
-  - Add TypeScript definitions #136 
+  - Add TypeScript definitions #136
 
 ## 2.28.0
 
