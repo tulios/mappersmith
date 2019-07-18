@@ -21,6 +21,7 @@ declare module 'mappersmith/test' {
     assertObjectAsync(): Promise<MockAssert>
   }
 
+  export function clear(): void
   export function install(): void
   export function uninstall(): void
   export function mockClient<ResourcesType>(client: Client<ResourcesType>): MockClient<ResourcesType>
@@ -40,4 +41,13 @@ declare module 'mappersmith/test' {
   }
 
   export function mockRequest(args: MockRequestArgs): MockAssert
+
+  export interface TestMatchFunctions {
+    stringMatching(value: RegExp): (value: string) => boolean
+    stringContaining(value: string): (value: string) => boolean
+    uuid4(): (value: string) => boolean
+    anything(): () => true
+  }
+
+  export var m: TestMatchFunctions
 }

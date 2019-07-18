@@ -1,5 +1,9 @@
 import forge from 'mappersmith'
-import {mockClient, mockRequest} from 'mappersmith/test'
+import { install, uninstall, clear, mockClient, mockRequest, m } from 'mappersmith/test'
+
+install()
+uninstall()
+clear()
 
 const github = forge({
   clientId: 'github',
@@ -46,3 +50,14 @@ mockRequest({
   url: (requestUrl, params) => `${requestUrl}+${JSON.stringify(params)}`,
   body: (requestBody) => `~${requestBody}~`
 })
+
+mockRequest({
+  method: 'post',
+  url: 'http://example.org/blogs',
+  body: m.stringContaining('something')
+})
+
+m.stringMatching(/test/)
+m.stringContaining('test')
+m.uuid4()
+m.anything()
