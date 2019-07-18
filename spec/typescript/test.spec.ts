@@ -1,5 +1,5 @@
 import forge from 'mappersmith'
-import {mockClient} from 'mappersmith/test'
+import {mockClient, mockRequest} from 'mappersmith/test'
 
 const github = forge({
   clientId: 'github',
@@ -25,3 +25,24 @@ const mock = mockClient<typeof github>(github)
 console.log(mock.mostRecentCall())
 console.log(mock.callsCount())
 console.log(mock.calls())
+
+const mock2 = mockRequest({
+  method: 'post',
+  url: 'http://example.org/blogs',
+  body: 'param1=A&param2=B', // request body
+  response: {
+    status: 503,
+    body: { error: true },
+    headers: { 'x-header': 'nope' }
+  }
+})
+
+console.log(mock2.mostRecentCall())
+console.log(mock2.callsCount())
+console.log(mock2.calls())
+
+mockRequest({
+  method: 'post',
+  url: (requestUrl, params) => `${requestUrl}+${JSON.stringify(params)}`,
+  body: (requestBody) => `~${requestBody}~`
+})

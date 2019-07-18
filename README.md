@@ -1208,7 +1208,7 @@ const MyMiddleware: Middleware = () => ({
 })
 ```
 
-#### Use the `mockClient` with TypeScript
+#### Use `mockClient` with TypeScript
 
 To use the `mockClient` with proper types you need to pass a typeof your client as generic to the `mockClient` function:
 
@@ -1234,6 +1234,23 @@ const mock = mockClient<typeof github>(github)
   .with({ id: 'abc' })
   .response({ allUsers: [] })
   .assertObject()
+
+console.log(mock.mostRecentCall())
+console.log(mock.callsCount())
+console.log(mock.calls())
+```
+
+#### Use `mockRequest` with Typescript
+
+```typescript
+const mock = mockRequest({
+  method: 'get',
+  url: 'https://status.github.com/api/status.json',
+  response: {
+    status: 503,
+    body: { error: true },
+  }
+})
 
 console.log(mock.mostRecentCall())
 console.log(mock.callsCount())
