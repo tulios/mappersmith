@@ -922,7 +922,7 @@ mockClient(client)
   })
 ```
 
-The assert object can be used to retrieve the requests, example:
+The assert object can be used to retrieve the requests that went through the created mock, example:
 
 ```javascript
 const mock = mockClient(client)
@@ -935,6 +935,15 @@ console.log(mock.mostRecentCall())
 console.log(mock.callsCount())
 console.log(mock.calls())
 ```
+
+The `mock` object is an instance of `MockAssert` and exposes three methods:
+  - _calls()_: returns a `Request` array;
+  - _mostRecentCall()_: returns the last Request made. Returns `null` if array is empty.
+  - _callsCount()_: returns the number of requests that were made through the mocked client;
+
+__Note__:
+The assert object will also be returned in the `mockRequest` function call.
+
 
 If you have a middleware with an async request phase use `assertObjectAsync` to await for the middleware execution, example:
 
