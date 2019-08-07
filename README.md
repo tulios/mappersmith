@@ -219,7 +219,7 @@ client.Blog.create({
 })
 ```
 
-__NOTE__: It's possible to post body as JSON, check the [EncodeJsonMiddleware](#encode-json-middleware) below for more information
+__NOTE__: It's possible to post body as JSON, check the [EncodeJsonMiddleware](#middleware-encode-json) below for more information
 __NOTE__: The `bodyAttr` param can be set at manifest level.
 
 ### <a name="headers"></a> Headers
@@ -290,7 +290,7 @@ If `timeout` is not possible as a special parameter for your API you can configu
 client.User.all({ maxWait: 500 })
 ```
 
-__NOTE__: A default timeout can be configured with the use of the [TimeoutMiddleware](#timeout-middleware), check the middleware section below for more information.
+__NOTE__: A default timeout can be configured with the use of the [TimeoutMiddleware](#middleware-timeout), check the middleware section below for more information.
 __NOTE__: The `timeoutAttr` param can be set at manifest level.
 
 ### <a name="alternative-host"></a> Alternative host
