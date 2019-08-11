@@ -1277,7 +1277,6 @@ yarn test:node:integration
 ### Running all tests
 
 ```sh
-node spec/integration/server.js &
 yarn test
 ```
 
