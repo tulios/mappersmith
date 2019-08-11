@@ -88,6 +88,14 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json?user_id=1&transactionId=2')
     })
 
+    it('encodes aliased query string params', () => {
+      methodDescriptor.path = '/api/example.json'
+      methodDescriptor.params = { userEmail: 'email+test@example.com' }
+      methodDescriptor.queryParamAlias = { userEmail: 'user_email' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json?user_email=email%2Btest%40example.com')
+    })
+
     it('interpolates paths with dynamic sections', () => {
       methodDescriptor.path = '/api/example/{id}.json'
       methodDescriptor.params = { id: 1, title: 'test' }
