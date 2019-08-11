@@ -103,6 +103,13 @@ describe('Request', () => {
       expect(path).toEqual('/api/example/1.json?title=test')
     })
 
+    it('encodes params in dynamic sections', () => {
+      methodDescriptor.path = '/api/example.json?email={email}'
+      methodDescriptor.params = { email: 'email+test@example.com' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json?email=email%2Btest%40example.com')
+    })
+
     it('does not apply queryParamAlias to interpolated dynamic sections', () => {
       methodDescriptor.path = '/api/example/{userId}.json'
       methodDescriptor.params = { userId: 1 }
