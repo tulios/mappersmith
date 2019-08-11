@@ -59,7 +59,7 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json')
     })
 
-    it('append params as query string', () => {
+    it('appends params as query string', () => {
       methodDescriptor.path = '/api/example.json'
       methodDescriptor.params = { id: 1, title: 'test' }
       const path = new Request(methodDescriptor).path()
