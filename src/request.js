@@ -84,7 +84,7 @@ Request.prototype = {
       const pattern = `{${key}}`
 
       if (new RegExp(pattern).test(path)) {
-        path = path.replace(`{${key}}`, value)
+        path = path.replace(`{${key}}`, encodeURIComponent(value))
         delete params[key]
       }
     })
