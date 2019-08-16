@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.29.3
+
+  - Bugfix: Encode dynamic section params #141
+
 ## 2.29.2
 
   - Add `clear` and `m` TypeScript definitions
