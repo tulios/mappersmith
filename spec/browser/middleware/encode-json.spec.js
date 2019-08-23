@@ -68,7 +68,7 @@ describe('Middleware / EncodeJson', () => {
       let headers
 
       beforeEach(() => {
-        headers = {'content-type': 'application/json'}
+        headers = { 'content-type': 'application/json' }
       })
 
       describe('and the body is already encoded', () => {
