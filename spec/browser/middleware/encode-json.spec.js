@@ -47,4 +47,78 @@ describe('Middleware / EncodeJson', () => {
       expect(newRequest.headers()).toEqual({})
     })
   })
+
+  describe('when there is already a content-type header set', () => {
+    let headers
+
+    beforeEach(() => {
+      body = { something: 'strange' }
+      headers = { 'content-type': 'application/java-archive' }
+      methodDescriptor = new MethodDescriptor({ method: 'post' })
+      request = new Request(methodDescriptor, { body, headers })
+    })
+
+    it('returns the original request', async () => {
+      const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
+      expect(newRequest.body()).toEqual(body)
+      expect(newRequest.headers()).toEqual(headers)
+    })
+
+    describe('when the content-type is application/json', () => {
+      let headers
+
+      beforeEach(() => {
+        headers = {'content-type': 'application/json'}
+      })
+
+      describe('and the body is already encoded', () => {
+        let body
+
+        beforeEach(() => {
+          body = JSON.stringify({ foo: 'bar' })
+          methodDescriptor = new MethodDescriptor({ method: 'post' })
+          request = new Request(methodDescriptor, { body, headers })
+        })
+
+        it('returns the original request', async () => {
+          const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
+          expect(newRequest.body()).toEqual(body)
+          expect(newRequest.headers()).toEqual(headers)
+        })
+      })
+
+      describe('and the body is not encoded', () => {
+        let body
+
+        beforeEach(() => {
+          body = { foo: 'bar' }
+          methodDescriptor = new MethodDescriptor({ method: 'post' })
+          request = new Request(methodDescriptor, { body, headers })
+        })
+
+        it('encodes the body but keeps the original header', async () => {
+          const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
+          expect(newRequest.body()).toEqual(JSON.stringify(body))
+          expect(newRequest.headers()).toEqual(headers)
+        })
+      })
+    })
+
+    describe('when the content-type is application/json but with a different charset', () => {
+      let headers, body
+
+      beforeEach(() => {
+        headers = { 'content-type': 'application/json;charset=utf-7' }
+        body = 'strange-stuff'
+        methodDescriptor = new MethodDescriptor({ method: 'post' })
+        request = new Request(methodDescriptor, { body, headers })
+      })
+
+      it('keeps the original request', async () => {
+        const newRequest = await middleware.prepareRequest(() => Promise.resolve(request))
+        expect(newRequest.body()).toEqual(body)
+        expect(newRequest.headers()).toEqual(headers)
+      })
+    })
+  })
 })

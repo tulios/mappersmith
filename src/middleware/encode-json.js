@@ -1,4 +1,9 @@
-export const CONTENT_TYPE_JSON = 'application/json;charset=utf-8'
+const mediaType = 'application/json'
+const charset = 'charset=utf-8'
+export const CONTENT_TYPE_JSON = `${mediaType};${charset}`
+
+const isJson = contentType => contentType === mediaType || contentType.startsWith(`${mediaType};`)
+const alreadyEncoded = body => typeof body === 'string'
 
 /**
  * Automatically encode your objects into JSON
@@ -12,10 +17,16 @@ const EncodeJsonMiddleware = () => ({
   prepareRequest (next) {
     return next().then(request => {
       try {
-        if (request.body()) {
+        const body = request.body()
+        const contentType = request.header('content-type')
+
+        if (body) {
+          const shouldEncodeBody = contentType == null || (isJson(contentType) && !alreadyEncoded(body))
+          const encodedBody = shouldEncodeBody ? JSON.stringify(body) : body
+
           return request.enhance({
-            headers: { 'content-type': CONTENT_TYPE_JSON },
-            body: JSON.stringify(request.body())
+            headers: { 'content-type': contentType == null ? CONTENT_TYPE_JSON : contentType },
+            body: encodedBody
           })
         }
       } catch (e) {}
