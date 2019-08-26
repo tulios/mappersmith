@@ -106,6 +106,7 @@ declare module 'mappersmith' {
   export interface Options<ResourcesType> {
     readonly clientId?: string
     readonly host?: string
+    readonly ignoreGlobalMiddleware?: boolean
     readonly middleware?: Middleware[]
     // @alias middleware
     readonly middlewares?: Middleware[]
