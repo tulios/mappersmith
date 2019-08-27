@@ -33,6 +33,7 @@ declare module 'mappersmith' {
     readonly body: object | string
     readonly auth: object
     readonly timeout: number
+    readonly host: string
   }
 
   export interface ResponseParams {

@@ -307,6 +307,30 @@ There are some cases where a resource method resides in another host, in those c
 client.User.all() // http://old-api.com/users
 ```
 
+In case you need to overwrite the host for a specific call, you can do so through the param `host`:
+
+```javascript
+// ...
+{
+  all: { path: '/users', host: 'http://old-api.com' }
+}
+// ...
+
+client.User.all({ host: 'http://very-old-api.com' }) // http://very-old-api.com/users
+```
+
+If `host` is not possible as a special parameter for your API, you can configure it through the param `hostAttr`:
+
+```javascript
+// ...
+{
+  all: { path: '/users', hostAttr: 'baseUrl' }
+}
+// ...
+
+client.User.all({ baseUrl: 'http://very-old-api.com' }) // http://very-old-api.com/users
+```
+
 ### <a name="binary-data"></a> Binary data
 
 If the data being fetched is in binary form, such as a PDF, you may add the `binary` key, and set it to true. The response data will then be a [Buffer](https://nodejs.org/api/buffer.html) in NodeJS, and a [Blob](https://developer.mozilla.org/sv-SE/docs/Web/API/Blob) in the browser.

@@ -28,7 +28,8 @@ Request.prototype = {
       key !== this.methodDescriptor.headersAttr &&
         key !== this.methodDescriptor.bodyAttr &&
         key !== this.methodDescriptor.authAttr &&
-        key !== this.methodDescriptor.timeoutAttr
+        key !== this.methodDescriptor.timeoutAttr &&
+        key !== this.methodDescriptor.hostAttr
     )
 
     return Object
@@ -57,7 +58,11 @@ Request.prototype = {
    * @return {String}
    */
   host () {
-    return (this.methodDescriptor.host || '').replace(REGEXP_TRAILING_SLASH, '')
+    const originalHost = this.requestParams[this.methodDescriptor.hostAttr] ||
+      this.methodDescriptor.host ||
+      ''
+
+    return originalHost.replace(REGEXP_TRAILING_SLASH, '')
   },
 
   /**
@@ -168,18 +173,21 @@ Request.prototype = {
    *   @param {String|Object} extras.body - it will replace the current body
    *   @param {Object} extras.auth - it will replace the current auth
    *   @param {Number} extras.timeout - it will replace the current timeout
+   *   @param {String} extras.host - it will replace the current timeout
    */
   enhance (extras) {
     const headerKey = this.methodDescriptor.headersAttr
     const bodyKey = this.methodDescriptor.bodyAttr
     const authKey = this.methodDescriptor.authAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
+    const hostKey = this.methodDescriptor.hostAttr
     const requestParams = assign({}, this.requestParams, extras.params)
 
     requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
     extras.body && (requestParams[bodyKey] = extras.body)
     extras.auth && (requestParams[authKey] = extras.auth)
     extras.timeout && (requestParams[timeoutKey] = extras.timeout)
+    extras.host && (requestParams[hostKey] = extras.host)
 
     return new Request(this.methodDescriptor, requestParams)
   },
