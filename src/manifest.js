@@ -17,6 +17,7 @@ function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }
   this.headersAttr = obj.headersAttr
   this.authAttr = obj.authAttr
   this.timeoutAttr = obj.timeoutAttr
+  this.hostAttr = obj.hostAttr
   this.clientId = obj.clientId || null
   this.gatewayConfigs = assign({}, gatewayConfigs, obj.gatewayConfigs)
   this.resources = obj.resources || {}
@@ -64,7 +65,8 @@ Manifest.prototype = {
           bodyAttr: this.bodyAttr,
           headersAttr: this.headersAttr,
           authAttr: this.authAttr,
-          timeoutAttr: this.timeoutAttr
+          timeoutAttr: this.timeoutAttr,
+          hostAttr: this.hostAttr
         },
         definition
       )

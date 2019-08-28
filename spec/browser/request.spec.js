@@ -38,11 +38,39 @@ describe('Request', () => {
       const request = new Request(methodDescriptor, { title: 'test' })
       expect(request.params()).toEqual({ id: 1, title: 'test' })
     })
+
+    it('does not return the host configured param', () => {
+      methodDescriptor.params = { id: 1, myHost: 'http://example.org' }
+      methodDescriptor.headersAttr = 'myHost'
+      const request = new Request(methodDescriptor, { title: 'test' })
+      expect(request.params()).toEqual({ id: 1, title: 'test' })
+    })
   })
 
   describe('#host', () => {
     it('has blank as the default host', () => {
       expect(new Request(methodDescriptor).host()).toEqual('')
+    })
+
+    it('returns the configured host param from params', () => {
+      methodDescriptor.hostAttr = 'differentHostParam'
+      const request = new Request(methodDescriptor, { differentHostParam: 'http://example.org' })
+      expect(request.host()).toEqual('http://example.org')
+    })
+
+    describe('with pre configured host', () => {
+      it('returns the host', () => {
+        methodDescriptor.host = 'http://example.org'
+        const request = new Request(methodDescriptor)
+        expect(request.host()).toEqual('http://example.org')
+      })
+    })
+
+    describe('with request host', () => {
+      it('returns the host', () => {
+        const request = new Request(methodDescriptor, { host: 'http://example.org' })
+        expect(request.host()).toEqual('http://example.org')
+      })
     })
 
     it('removes trailing "/"', () => {
@@ -137,6 +165,13 @@ describe('Request', () => {
       methodDescriptor.path = '/api/example.json'
       methodDescriptor.bodyAttr = 'body'
       methodDescriptor.params = { [methodDescriptor.bodyAttr]: 'body-payload' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json')
+    })
+
+    it('does not include host', () => {
+      methodDescriptor.path = '/api/example.json'
+      methodDescriptor.params = { [methodDescriptor.hostAttr]: 'http://example.com' }
       const path = new Request(methodDescriptor).path()
       expect(path).toEqual('/api/example.json')
     })
@@ -280,6 +315,12 @@ describe('Request', () => {
       expect(enhancedRequest.timeout()).toEqual(1000)
     })
 
+    it('does not remove the previously assigned "host"', () => {
+      const request = new Request(methodDescriptor, { host: 'http://example.org' })
+      const enhancedRequest = request.enhance({})
+      expect(enhancedRequest.host()).toEqual('http://example.org')
+    })
+
     describe('for requests with a different "headers" key', () => {
       beforeEach(() => {
         methodDescriptor = new MethodDescriptor({ headersAttr: 'snowflake' })
@@ -331,6 +372,19 @@ describe('Request', () => {
         const enhancedRequest = request.enhance({ timeout: 2000 })
         expect(enhancedRequest).not.toEqual(request)
         expect(enhancedRequest.timeout()).toEqual(2000)
+      })
+    })
+
+    describe('for requests with a different "host" key', () => {
+      beforeEach(() => {
+        methodDescriptor = new MethodDescriptor({ hostAttr: 'snowflake' })
+      })
+
+      it('creates a new request based on the current request replacing the custom "host"', () => {
+        const request = new Request(methodDescriptor, { snowflake: 'http://new-api.com' })
+        const enhancedRequest = request.enhance({ host: 'http://old-api.com' })
+        expect(enhancedRequest).not.toEqual(request)
+        expect(enhancedRequest.host()).toEqual('http://old-api.com')
       })
     })
   })
