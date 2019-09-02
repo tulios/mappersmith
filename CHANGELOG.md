@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.30.0
+
+  - Add `ignoreGlobalMiddleware` to typescript type definitions #148
+  - Update `EncodeJson` middleware to not override pre-existing content-type #149
+  - Accept host as a resource method param #151
+
 ## 2.29.3
 
   - Bugfix: Encode dynamic section params #141
