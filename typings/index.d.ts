@@ -133,7 +133,7 @@ declare module 'mappersmith' {
     put(): void
   }
 
-  export interface FetchGateway extends Gateway, GlobalFetch {}
+  export interface FetchGateway extends Gateway {}
 
   export interface HTTPGateway extends Gateway, NetworkGateway {
     configure(): object
