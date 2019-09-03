@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.30.1
+
+  - Remove type GlobalFetch from FetchGateway #155
+
 ## 2.30.0
 
   - Add `ignoreGlobalMiddleware` to typescript type definitions #148
