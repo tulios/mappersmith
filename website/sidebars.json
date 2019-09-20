@@ -1,0 +1,17 @@
+{
+  "docs": {
+    "Setup": ["Installation"],
+    "Usage": [
+      "Manifest",
+      "Commonjs",
+      "Configuring_my_resources",
+      "Promises",
+      "Response_object",
+      "Middleware",
+      "Testing_Mappersmith",
+      "Gateways",
+      "TypeScript"
+    ],
+    "Misc": ["Development", "Contributors", "License"]
+  }
+}
