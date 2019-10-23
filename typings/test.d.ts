@@ -24,7 +24,7 @@ declare module 'mappersmith/test' {
   export function clear(): void
   export function install(): void
   export function uninstall(): void
-  export function mockClient<ResourcesType>(client: Client<ResourcesType>): MockClient<ResourcesType>
+  export function mockClient<ResourcesType>(client: Client<ResourcesType>): MockClient<Client<ResourcesType>>
 
   export type MockRequestUrlFunction = (requestUrl: string, params: object) => boolean
   export type MockRequestBody = string | object
