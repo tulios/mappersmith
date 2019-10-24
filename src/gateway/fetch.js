@@ -61,7 +61,7 @@ Fetch.prototype = Gateway.extends({
 
     const headers = assign(customHeaders, this.request.headers())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
-    const init = assign({ method: requestMethod, headers, body }, this.options())
+    const init = assign({ method: requestMethod, headers, body }, this.options().Fetch)
     const timeout = this.request.timeout()
 
     let timer = null
