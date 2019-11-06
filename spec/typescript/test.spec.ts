@@ -57,7 +57,14 @@ mockRequest({
   body: m.stringContaining('something')
 })
 
+mockRequest({
+  method: 'post',
+  url: m.stringContaining("something"),
+  body: m.stringContaining('something')
+})
+
 m.stringMatching(/test/)
 m.stringContaining('test')
 m.uuid4()
 m.anything()
+
