@@ -20,5 +20,5 @@ declare module 'mappersmith/middleware/retry/v2' {
     validateRetry(response: Response): boolean
   }
 
-  export default function Retry(config: Partial<RetryMiddlewareOptions>): Middleware
+  export default function Retry(config?: Partial<RetryMiddlewareOptions>): Middleware
 }
