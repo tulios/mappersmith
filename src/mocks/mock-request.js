@@ -1,7 +1,7 @@
 import MockAssert from './mock-assert'
 import Response from '../response'
 import { isPlainObject } from '../utils'
-import { sortedUrl, toSortedQueryString } from './mock-utils'
+import { sortedUrl, toSortedQueryString, isSuperset } from './mock-utils'
 
 /**
  * @param {number} id
@@ -24,6 +24,7 @@ function MockRequest (id, props) {
   this.body = this.bodyFunction ? props.body : toSortedQueryString(props.body)
   this.headersFunction = typeof props.headers === 'function'
   this.headers = props.headersFunction ? props.headers : toSortedQueryString(props.headers)
+  this.headersObject = props.headers
   this.responseHeaders = props.response.headers || {}
   this.setResponseData(props.response.body)
   this.responseHandler = props.response.handler
@@ -95,11 +96,10 @@ MockRequest.prototype = {
       ? this.url(request.url(), request.params())
       : sortedUrl(this.url) === sortedUrl(request.url())
 
-    // If the mock has no headers specified, don't use it for matching
     const headerMatch = () => !this.headers || (
       this.headersFunction
         ? this.headers(request.headers())
-        : this.headers === toSortedQueryString(request.headers())
+        : isSuperset(this.headersObject, request.headers())
     )
 
     return this.method === request.method() &&

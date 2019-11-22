@@ -12,6 +12,18 @@ export function toSortedQueryString (entry) {
     .replace(/%20/g, '+')
 }
 
+function filterObject (callback, entry) {
+  return Object.entries(entry)
+    .filter(([key]) => callback(key))
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+}
+
+export function isSuperset (reference, entry) {
+  const filteredEntry = filterObject(key => validKeys(entry).includes(key), entry)
+
+  return toSortedQueryString(reference) === toSortedQueryString(filteredEntry)
+}
+
 /**
  * Sort the query params on a URL based on the 'key=value' string value.
  * E.g. /example?b=2&a=1 will become /example?a=1&b=2
