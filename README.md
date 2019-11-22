@@ -25,6 +25,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     - [Creating middleware](#creating-middleware)
       - [Context](#context)
       - [Optional arguments](#creating-middleware-optional-arguments)
+        - [mockRequest](#creating-middleware-optional-arguments-mock-request)
         - [Abort](#creating-middleware-optional-arguments-abort)
         - [Renew](#creating-middleware-optional-arguments-renew)
     - [Configuring middleware](#configuring-middleware)
@@ -456,10 +457,10 @@ instead of replacing it.
 
 #### <a name="creating-middleware-optional-arguments"></a> Optional arguments
 
-It can, optionally, receive `resourceName`, `resourceMethod`, [#context](`context`) and `clientId`. Example:
+It can, optionally, receive `resourceName`, `resourceMethod`, [#context](`context`), `clientId` and `mockRequest`. Example:
 
 ```javascript
-const MyMiddleware = ({ resourceName, resourceMethod, context, clientId }) => ({
+const MyMiddleware = ({ resourceName, resourceMethod, context, clientId, mockRequest }) => ({
   /* ... */
 })
 
@@ -468,6 +469,25 @@ client.User.all()
 // resourceMethod: 'all'
 // clientId: 'myClient'
 // context: {}
+// mockRequest: false
+```
+
+##### <a name="creating-middleware-optional-arguments-mock-request"></a> mockRequest
+
+Before mocked clients can assert whether or not their mock definition matches a request they have to execute their middleware on that request. This means that middleware might be executed multiple times for the same request. More specifically, the middleware will be executed once per mocked client that utilises the middleware until a mocked client with a matching definition is found. If you want to avoid middleware from being called multiple times you can use the optional "mockRequest" boolean flag. The value of this flag will be truthy whenever the middleware is being executed during the mock definition matching phase. Otherwise its value will be falsy. Example:
+
+```javascript
+const MyMiddleware = ({ mockRequest }) => {
+  prepareRequest(next) {
+    if (mockRequest) {
+      ... // executed once for each mocked client that utilises the middleware
+    }
+    if (!mockRequest) {
+      ... // executed once for the matching mock definition
+    }
+    return next().then(request => request)
+  }
+}
 ```
 
 ##### <a name="creating-middleware-optional-arguments-abort"></a> Abort
