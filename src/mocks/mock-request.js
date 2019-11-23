@@ -72,7 +72,7 @@ MockRequest.prototype = {
    * @return {boolean}
    */
   isExactMatch (request) {
-    const bodyMatch = this.bodyFunction
+    const bodyMatch = () => this.bodyFunction
       ? this.body(request.body())
       : this.body === toSortedQueryString(request.body())
 
@@ -80,7 +80,7 @@ MockRequest.prototype = {
       ? this.url(request.url(), request.params())
       : sortedUrl(this.url) === sortedUrl(request.url())
 
-    return this.method === request.method() && urlMatch && bodyMatch
+    return this.method === request.method() && urlMatch && bodyMatch()
   },
 
   /**
