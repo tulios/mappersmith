@@ -1,7 +1,7 @@
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}]+)}/
-const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{[^}]+\?}/
+const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{[^}]+\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
 
 /**
