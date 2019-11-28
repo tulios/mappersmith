@@ -131,6 +131,13 @@ describe('Request', () => {
       expect(path).toEqual('/api/example/1.json?title=test')
     })
 
+    it('interpolates paths with optional dynamic sections', () => {
+      methodDescriptor.path = '/api/example/{id?}.json'
+      methodDescriptor.params = { 'id': 1, title: 'test' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example/1.json?title=test')
+    })
+
     it('encodes params in dynamic sections', () => {
       methodDescriptor.path = '/api/example.json?email={email}'
       methodDescriptor.params = { email: 'email+test@example.com' }
@@ -147,6 +154,13 @@ describe('Request', () => {
     })
 
     describe('when dynamic section is not provided', () => {
+      it('removes optional dynamic sections', () => {
+        methodDescriptor.path = '/api/{optional?}/example.json'
+        methodDescriptor.params = {}
+        const path = new Request(methodDescriptor).path()
+        expect(path).toEqual('/api/example.json')
+      })
+
       it('raises an exception', () => {
         methodDescriptor.path = '/api/example/{id}.json'
         expect(() => new Request(methodDescriptor).path())

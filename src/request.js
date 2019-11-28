@@ -1,6 +1,7 @@
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}]+)}/
+const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{[^}]+\?}/
 const REGEXP_TRAILING_SLASH = /\/$/
 
 /**
@@ -86,13 +87,15 @@ Request.prototype = {
     const params = this.params()
     Object.keys(params).forEach((key) => {
       const value = params[key]
-      const pattern = `{${key}}`
+      const pattern = new RegExp(`{${key}\\??}`)
 
-      if (new RegExp(pattern).test(path)) {
-        path = path.replace(`{${key}}`, encodeURIComponent(value))
+      if (pattern.test(path)) {
+        path = path.replace(pattern, encodeURIComponent(value))
         delete params[key]
       }
     })
+
+    path = path.replace(REGEXP_OPTIONAL_DYNAMIC_SEGMENT, '')
 
     const missingDynamicSegmentMatch = path.match(REGEXP_DYNAMIC_SEGMENT)
     if (missingDynamicSegmentMatch) {
