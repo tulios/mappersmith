@@ -138,6 +138,13 @@ describe('Request', () => {
       expect(path).toEqual('/api/example/1.json?title=test')
     })
 
+    it('interpolates paths with multiple occurrence of same dynamic segment', () => {
+      methodDescriptor.path = '/api/{path?}/{path}/{id}.json'
+      methodDescriptor.params = { id: 1, path: 'test', title: 'value' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/test/test/1.json?title=value')
+    })
+
     it('encodes params in dynamic segments', () => {
       methodDescriptor.path = '/api/example.json?email={email}'
       methodDescriptor.params = { email: 'email+test@example.com' }
