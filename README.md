@@ -123,6 +123,12 @@ const client = forge({
 
       // {group} is also a dynamic segment but it has default value "general"
       byGroup: { path: '/users/groups/{group}', params: { group: 'general' } }
+
+      // {market?} is an optional dynamic segment. If called without a value
+      // for the "market" parameter, {market?} will be removed from the path
+      // including any prefixing "/".
+      // This example: '/{market?}/users' => '/users'
+      count: { path: '/{market?}/users' } }
     },
     Blog: {
       // The HTTP method can be configured through the `method` key, and a default
