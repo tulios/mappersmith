@@ -34,7 +34,7 @@ declare module 'mappersmith/test' {
   export type MockRequestBodyFunction = (requestBody: MockRequestBody) => MockRequestBody
   export interface MockRequestArgs {
     method: string
-    url: string | MockRequestUrlFunction
+    url: string | MockRequestUrlFunction | TestMatchPredicate
     body?: MockRequestBody | MockRequestBodyFunction
     response?: {
       status?: number
@@ -45,12 +45,14 @@ declare module 'mappersmith/test' {
 
   export function mockRequest(args: MockRequestArgs): MockAssert
 
+  export type TestMatchPredicate = (value: string) => boolean;
   export interface TestMatchFunctions {
-    stringMatching(value: RegExp): (value: string) => boolean
-    stringContaining(value: string): (value: string) => boolean
-    uuid4(): (value: string) => boolean
-    anything(): () => true
+    stringMatching(value: RegExp): TestMatchPredicate
+    stringContaining(value: string): TestMatchPredicate
+    uuid4(): TestMatchPredicate
+    anything(): TestMatchPredicate
   }
 
   export var m: TestMatchFunctions
 }
+
