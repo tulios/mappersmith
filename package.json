@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "2.30.1",
+  "version": "2.31.0",
   "description": "It is a lightweight rest client for node.js and the browser",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [

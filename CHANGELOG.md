@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.31.0
+
+  - Bugfix: Fetch gateway not using the right configs #161
+  - Bugfix: Regexp injection vulnerability #171
+  - Lazy-match body to not trigger body-matching callback unnecessarily #163
+  - Allow not sending a config in the Retry middleware #164
+  - Fix `mockRequest.url` type #166
+  - Fix MockClient types #170
+  - Add support for optional path parameters #171
+  - Replace multiple instances of same path parameter #174
+
 ## 2.30.1
 
   - Remove type GlobalFetch from FetchGateway #155
