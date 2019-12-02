@@ -138,6 +138,13 @@ describe('Request', () => {
       expect(path).toEqual('/api/example/1.json?title=test')
     })
 
+    it('interpolates paths with optional dynamic segments with falsy value', () => {
+      methodDescriptor.path = '/api/{boolean}/example/{id?}.json'
+      methodDescriptor.params = { 'id': 0, boolean: false, title: 'test' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/false/example/0.json?title=test')
+    })
+
     it('interpolates paths with multiple occurrence of same dynamic segment', () => {
       methodDescriptor.path = '/api/{path?}/{path}/{id}.json'
       methodDescriptor.params = { id: 1, path: 'test', title: 'value' }
@@ -166,6 +173,13 @@ describe('Request', () => {
         methodDescriptor.params = {}
         const path = new Request(methodDescriptor).path()
         expect(path).toEqual('/api/example.json')
+      })
+
+      it('removes optional dynamic segments with null or undefined value', () => {
+        methodDescriptor.path = '/api/{null?}/path/{undefined?}/example.json'
+        methodDescriptor.params = { 'undefined': undefined, 'null': null }
+        const path = new Request(methodDescriptor).path()
+        expect(path).toEqual('/api/path/example.json')
       })
 
       it('raises an exception', () => {
