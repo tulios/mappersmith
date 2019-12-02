@@ -89,11 +89,15 @@ Request.prototype = {
     // RegExp with 'g'-flag is stateful, therefore defining it locally
     const regexp = new RegExp(REGEXP_DYNAMIC_SEGMENT, 'g')
 
+    let dynamicSegmentKeys = []
     let match
     while ((match = regexp.exec(path)) !== null) {
-      const key = match[1]
+      dynamicSegmentKeys.push(match[1])
+    }
+
+    for (let key of dynamicSegmentKeys) {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
-      if (key in params) {
+      if (params[key] != null) {
         path = path.replace(pattern, encodeURIComponent(params[key]))
         delete params[key]
       }
