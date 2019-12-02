@@ -11,20 +11,23 @@ declare module 'mappersmith/test' {
 
   export type ResponseHandler = (request: Request, mock: MockAssert) => void
 
-  export interface MockClient<ResourcesType> {
-    resource(name: keyof ResourcesType): MockClient<ResourcesType>
-    method(name: keyof ResourcesType[keyof ResourcesType]): MockClient<ResourcesType>
-    with(args: Partial<Parameters>): MockClient<ResourcesType>
-    status(responder: StatusHandler | number): MockClient<ResourcesType>
-    response(responder: ResponseHandler | object | string): MockClient<ResourcesType>
-    assertObject(): MockAssert
-    assertObjectAsync(): Promise<MockAssert>
+  export interface MockClient<
+    ResourcesType,
+    ResourceName extends keyof ResourcesType
+    > {
+    resource<ResourceName extends keyof ResourcesType>(name: ResourceName): MockClient<ResourcesType, ResourceName>;
+    method(name: keyof ResourcesType[ResourceName]): this;
+    with(args: Partial<Parameters>): this;
+    status(responder: StatusHandler | number): this;
+    response(responder: ResponseHandler | object | string): this;
+    assertObject(): MockAssert;
+    assertObjectAsync(): Promise<MockAssert>;
   }
 
   export function clear(): void
   export function install(): void
   export function uninstall(): void
-  export function mockClient<ResourcesType>(client: Client<ResourcesType>): MockClient<ResourcesType>
+  export function mockClient<ResourcesType, ResourceName extends keyof ResourcesType = keyof ResourcesType>(client: Client<ResourcesType>): MockClient<ResourcesType, ResourceName>
 
   export type MockRequestUrlFunction = (requestUrl: string, params: object) => string
   export type MockRequestBody = string | object

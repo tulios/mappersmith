@@ -124,21 +124,28 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json?user_email=email%2Btest%40example.com')
     })
 
-    it('interpolates paths with dynamic sections', () => {
+    it('interpolates paths with dynamic segments', () => {
       methodDescriptor.path = '/api/example/{id}.json'
       methodDescriptor.params = { id: 1, title: 'test' }
       const path = new Request(methodDescriptor).path()
       expect(path).toEqual('/api/example/1.json?title=test')
     })
 
-    it('encodes params in dynamic sections', () => {
+    it('interpolates paths with optional dynamic segments', () => {
+      methodDescriptor.path = '/api/example/{id?}.json'
+      methodDescriptor.params = { 'id': 1, title: 'test' }
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example/1.json?title=test')
+    })
+
+    it('encodes params in dynamic segments', () => {
       methodDescriptor.path = '/api/example.json?email={email}'
       methodDescriptor.params = { email: 'email+test@example.com' }
       const path = new Request(methodDescriptor).path()
       expect(path).toEqual('/api/example.json?email=email%2Btest%40example.com')
     })
 
-    it('does not apply queryParamAlias to interpolated dynamic sections', () => {
+    it('does not apply queryParamAlias to interpolated dynamic segments', () => {
       methodDescriptor.path = '/api/example/{userId}.json'
       methodDescriptor.params = { userId: 1 }
       methodDescriptor.queryParamAlias = { userId: 'user_id' }
@@ -146,7 +153,14 @@ describe('Request', () => {
       expect(path).toEqual('/api/example/1.json')
     })
 
-    describe('when dynamic section is not provided', () => {
+    describe('when dynamic segment is not provided', () => {
+      it('removes optional dynamic segments', () => {
+        methodDescriptor.path = '{prefix?}/api/{optional?}/example.json'
+        methodDescriptor.params = {}
+        const path = new Request(methodDescriptor).path()
+        expect(path).toEqual('/api/example.json')
+      })
+
       it('raises an exception', () => {
         methodDescriptor.path = '/api/example/{id}.json'
         expect(() => new Request(methodDescriptor).path())
