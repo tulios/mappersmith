@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.31.1
+
+  - Ignore `null` or `undefined` values for dynamic segments #175 
+
 ## 2.31.0
 
   - Bugfix: Fetch gateway not using the right configs #161
