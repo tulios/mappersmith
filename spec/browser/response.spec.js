@@ -191,5 +191,13 @@ describe('Response', () => {
       expect(enhancedResponse.error()).toEqual(newError)
       expect(enhancedResponse.errors).toEqual([originalError, newError])
     })
+
+    it('preserves timeElapsed', () => {
+      const response = createResponse()
+      response.timeElapsed = 123
+      const enhancedResponse = response.enhance({})
+      expect(enhancedResponse).not.toEqual(response)
+      expect(enhancedResponse.timeElapsed).toEqual(123)
+    })
   })
 })

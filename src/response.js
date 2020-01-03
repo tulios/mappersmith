@@ -129,13 +129,16 @@ Response.prototype = {
    * @return {Response}
    */
   enhance (extras) {
-    return new Response(
+    const enhancedResponse = new Response(
       this.request(),
       extras.status || this.status(),
       extras.rawData || this.rawData(),
       assign({}, this.headers(), extras.headers),
       [...this.errors, extras.error]
     )
+    enhancedResponse.timeElapsed = this.timeElapsed
+
+    return enhancedResponse
   }
 }
 
