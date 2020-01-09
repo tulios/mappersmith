@@ -1,8 +1,12 @@
 # Changelog
 
+## 2.31.2
+
+  - Bugfix: Preserve `timeElapsed` for `response.enhance` #178 
+
 ## 2.31.1
 
-  - Ignore `null` or `undefined` values for dynamic segments #175 
+  - Ignore `null` or `undefined` values for dynamic segments #175
 
 ## 2.31.0
 
