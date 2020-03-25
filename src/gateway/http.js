@@ -54,7 +54,8 @@ HTTP.prototype = Gateway.extends({
 
     const requestParams = assign(defaults, {
       method: requestMethod,
-      headers: assign(headers, this.request.headers())
+      headers: assign(headers, this.request.headers()),
+      timeout
     })
 
     const auth = this.request.auth()
