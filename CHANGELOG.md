@@ -1,8 +1,12 @@
 # Changelog
 
+## 2.32.0
+
+  - New option on the HTTP gateway (`useSocketConnectionTimeout`) to include DNS and Socket connection on the timeout #179 
+
 ## 2.31.2
 
-  - Bugfix: Preserve `timeElapsed` for `response.enhance` #178 
+  - Bugfix: Preserve `timeElapsed` for `response.enhance` #178
 
 ## 2.31.1
 
