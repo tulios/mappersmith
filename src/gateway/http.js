@@ -54,8 +54,7 @@ HTTP.prototype = Gateway.extends({
 
     const requestParams = assign(defaults, {
       method: requestMethod,
-      headers: assign(headers, this.request.headers()),
-      timeout
+      headers: assign(headers, this.request.headers())
     })
 
     const auth = this.request.auth()
@@ -66,6 +65,10 @@ HTTP.prototype = Gateway.extends({
     }
 
     const httpOptions = this.options().HTTP
+
+    if (httpOptions.useSocketConnectionTimeout) {
+      requestParams['timeout'] = timeout
+    }
 
     if (httpOptions.configure) {
       assign(requestParams, httpOptions.configure(requestParams))
@@ -104,7 +107,11 @@ HTTP.prototype = Gateway.extends({
     body && httpRequest.write(body)
 
     if (timeout) {
-      httpRequest.setTimeout(timeout, () => {
+      if (!httpOptions.useSocketConnectionTimeout) {
+        httpRequest.setTimeout(timeout)
+      }
+
+      httpRequest.on('timeout', () => {
         this.canceled = true
         httpRequest.abort()
         const error = createTimeoutError(`Timeout (${timeout}ms)`)

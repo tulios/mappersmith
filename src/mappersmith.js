@@ -54,7 +54,7 @@ export const configs = {
       withCredentials: false,
 
       /**
-       * For aditional configurations to the XMLHttpRequest object.
+       * For additional configurations to the XMLHttpRequest object.
        * @param {XMLHttpRequest} xhr
        * @default null
        */
@@ -63,6 +63,15 @@ export const configs = {
 
     HTTP: {
       /**
+       * Enable this option to evaluate timeout on entire request durations,
+       * including DNS resolution and socket connection.
+       *
+       * See original nodejs issue: https://github.com/nodejs/node/pull/8101
+       *
+       * @default false
+       */
+      useSocketConnectionTimeout: false,
+      /**
        * For additional configurations to the http/https module
        * For http: https://nodejs.org/api/http.html#http_http_request_options_callback
        * For https: https://nodejs.org/api/https.html#https_https_request_options_callback
@@ -70,7 +79,14 @@ export const configs = {
        * @param {object} options
        * @default null
        */
-      configure: null
+      configure: null,
+      onRequestWillStart: null,
+      onRequestSocketAssigned: null,
+      onSocketLookup: null,
+      onSocketConnect: null,
+      onSocketSecureConnect: null,
+      onResponseReadable: null,
+      onResponseEnd: null
     },
 
     Fetch: {
