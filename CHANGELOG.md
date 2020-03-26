@@ -1,8 +1,12 @@
 # Changelog
 
+## 2.32.1
+
+  - Bugfix: Only use param matchers on the attributes assigned to them #181
+
 ## 2.32.0
 
-  - New option on the HTTP gateway (`useSocketConnectionTimeout`) to include DNS and Socket connection on the timeout #179 
+  - New option on the HTTP gateway (`useSocketConnectionTimeout`) to include DNS and Socket connection on the timeout #179
 
 ## 2.31.2
 
