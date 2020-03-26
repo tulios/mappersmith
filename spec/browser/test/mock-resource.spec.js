@@ -363,7 +363,7 @@ describe('Test lib / mock resources', () => {
       })
   })
 
-  describe.only('when using param matchers', () => {
+  describe('when using param matchers', () => {
     it('evaluates only params with matcher function, let others be', (done) => {
       mockClient(client)
         .resource('User')
