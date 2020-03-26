@@ -363,6 +363,23 @@ describe('Test lib / mock resources', () => {
       })
   })
 
+  describe('when using param matchers', () => {
+    it('evaluates only params with matcher function, let others be', (done) => {
+      mockClient(client)
+        .resource('User')
+        .method('all')
+        .with({ param1: 'NOT_MATCHING', param2: () => true })
+
+      client.User.all({ param1: 'THIS_SHOULD_NOT_MATCH', param2: 'anything' })
+        .then(() => {
+          done.fail(`should not find match`)
+        })
+        .catch(() => {
+          done()
+        })
+    })
+  })
+
   describe('when client is using middlewares', () => {
     let params
 
