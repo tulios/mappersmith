@@ -151,13 +151,18 @@ MockResource.prototype = {
   generateUrlMatcher (finalRequest) {
     const params = finalRequest.params()
     const hasParamMatchers = Object.keys(params).find((key) => typeof params[key] === 'function')
+
+    if (!hasParamMatchers) {
+      return finalRequest.url()
+    }
+
     const urlMatcher = (requestUrl, requestParams) => {
-      const expandedParams = this.expandParams(params, requestParams)
-      const testRequest = finalRequest.enhance({ params: expandedParams })
+      const additionalParams = this.evaluateParamMatchers(params, requestParams)
+      const testRequest = finalRequest.enhance({ params: additionalParams })
       return testRequest.url() === requestUrl
     }
 
-    return hasParamMatchers ? urlMatcher : finalRequest.url()
+    return urlMatcher
   },
 
   /**
@@ -179,14 +184,23 @@ MockResource.prototype = {
   /**
    * @private
    */
-  expandParams (mockParams, requestParams) {
+  evaluateParamMatchers (mockParams, requestParams) {
     return Object.keys(mockParams).reduce((obj, key) => {
-      const value = requestParams[key]
-      if (typeof mockParams[key] === 'function') {
-        obj[key] = mockParams[key](value) ? value : VALUE_NOT_MATCHED
-      } else {
-        obj[key] = value
+      const matcher = mockParams[key]
+
+      if (typeof matcher !== 'function') {
+        return obj
       }
+
+      const value = requestParams[key]
+      // Only evaluate if key was provided in request params.
+      // Otherwise we always consider it not to match.
+      if (key in requestParams && matcher(value)) {
+        obj[key] = value
+      } else {
+        obj[key] = VALUE_NOT_MATCHED
+      }
+
       return obj
     }, {})
   },
