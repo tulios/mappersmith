@@ -10,6 +10,9 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
+  import * as http from 'http'
+  import * as https from 'https'
+
   export interface Headers {
     readonly [header: string]: string
   }
@@ -136,7 +139,6 @@ declare module 'mappersmith' {
   export interface FetchGateway extends Gateway {}
 
   export interface HTTPGateway extends Gateway, NetworkGateway {
-    configure(): object
     createResponse(response: Response, rawData: string): Response
     onError(error: Error): void
     onResponse(response: Response, options: object, params: object): void
@@ -159,9 +161,23 @@ declare module 'mappersmith' {
     setHeaders(xmlHttpRequest: XMLHttpRequest, headers: Headers): void
   }
 
+  export type HTTPRequestOptions = http.RequestOptions | https.RequestOptions
+
+  export interface HTTPGatewayConfiguration {
+    configure?(options: HTTPRequestOptions): HTTPRequestOptions
+    onRequestWillStart?(options: HTTPRequestOptions): void
+    onRequestSocketAssigned?(options: HTTPRequestOptions): void
+    onSocketLookup?(options: HTTPRequestOptions): void
+    onSocketConnect?(options: HTTPRequestOptions): void
+    onSocketSecureConnect?(options: HTTPRequestOptions): void
+    onResponseReadable?(options: HTTPRequestOptions): void
+    onResponseEnd?(options: HTTPRequestOptions): void
+    useSocketConnectionTimeout?: boolean
+  }
+
   export interface GatewayConfiguration {
     Fetch: object
-    HTTP: Partial<HTTPGateway>
+    HTTP: HTTPGatewayConfiguration
     Mock: object
     XHR: Partial<XhrGateway>
   }
