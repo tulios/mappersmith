@@ -10,8 +10,6 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
-  import * as http from 'http'
-  import * as https from 'https'
 
   export interface Headers {
     readonly [header: string]: string
@@ -161,17 +159,19 @@ declare module 'mappersmith' {
     setHeaders(xmlHttpRequest: XMLHttpRequest, headers: Headers): void
   }
 
-  export type HTTPRequestOptions = http.RequestOptions | https.RequestOptions
+  export interface HTTPRequestParams {
+    [key: string]: any
+  }
 
   export interface HTTPGatewayConfiguration {
-    configure?(options: HTTPRequestOptions): HTTPRequestOptions
-    onRequestWillStart?(options: HTTPRequestOptions): void
-    onRequestSocketAssigned?(options: HTTPRequestOptions): void
-    onSocketLookup?(options: HTTPRequestOptions): void
-    onSocketConnect?(options: HTTPRequestOptions): void
-    onSocketSecureConnect?(options: HTTPRequestOptions): void
-    onResponseReadable?(options: HTTPRequestOptions): void
-    onResponseEnd?(options: HTTPRequestOptions): void
+    configure?(requestParams: HTTPRequestParams): HTTPRequestParams
+    onRequestWillStart?(requestParams: HTTPRequestParams): void
+    onRequestSocketAssigned?(requestParams: HTTPRequestParams): void
+    onSocketLookup?(requestParams: HTTPRequestParams): void
+    onSocketConnect?(requestParams: HTTPRequestParams): void
+    onSocketSecureConnect?(requestParams: HTTPRequestParams): void
+    onResponseReadable?(requestParams: HTTPRequestParams): void
+    onResponseEnd?(requestParams: HTTPRequestParams): void
     useSocketConnectionTimeout?: boolean
   }
 
