@@ -98,7 +98,9 @@ Request.prototype = {
     for (let key of dynamicSegmentKeys) {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
       if (params[key] != null) {
-        path = path.replace(pattern, encodeURIComponent(params[key]))
+        path = path.replace(pattern, this.methodDescriptor.encodeDynamicSegments
+          ? encodeURIComponent(params[key])
+          : params[key])
         delete params[key]
       }
     }

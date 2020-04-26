@@ -3,6 +3,7 @@
  * @param {Object} obj
  *   @param {String} obj.host
  *   @param {String} obj.path
+ *   @param {Boolean} obj.encodeDynamicSegments - urlencode parts of path. Default: true
  *   @param {String} obj.method
  *   @param {Object} obj.headers
  *   @param {Object} obj.params
@@ -16,6 +17,8 @@
 export default function MethodDescriptor (obj) {
   this.host = obj.host
   this.path = obj.path
+  this.encodeDynamicSegments = typeof obj.encodeDynamicSegments === 'boolean'
+    ? obj.encodeDynamicSegments : true
   this.method = obj.method || 'get'
   this.headers = obj.headers
   this.params = obj.params
