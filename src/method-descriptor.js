@@ -17,8 +17,7 @@
 export default function MethodDescriptor (obj) {
   this.host = obj.host
   this.path = obj.path
-  this.encodeDynamicSegments = typeof obj.encodeDynamicSegments === 'boolean'
-    ? obj.encodeDynamicSegments : true
+  this.encodeDynamicSegments = obj.encodeDynamicSegments !== false
   this.method = obj.method || 'get'
   this.headers = obj.headers
   this.params = obj.params
