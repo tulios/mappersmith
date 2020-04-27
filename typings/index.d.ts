@@ -22,7 +22,7 @@ declare module 'mappersmith' {
   export interface Parameters {
     readonly auth?: Authorization
     readonly timeout?: number
-    [param: string]: object | string | number | undefined
+    [param: string]: object | string | number | boolean | undefined
   }
 
   export type Context = object
