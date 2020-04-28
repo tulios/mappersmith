@@ -189,6 +189,41 @@ describe('Request', () => {
       })
     })
 
+    describe('when path is a function', () => {
+      it('calls the function to resolve request path', () => {
+        methodDescriptor.path = jest.fn(() => 'dynamic_path')
+        const path = new Request(methodDescriptor).path()
+        expect(methodDescriptor.path).toHaveBeenCalled()
+        expect(path).toEqual('/dynamic_path')
+      })
+
+      it('passes given params to the path function', () => {
+        const TEST_PARAMS = { id: '123' }
+        methodDescriptor.path = jest.fn(params => {
+          const idParts = params.id.split('')
+          delete params['id']
+          return `${idParts.join('/')}.json`
+        })
+        methodDescriptor.params = TEST_PARAMS
+
+        const path = new Request(methodDescriptor).path()
+        expect(path).toEqual('/1/2/3.json')
+      })
+
+      it('path function passes unused params in querystring', () => {
+        const TEST_PARAMS = { id: '123', q: 'search' }
+        methodDescriptor.path = params => {
+          const idParts = params.id.split('')
+          delete params['id']
+          return `${idParts.join('/')}.htm`
+        }
+        methodDescriptor.params = TEST_PARAMS
+
+        const path = new Request(methodDescriptor).path()
+        expect(path).toEqual('/1/2/3.htm?q=search')
+      })
+    })
+
     it('does not include headers', () => {
       methodDescriptor.path = '/api/example.json'
       methodDescriptor.params = { [methodDescriptor.headersAttr]: { 'Content-Type': 'application/json' } }
