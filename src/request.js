@@ -78,18 +78,24 @@ Request.prototype = {
    * @return {String}
    */
   path () {
-    let path = this.methodDescriptor.path
+    const params = this.params()
 
-    if (this.methodDescriptor.path[0] !== '/') {
-      path = `/${this.methodDescriptor.path}`
+    let path
+
+    if (typeof this.methodDescriptor.path === 'function') {
+      path = this.methodDescriptor.path(params)
+    } else {
+      path = this.methodDescriptor.path
     }
 
-    const params = this.params()
+    if (path[0] !== '/') {
+      path = `/${path}`
+    }
 
     // RegExp with 'g'-flag is stateful, therefore defining it locally
     const regexp = new RegExp(REGEXP_DYNAMIC_SEGMENT, 'g')
 
-    let dynamicSegmentKeys = []
+    const dynamicSegmentKeys = []
     let match
     while ((match = regexp.exec(path)) !== null) {
       dynamicSegmentKeys.push(match[1])

@@ -2,7 +2,7 @@
  * @typedef MethodDescriptor
  * @param {Object} obj
  *   @param {String} obj.host
- *   @param {String} obj.path
+ *   @param {String|Function} obj.path
  *   @param {String} obj.method
  *   @param {Object} obj.headers
  *   @param {Object} obj.params
