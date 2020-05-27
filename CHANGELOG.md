@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.33.0
+
+  - Add support for (Typescript) boolean as parameters #185
+  - Update typings for HTTPGateway configurations #182
+  - Accept a function as `MethodDescriptor.path` #186
+
 ## 2.32.1
 
   - Bugfix: Only use param matchers on the attributes assigned to them #181
