@@ -122,7 +122,7 @@ const client = forge({
       byId: { path: '/users/{id}' },
 
       // {group} is also a dynamic segment but it has default value "general"
-      byGroup: { path: '/users/groups/{group}', params: { group: 'general' } }
+      byGroup: { path: '/users/groups/{group}', params: { group: 'general' } },
 
       // {market?} is an optional dynamic segment. If called without a value
       // for the "market" parameter, {market?} will be removed from the path
@@ -140,7 +140,10 @@ const client = forge({
 
       // `queryParamAlias` will map parameter names to their alias when
       // constructing the query string
-      bySubject: { path: '/blogs', queryParamAlias: { subjectId: 'subject_id' } }
+      bySubject: { path: '/blogs', queryParamAlias: { subjectId: 'subject_id' } },
+
+      // `path` is a function to map passed params to a custom path
+      byDate: { path: ({date}) => `${date.getYear()}/${date.getMonth()}/${date.getDate()}` }
     }
   }
 })
