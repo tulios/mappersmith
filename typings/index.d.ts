@@ -10,6 +10,7 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
+
   export interface Headers {
     readonly [header: string]: string
   }
@@ -22,7 +23,7 @@ declare module 'mappersmith' {
   export interface Parameters {
     readonly auth?: Authorization
     readonly timeout?: number
-    [param: string]: object | string | number | undefined
+    [param: string]: object | string | number | boolean | undefined
   }
 
   export type Context = object
@@ -136,7 +137,6 @@ declare module 'mappersmith' {
   export interface FetchGateway extends Gateway {}
 
   export interface HTTPGateway extends Gateway, NetworkGateway {
-    configure(): object
     createResponse(response: Response, rawData: string): Response
     onError(error: Error): void
     onResponse(response: Response, options: object, params: object): void
@@ -159,9 +159,25 @@ declare module 'mappersmith' {
     setHeaders(xmlHttpRequest: XMLHttpRequest, headers: Headers): void
   }
 
+  export interface HTTPRequestParams {
+    [key: string]: any
+  }
+
+  export interface HTTPGatewayConfiguration {
+    configure?(requestParams: HTTPRequestParams): HTTPRequestParams
+    onRequestWillStart?(requestParams: HTTPRequestParams): void
+    onRequestSocketAssigned?(requestParams: HTTPRequestParams): void
+    onSocketLookup?(requestParams: HTTPRequestParams): void
+    onSocketConnect?(requestParams: HTTPRequestParams): void
+    onSocketSecureConnect?(requestParams: HTTPRequestParams): void
+    onResponseReadable?(requestParams: HTTPRequestParams): void
+    onResponseEnd?(requestParams: HTTPRequestParams): void
+    useSocketConnectionTimeout?: boolean
+  }
+
   export interface GatewayConfiguration {
     Fetch: object
-    HTTP: Partial<HTTPGateway>
+    HTTP: HTTPGatewayConfiguration
     Mock: object
     XHR: Partial<XhrGateway>
   }

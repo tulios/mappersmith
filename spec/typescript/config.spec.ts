@@ -26,7 +26,7 @@ configs.gatewayConfigs.Fetch = {
 configs.gatewayConfigs.HTTP = {
   configure() {
     return {
-      agent: "something"
+      port: "1234"
     }
   }
 }
