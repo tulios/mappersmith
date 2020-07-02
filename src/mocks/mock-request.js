@@ -24,6 +24,7 @@ function MockRequest (id, props) {
   this.body = this.bodyFunction ? props.body : toSortedQueryString(props.body)
   this.responseHeaders = props.response.headers || {}
   this.setResponseData(props.response.body)
+  this.responseHandler = props.response.handler
   this.responseStatus = props.response.status || 200
 
   this.calls = []
@@ -51,6 +52,11 @@ MockRequest.prototype = {
    */
   call (request) {
     this.calls.push(request)
+
+    if (this.responseHandler) {
+      this.setResponseData(this.responseHandler(request, this.assertObject()))
+    }
+
     return new Response(
       request,
       this.responseStatus,

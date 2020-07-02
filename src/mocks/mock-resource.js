@@ -134,7 +134,8 @@ MockResource.prototype = {
         response: {
           status: responseStatus,
           headers: this.responseHeaders,
-          body: responseData
+          body: responseData,
+          handler: this.responseHandler
         }
       })
     }
