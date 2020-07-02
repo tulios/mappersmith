@@ -6,6 +6,7 @@ import {
   install as installMock,
   uninstall as uninstallMock,
   mockRequest,
+  mockClient,
   m
 } from 'src/test'
 
@@ -234,5 +235,65 @@ describe('Test lib / mock request', () => {
         const error = response.rawData ? response.rawData() : response
         done.fail(`test failed with promise error: ${error}`)
       })
+  })
+
+  it('allows for response to be a function of request body', async () => {
+    mockClient(client)
+      .resource('Blog')
+      .method('post')
+      .with({
+        body: m.anything()
+      })
+      .response((request) => request.body())
+      .assertObject()
+
+    const response = await client.Blog.post({ body: { true: false } })
+
+    expect(response.data()).toEqual({ true: false })
+  })
+
+  it('allows for response to be a function of request params', async () => {
+    mockClient(client)
+      .resource('User')
+      .method('byId')
+      .with({
+        id: m.anything()
+      })
+      .response((request) => request.params())
+      .assertObject()
+
+    const response = await client.User.byId({ id: 123 })
+
+    expect(response.data()).toHaveProperty('id', 123)
+  })
+
+  it('allows for the status code to be a function of request body', async () => {
+    mockClient(client)
+      .resource('Blog')
+      .method('post')
+      .with({
+        body: m.anything()
+      })
+      .status((request) => request.body().created ? 201 : 200)
+      .assertObject()
+
+    const response = await client.Blog.post({ body: { created: true } })
+
+    expect(response.status()).toEqual(201)
+  })
+
+  it('allows for status code to be a function of request params', async () => {
+    mockClient(client)
+      .resource('User')
+      .method('byId')
+      .with({
+        id: m.anything()
+      })
+      .status((request) => request.params().id === 123 ? 200 : 404)
+      .assertObject()
+
+    const response = await client.User.byId({ id: 123 })
+
+    expect(response.status()).toEqual(200)
   })
 })
