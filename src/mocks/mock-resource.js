@@ -1,6 +1,5 @@
 import { configs } from '../mappersmith'
 import MockRequest from './mock-request'
-import MockAssert from './mock-assert'
 import Request from '../request'
 
 const VALUE_NOT_MATCHED = '<MAPPERSMITH_VALUE_NOT_MATCHED>'
@@ -114,17 +113,7 @@ MockResource.prototype = {
       ? this.asyncFinalRequest
       : this.createRequest()
 
-    const assertObject = this.mockRequest
-      ? this.mockRequest.assertObject()
-      : new MockAssert([])
-
-    const responseStatus = this.responseStatusHandler
-      ? this.responseStatusHandler(finalRequest, assertObject)
-      : this.responseStatus
-
-    const responseData = this.responseHandler
-      ? this.responseHandler(finalRequest, assertObject)
-      : this.responseData
+    const responseStatus = this.responseStatusHandler || this.responseStatus
 
     if (!this.mockRequest) {
       this.mockRequest = new MockRequest(this.id, {
@@ -134,14 +123,11 @@ MockResource.prototype = {
         response: {
           status: responseStatus,
           headers: this.responseHeaders,
-          body: responseData,
+          body: this.responseData,
           handler: this.responseHandler
         }
       })
     }
-
-    this.mockRequest.responseStatus = responseStatus
-    this.mockRequest.setResponseData(responseData)
 
     return this.mockRequest
   },
