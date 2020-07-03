@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.33.1
+
+  - Use latest request in response mock #191
+
 ## 2.33.0
 
   - Add support for (Typescript) boolean as parameters #185
