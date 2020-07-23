@@ -173,7 +173,6 @@ declare module 'mappersmith' {
     onResponseReadable?(requestParams: HTTPRequestParams): void
     onResponseEnd?(requestParams: HTTPRequestParams): void
     useSocketConnectionTimeout?: boolean
-    enableHTTP408OnTimeouts?: boolean
   }
 
   export interface GatewayConfiguration {
@@ -181,6 +180,8 @@ declare module 'mappersmith' {
     HTTP: HTTPGatewayConfiguration
     Mock: object
     XHR: Partial<XhrGateway>
+    enableHTTP408OnTimeouts?: boolean
+    emulateHTTP?: boolean
   }
 
   export interface Configuration {
