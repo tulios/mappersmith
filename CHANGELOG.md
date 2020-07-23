@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.33.2
+
+  - Add `enableHTTP408OnTimeouts` to `HTTPGatewayConfiguration` typings
+
 ## 2.33.1
 
   - Use latest request in response mock #191
