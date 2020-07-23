@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.33.3
+
+  - Fix `GatewayConfiguration` typings
+
 ## 2.33.2
 
   - Add `enableHTTP408OnTimeouts` to `HTTPGatewayConfiguration` typings
