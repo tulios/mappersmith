@@ -173,6 +173,7 @@ declare module 'mappersmith' {
     onResponseReadable?(requestParams: HTTPRequestParams): void
     onResponseEnd?(requestParams: HTTPRequestParams): void
     useSocketConnectionTimeout?: boolean
+    enableHTTP408OnTimeouts?: boolean
   }
 
   export interface GatewayConfiguration {
