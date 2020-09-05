@@ -134,6 +134,17 @@ Request.prototype = {
   },
 
   /**
+   * Returns the template path, without params, before interpolation.
+   * If path is a function, returns the result of request.path()
+   * Example: /some/{param}/path
+   *
+   * @return {String|Function}
+   */
+  pathTemplate () {
+    return this.methodDescriptor.path
+  },
+
+  /**
    * Returns the full URL
    * Example: http://example.org/some/path?param1=true
    *
