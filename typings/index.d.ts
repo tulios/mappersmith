@@ -120,7 +120,7 @@ declare module 'mappersmith' {
     call(): void
     dispatchClientError(message: string, error: Error): void
     dispatchResponse(response: Response): void
-    extends(methods: { [fn: string]: Function }): void
+    extends(methods: {[fn: string]: Function}): void
     options(): object
     prepareBody(method: string, headers: Headers): string
     shouldEmulateHTTP(): boolean
@@ -135,7 +135,7 @@ declare module 'mappersmith' {
     put(): void
   }
 
-  export interface FetchGateway extends Gateway { }
+  export interface FetchGateway extends Gateway {}
 
   export interface HTTPGateway extends Gateway, NetworkGateway {
     createResponse(response: Response, rawData: string): Response
