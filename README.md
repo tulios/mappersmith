@@ -1221,7 +1221,7 @@ Take a look [here](https://github.com/tulios/mappersmith/blob/master/src/mappers
 
 ### Fetch
 
-__Mappersmith__ does not apply any polyfills, it depends on a native `fetch` implementation to be supported. It is possible assign the fetch implementation used by Mappersmith:
+__Mappersmith__ does not apply any polyfills, it depends on a native `fetch` implementation to be supported. It is possible to assign the fetch implementation used by Mappersmith:
 
 ```javascript
 import { configs } from 'mappersmith'
