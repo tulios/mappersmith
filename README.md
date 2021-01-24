@@ -341,6 +341,22 @@ If `host` is not possible as a special parameter for your API, you can configure
 client.User.all({ baseUrl: 'http://very-old-api.com' }) // http://very-old-api.com/users
 ```
 
+*NOTE*: Since version `2.34.0` you need to also use `allowResourceHostOverride: true`, example:
+
+```
+const client = forge({
+  host: 'https://new-host.com',
+  allowResourceHostOverride: true,
+  resources: {
+    User: {
+      all: { path: '/users', host: 'https://old-host.com }
+    }
+  }
+})
+```
+
+Whenever using host overrides, be diligent about how you pass parameters to your resource methods. If you spread unverified attributes, you might open your server to SSR attacks.
+
 ### <a name="binary-data"></a> Binary data
 
 If the data being fetched is in binary form, such as a PDF, you may add the `binary` key, and set it to true. The response data will then be a [Buffer](https://nodejs.org/api/buffer.html) in NodeJS, and a [Blob](https://developer.mozilla.org/sv-SE/docs/Web/API/Blob) in the browser.
