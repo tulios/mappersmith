@@ -54,6 +54,7 @@ describe('Request', () => {
 
     it('returns the configured host param from params', () => {
       methodDescriptor.hostAttr = 'differentHostParam'
+      methodDescriptor.allowResourceHostOverride = true
       const request = new Request(methodDescriptor, { differentHostParam: 'http://example.org' })
       expect(request.host()).toEqual('http://example.org')
     })
@@ -66,8 +67,9 @@ describe('Request', () => {
       })
     })
 
-    describe('with request host', () => {
+    describe('with request host and allowResourceHostOverride=true', () => {
       it('returns the host', () => {
+        methodDescriptor.allowResourceHostOverride = true
         const request = new Request(methodDescriptor, { host: 'http://example.org' })
         expect(request.host()).toEqual('http://example.org')
       })
@@ -383,7 +385,8 @@ describe('Request', () => {
       expect(enhancedRequest.timeout()).toEqual(1000)
     })
 
-    it('does not remove the previously assigned "host"', () => {
+    it('does not remove the previously assigned "host" if allowResourceHostOverride=true', () => {
+      methodDescriptor.allowResourceHostOverride = true
       const request = new Request(methodDescriptor, { host: 'http://example.org' })
       const enhancedRequest = request.enhance({})
       expect(enhancedRequest.host()).toEqual('http://example.org')
@@ -446,6 +449,7 @@ describe('Request', () => {
     describe('for requests with a different "host" key', () => {
       beforeEach(() => {
         methodDescriptor = new MethodDescriptor({ hostAttr: 'snowflake' })
+        methodDescriptor.allowResourceHostOverride = true
       })
 
       it('creates a new request based on the current request replacing the custom "host"', () => {
