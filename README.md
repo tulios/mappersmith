@@ -341,9 +341,9 @@ If `host` is not possible as a special parameter for your API, you can configure
 client.User.all({ baseUrl: 'http://very-old-api.com' }) // http://very-old-api.com/users
 ```
 
-*NOTE*: Since version `2.34.0` you need to also use `allowResourceHostOverride: true`, example:
+**NOTE**: Since version `2.34.0` you need to also use `allowResourceHostOverride: true`, example:
 
-```
+```javascript
 const client = forge({
   host: 'https://new-host.com',
   allowResourceHostOverride: true,
