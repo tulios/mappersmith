@@ -88,14 +88,14 @@ declare module 'mappersmith' {
     response?(next: ResponseGetter, renew: RenewFn): Promise<Response | object>
   }
 
-  export interface MiddlewareParams {
+  export interface MiddlewareParams<ContextType = Context> {
     readonly resourceName: string
     readonly resourceMethod: string
     readonly clientId: string
-    readonly context: Context
+    readonly context: ContextType
   }
 
-  export type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor
+  export type Middleware<ContextType = Context> = (params: MiddlewareParams<ContextType>) => MiddlewareDescriptor
 
   export type AsyncFunctions<HashType> = {
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
@@ -105,13 +105,13 @@ declare module 'mappersmith' {
     [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
   }
 
-  export interface Options<ResourcesType> {
+  export interface Options<ResourcesType, ContextType = Context> {
     readonly clientId?: string
     readonly host?: string
     readonly ignoreGlobalMiddleware?: boolean
-    readonly middleware?: Middleware[]
+    readonly middleware?: Middleware<ContextType>[]
     // @alias middleware
-    readonly middlewares?: Middleware[]
+    readonly middlewares?: Middleware<ContextType>[]
     readonly resources: ResourcesType
   }
 
@@ -184,18 +184,18 @@ declare module 'mappersmith' {
     emulateHTTP?: boolean
   }
 
-  export interface Configuration {
+  export interface Configuration<ContextType = Context> {
     fetch: typeof fetch
     gateway: Gateway
     gatewayConfigs: GatewayConfiguration
     maxMiddlewareStackExecutionAllowed: number
-    middleware: Middleware[]
+    middleware: Middleware<ContextType>[]
     Promise: Promise<any>
   }
 
   export var configs: Configuration
 
-  export function setContext(context: Context): void
+  export function setContext<ContextType = Context>(context: ContextType): void
 
   export default function forge<ResourcesType>(options: Options<ResourcesType>): Client<ResourcesType>
 }
