@@ -13,6 +13,7 @@
  *   @param {String} obj.authAttr - auth attribute name. Default: 'auth'
  *   @param {Number} obj.timeoutAttr - timeout attribute name. Default: 'timeout'
  *   @param {String} obj.hostAttr - host attribute name. Default: 'host'
+ *   @param {String} obj.pathAttr - path attribute name. Default: 'path'
  */
 export default function MethodDescriptor (obj) {
   this.host = obj.host
@@ -29,6 +30,7 @@ export default function MethodDescriptor (obj) {
   this.authAttr = obj.authAttr || 'auth'
   this.timeoutAttr = obj.timeoutAttr || 'timeout'
   this.hostAttr = obj.hostAttr || 'host'
+  this.pathAttr = obj.pathAttr || 'path'
 
   const resourceMiddleware = obj.middleware || obj.middlewares || []
   this.middleware = resourceMiddleware

@@ -148,8 +148,8 @@ describe('Request', () => {
     })
 
     it('interpolates paths with multiple occurrence of same dynamic segment', () => {
-      methodDescriptor.path = '/api/{path?}/{path}/{id}.json'
-      methodDescriptor.params = { id: 1, path: 'test', title: 'value' }
+      methodDescriptor.path = '/api/{prefix?}/{prefix}/{id}.json'
+      methodDescriptor.params = { id: 1, prefix: 'test', title: 'value' }
       const path = new Request(methodDescriptor).path()
       expect(path).toEqual('/api/test/test/1.json?title=value')
     })
@@ -365,6 +365,14 @@ describe('Request', () => {
       const enhancedRequest = request.enhance({ timeout: 2000 })
       expect(enhancedRequest).not.toEqual(request)
       expect(enhancedRequest.timeout()).toEqual(2000)
+    })
+
+    it('creates a new request based on the current request replacing the path', () => {
+      methodDescriptor.path = 'api/example-1.json'
+      const request = new Request(methodDescriptor)
+      const enhancedRequest = request.enhance({ path: 'api/example-2.json' })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.path()).toEqual('/api/example-2.json')
     })
 
     it('does not remove the previously assigned "body"', () => {

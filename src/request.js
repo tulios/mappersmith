@@ -30,7 +30,8 @@ Request.prototype = {
         key !== this.methodDescriptor.bodyAttr &&
         key !== this.methodDescriptor.authAttr &&
         key !== this.methodDescriptor.timeoutAttr &&
-        key !== this.methodDescriptor.hostAttr
+        key !== this.methodDescriptor.hostAttr &&
+        key !== this.methodDescriptor.pathAttr
     )
 
     return Object
@@ -81,12 +82,10 @@ Request.prototype = {
   path () {
     const params = this.params()
 
-    let path
+    let path = this.requestParams[this.methodDescriptor.pathAttr] || this.methodDescriptor.path
 
-    if (typeof this.methodDescriptor.path === 'function') {
-      path = this.methodDescriptor.path(params)
-    } else {
-      path = this.methodDescriptor.path
+    if (typeof path === 'function') {
+      path = path(params)
     }
 
     if (path[0] !== '/') {
@@ -191,7 +190,8 @@ Request.prototype = {
    *   @param {String|Object} extras.body - it will replace the current body
    *   @param {Object} extras.auth - it will replace the current auth
    *   @param {Number} extras.timeout - it will replace the current timeout
-   *   @param {String} extras.host - it will replace the current timeout
+   *   @param {String} extras.host - it will replace the current host
+   *   @param {String} extras.path - it will replace the current path
    */
   enhance (extras) {
     const headerKey = this.methodDescriptor.headersAttr
@@ -199,6 +199,7 @@ Request.prototype = {
     const authKey = this.methodDescriptor.authAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
     const hostKey = this.methodDescriptor.hostAttr
+    const pathKey = this.methodDescriptor.pathAttr
     const requestParams = assign({}, this.requestParams, extras.params)
 
     requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
@@ -206,6 +207,7 @@ Request.prototype = {
     extras.auth && (requestParams[authKey] = extras.auth)
     extras.timeout && (requestParams[timeoutKey] = extras.timeout)
     extras.host && (requestParams[hostKey] = extras.host)
+    extras.path && (requestParams[pathKey] = extras.path)
 
     return new Request(this.methodDescriptor, requestParams)
   },
