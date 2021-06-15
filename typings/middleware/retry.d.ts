@@ -6,10 +6,22 @@ declare module 'mappersmith/middleware/retry' {
   export default Retry
 }
 
+type HttpMethod =
+  | "GET"
+  | "HEAD"
+  | "POST"
+  | "PUT"
+  | "DELETE"
+  | "CONNECT"
+  | "OPTIONS"
+  | "TRACE"
+  | "PATCH"
+
 declare module 'mappersmith/middleware/retry/v2' {
   import {Middleware, Response} from 'mappersmith'
 
   export interface RetryMiddlewareOptions {
+    readonly allowedMethods: HttpMethod[]
     readonly headerRetryCount: string
     readonly headerRetryTime: string
     readonly maxRetryTimeInSecs: number

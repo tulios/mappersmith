@@ -2,6 +2,7 @@ import forge from 'mappersmith'
 import Retry, { RetryMiddlewareOptions } from 'mappersmith/middleware/retry/v2'
 
 const retryConfigs: RetryMiddlewareOptions = {
+  allowedMethods: ['GET'], // methods allowed to be retried
   headerRetryCount: 'X-Mappersmith-Retry-Count',
   headerRetryTime: 'X-Mappersmith-Retry-Time',
   maxRetryTimeInSecs: 5,

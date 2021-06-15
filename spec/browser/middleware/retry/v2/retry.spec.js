@@ -1,3 +1,6 @@
+import Request from 'src/request'
+import Response from 'src/response'
+import MethodDescriptor from 'src/method-descriptor'
 import RetryMiddleware, { calculateExponentialRetryTime } from 'src/middlewares/retry/v2'
 import { retryMiddlewareExamples } from '../shared-examples'
 
@@ -12,6 +15,41 @@ describe('Middleware / RetryMiddleware', () => {
   })
 
   retryMiddlewareExamples(middleware, retries, headerRetryCount, headerRetryTime)
+})
+
+describe('RetryMiddleware allowedMethods configuration', () => {
+  const newRequest = method =>
+    new Request(new MethodDescriptor({ host: 'example.com', path: '/', method }), {})
+
+  const newResponse = (request, responseStatus = 200, responseData = {}, responseHeaders = {}) => {
+    return new Response(request, responseStatus, responseData, responseHeaders)
+  }
+
+  it('retries custom allowed methods', (done) => {
+    const sendMethod = (method) => {
+      const middleware = RetryMiddleware({ allowedMethods: ['POST', 'HEAD'] })()
+      const request = newRequest(method)
+      const response = newResponse(middleware.request(request))
+      const middlewareResponse = middleware.response(() => Promise.resolve(response))
+      return middlewareResponse.then(() => middleware)
+    }
+
+    const postTest = sendMethod('post').then((middleware) => {
+      expect(middleware.enableRetry).toEqual(true)
+    })
+
+    const headTest = sendMethod('head').then((middleware) => {
+      expect(middleware.enableRetry).toEqual(true)
+    })
+
+    const getTest = sendMethod('get').then((middleware) => {
+      expect(middleware.enableRetry).toEqual(false)
+    })
+
+    Promise.all([postTest, headTest, getTest])
+      .then(() => done())
+      .catch(done.fail)
+  })
 })
 
 describe('calculateExponentialRetryTime', () => {

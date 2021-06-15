@@ -3,6 +3,7 @@ import { assign } from '../../../utils'
 import Response from '../../../response'
 
 export const defaultRetryConfigs = {
+  allowedMethods: ['GET'], // methods allowed to be retried
   headerRetryCount: 'X-Mappersmith-Retry-Count',
   headerRetryTime: 'X-Mappersmith-Retry-Time',
   maxRetryTimeInSecs: 5,
@@ -36,16 +37,16 @@ export const defaultRetryConfigs = {
  *   @param {Number} retryConfigs.retries (default: 5) - max retries
  */
 export default (customConfigs = {}) => function RetryMiddleware () {
+  const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
+
   return {
     request (request) {
-      this.enableRetry = (request.method() === 'get')
+      this.enableRetry = retryConfigs.allowedMethods.includes(request.method().toUpperCase())
       this.inboundRequest = request
       return request
     },
 
     response (next) {
-      const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
-
       if (!this.enableRetry) {
         return next()
       }
