@@ -19,6 +19,7 @@ declare module 'mappersmith/test' {
     method(name: keyof ResourcesType[ResourceName]): this;
     with(args: Partial<Parameters>): this;
     status(responder: StatusHandler | number): this;
+    headers(responseHeaders: Headers): this;
     response(responder: ResponseHandler | object | string): this;
     assertObject(): MockAssert;
     assertObjectAsync(): Promise<MockAssert>;

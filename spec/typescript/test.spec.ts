@@ -24,6 +24,7 @@ const mock = mockClient<typeof github>(github)
     id: 'abc',
   })
   .response({ allUsers: [] })
+  .headers({ 'x-header': 'nope' })
   .assertObject()
 
 console.log(mock.mostRecentCall())
