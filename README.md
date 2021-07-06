@@ -919,6 +919,7 @@ It accepts the methods:
 * `method(resourceMethodName)`, ex: `method('byId')`
 * `with(resourceMethodArguments)`, ex: `with({ id: 1 })`
 * `status(statusNumber | statusHandler)`, ex: `status(204)` or `status((request, mock) => 200)`
+* `headers(responseHeaders)`, ex: `headers({ 'x-header': 'value' })`
 * `response(responseData | responseHandler)`, ex: `response({ user: { id: 1 } })` or `response((request, mock) => ({ user: { id: request.body().id } }))`
 * `assertObject()`
 * `assertObjectAsync()`
