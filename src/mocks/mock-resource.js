@@ -120,6 +120,7 @@ MockResource.prototype = {
         method: finalRequest.method(),
         url: this.generateUrlMatcher(finalRequest),
         body: finalRequest.body(),
+        headers: finalRequest.headers(),
         response: {
           status: responseStatus,
           headers: this.responseHeaders,
