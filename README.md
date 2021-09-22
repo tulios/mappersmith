@@ -1157,6 +1157,26 @@ __Note__:
 `mockClient` only accepts match functions for __body__ and __params__
 `mockRequest` only accepts match functions for __body__ and __url__
 
+#### unusedMocks
+
+`unusedMocks` can be used to check if there are any unused mocks after each test. It
+will return count of unused mocks. It can be either unused `mockRequest` or `mockClient`.
+
+```javascript
+import { install, uninstall, unusedMocks } from 'mappersmith/test'
+
+describe('Feature', () => {
+  beforeEach(() => install())
+  afterEach(() => {
+    const unusedMocksCount = unusedMocks()
+    uninstallMock()
+    if (unusedMocksCount > 0) {
+      throw new Error(`There are ${unusedMocksCount} unused mocks`) // fail the test
+    }
+  })
+})
+```
+
 ## <a name="gateways"></a> Gateways
 
 Mappersmith has a pluggable transport layer and it includes by default three gateways: xhr, http and fetch. Mappersmith will pick the correct gateway based on the environment you are running (nodejs or the browser).

@@ -67,6 +67,19 @@ export const clear = () => {
 }
 
 /**
+ * Returns number of unused mocks
+ * @returns {Number}
+ */
+export const unusedMocks = () => {
+  const mocks = store.map((mock) => mock.toMockRequest())
+  let count = 0
+  mocks.forEach(mock => {
+    if (mock.calls.length === 0) count++
+  })
+  return count
+}
+
+/**
  * Similar to "lookupResponse" but it also runs the request/prepareRequest phase of the middleware
  * stack
  *
