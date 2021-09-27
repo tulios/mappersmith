@@ -1169,7 +1169,7 @@ describe('Feature', () => {
   beforeEach(() => install())
   afterEach(() => {
     const unusedMocksCount = unusedMocks()
-    uninstallMock()
+    uninstall()
     if (unusedMocksCount > 0) {
       throw new Error(`There are ${unusedMocksCount} unused mocks`) // fail the test
     }
