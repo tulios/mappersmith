@@ -204,7 +204,7 @@ describe('Response', () => {
       const response = createResponse()
       response.timeElapsed = 123
       const enhancedResponse = response.enhance({})
-      expect(enhancedResponse).not.toEqual(response)
+
       expect(enhancedResponse.timeElapsed).toEqual(123)
     })
   })
