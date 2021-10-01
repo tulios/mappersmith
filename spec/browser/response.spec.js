@@ -192,6 +192,14 @@ describe('Response', () => {
       expect(enhancedResponse.errors).toEqual([originalError, newError])
     })
 
+    it('creates a new response without adding undefined errors to the stack', () => {
+      const originalError = new Error('original error')
+      const response = createResponse([originalError])
+      const enhancedResponse = response.enhance({})
+
+      expect(enhancedResponse.error()).toEqual(originalError)
+    })
+
     it('preserves timeElapsed', () => {
       const response = createResponse()
       response.timeElapsed = 123
