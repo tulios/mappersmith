@@ -1,6 +1,6 @@
 import { lowerCaseObjectKeys, assign } from './utils'
 
-const REGEXP_CONTENT_TYPE_JSON = /^application\/json/
+const REGEXP_CONTENT_TYPE_JSON = /^application\/.*json/
 
 /**
  * @typedef Response

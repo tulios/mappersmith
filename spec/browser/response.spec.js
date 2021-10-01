@@ -114,9 +114,14 @@ describe('Response', () => {
     })
 
     describe('when responseData is JSON', () => {
-      it('returns the parsed object', () => {
+      it.each([
+        ['application/json;charset=utf-8'],
+        ['application/ld+json;charset=utf-8'],
+        ['application/problem+json;charset=utf-8'],
+        ['application/vnd.spring-boot.actuator.v3+json;charset=utf-8']
+      ])('returns the parsed object given content type %s', (contentType) => {
         responseData = JSON.stringify({ nice: 'json' })
-        responseHeaders = { 'Content-Type': 'application/json;charset=utf-8' }
+        responseHeaders = { 'Content-Type': contentType }
         expect(createResponse().data()).toEqual({ nice: 'json' })
       })
 
