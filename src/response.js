@@ -1,6 +1,6 @@
 import { lowerCaseObjectKeys, assign } from './utils'
 
-const REGEXP_CONTENT_TYPE_JSON = /^application\/json/
+const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
 
 /**
  * @typedef Response
@@ -134,7 +134,7 @@ Response.prototype = {
       extras.status || this.status(),
       extras.rawData || this.rawData(),
       assign({}, this.headers(), extras.headers),
-      [...this.errors, extras.error]
+      extras.error ? [...this.errors, extras.error] : [...this.errors]
     )
     enhancedResponse.timeElapsed = this.timeElapsed
 

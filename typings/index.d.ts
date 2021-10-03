@@ -110,6 +110,7 @@ declare module 'mappersmith' {
     readonly host?: string
     readonly ignoreGlobalMiddleware?: boolean
     readonly middleware?: Middleware<ContextType>[]
+    readonly gatewayConfigs?: Partial<GatewayConfiguration>
     // @alias middleware
     readonly middlewares?: Middleware<ContextType>[]
     readonly resources: ResourcesType

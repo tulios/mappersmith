@@ -919,6 +919,7 @@ It accepts the methods:
 * `method(resourceMethodName)`, ex: `method('byId')`
 * `with(resourceMethodArguments)`, ex: `with({ id: 1 })`
 * `status(statusNumber | statusHandler)`, ex: `status(204)` or `status((request, mock) => 200)`
+* `headers(responseHeaders)`, ex: `headers({ 'x-header': 'value' })`
 * `response(responseData | responseHandler)`, ex: `response({ user: { id: 1 } })` or `response((request, mock) => ({ user: { id: request.body().id } }))`
 * `assertObject()`
 * `assertObjectAsync()`
@@ -1156,6 +1157,26 @@ mockClient(client)
 __Note__:
 `mockClient` only accepts match functions for __body__ and __params__
 `mockRequest` only accepts match functions for __body__ and __url__
+
+#### unusedMocks
+
+`unusedMocks` can be used to check if there are any unused mocks after each test. It
+will return count of unused mocks. It can be either unused `mockRequest` or `mockClient`.
+
+```javascript
+import { install, uninstall, unusedMocks } from 'mappersmith/test'
+
+describe('Feature', () => {
+  beforeEach(() => install())
+  afterEach(() => {
+    const unusedMocksCount = unusedMocks()
+    uninstall()
+    if (unusedMocksCount > 0) {
+      throw new Error(`There are ${unusedMocksCount} unused mocks`) // fail the test
+    }
+  })
+})
+```
 
 ## <a name="gateways"></a> Gateways
 

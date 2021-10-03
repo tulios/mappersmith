@@ -114,10 +114,27 @@ describe('Response', () => {
     })
 
     describe('when responseData is JSON', () => {
-      it('returns the parsed object', () => {
+      it.each([
+        ['application/json;charset=utf-8'],
+        ['application/ld+json;charset=utf-8'],
+        ['application/problem+json;charset=utf-8'],
+        ['application/vnd.spring-boot.actuator.v3+json;charset=utf-8']
+      ])('returns the parsed object given content type %s', (contentType) => {
         responseData = JSON.stringify({ nice: 'json' })
-        responseHeaders = { 'Content-Type': 'application/json;charset=utf-8' }
+        responseHeaders = { 'Content-Type': contentType }
         expect(createResponse().data()).toEqual({ nice: 'json' })
+      })
+
+      describe('when content type is not json', () => {
+        it.each([
+          ['application/pdf;charset=utf-8'],
+          ['text/html;charset=utf-8'],
+          ['application/vnd.openxmlformats-officedocument.stringwithjsoninit.presentation;charset=utf-8']
+        ])('returns rawData given content type %s', (contentType) => {
+          responseData = JSON.stringify({ nice: 'json' })
+          responseHeaders = { 'Content-Type': contentType }
+          expect(createResponse().data()).toEqual(responseData)
+        })
       })
 
       describe('and the payload is a invalid JSON', () => {
@@ -192,11 +209,19 @@ describe('Response', () => {
       expect(enhancedResponse.errors).toEqual([originalError, newError])
     })
 
+    it('creates a new response without adding undefined errors to the stack', () => {
+      const originalError = new Error('original error')
+      const response = createResponse([originalError])
+      const enhancedResponse = response.enhance({})
+
+      expect(enhancedResponse.error()).toEqual(originalError)
+    })
+
     it('preserves timeElapsed', () => {
       const response = createResponse()
       response.timeElapsed = 123
       const enhancedResponse = response.enhance({})
-      expect(enhancedResponse).not.toEqual(response)
+
       expect(enhancedResponse.timeElapsed).toEqual(123)
     })
   })
