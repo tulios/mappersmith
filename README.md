@@ -768,7 +768,7 @@ const client = forge({
 
 #### <a name="middleware-retry"></a> Retry
 
-This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default on requests with response statuses >= 500 will be retried.
+This middleware will automatically retry requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default, only GET requests with response statuses >= 500 will be retried.
 
 ##### v2
 
@@ -787,6 +787,7 @@ const retryConfigs = {
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
   retries: 5, // max retries
+  enableRetry: (request) => request.method() === 'get', // a function that returns true if retries should be allowed at all
   validateRetry: (response) => response.responseStatus >= 500 // a function that returns true if the request should be retried
 }
 
