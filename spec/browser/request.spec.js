@@ -247,6 +247,36 @@ describe('Request', () => {
     })
   })
 
+  describe('#pathTemplate', () => {
+    it('ensures leading "/"', () => {
+      methodDescriptor.path = 'api/example.json'
+      const path = new Request(methodDescriptor).pathTemplate()
+      expect(path).toEqual('/api/example.json')
+    })
+
+    it('does not append params as query string', () => {
+      methodDescriptor.path = '/api/example.json'
+      methodDescriptor.params = { id: 1, title: 'test' }
+      const path = new Request(methodDescriptor).pathTemplate()
+      expect(path).toEqual('/api/example.json')
+    })
+
+    it('does not interpolates paths with dynamic segments', () => {
+      methodDescriptor.path = '/api/example/{id}.json'
+      methodDescriptor.params = { id: 1, title: 'test' }
+      const path = new Request(methodDescriptor).pathTemplate()
+      expect(path).toEqual('/api/example/{id}.json')
+    })
+
+    describe('when path is a function', () => {
+      it('returns the function', () => {
+        methodDescriptor.path = jest.fn(() => 'api/example.json')
+        const path = new Request(methodDescriptor).pathTemplate()
+        expect(path).toEqual(expect.any(Function))
+      })
+    })
+  })
+
   describe('#url', () => {
     it('joins host and path', () => {
       methodDescriptor.host = 'http://example.org'
