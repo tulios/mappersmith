@@ -142,7 +142,13 @@ Request.prototype = {
    * @return {String|Function}
    */
   pathTemplate () {
-    return this.methodDescriptor.path
+    let path = this.methodDescriptor.path
+
+    if (typeof this.methodDescriptor.path !== 'function' && path[0] !== '/') {
+      path = `/${path}`
+    }
+
+    return path
   },
 
   /**

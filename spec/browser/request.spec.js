@@ -267,6 +267,14 @@ describe('Request', () => {
       const path = new Request(methodDescriptor).pathTemplate()
       expect(path).toEqual('/api/example/{id}.json')
     })
+
+    describe('when path is a function', () => {
+      it('returns the function', () => {
+        methodDescriptor.path = jest.fn(() => 'api/example.json')
+        const path = new Request(methodDescriptor).pathTemplate()
+        expect(path).toEqual(expect.any(Function))
+      })
+    })
   })
 
   describe('#url', () => {
