@@ -5,6 +5,7 @@ import { assign } from './utils'
  * @typedef Manifest
  * @param {Object} obj
  *   @param {String} obj.host
+ *   @param {boolean} obj.allowResourceHostOverride - default: false
  *   @param {Object} obj.gatewayConfigs - default: base values from mappersmith
  *   @param {Object} obj.ignoreGlobalMiddleware - default: false
  *   @param {Object} obj.resources - default: {}
@@ -13,6 +14,7 @@ import { assign } from './utils'
  */
 function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }) {
   this.host = obj.host
+  this.allowResourceHostOverride = obj.allowResourceHostOverride || false
   this.bodyAttr = obj.bodyAttr
   this.headersAttr = obj.headersAttr
   this.authAttr = obj.authAttr

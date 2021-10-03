@@ -7,6 +7,7 @@ import {
   uninstall as uninstallMock,
   mockRequest,
   mockClient,
+  unusedMocks,
   m
 } from 'src/test'
 
@@ -295,5 +296,67 @@ describe('Test lib / mock request', () => {
     const response = await client.User.byId({ id: 123 })
 
     expect(response.status()).toEqual(200)
+  })
+
+  describe('unused mocks', () => {
+    it('returns count of all unused mockClients', async () => {
+      mockClient(client).resource('Blog').method('post')
+      mockClient(client).resource('Blog').method('post')
+      expect(unusedMocks()).toEqual(2)
+    })
+
+    it('returns count of unused mockClients when mock is being used', async () => {
+      mockClient(client).resource('Blog').method('post')
+      mockClient(client).resource('Blog').method('post')
+        .with({
+          body: m.anything()
+        })
+        .response((request) => request.body())
+        .assertObject()
+
+      expect(unusedMocks()).toEqual(2)
+      await client.Blog.post({ body: { true: false } })
+      expect(unusedMocks()).toEqual(1)
+    })
+
+    it('returns count of all unused mockRequest', async () => {
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+
+      expect(unusedMocks()).toEqual(2)
+    })
+
+    it('returns count of unused mockRequest when mock is being used', async () => {
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+
+      expect(unusedMocks()).toEqual(2)
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+    })
+
+    it('should return same count if same method is being mocked twice and called twice', async () => {
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+    })
+
+    it('should return count 0 when all mocks are used', async () => {
+      expect(unusedMocks()).toEqual(0)
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+      mockRequest({ method: 'get', url: 'http://example.org/users?sort=asc', response: { body: { ok3: true } } })
+
+      expect(unusedMocks()).toEqual(2)
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+
+      await client.User.all({ sort: 'asc' })
+      expect(unusedMocks()).toEqual(0)
+    })
   })
 })

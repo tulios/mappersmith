@@ -59,9 +59,10 @@ Request.prototype = {
    * @return {String}
    */
   host () {
-    const originalHost = this.requestParams[this.methodDescriptor.hostAttr] ||
-      this.methodDescriptor.host ||
-      ''
+    const { allowResourceHostOverride, hostAttr, host } = this.methodDescriptor
+    const originalHost = allowResourceHostOverride
+      ? this.requestParams[hostAttr] || host || ''
+      : host || ''
 
     return originalHost.replace(REGEXP_TRAILING_SLASH, '')
   },

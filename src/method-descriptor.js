@@ -2,6 +2,7 @@
  * @typedef MethodDescriptor
  * @param {Object} obj
  *   @param {String} obj.host
+ *   @param {boolean} obj.allowResourceHostOverride
  *   @param {String|Function} obj.path
  *   @param {String} obj.method
  *   @param {Object} obj.headers
@@ -15,6 +16,7 @@
  */
 export default function MethodDescriptor (obj) {
   this.host = obj.host
+  this.allowResourceHostOverride = obj.allowResourceHostOverride || false
   this.path = obj.path
   this.method = obj.method || 'get'
   this.headers = obj.headers
