@@ -125,6 +125,18 @@ describe('Response', () => {
         expect(createResponse().data()).toEqual({ nice: 'json' })
       })
 
+      describe('when content type is not json', () => {
+        it.each([
+          ['application/pdf;charset=utf-8'],
+          ['text/html;charset=utf-8'],
+          ['application/vnd.openxmlformats-officedocument.stringwithjsoninit.presentation;charset=utf-8']
+        ])('returns rawData given content type %s', (contentType) => {
+          responseData = JSON.stringify({ nice: 'json' })
+          responseHeaders = { 'Content-Type': contentType }
+          expect(createResponse().data()).toEqual(responseData)
+        })
+      })
+
       describe('and the payload is a invalid JSON', () => {
         it('returns rawData', () => {
           responseData = 'invalid{json}'
