@@ -10,6 +10,7 @@ export const defaultRetryConfigs = {
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
   retries: 5, // max retries
+  enableRetry: request => request.method() === 'get',
   validateRetry: response => response.responseStatus >= 500 // a function that returns true if the request should be retried
 }
 
@@ -38,13 +39,14 @@ export const defaultRetryConfigs = {
 export default (customConfigs = {}) => function RetryMiddleware () {
   return {
     request (request) {
-      this.enableRetry = (request.method() === 'get')
+      this.retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
+      this.enableRetry = this.retryConfigs.enableRetry(request)
       this.inboundRequest = request
       return request
     },
 
     response (next) {
-      const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
+      const retryConfigs = this.retryConfigs
 
       if (!this.enableRetry) {
         return next()
