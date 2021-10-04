@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
     "strict": true,
-    "noEmit": true
+    "noImplicitAny": true,
+    "target": "es2016"
   },
   "include": [
-    "typings",
-    "spec/typescript/*",
-    "spec/typescript/**/*"
+    "typings**/*",
+    "spec/**/*",
+    "src/**/*"
+  ],
+  "exclude": [
+    "spec/**/*",
   ]
 }

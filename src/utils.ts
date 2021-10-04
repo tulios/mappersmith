@@ -1,8 +1,10 @@
-let _process, getNanoSeconds, loadTime
+type HrTimeFn = () => [number, number]
+type _Process = { hrtime: HrTimeFn }
+let _process: _Process, getNanoSeconds: (() => number) | undefined, loadTime: number | undefined
 try { _process = eval('typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
 
 const hasProcessHrtime = () => {
-  return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime
+  return (typeof _process !== 'undefined' && _process !== null) 
 }
 
 if (hasProcessHrtime()) {
@@ -15,23 +17,20 @@ if (hasProcessHrtime()) {
 
 const R20 = /%20/g
 
-export const validKeys = (entry) => Object
+export const validKeys = (entry: Record<string, any>) => Object
   .keys(entry)
   .filter((key) => entry[key] !== undefined && entry[key] !== null)
 
-export const buildRecursive = (key, value, suffix) => {
-  suffix = suffix || ''
-  const isArray = Array.isArray(value)
-  const isObject = typeof value === 'object'
-
-  if (!isArray && !isObject) {
-    return `${encodeURIComponent(key + suffix)}=${encodeURIComponent(value)}`
-  }
-
-  if (isArray) {
+type Value = string | number | boolean
+export const buildRecursive = (key: string, value: Value | Value[] | Record<string, string>, suffix = ''): string => {
+  if (Array.isArray(value)) {
     return value
       .map((v) => buildRecursive(key, v, suffix + '[]'))
       .join('&')
+  }
+
+  if (typeof value !== 'object') {
+    return `${encodeURIComponent(key + suffix)}=${encodeURIComponent(value)}`
   }
 
   return validKeys(value)
@@ -39,7 +38,7 @@ export const buildRecursive = (key, value, suffix) => {
     .join('&')
 }
 
-export function toQueryString (entry) {
+export const toQueryString = (entry: string | Record<string, string>) => {
   if (!isPlainObject(entry)) {
     return entry
   }
@@ -54,9 +53,12 @@ export function toQueryString (entry) {
  * Gives time in miliseconds, but with sub-milisecond precision for Browser
  * and Nodejs
  */
-export function performanceNow () {
-  if (hasProcessHrtime()) {
-    return (getNanoSeconds() - loadTime) / 1e6
+export const performanceNow = () => {
+  if (hasProcessHrtime() && getNanoSeconds !== undefined) {
+    const now = getNanoSeconds()
+    if (now !== undefined && loadTime !== undefined) {
+      return (now - loadTime) / 1e6
+    }
   }
 
   return Date.now()
@@ -69,8 +71,8 @@ export function performanceNow () {
  * {@link http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method}
  * This method parses that string into a user-friendly key/value pair object.
  */
-export function parseResponseHeaders (headerStr) {
-  const headers = {}
+export const parseResponseHeaders = (headerStr: string) => {
+  const headers: Record<string, string> = {}
   if (!headerStr) {
     return headers
   }
@@ -90,17 +92,17 @@ export function parseResponseHeaders (headerStr) {
   return headers
 }
 
-export function lowerCaseObjectKeys (obj) {
+export const lowerCaseObjectKeys = (obj: Record<string, unknown>) => {
   return Object
     .keys(obj)
     .reduce((target, key) => {
       target[key.toLowerCase()] = obj[key]
       return target
-    }, {})
+    }, {} as Record<string, unknown>)
 }
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
-export const assign = Object.assign || function (target) {
+export const assign = Object.assign || function (target: Record<string, unknown>) {
   for (let i = 1; i < arguments.length; i++) {
     const source = arguments[i]
     for (let key in source) {
@@ -113,7 +115,7 @@ export const assign = Object.assign || function (target) {
 }
 
 const toString = Object.prototype.toString
-export function isPlainObject (value) {
+export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return toString.call(value) === '[object Object]' &&
     Object.getPrototypeOf(value) === Object.getPrototypeOf({})
 }
@@ -122,13 +124,13 @@ export function isPlainObject (value) {
  * borrowed from: {@link https://github.com/davidchambers/Base64.js}
  */
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
-export const btoa = (input) => {
+export const btoa = (input: string) => {
   let output = ''
   let map = CHARS
   const str = String(input)
   for (
     // initialize result and counter
-    let block, charCode, idx = 0;
+    let block = 0, charCode: number, idx = 0;
     // if the next str index does not exist:
     //   change the mapping table to "="
     //   check if d has no fractional digits
