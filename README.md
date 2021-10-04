@@ -1,5 +1,5 @@
 [![npm version](https://badge.fury.io/js/mappersmith.svg)](http://badge.fury.io/js/mappersmith)
-[![Build Status](https://travis-ci.org/tulios/mappersmith.svg?branch=master)](https://travis-ci.org/tulios/mappersmith)
+[![Node.js CI](https://github.com/tulios/mappersmith/actions/workflows/node.js.yml/badge.svg)](https://github.com/tulios/mappersmith/actions/workflows/node.js.yml)
 [![Windows Tests](https://img.shields.io/appveyor/ci/tulios/mappersmith.svg?label=Windows%20Tests)](https://ci.appveyor.com/project/tulios/mappersmith)
 # Mappersmith
 
