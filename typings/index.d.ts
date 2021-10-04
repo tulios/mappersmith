@@ -49,6 +49,7 @@ declare module 'mappersmith' {
     method(): string
     host(): string
     path(): string
+    pathTemplate(): string | Function
     url(): string
     headers(): Headers
     header(name: string): string | undefined
@@ -77,7 +78,7 @@ declare module 'mappersmith' {
 
   export type ResponseGetter = () => Promise<Response>
 
-  export type AbortFn =  (error: Error) => void
+  export type AbortFn = (error: Error) => void
 
   export type RenewFn = () => Promise<object>
 
