@@ -5,12 +5,13 @@ module.exports = function (config) {
 
   config.set({
     browsers: process.platform === 'win32' ? ['IE'] : ['ChromeHeadless'],
-    frameworks: ['jasmine'],
-    reporters: ['spec'],
+    frameworks: ['jasmine', 'karma-typescript'],
+    reporters: ['spec', 'karma-typescript'],
 
     plugins: [
       'karma-webpack',
       'karma-jasmine',
+      'karma-typescript',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       'karma-ie-launcher',
@@ -20,15 +21,31 @@ module.exports = function (config) {
     singleRun: process.env.SINGLE_RUN || false,
 
     files: [
+      { pattern: '../../../src/**/*.ts', watched: false },
       { pattern: '*.spec.js', watched: false }
     ],
 
     preprocessors: {
-      '*.spec.js': ['webpack', 'sourcemap']
+      '*.spec.js': ['webpack', 'sourcemap'],
+      '../../../src/**/*.ts': ['karma-typescript']
     },
 
     proxies: {
       '/proxy': 'http://localhost:9090'
+    },
+
+    karmaTypescriptConfig: {
+      bundlerOptions: {
+        sourceMap: true
+      },
+      coverageOptions: {
+        // Set this to false while debugging
+        instrumentation: true
+      },
+      tsconfig: '../../../tsconfig.json',
+      compilerOptions: {
+        module: 'commonjs'
+      }
     },
 
     webpack: webpackConfig,
