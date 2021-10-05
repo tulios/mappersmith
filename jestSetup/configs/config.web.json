@@ -1,7 +1,7 @@
 {
   "preset": "ts-jest",
   "transform": {
-    "\\.[jt]sx?$": "babel-jest"
+    "\\.[jt]s$": "babel-jest"
   },
   "rootDir": "../../",
   "testEnvironment": "jsdom",

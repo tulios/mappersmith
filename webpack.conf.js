@@ -29,6 +29,7 @@ module.exports = {
   mode: env === 'production' ? 'production' : 'development',
   context: __dirname,
   resolve: {
+    extensions: ['.ts', '.js'],
     modules: [
       path.join(__dirname, '/node_modules'),
       __dirname
@@ -60,7 +61,16 @@ module.exports = {
   devtool: devTool,
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, use: 'babel-loader' }
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader'
+      },
+      {
+        test: /\.ts$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
     ]
   }
 }
