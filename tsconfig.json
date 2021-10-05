@@ -2,7 +2,9 @@
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,
-    "target": "es2016"
+    "declaration": true,
+    "outDir": "generated",
+    "target": "es2015"
   },
   "include": [
     "typings**/*",
