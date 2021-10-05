@@ -1,9 +1,13 @@
 {
+  "preset": "ts-jest",
+  "transform": {
+    "\\.[jt]sx?$": "babel-jest"
+  },
   "rootDir": "../../",
   "testEnvironment": "node",
   "timers": "fake",
   "browser": false,
-  "testRegex": "\\.spec\\.js$",
+  "testMatch": [ "**/?(*.)+(spec).[jt]s?(x)" ],
   "roots": [
     "<rootDir>/src/",
     "<rootDir>/spec/node/"
