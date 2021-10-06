@@ -27,7 +27,7 @@ module.exports = function (config) {
 
     preprocessors: {
       '*.spec.js': ['webpack', 'sourcemap'],
-      '../../../src/**/*.ts': ['karma-typescript']
+      '../../../src/**/*.ts': ['karma-typescript', 'webpack']
     },
 
     proxies: {
@@ -35,17 +35,7 @@ module.exports = function (config) {
     },
 
     karmaTypescriptConfig: {
-      bundlerOptions: {
-        sourceMap: true
-      },
-      coverageOptions: {
-        // Set this to false while debugging
-        instrumentation: true
-      },
-      tsconfig: '../../../tsconfig.json',
-      compilerOptions: {
-        module: 'commonjs'
-      }
+      tsconfig: '../../../tsconfig.karma.json'
     },
 
     webpack: webpackConfig,

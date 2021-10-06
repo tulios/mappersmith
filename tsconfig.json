@@ -1,17 +1,19 @@
 {
   "compilerOptions": {
+    "incremental": true,
     "strict": true,
     "noImplicitAny": true,
     "declaration": true,
-    "outDir": "generated",
-    "target": "es2015"
+    "outDir": "typings",
+    "target": "es2017"
   },
   "include": [
-    "typings**/*",
+    "typings/**/*",
     "spec/**/*",
     "src/**/*"
   ],
   "exclude": [
+    "node_modules",
     "spec/**/*",
   ]
 }
