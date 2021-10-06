@@ -83,7 +83,7 @@
     "js-md5": "^0.7.3",
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
-    "karma-ie-launcher": "^1.0.0",
+    "karma-edge-launcher": "^0.4.2",
     "karma-jasmine": "^4.0.1",
     "karma-sourcemap-loader": "^0.3.8",
     "karma-spec-reporter": "^0.0.32",
