@@ -428,8 +428,10 @@ const MyMiddleware = () => ({
 
 #### <a name="context"></a> Context
 
-Sometimes you may need to set data to be available to all your client's middleware. In this
-case you can use the `setContext` helper, like so:
+⚠️ `setContext` is not safe to use for request-scoped data, since it mutates a global state.
+
+Sometimes you may need to set non-request-scoped data to be available to all your client's middleware. 
+In this case you can use the `setContext` helper, like so:
 
 ```javascript
 import { setContext } from 'mappersmith'
@@ -442,39 +444,6 @@ setContext({ some: 'data'})
 
 client.User.all()
 // context: { some: 'data' }
-```
-
-This is specially useful when using mappermith coupled with back-end services.
-For instance you could define a globally available correlation id middleware
-like this:
-
-```javascript
-import forge, { configs, setContext } from 'mappersmith'
-import express from 'express'
-
-const CorrelationIdMiddleware = ({ context }) => ({
-  request(request) {
-    return request.enhance({
-      headers: {
-        'correlation-id': context.correlationId
-      }
-    })
-  }
-})
-
-configs.middleware = [CorrelationIdMiddleware]
-
-const api = forge({ ... })
-
-const app = express()
-app.use((req, res, next) => {
-  setContext({
-    correlationId: req.headers['correlation-id']
-  })
-})
-
-// Then, when calling `api.User.all()` in any handler it will include the
-// `correlation-id` header automatically.
 ```
 
 Note that setContext will merge the object provided with the current context
