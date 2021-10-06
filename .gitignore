@@ -3,3 +3,5 @@ node_modules/
 npm-debug.log
 lib/
 coverage/
+# build info for incremental ts builds:
+typings/tsconfig.tsbuildinfo
