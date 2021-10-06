@@ -4,7 +4,7 @@ module.exports = function (config) {
   process.env.CHROME_BIN = require('puppeteer').executablePath()
 
   config.set({
-    browsers: process.platform === 'win32' ? ['Edge'] : ['ChromeHeadless'],
+    browsers: process.platform === 'win32' ? ['EdgeHeadless'] : ['ChromeHeadless'],
     frameworks: ['jasmine', 'karma-typescript'],
     reporters: ['spec', 'karma-typescript'],
 
@@ -14,7 +14,7 @@ module.exports = function (config) {
       'karma-typescript',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
-      'karma-edge-launcher',
+      '@chiragrupani/karma-chromium-edge-launcher',
       'karma-spec-reporter'
     ],
 

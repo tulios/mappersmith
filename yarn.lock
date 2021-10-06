@@ -935,6 +935,11 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
+"@chiragrupani/karma-chromium-edge-launcher@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@chiragrupani/karma-chromium-edge-launcher/-/karma-chromium-edge-launcher-2.1.1.tgz#3ba2261629f33608709324d22631b84ec06d05df"
+  integrity sha512-QK6M+1CYMbndWRaEAOpMW9kwF+JKcqyaEY2lqe8Nnm1hyOzSZaxTqXnLTZpk7RqQHhWCOduSU/XDvceWs4H74g==
+
 "@cspotcode/source-map-consumer@0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-consumer/-/source-map-consumer-0.8.0.tgz#33bf4b7b39c178821606f669bbc447a6a629786b"
@@ -2863,11 +2868,6 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
-
-edge-launcher@1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/edge-launcher/-/edge-launcher-1.2.2.tgz#eb40aafbd067a6ea76efffab0647bcd5509b37b2"
-  integrity sha1-60Cq+9Bnpup27/+rBke81VCbN7I=
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -5199,13 +5199,6 @@ karma-chrome-launcher@^3.1.0:
   integrity sha512-3dPs/n7vgz1rxxtynpzZTvb9y/GIaW8xjAwcIGttLbycqoFtI7yo1NGnQi6oFTherRE+GIhCAHZC4vEqWGhNvg==
   dependencies:
     which "^1.2.1"
-
-karma-edge-launcher@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/karma-edge-launcher/-/karma-edge-launcher-0.4.2.tgz#3d9529b09b13c909c5f3ceee12d00e7f9a989b3d"
-  integrity sha512-YAJZb1fmRcxNhMIWYsjLuxwODBjh2cSHgTW/jkVmdpGguJjLbs9ZgIK/tEJsMQcBLUkO+yO4LBbqYxqgGW2HIw==
-  dependencies:
-    edge-launcher "1.2.2"
 
 karma-jasmine@^4.0.1:
   version "4.0.1"
