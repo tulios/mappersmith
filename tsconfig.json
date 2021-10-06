@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
+    "outDir": "./built",
     "incremental": true,
     "strict": true,
     "noImplicitAny": true,
     "declaration": true,
-    "outDir": "typings",
     "target": "es5"
   },
   "include": [
