@@ -1,4 +1,7 @@
 # http://www.appveyor.com/docs/appveyor-yml
+image:
+  - Visual Studio 2015
+
 version: "{build}"
 
 environment:
