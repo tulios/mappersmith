@@ -5,6 +5,5 @@
     "jasmine": true,
     "jest": true
   },
-  "ignorePatterns": ["src/utils.js"],
   "globals": {}
 }
