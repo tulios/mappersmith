@@ -1,10 +1,8 @@
-type HrTimeFn = () => [number, number]
-type _Process = { hrtime: HrTimeFn }
-let _process: _Process, getNanoSeconds: (() => number) | undefined, loadTime: number | undefined
+let _process: NodeJS.Process, getNanoSeconds: (() => number) | undefined, loadTime: number | undefined
 try { _process = eval('typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
 
 const hasProcessHrtime = () => {
-  return (typeof _process !== 'undefined' && _process !== null) 
+  return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime
 }
 
 if (hasProcessHrtime()) {
@@ -17,12 +15,15 @@ if (hasProcessHrtime()) {
 
 const R20 = /%20/g
 
-export const validKeys = (entry: Record<string, any>) => Object
-  .keys(entry)
-  .filter((key) => entry[key] !== undefined && entry[key] !== null)
+const isNeitherNullNorUndefined = <T>(x: T | undefined | null): x is T =>
+  x !== null && x !== undefined
 
-type Value = string | number | boolean
-export const buildRecursive = (key: string, value: Value | Value[] | Record<string, string>, suffix = ''): string => {
+export const validKeys = (entry: Record<string, unknown>) => Object
+  .keys(entry)
+  .filter((key) => isNeitherNullNorUndefined(entry[key]))
+
+type Primitive = string | number | boolean
+export const buildRecursive = (key: string, value: Primitive | Primitive[] | Record<string, Primitive>, suffix = ''): string => {
   if (Array.isArray(value)) {
     return value
       .map((v) => buildRecursive(key, v, suffix + '[]'))
@@ -38,7 +39,7 @@ export const buildRecursive = (key: string, value: Value | Value[] | Record<stri
     .join('&')
 }
 
-export const toQueryString = (entry: string | Record<string, string>) => {
+export const toQueryString = (entry: string | Record<string, Primitive>) => {
   if (!isPlainObject(entry)) {
     return entry
   }
@@ -72,7 +73,7 @@ export const performanceNow = () => {
  * This method parses that string into a user-friendly key/value pair object.
  */
 export const parseResponseHeaders = (headerStr: string) => {
-  const headers: Record<string, string> = {}
+  const headers: Record<string, unknown> = {}
   if (!headerStr) {
     return headers
   }
