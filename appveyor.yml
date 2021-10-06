@@ -2,7 +2,7 @@
 version: "{build}"
 
 environment:
-  nodejs_version: "8"
+  nodejs_version: "14"
 
 install:
   - ps: Install-Product node $env:nodejs_version
