@@ -1,7 +1,11 @@
 .DS_Store
 node_modules/
 npm-debug.log
+yarn-error.log
 lib/
 coverage/
 # build info for incremental ts builds:
-typings/tsconfig.tsbuildinfo
+built/tsconfig.tsbuildinfo
+# If you worry about these files you have probably accidentaly ran `yarn tsc` and built js from it?
+# But no, we should not commit that, let babel/webpack handle TS files:
+built/**/*.js

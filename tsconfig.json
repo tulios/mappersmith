@@ -4,8 +4,7 @@
     "incremental": true,
     "strict": true,
     "noImplicitAny": true,
-    "declaration": true,
-    "target": "es5"
+    "declaration": true
   },
   "include": [
     "typings/**/*",
