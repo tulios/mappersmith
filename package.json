@@ -22,7 +22,7 @@
     "test:unit": "concurrently --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn integration-server\"",
     "test": "yarn test:typings && yarn test:unit",
     "build:types": "yarn tsc --emitDeclarationOnly",
-    "build:node": "rm -rf lib/* && yarn babel src -d lib",
+    "build:node": "rm -rf lib/* && yarn babel src -d lib --extensions '.js,.ts'",
     "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
     "build": "yarn build:types && yarn build:node && yarn build:browser",
     "release": "./scripts/release.sh",
