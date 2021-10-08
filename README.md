@@ -430,7 +430,7 @@ const MyMiddleware = () => ({
 
 ⚠️ `setContext` is not safe for concurrent use, and shouldn't be used!
 
-Why is it not safe? Basically, the setContext function mutates a global state ([see here](https://github.com/tulios/mappersmith/blob/master/src/mappersmith.js#L114)), hence it is the last call to setContext that decides its global value. Which leads to a race condition when handling concurrent requests.
+Why is it not safe? Basically, the setContext function mutates a global state (see [here](https://github.com/tulios/mappersmith/blob/2.34.0/src/mappersmith.js#L114)), hence it is the last call to setContext that decides its global value. Which leads to a race condition when handling concurrent requests.
 
 #### <a name="creating-middleware-optional-arguments"></a> Optional arguments
 
