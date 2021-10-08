@@ -23,7 +23,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
   - [Response object](#response-object)
   - [Middleware](#middleware)
     - [Creating middleware](#creating-middleware)
-      - [Context](#context)
+      - [Context (deprecated)](#context)
       - [Optional arguments](#creating-middleware-optional-arguments)
         - [mockRequest](#creating-middleware-optional-arguments-mock-request)
         - [Abort](#creating-middleware-optional-arguments-abort)
@@ -429,59 +429,11 @@ const MyMiddleware = () => ({
 })
 ```
 
-#### <a name="context"></a> Context
+#### <a name="context"></a> Context (deprecated)
 
-Sometimes you may need to set data to be available to all your client's middleware. In this
-case you can use the `setContext` helper, like so:
+⚠️ `setContext` is not safe for concurrent use, and shouldn't be used!
 
-```javascript
-import { setContext } from 'mappersmith'
-
-const MyMiddleware = ({ context }) => ({
-  /* ... */
-})
-
-setContext({ some: 'data'})
-
-client.User.all()
-// context: { some: 'data' }
-```
-
-This is specially useful when using mappermith coupled with back-end services.
-For instance you could define a globally available correlation id middleware
-like this:
-
-```javascript
-import forge, { configs, setContext } from 'mappersmith'
-import express from 'express'
-
-const CorrelationIdMiddleware = ({ context }) => ({
-  request(request) {
-    return request.enhance({
-      headers: {
-        'correlation-id': context.correlationId
-      }
-    })
-  }
-})
-
-configs.middleware = [CorrelationIdMiddleware]
-
-const api = forge({ ... })
-
-const app = express()
-app.use((req, res, next) => {
-  setContext({
-    correlationId: req.headers['correlation-id']
-  })
-})
-
-// Then, when calling `api.User.all()` in any handler it will include the
-// `correlation-id` header automatically.
-```
-
-Note that setContext will merge the object provided with the current context
-instead of replacing it.
+Why is it not safe? Basically, the setContext function mutates a global state (see [here](https://github.com/tulios/mappersmith/blob/2.34.0/src/mappersmith.js#L114)), hence it is the last call to setContext that decides its global value. Which leads to a race condition when handling concurrent requests.
 
 #### <a name="creating-middleware-optional-arguments"></a> Optional arguments
 

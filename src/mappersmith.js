@@ -108,6 +108,7 @@ export const configs = {
 }
 
 /**
+ * @deprecated Shouldn't be used, not safe for concurrent use.
  * @param {Object} context
  */
 export const setContext = (context) => {
