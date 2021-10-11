@@ -40,5 +40,5 @@ jobs:
           ${{ runner.os }}-yarn-
 
     - run: yarn install --frozen-lockfile
-    - run: npm test
-    - run: npm run build
+    - run: yarn test
+    - run: yarn build

@@ -49,11 +49,14 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
 
 ## <a name="installation"></a> Installation
 
-#### NPM
-
 ```sh
 npm install mappersmith --save
-# yarn add mappersmith
+```
+
+or
+
+```sh
+yarn add mappersmith
 ```
 
 #### Browser
@@ -71,8 +74,8 @@ yarn
 Build
 
 ```sh
-npm run build
-npm run release # for minified version
+yarn build
+yarn release # for minified version
 ```
 
 ## <a name="usage"></a> Usage

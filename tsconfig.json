@@ -1,11 +1,23 @@
 {
   "compilerOptions": {
+    "outDir": "./built",
+    "incremental": true,
+    "declaration": true,
     "strict": true,
-    "noEmit": true
+    "allowUnreachableCode": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "include": [
-    "typings",
-    "spec/typescript/*",
-    "spec/typescript/**/*"
+    "typings/**/*",
+    "spec/**/*",
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "spec/**/*",
   ]
 }
