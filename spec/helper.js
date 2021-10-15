@@ -123,6 +123,16 @@ export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
   }
 })
 
+export const hostMiddleware = () => ({
+  prepareRequest (next) {
+    return next().then((request) =>
+      request.enhance({
+        host: 'http://new-host.com'
+      })
+    )
+  }
+})
+
 let countMiddlewareCurrent = 0
 let countMiddlewareStack = []
 

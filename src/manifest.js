@@ -64,6 +64,7 @@ Manifest.prototype = {
       assign(
         {
           host: this.host,
+          allowResourceHostOverride: this.allowResourceHostOverride,
           bodyAttr: this.bodyAttr,
           headersAttr: this.headersAttr,
           authAttr: this.authAttr,

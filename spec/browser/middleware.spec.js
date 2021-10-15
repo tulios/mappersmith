@@ -5,6 +5,7 @@ import Response from 'src/response'
 import {
   headerMiddleware,
   headerMiddlewareV2,
+  hostMiddleware,
   countMiddleware,
   getCountMiddlewareCurrent,
   getCountMiddlewareStack,
@@ -286,11 +287,29 @@ describe('ClientBuilder middleware', () => {
       manifest.middleware = [headerMiddlewareV2]
     })
 
-    it('can change the final request object', async () => {
+    it('can change headers of the final request object', async () => {
       const response = await createClient().User.byId({ id: 1 })
       expect(response.request().headers()).toEqual(
         expect.objectContaining({ 'x-middleware-phase': 'prepare-request' })
       )
+    })
+
+    it('can change host of the final request object when allowResourceHostOverride=true', async () => {
+      manifest.allowResourceHostOverride = true
+      manifest.middleware = [
+        hostMiddleware
+      ]
+      const response = await createClient().User.byId({ id: 1 })
+      expect(response.request().host()).toEqual('http://new-host.com')
+    })
+
+    it('can not change host of the final request object when allowResourceHostOverride=false', async () => {
+      manifest.allowResourceHostOverride = false
+      manifest.middleware = [
+        hostMiddleware
+      ]
+      const response = await createClient().User.byId({ id: 1 })
+      expect(response.request().host()).toEqual('http://example.org')
     })
 
     it('calls all middleware chaining the "next" function', async () => {
