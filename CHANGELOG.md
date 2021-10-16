@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+Fixed:
+  - Respect allowResourceHostOverride configuration in middlewares
+
 ## 2.34.0
 
   - Add json-encode middleware export `CONTENT_TYPE_JSON` to type definition #203
