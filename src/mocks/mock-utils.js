@@ -18,8 +18,16 @@ function filterObject (callback, entry) {
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
 }
 
+/**
+ * Verify if `reference` is contained within `entry` shallowly,
+ * i.e. if `entry` is a superset of `reference`.
+ *
+ * @param {Object} reference - an object that should be contained within entry
+ * @param {Object} entry The object to be tested
+ * @returns A boolean representing if entry is contained within reference
+ */
 export function isSuperset (reference, entry) {
-  const filteredEntry = filterObject(key => validKeys(entry).includes(key), entry)
+  const filteredEntry = filterObject(key => validKeys(reference).includes(key), entry)
 
   return toSortedQueryString(reference) === toSortedQueryString(filteredEntry)
 }
