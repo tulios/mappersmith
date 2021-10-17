@@ -33,10 +33,13 @@ declare module 'mappersmith/test' {
   export type MockRequestUrlFunction = (requestUrl: string, params: object) => string
   export type MockRequestBody = string | object
   export type MockRequestBodyFunction = (requestBody: MockRequestBody) => MockRequestBody
+  export type MockRequestHeaders = Headers
+  export type MockRequestHeadersFunction = (requestHeaders: MockRequestHeaders) => MockRequestHeaders
   export interface MockRequestArgs {
     method: string
     url: string | MockRequestUrlFunction | TestMatchPredicate
     body?: MockRequestBody | MockRequestBodyFunction
+    headers?: MockRequestHeaders | MockRequestHeadersFunction
     response?: {
       status?: number
       body?: MockRequestBody
