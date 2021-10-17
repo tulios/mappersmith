@@ -3,7 +3,16 @@
 ## [Unreleased]
 
 Fixed:
-  - Respect allowResourceHostOverride configuration in middlewares
+  - Respect `allowResourceHostOverride` configuration in middlewares (#240)
+  - A successful middleware should no longer overwriting a previous middleware's `error` (#230)
+
+Added:
+  - `mappersmith`: `Request.pathTemplate` - Returns the template path, without params, before interpolation (#194)
+  - `mappersmith/test`: `unusedMocks` - get count of unused mocks (#227)
+  - The `+json` family of MIME types are parsed as json (#223)
+
+Deprecated:
+  - `mappersmith`: `setContext` - this is not safe for concurrent use (#239)
 
 ## 2.34.0
 
