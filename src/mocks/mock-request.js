@@ -96,15 +96,13 @@ MockRequest.prototype = {
       ? this.url(request.url(), request.params())
       : sortedUrl(this.url) === sortedUrl(request.url())
 
-    const headerMatch = () => !this.headers || (
+    const headerMatch = !this.headers || (
       this.headersFunction
         ? this.headers(request.headers())
         : isSuperset(this.headersObject, request.headers())
     )
 
-    return this.method === request.method() &&
-      urlMatch && bodyMatch() &&
-      headerMatch && headerMatch()
+    return this.method === request.method() && urlMatch && bodyMatch() && headerMatch
   },
 
   /**
