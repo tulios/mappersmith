@@ -389,6 +389,23 @@ describe('Test lib / mock resources', () => {
       })
   })
 
+  it('matches headers partially', (done) => {
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .with({ headers: { 'x-custom-header': 'value' } })
+
+    client.User.all({ headers: { 'x-custom-header': 'value', 'x-middleware-injected': 'true' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
   it('skips matching headers if none are provided by the mock', (done) => {
     mockClient(client)
       .resource('User')
