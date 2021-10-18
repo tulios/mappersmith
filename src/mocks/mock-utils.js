@@ -13,6 +13,37 @@ export function toSortedQueryString (entry) {
 }
 
 /**
+  * Filters an `object` by keeping only the keys fulfilling the `predicate`
+  *
+  * @param {Object} object - An object
+  * @param {Object} predicate - A function of type (key: string) => boolean
+  * @returns {Object} The filtered object
+  */
+function filterByPredicate (object, predicate) {
+  return Object.entries(object)
+    .filter(([key]) => predicate(key))
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+}
+
+/**
+ * Verify if the object `A` is contained within object `B` - shallowly.
+ * In other words, is A a subset of B?
+ *
+ * @see https://en.wikipedia.org/wiki/Subset
+ *
+ * @param {Object} A - The object to test
+ * @param {Object} B - The superset object to verify against
+ * @returns A boolean representing if A is a shallow subset of B
+ */
+export function isSubset (A, B) {
+  // Make B only contain the non-nullish keys it has in in common with A
+  const keysFromA = validKeys(A)
+  const filteredB = filterByPredicate(B, keyFromB => keysFromA.includes(keyFromB))
+
+  return toSortedQueryString(A) === toSortedQueryString(filteredB)
+}
+
+/**
  * Sort the query params on a URL based on the 'key=value' string value.
  * E.g. /example?b=2&a=1 will become /example?a=1&b=2
  *

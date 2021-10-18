@@ -10,6 +10,7 @@ Added:
   - `mappersmith`: `Request.pathTemplate` - Returns the template path, without params, before interpolation (#194)
   - `mappersmith/test`: `unusedMocks` - get count of unused mocks (#227)
   - The `+json` family of MIME types are parsed as json (#223)
+  - Add headers to mock matching strategy (#168)
 
 Deprecated:
   - `mappersmith`: `setContext` - this is not safe for concurrent use (#239)

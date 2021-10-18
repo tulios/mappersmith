@@ -155,10 +155,10 @@ export const m = {
 }
 
 const requestToLog = (request) => (
-  `"${request.method().toUpperCase()} ${request.url()}" (body: "${toQueryString(request.body())}")`
+  `"${request.method().toUpperCase()} ${request.url()}" (body: "${toQueryString(request.body())}"; headers: "${toQueryString(request.headers())}")`
 )
 const mockToLog = (requestMock) => (
-  `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${requestMock.body}")`
+  `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${requestMock.body}"; headers: "${requestMock.headers}")`
 )
 
 const stringIncludes = (str, search, start) => {

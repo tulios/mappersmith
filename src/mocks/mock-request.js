@@ -1,7 +1,7 @@
 import MockAssert from './mock-assert'
 import Response from '../response'
 import { isPlainObject } from '../utils'
-import { sortedUrl, toSortedQueryString } from './mock-utils'
+import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
 
 /**
  * @param {number} id
@@ -22,6 +22,9 @@ function MockRequest (id, props) {
   this.url = props.url
   this.bodyFunction = typeof props.body === 'function'
   this.body = this.bodyFunction ? props.body : toSortedQueryString(props.body)
+  this.headersFunction = typeof props.headers === 'function'
+  this.headers = props.headersFunction ? props.headers : toSortedQueryString(props.headers)
+  this.headersObject = props.headers
   this.responseHeaders = props.response.headers || {}
   this.setResponseData(props.response.body)
   this.responseHandler = props.response.handler
@@ -80,7 +83,7 @@ MockRequest.prototype = {
   },
 
   /**
-   * Checks if the request matches with the mock HTTP method, URL and body
+   * Checks if the request matches with the mock HTTP method, URL, headers and body
    *
    * @return {boolean}
    */
@@ -93,7 +96,13 @@ MockRequest.prototype = {
       ? this.url(request.url(), request.params())
       : sortedUrl(this.url) === sortedUrl(request.url())
 
-    return this.method === request.method() && urlMatch && bodyMatch()
+    const headerMatch = !this.headers || (
+      this.headersFunction
+        ? this.headers(request.headers())
+        : isSubset(this.headersObject, request.headers())
+    )
+
+    return this.method === request.method() && urlMatch && bodyMatch() && headerMatch
   },
 
   /**

@@ -363,6 +363,84 @@ describe('Test lib / mock resources', () => {
       })
   })
 
+  it('matches headers', (done) => {
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .with({ headers: { 'x-custom-header': 'value' } })
+
+    client.User.all({ headers: { 'x-custom-header': 'value' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+
+    client.User.all({ headers: { 'x-another-header': 'another-value' } })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        done()
+      })
+  })
+
+  it('matches headers partially', (done) => {
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .with({ headers: { 'x-custom-header': 'value' } })
+
+    client.User.all({ headers: { 'x-custom-header': 'value', 'x-middleware-injected': 'true' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('skips matching headers if none are provided by the mock', (done) => {
+    mockClient(client)
+      .resource('User')
+      .method('all')
+
+    client.User.all({ headers: { 'x-custom-header': 'value' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('accepts a matcher function for header parameter', (done) => {
+    const isExpectedHeader = headers => headers['x-custom-header'] === 'value'
+
+    mockClient(client)
+      .resource('User')
+      .method('all')
+      .with({ headers: isExpectedHeader })
+
+    client.User.all({ headers: { 'x-custom-header': 'value' } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
   describe('when using param matchers', () => {
     it('evaluates only params with matcher function, let others be', (done) => {
       mockClient(client)
