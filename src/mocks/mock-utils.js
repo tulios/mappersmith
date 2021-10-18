@@ -16,7 +16,7 @@ export function toSortedQueryString (entry) {
   * Filters an `object` by keeping only the keys fulfilling the `predicate`
   *
   * @param {Object} object - An object
-  * @param {Object} predicate - A function of type (key: string) => boolean
+  * @param {Function} predicate - A function of type (key: string) => boolean
   * @returns {Object} The filtered object
   */
 function filterByPredicate (object, predicate) {

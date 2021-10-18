@@ -112,6 +112,7 @@ export const configs = {
  * @param {Object} context
  */
 export const setContext = (context) => {
+  console.warn('The use of setContext is deprecated - you need to find another way to pass data between your middlewares.')
   configs.context = assign(configs.context, context)
 }
 
