@@ -12,24 +12,35 @@ export function toSortedQueryString (entry) {
     .replace(/%20/g, '+')
 }
 
-function filterObject (callback, entry) {
-  return Object.entries(entry)
-    .filter(([key]) => callback(key))
+/**
+  * Filters an `object` by keeping only the keys fulfilling the `predicate`
+  *
+  * @param {Object} object - An object
+  * @param {Object} predicate - A function of type (key: string) => boolean
+  * @returns {Object} The filtered object
+  */
+function filterByPredicate (object, predicate) {
+  return Object.entries(object)
+    .filter(([key]) => predicate(key))
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
 }
 
 /**
- * Verify if `reference` is contained within `entry` shallowly,
- * i.e. if `entry` is a superset of `reference`.
+ * Verify if the object `A` is contained within object `B` - shallowly.
+ * In other words, is A a subset of B?
  *
- * @param {Object} reference - an object that should be contained within entry
- * @param {Object} entry The object to be tested
- * @returns A boolean representing if entry is contained within reference
+ * @see https://en.wikipedia.org/wiki/Subset
+ *
+ * @param {Object} A - The object to test
+ * @param {Object} B - The superset object to verify against
+ * @returns A boolean representing if A is a shallow subset of B
  */
-export function isSuperset (reference, entry) {
-  const filteredEntry = filterObject(key => validKeys(reference).includes(key), entry)
+export function isSubset (A, B) {
+  // Make B only contain the non-nullish keys it has in in common with A
+  const keysFromA = validKeys(A)
+  const filteredB = filterByPredicate(B, keyFromB => keysFromA.includes(keyFromB))
 
-  return toSortedQueryString(reference) === toSortedQueryString(filteredEntry)
+  return toSortedQueryString(A) === toSortedQueryString(filteredB)
 }
 
 /**

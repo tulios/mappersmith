@@ -1,66 +1,73 @@
-import { isSuperset } from 'src/mocks/mock-utils'
+import { isSubset } from 'src/mocks/mock-utils'
 
 describe('Test lib / mock utils', () => {
-  describe('#isSuperset', () => {
-    it('is true when the second parameter has all keys from the first', () => {
-      const reference = {
+  describe('#isSubset', () => {
+    it('is true when the B has all keys from A (and the same values)', () => {
+      const A = {
         a: 1,
         b: 2
       }
 
-      const entry = {
-        ...reference,
+      const B = {
+        ...A,
         c: 3
       }
 
-      expect(isSuperset(reference, entry)).toBe(true)
+      expect(isSubset(A, B)).toBe(true)
     })
 
-    it('is false if the second parameter is missing any keys from the first', () => {
-      const reference = {
+    it('is false if B is missing any keys from A', () => {
+      const A = {
         a: 1,
         b: 2
       }
 
-      const entry = {
+      const B = {
         a: 1,
         c: 3
       }
 
-      expect(isSuperset(reference, entry)).toBe(false)
+      expect(isSubset(A, B)).toBe(false)
     })
 
-    it('is false when keys are present, but values differ', () => {
-      const reference = {
+    it('is false when the B has all keys from A (but not the same values)', () => {
+      const A = {
         a: 1,
         b: 2
       }
 
-      const entry = {
-        a: 1,
+      const B = {
+        ...A,
         b: 3
       }
 
-      expect(isSuperset(reference, entry)).toBe(false)
+      expect(isSubset(A, B)).toBe(false)
     })
 
     it('ignores nullish keys in the reference', () => {
-      const reference = {
+      const A = {
         a: 1,
         b: undefined,
         c: null
       }
 
-      const entry = {
+      const B = {
         a: 1,
         c: 3
       }
 
-      expect(isSuperset(reference, entry)).toBe(true)
+      expect(isSubset(A, B)).toBe(true)
     })
 
     it('is shallow', () => {
-      const reference = {
+      const A = {
+        a: 1,
+        b: {
+          c: 'I am nested'
+        }
+      }
+
+      const B = {
         a: 1,
         b: {
           c: 'I am nested',
@@ -68,14 +75,7 @@ describe('Test lib / mock utils', () => {
         }
       }
 
-      const entry = {
-        a: 1,
-        b: {
-          c: 'I am nested'
-        }
-      }
-
-      expect(isSuperset(reference, entry)).toBe(false)
+      expect(isSubset(A, B)).toBe(false)
     })
   })
 })

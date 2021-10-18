@@ -1,7 +1,7 @@
 import MockAssert from './mock-assert'
 import Response from '../response'
 import { isPlainObject } from '../utils'
-import { sortedUrl, toSortedQueryString, isSuperset } from './mock-utils'
+import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
 
 /**
  * @param {number} id
@@ -99,7 +99,7 @@ MockRequest.prototype = {
     const headerMatch = !this.headers || (
       this.headersFunction
         ? this.headers(request.headers())
-        : isSuperset(this.headersObject, request.headers())
+        : isSubset(this.headersObject, request.headers())
     )
 
     return this.method === request.method() && urlMatch && bodyMatch() && headerMatch
