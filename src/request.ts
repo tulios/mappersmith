@@ -1,31 +1,59 @@
+import MethodDescriptor from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
 
+// Note: Types copied from index.d.ts:
+
+export interface Headers {
+  readonly [header: string]: string
+}
+
+export interface Authorization {
+  readonly username: string
+  readonly password: string
+}
+
+export interface Parameters {
+  readonly auth?: Authorization
+  readonly timeout?: number
+  [param: string]: object | string | number | boolean | undefined
+}
+
+export interface RequestParams {
+  readonly params?: Parameters
+  readonly headers?: Headers
+  readonly body?: Record<string, string> | string
+  readonly auth?: Record<string, string>
+  readonly timeout?: number
+  readonly host?: string
+  [param: string]: object | string | number | boolean | undefined
+}
+
 /**
  * @typedef Request
  * @param {MethodDescriptor} methodDescriptor
- * @param {Object} requestParams, defaults to an empty object ({})
+ * @param {RequestParams} requestParams, defaults to an empty object ({})
  */
-function Request (methodDescriptor, requestParams) {
-  this.methodDescriptor = methodDescriptor
-  this.requestParams = requestParams || {}
-}
+export class Request {
+  public methodDescriptor: MethodDescriptor
+  public requestParams: RequestParams
 
-Request.prototype = {
-  /**
-   * @return {Object}
-   */
-  params () {
+  constructor(methodDescriptor: MethodDescriptor, requestParams: RequestParams = {}) {
+    this.methodDescriptor = methodDescriptor
+    this.requestParams = requestParams
+  }
+
+  public params() {
     const params = assign(
       {},
       this.methodDescriptor.params,
       this.requestParams
     )
 
-    const isParam = (key) => (
+    const isParam = (key: string) => (
       key !== this.methodDescriptor.headersAttr &&
         key !== this.methodDescriptor.bodyAttr &&
         key !== this.methodDescriptor.authAttr &&
@@ -40,32 +68,32 @@ Request.prototype = {
           obj[key] = params[key]
         }
         return obj
-      }, {})
-  },
+      }, {} as Record<string, string>)
+  }
 
   /**
    * Returns the HTTP method in lowercase
-   *
-   * @return {String}
    */
-  method () {
+  public method() {
     return this.methodDescriptor.method.toLowerCase()
-  },
+  }
 
   /**
    * Returns host name without trailing slash
-   * Example: http://example.org
-   *
-   * @return {String}
+   * Example: 'http://example.org'
    */
-  host () {
+  public host() {
     const { allowResourceHostOverride, hostAttr, host } = this.methodDescriptor
     const originalHost = allowResourceHostOverride
       ? this.requestParams[hostAttr] || host || ''
       : host || ''
 
-    return originalHost.replace(REGEXP_TRAILING_SLASH, '')
-  },
+    if (typeof originalHost === 'string') {
+      return originalHost.replace(REGEXP_TRAILING_SLASH, '')
+    }
+
+    return ''
+  }
 
   /**
    * Returns path with parameters and leading slash.
@@ -75,10 +103,8 @@ Request.prototype = {
    * Example:
    * Imagine the path '/some/{name}', the error will be similar to:
    * '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
-   *
-   * @return {String}
    */
-  path () {
+  public path() {
     const params = this.params()
 
     let path
@@ -123,7 +149,7 @@ Request.prototype = {
       const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
       aliased[aliasedKey] = params[key]
       return aliased
-    }, {})
+    }, {} as Record<string, string>)
 
     const queryString = toQueryString(aliasedParams)
     if (queryString.length !== 0) {
@@ -132,73 +158,64 @@ Request.prototype = {
     }
 
     return path
-  },
+  }
 
   /**
    * Returns the template path, without params, before interpolation.
    * If path is a function, returns the result of request.path()
-   * Example: /some/{param}/path
-   *
-   * @return {String|Function}
+   * Example: '/some/{param}/path'
    */
-  pathTemplate () {
+  public pathTemplate() {
     let path = this.methodDescriptor.path
 
-    if (typeof this.methodDescriptor.path !== 'function' && path[0] !== '/') {
+    if (typeof this.methodDescriptor.path !== 'function' && this.methodDescriptor.path[0] !== '/') {
       path = `/${path}`
     }
 
     return path
-  },
+  }
 
   /**
    * Returns the full URL
    * Example: http://example.org/some/path?param1=true
    *
-   * @return {String}
    */
-  url () {
+  public url() {
     return `${this.host()}${this.path()}`
-  },
+  }
 
   /**
    * Returns an object with the headers. Header names are converted to
    * lowercase
-   *
-   * @return {Object}
    */
-  headers () {
+  public headers() {
     return lowerCaseObjectKeys(
       assign(
         {},
         this.methodDescriptor.headers,
-        this.requestParams[this.methodDescriptor.headersAttr]
+        this.requestParams?.[this.methodDescriptor.headersAttr]
       )
     )
-  },
+  }
 
   /**
    * Utility method to get a header value by name
-   *
-   * @param {String} name
-   *
-   * @return {String|Undefined}
    */
-  header (name) {
+  public header(name: string) {
     return this.headers()[name.toLowerCase()]
-  },
+  }
 
-  body () {
-    return this.requestParams[this.methodDescriptor.bodyAttr]
-  },
+  public body() {
+    return this.requestParams?.[this.methodDescriptor.bodyAttr]
+  }
 
-  auth () {
-    return this.requestParams[this.methodDescriptor.authAttr]
-  },
+  public auth() {
+    return this.requestParams?.[this.methodDescriptor.authAttr]
+  }
 
-  timeout () {
-    return this.requestParams[this.methodDescriptor.timeoutAttr]
-  },
+  public timeout() {
+    return this.requestParams?.[this.methodDescriptor.timeoutAttr]
+  }
 
   /**
    * Enhances current request returning a new Request
@@ -210,7 +227,7 @@ Request.prototype = {
    *   @param {Number} extras.timeout - it will replace the current timeout
    *   @param {String} extras.host - it will replace the current timeout
    */
-  enhance (extras) {
+  public enhance(extras: RequestParams) {
     const headerKey = this.methodDescriptor.headersAttr
     const bodyKey = this.methodDescriptor.bodyAttr
     const authKey = this.methodDescriptor.authAttr
@@ -218,21 +235,19 @@ Request.prototype = {
     const hostKey = this.methodDescriptor.hostAttr
     const requestParams = assign({}, this.requestParams, extras.params)
 
-    requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
+    requestParams[headerKey] = assign({}, this.requestParams?.[headerKey], extras.headers)
     extras.body && (requestParams[bodyKey] = extras.body)
     extras.auth && (requestParams[authKey] = extras.auth)
     extras.timeout && (requestParams[timeoutKey] = extras.timeout)
     extras.host && (requestParams[hostKey] = extras.host)
 
     return new Request(this.methodDescriptor, requestParams)
-  },
+  }
 
   /**
    * Is the request expecting a binary response?
-   *
-   * @return {Boolean}
    */
-  isBinary () {
+  public isBinary() {
     return this.methodDescriptor.binary
   }
 }
