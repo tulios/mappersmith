@@ -10,54 +10,16 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
-
-  export interface Headers {
-    readonly [header: string]: string
-  }
-
-  export interface Authorization {
-    readonly username: string
-    readonly password: string
-  }
-
-  export interface Parameters {
-    readonly auth?: Authorization
-    readonly timeout?: number
-    [param: string]: object | string | number | boolean | undefined
-  }
-
-  export type Context = object
-
-  export interface RequestParams {
-    readonly params: Parameters
-    readonly headers: Headers
-    readonly body: object | string
-    readonly auth: object
-    readonly timeout: number
-    readonly host: string
-  }
+  type Headers = import("../src/request").Headers
+  type Authorization = import("../src/request").Authorization
+  type Parameters = import("../src/request").Parameters
+  type Request = import("../src/request").Request
 
   export interface ResponseParams {
     readonly status: number
     readonly rawData: string
     readonly headers: Headers
     readonly error: Error
-  }
-
-  export interface Request {
-    params(): Parameters
-    method(): string
-    host(): string
-    path(): string
-    pathTemplate(): string | Function
-    url(): string
-    headers(): Headers
-    header(name: string): string | undefined
-    body(): object | string
-    auth(): object
-    timeout(): number
-    enhance(extras: Partial<RequestParams>): Request
-    isBinary(): boolean
   }
 
   export interface Response {
@@ -74,29 +36,14 @@ declare module 'mappersmith' {
     enhance(extras: Partial<ResponseParams>): Response
   }
 
-  export type RequestGetter = () => Promise<Request>
-
-  export type ResponseGetter = () => Promise<Response>
-
-  export type AbortFn = (error: Error) => void
-
-  export type RenewFn = () => Promise<object>
-
-  export interface MiddlewareDescriptor {
-    // @deprecated: Please use prepareRequest instead
-    request?(request: Request): Promise<Request> | Request
-    prepareRequest?(next: RequestGetter, abort: AbortFn): Promise<Request | void>
-    response?(next: ResponseGetter, renew: RenewFn): Promise<Response | object>
-  }
-
-  export interface MiddlewareParams {
-    readonly resourceName: string
-    readonly resourceMethod: string
-    readonly clientId: string
-    readonly context: Context
-  }
-
-  export type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor
+  type Context = import("../src/method-descriptor").Context
+  type RequestGetter = import("../src/method-descriptor").RequestGetter
+  type ResponseGetter = import("../src/method-descriptor").ResponseGetter
+  type AbortFn = import("../src/method-descriptor").AbortFn
+  type RenewFn = import("../src/method-descriptor").RenewFn
+  type MiddlewareDescriptor = import("../src/method-descriptor").MiddlewareDescriptor
+  type MiddlewareParams = import("../src/method-descriptor").MiddlewareParams
+  type Middleware = import("../src/method-descriptor").Middleware
 
   export type AsyncFunctions<HashType> = {
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
