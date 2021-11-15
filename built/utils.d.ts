@@ -1,5 +1,5 @@
 export declare const validKeys: (entry: Record<string, unknown>) => string[];
-declare type Primitive = string | number | boolean;
+export declare type Primitive = string | number | boolean;
 export declare const buildRecursive: (key: string, value: Primitive | Primitive[] | Record<string, Primitive>, suffix?: string) => string;
 export declare const toQueryString: (entry: string | Record<string, Primitive>) => string;
 /**
@@ -24,4 +24,3 @@ export declare const assign: {
 };
 export declare const isPlainObject: (value: unknown) => value is Record<string, unknown>;
 export declare const btoa: (input: string) => string;
-export {};

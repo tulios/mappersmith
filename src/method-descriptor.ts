@@ -1,5 +1,20 @@
 // COMBAK: All of these should not live here, they were moved from typings/index.d.ts
 
+export interface Headers {
+  readonly [header: string]: string
+}
+
+export interface Authorization {
+  readonly password: string
+  readonly username: string
+}
+
+export interface Parameters {
+  readonly auth?: Authorization
+  readonly timeout?: number
+  [param: string]: object | string | number | boolean | undefined
+}
+
 export type Context = object
 
 export type RequestGetter = () => Promise<Request>
@@ -24,82 +39,84 @@ export interface MiddlewareDescriptor {
 }
 
 export interface MiddlewareParams {
-  readonly resourceName: string
-  readonly resourceMethod: string
   readonly clientId: string
   readonly context: Context
+  readonly resourceMethod: string
+  readonly resourceName: string
 }
 
 export type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor
 
-/**
- * @typedef MethodDescriptor
- * @param {Object} obj
- *   @param {String} obj.host
- *   @param {boolean} obj.allowResourceHostOverride
- *   @param {String|Function} obj.path
- *   @param {String} obj.method
- *   @param {Object} obj.headers
- *   @param {Object} obj.params
- *   @param {Object} obj.queryParamAlias
- *   @param {String} obj.bodyAttr - body attribute name. Default: 'body'
- *   @param {String} obj.headersAttr - headers attribute name. Default: 'headers'
- *   @param {String} obj.authAttr - auth attribute name. Default: 'auth'
- *   @param {Number} obj.timeoutAttr - timeout attribute name. Default: 'timeout'
- *   @param {String} obj.hostAttr - host attribute name. Default: 'host'
- */
-
-interface Args {
-  host: string
+interface MethodDescriptorParams {
   allowResourceHostOverride: boolean
-  method: string
-  headers: Record<string, string>
-  params: Record<string, string>
-  queryParamAlias: Record<string, string>
+  authAttr: string
   binary: boolean
   bodyAttr: string
+  headers: Headers
   headersAttr: string
-  authAttr: string
-  timeoutAttr: string
+  host: string
   hostAttr: string
-  path: string | ((args: Record<string, any>) => string)
+  method: string
   middleware: Array<Middleware>
   middlewares: Array<Middleware>
+  params: Parameters
+  path: string | ((args: Record<string, any>) => string)
+  queryParamAlias: Record<string, string>
+  timeoutAttr: string
 }
 
-export default class MethodDescriptor {
-  public host: string
+/**
+ * @typedef MethodDescriptor
+ * @param {MethodDescriptorParams} params
+ *   @param {boolean} params.allowResourceHostOverride
+ *   @param {String} params.authAttr - auth attribute name. Default: 'auth'
+ *   @param {boolean} params.binary
+ *   @param {String} params.bodyAttr - body attribute name. Default: 'body'
+ *   @param {Headers} params.headers
+ *   @param {String} params.headersAttr - headers attribute name. Default: 'headers'
+ *   @param {String} params.host
+ *   @param {String} params.hostAttr - host attribute name. Default: 'host'
+ *   @param {String} params.method
+ *   @param {Middleware[]} params.middleware
+ *   @param {Middleware[]} params.middlewares - alias for middleware
+ *   @param {Parameters} params.params
+ *   @param {String|Function} params.path
+ *   @param {Object} params.queryParamAlias
+ *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
+ */
+ export default class MethodDescriptor {
   public allowResourceHostOverride: boolean
-  public binary: boolean
-  public method: string
-  public headers: Record<string, string>
-  public params: Record<string, string>
-  public queryParamAlias: Record<string, string>
-  public bodyAttr: string
-  public headersAttr: string
   public authAttr: string
-  public timeoutAttr: string
+  public binary: boolean
+  public bodyAttr: string
+  public headers: Headers
+  public headersAttr: string
+  public host: string
   public hostAttr: string
-  public path: string | ((args: Record<string, any>) => string)
-  public middleware: Array<Middleware>
+  public method: string
+  public middleware: Middleware[]
+  public params: Parameters
+  public path: string | ((args: Parameters) => string)
+  public queryParamAlias: Record<string, string>
+  public timeoutAttr: string
 
-  constructor(obj: Args) {
-    this.host = obj.host
-    this.allowResourceHostOverride = obj.allowResourceHostOverride || false
-    this.path = obj.path
-    this.method = obj.method || 'get'
-    this.headers = obj.headers
-    this.params = obj.params
-    this.queryParamAlias = obj.queryParamAlias || {}
-    this.binary = obj.binary || false
+  constructor(params: MethodDescriptorParams) {
+    this.allowResourceHostOverride = params.allowResourceHostOverride || false
+    this.binary = params.binary || false
+    this.headers = params.headers
+    this.host = params.host
+    this.method = params.method || 'get'
+    this.params = params.params
+    this.path = params.path
+    this.queryParamAlias = params.queryParamAlias || {}
 
-    this.bodyAttr = obj.bodyAttr || 'body'
-    this.headersAttr = obj.headersAttr || 'headers'
-    this.authAttr = obj.authAttr || 'auth'
-    this.timeoutAttr = obj.timeoutAttr || 'timeout'
-    this.hostAttr = obj.hostAttr || 'host'
+    this.authAttr = params.authAttr || 'auth'
+    this.bodyAttr = params.bodyAttr || 'body'
+    this.headersAttr = params.headersAttr || 'headers'
+    this.hostAttr = params.hostAttr || 'host'
+    this.timeoutAttr = params.timeoutAttr || 'timeout'
 
-    const resourceMiddleware = obj.middleware || obj.middlewares || []
+    const resourceMiddleware = params.middleware || params.middlewares || []
     this.middleware = resourceMiddleware
   }
 }

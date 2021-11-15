@@ -1,3 +1,15 @@
+export interface Headers {
+    readonly [header: string]: string;
+}
+export interface Authorization {
+    readonly password: string;
+    readonly username: string;
+}
+export interface Parameters {
+    readonly auth?: Authorization;
+    readonly timeout?: number;
+    [param: string]: object | string | number | boolean | undefined;
+}
 export declare type Context = object;
 export declare type RequestGetter = () => Promise<Request>;
 export declare type ResponseGetter = () => Promise<Response>;
@@ -16,60 +28,63 @@ export interface MiddlewareDescriptor {
     response?(next: ResponseGetter, renew: RenewFn): Promise<Response | object>;
 }
 export interface MiddlewareParams {
-    readonly resourceName: string;
-    readonly resourceMethod: string;
     readonly clientId: string;
     readonly context: Context;
+    readonly resourceMethod: string;
+    readonly resourceName: string;
 }
 export declare type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor;
-/**
- * @typedef MethodDescriptor
- * @param {Object} obj
- *   @param {String} obj.host
- *   @param {boolean} obj.allowResourceHostOverride
- *   @param {String|Function} obj.path
- *   @param {String} obj.method
- *   @param {Object} obj.headers
- *   @param {Object} obj.params
- *   @param {Object} obj.queryParamAlias
- *   @param {String} obj.bodyAttr - body attribute name. Default: 'body'
- *   @param {String} obj.headersAttr - headers attribute name. Default: 'headers'
- *   @param {String} obj.authAttr - auth attribute name. Default: 'auth'
- *   @param {Number} obj.timeoutAttr - timeout attribute name. Default: 'timeout'
- *   @param {String} obj.hostAttr - host attribute name. Default: 'host'
- */
-interface Args {
-    host: string;
+interface MethodDescriptorParams {
     allowResourceHostOverride: boolean;
-    method: string;
-    headers: Record<string, string>;
-    params: Record<string, string>;
-    queryParamAlias: Record<string, string>;
+    authAttr: string;
     binary: boolean;
     bodyAttr: string;
+    headers: Headers;
     headersAttr: string;
-    authAttr: string;
-    timeoutAttr: string;
+    host: string;
     hostAttr: string;
-    path: string | ((args: Record<string, any>) => string);
+    method: string;
     middleware: Array<Middleware>;
     middlewares: Array<Middleware>;
-}
-export default class MethodDescriptor {
-    host: string;
-    allowResourceHostOverride: boolean;
-    binary: boolean;
-    method: string;
-    headers: Record<string, string>;
-    params: Record<string, string>;
-    queryParamAlias: Record<string, string>;
-    bodyAttr: string;
-    headersAttr: string;
-    authAttr: string;
-    timeoutAttr: string;
-    hostAttr: string;
+    params: Parameters;
     path: string | ((args: Record<string, any>) => string);
-    middleware: Array<Middleware>;
-    constructor(obj: Args);
+    queryParamAlias: Record<string, string>;
+    timeoutAttr: string;
+}
+/**
+ * @typedef MethodDescriptor
+ * @param {MethodDescriptorParams} params
+ *   @param {boolean} params.allowResourceHostOverride
+ *   @param {String} params.authAttr - auth attribute name. Default: 'auth'
+ *   @param {boolean} params.binary
+ *   @param {String} params.bodyAttr - body attribute name. Default: 'body'
+ *   @param {Headers} params.headers
+ *   @param {String} params.headersAttr - headers attribute name. Default: 'headers'
+ *   @param {String} params.host
+ *   @param {String} params.hostAttr - host attribute name. Default: 'host'
+ *   @param {String} params.method
+ *   @param {Middleware[]} params.middleware
+ *   @param {Middleware[]} params.middlewares - alias for middleware
+ *   @param {Parameters} params.params
+ *   @param {String|Function} params.path
+ *   @param {Object} params.queryParamAlias
+ *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
+ */
+export default class MethodDescriptor {
+    allowResourceHostOverride: boolean;
+    authAttr: string;
+    binary: boolean;
+    bodyAttr: string;
+    headers: Headers;
+    headersAttr: string;
+    host: string;
+    hostAttr: string;
+    method: string;
+    middleware: Middleware[];
+    params: Parameters;
+    path: string | ((args: Parameters) => string);
+    queryParamAlias: Record<string, string>;
+    timeoutAttr: string;
+    constructor(params: MethodDescriptorParams);
 }
 export {};

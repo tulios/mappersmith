@@ -22,7 +22,7 @@ export const validKeys = (entry: Record<string, unknown>) => Object
   .keys(entry)
   .filter((key) => isNeitherNullNorUndefined(entry[key]))
 
-type Primitive = string | number | boolean
+export type Primitive = string | number | boolean
 export const buildRecursive = (key: string, value: Primitive | Primitive[] | Record<string, Primitive>, suffix = ''): string => {
   if (Array.isArray(value)) {
     return value

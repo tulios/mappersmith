@@ -10,9 +10,6 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
-  type Headers = import("../src/request").Headers
-  type Authorization = import("../src/request").Authorization
-  type Parameters = import("../src/request").Parameters
   type Request = import("../src/request").Request
 
   export interface ResponseParams {
@@ -36,14 +33,17 @@ declare module 'mappersmith' {
     enhance(extras: Partial<ResponseParams>): Response
   }
 
-  type Context = import("../src/method-descriptor").Context
-  type RequestGetter = import("../src/method-descriptor").RequestGetter
-  type ResponseGetter = import("../src/method-descriptor").ResponseGetter
   type AbortFn = import("../src/method-descriptor").AbortFn
-  type RenewFn = import("../src/method-descriptor").RenewFn
+  type Authorization = import("../src/method-descriptor").Authorization
+  type Context = import("../src/method-descriptor").Context
+  type Headers = import("../src/method-descriptor").Headers
+  type Middleware = import("../src/method-descriptor").Middleware
   type MiddlewareDescriptor = import("../src/method-descriptor").MiddlewareDescriptor
   type MiddlewareParams = import("../src/method-descriptor").MiddlewareParams
-  type Middleware = import("../src/method-descriptor").Middleware
+  type Parameters = import("../src/method-descriptor").Parameters
+  type RenewFn = import("../src/method-descriptor").RenewFn
+  type RequestGetter = import("../src/method-descriptor").RequestGetter
+  type ResponseGetter = import("../src/method-descriptor").ResponseGetter
 
   export type AsyncFunctions<HashType> = {
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>

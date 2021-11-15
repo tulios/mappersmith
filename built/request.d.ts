@@ -1,23 +1,11 @@
-import MethodDescriptor from './method-descriptor';
-export interface Headers {
-    readonly [header: string]: string;
-}
-export interface Authorization {
-    readonly username: string;
-    readonly password: string;
-}
-export interface Parameters {
-    readonly auth?: Authorization;
-    readonly timeout?: number;
-    [param: string]: object | string | number | boolean | undefined;
-}
+import MethodDescriptor, { Parameters } from './method-descriptor';
 export interface RequestParams {
-    readonly params?: Parameters;
-    readonly headers?: Headers;
-    readonly body?: Record<string, string> | string;
     readonly auth?: Record<string, string>;
-    readonly timeout?: number;
+    readonly body?: Record<string, string> | string;
+    readonly headers?: Headers;
     readonly host?: string;
+    readonly params?: Parameters;
+    readonly timeout?: number;
     [param: string]: object | string | number | boolean | undefined;
 }
 /**
@@ -29,7 +17,7 @@ export declare class Request {
     methodDescriptor: MethodDescriptor;
     requestParams: RequestParams;
     constructor(methodDescriptor: MethodDescriptor, requestParams?: RequestParams);
-    params(): Record<string, string>;
+    params(): Parameters;
     /**
      * Returns the HTTP method in lowercase
      */
@@ -41,12 +29,12 @@ export declare class Request {
     host(): string;
     /**
      * Returns path with parameters and leading slash.
-     * Example: /some/path?param1=true
+     * Example: '/some/path?param1=true'
      *
      * @throws {Error} if any dynamic segment is missing.
      * Example:
-     * Imagine the path '/some/{name}', the error will be similar to:
-     * '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
+     *  Imagine the path '/some/{name}', the error will be similar to:
+     *    '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
      */
     path(): string;
     /**
@@ -54,7 +42,7 @@ export declare class Request {
      * If path is a function, returns the result of request.path()
      * Example: '/some/{param}/path'
      */
-    pathTemplate(): string | ((args: Record<string, any>) => string);
+    pathTemplate(): string | ((args: Parameters) => string);
     /**
      * Returns the full URL
      * Example: http://example.org/some/path?param1=true
@@ -75,13 +63,13 @@ export declare class Request {
     timeout(): string | number | boolean | object | undefined;
     /**
      * Enhances current request returning a new Request
-     * @param {Object} extras
-     *   @param {Object} extras.params - it will be merged with current params
-     *   @param {Object} extras.headers - it will be merged with current headers
-     *   @param {String|Object} extras.body - it will replace the current body
+     * @param {RequestParams} extras
      *   @param {Object} extras.auth - it will replace the current auth
-     *   @param {Number} extras.timeout - it will replace the current timeout
+     *   @param {String|Object} extras.body - it will replace the current body
+     *   @param {Headers} extras.headers - it will be merged with current headers
      *   @param {String} extras.host - it will replace the current timeout
+     *   @param {Parameters} extras.params - it will be merged with current params
+     *   @param {Number} extras.timeout - it will replace the current timeout
      */
     enhance(extras: RequestParams): Request;
     /**

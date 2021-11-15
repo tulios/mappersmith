@@ -1,34 +1,18 @@
-import MethodDescriptor from './method-descriptor'
+import MethodDescriptor, { Parameters } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
+import type { Primitive } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
 
-// Note: Types copied from index.d.ts:
-
-export interface Headers {
-  readonly [header: string]: string
-}
-
-export interface Authorization {
-  readonly username: string
-  readonly password: string
-}
-
-export interface Parameters {
-  readonly auth?: Authorization
-  readonly timeout?: number
-  [param: string]: object | string | number | boolean | undefined
-}
-
 export interface RequestParams {
-  readonly params?: Parameters
-  readonly headers?: Headers
-  readonly body?: Record<string, string> | string
   readonly auth?: Record<string, string>
-  readonly timeout?: number
+  readonly body?: Record<string, string> | string
+  readonly headers?: Headers
   readonly host?: string
+  readonly params?: Parameters
+  readonly timeout?: number
   [param: string]: object | string | number | boolean | undefined
 }
 
@@ -68,7 +52,7 @@ export class Request {
           obj[key] = params[key]
         }
         return obj
-      }, {} as Record<string, string>)
+      }, {} as Parameters)
   }
 
   /**
@@ -97,12 +81,12 @@ export class Request {
 
   /**
    * Returns path with parameters and leading slash.
-   * Example: /some/path?param1=true
+   * Example: '/some/path?param1=true'
    *
    * @throws {Error} if any dynamic segment is missing.
    * Example:
-   * Imagine the path '/some/{name}', the error will be similar to:
-   * '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
+   *  Imagine the path '/some/{name}', the error will be similar to:
+   *    '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
    */
   public path() {
     const params = this.params()
@@ -130,8 +114,9 @@ export class Request {
 
     for (let key of dynamicSegmentKeys) {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
-      if (params[key] != null) {
-        path = path.replace(pattern, encodeURIComponent(params[key]))
+      const value = params[key]
+      if (value != null && typeof value !== 'object') {
+        path = path.replace(pattern, encodeURIComponent(value))
         delete params[key]
       }
     }
@@ -147,9 +132,12 @@ export class Request {
 
     const aliasedParams = Object.keys(params).reduce((aliased, key) => {
       const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
-      aliased[aliasedKey] = params[key]
+      const value = params[key]
+      if (value != null && typeof value !== 'object') {
+        aliased[aliasedKey] = value
+      }
       return aliased
-    }, {} as Record<string, string>)
+    }, {} as Record<string, Primitive>)
 
     const queryString = toQueryString(aliasedParams)
     if (queryString.length !== 0) {
@@ -219,27 +207,28 @@ export class Request {
 
   /**
    * Enhances current request returning a new Request
-   * @param {Object} extras
-   *   @param {Object} extras.params - it will be merged with current params
-   *   @param {Object} extras.headers - it will be merged with current headers
-   *   @param {String|Object} extras.body - it will replace the current body
+   * @param {RequestParams} extras
    *   @param {Object} extras.auth - it will replace the current auth
-   *   @param {Number} extras.timeout - it will replace the current timeout
+   *   @param {String|Object} extras.body - it will replace the current body
+   *   @param {Headers} extras.headers - it will be merged with current headers
    *   @param {String} extras.host - it will replace the current timeout
+   *   @param {Parameters} extras.params - it will be merged with current params
+   *   @param {Number} extras.timeout - it will replace the current timeout
    */
   public enhance(extras: RequestParams) {
-    const headerKey = this.methodDescriptor.headersAttr
-    const bodyKey = this.methodDescriptor.bodyAttr
     const authKey = this.methodDescriptor.authAttr
-    const timeoutKey = this.methodDescriptor.timeoutAttr
+    const bodyKey = this.methodDescriptor.bodyAttr
+    const headerKey = this.methodDescriptor.headersAttr
     const hostKey = this.methodDescriptor.hostAttr
-    const requestParams = assign({}, this.requestParams, extras.params)
+    const timeoutKey = this.methodDescriptor.timeoutAttr
 
+    const requestParams = assign({}, this.requestParams, extras.params)
     requestParams[headerKey] = assign({}, this.requestParams?.[headerKey], extras.headers)
-    extras.body && (requestParams[bodyKey] = extras.body)
+
     extras.auth && (requestParams[authKey] = extras.auth)
-    extras.timeout && (requestParams[timeoutKey] = extras.timeout)
+    extras.body && (requestParams[bodyKey] = extras.body)
     extras.host && (requestParams[hostKey] = extras.host)
+    extras.timeout && (requestParams[timeoutKey] = extras.timeout)
 
     return new Request(this.methodDescriptor, requestParams)
   }
