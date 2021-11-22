@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## 2.35.0
 
 Fixed:
   - Respect `allowResourceHostOverride` configuration in middlewares (#240)
