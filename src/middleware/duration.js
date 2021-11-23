@@ -1,8 +1,12 @@
 /**
  * Adds started_at, ended_at and duration headers to the response
  */
-const DurationMiddleware = () => ({
+const DurationMiddleware = ({ mockRequest } = {}) => ({
   prepareRequest (next) {
+    if (mockRequest) {
+      return next()
+    }
+
     return next().then(request => request.enhance({
       headers: { 'X-Started-At': Date.now() }
     }))
