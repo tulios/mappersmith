@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+Fixed:
+  - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match
+
 ## 2.35.0
 
 Fixed:
