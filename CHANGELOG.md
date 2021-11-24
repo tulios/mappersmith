@@ -5,6 +5,10 @@
 Fixed:
   - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match
 
+Refactored:
+  - Migrated `MethodDescriptor` to typescript
+  - Migrated `Request` to typescript
+
 ## 2.35.0
 
 Fixed:

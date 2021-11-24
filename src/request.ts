@@ -1,31 +1,43 @@
+import MethodDescriptor, { Parameters } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
+import type { Primitive } from './utils'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
 
+export interface RequestParams {
+  readonly auth?: Record<string, string>
+  readonly body?: Record<string, string> | string
+  readonly headers?: Headers
+  readonly host?: string
+  readonly params?: Parameters
+  readonly timeout?: number
+  [param: string]: object | string | number | boolean | undefined
+}
+
 /**
  * @typedef Request
  * @param {MethodDescriptor} methodDescriptor
- * @param {Object} requestParams, defaults to an empty object ({})
+ * @param {RequestParams} requestParams, defaults to an empty object ({})
  */
-function Request (methodDescriptor, requestParams) {
-  this.methodDescriptor = methodDescriptor
-  this.requestParams = requestParams || {}
-}
+export class Request {
+  public methodDescriptor: MethodDescriptor
+  public requestParams: RequestParams
 
-Request.prototype = {
-  /**
-   * @return {Object}
-   */
-  params () {
+  constructor(methodDescriptor: MethodDescriptor, requestParams: RequestParams = {}) {
+    this.methodDescriptor = methodDescriptor
+    this.requestParams = requestParams
+  }
+
+  public params() {
     const params = assign(
       {},
       this.methodDescriptor.params,
       this.requestParams
     )
 
-    const isParam = (key) => (
+    const isParam = (key: string) => (
       key !== this.methodDescriptor.headersAttr &&
         key !== this.methodDescriptor.bodyAttr &&
         key !== this.methodDescriptor.authAttr &&
@@ -40,45 +52,43 @@ Request.prototype = {
           obj[key] = params[key]
         }
         return obj
-      }, {})
-  },
+      }, {} as Parameters)
+  }
 
   /**
    * Returns the HTTP method in lowercase
-   *
-   * @return {String}
    */
-  method () {
+  public method() {
     return this.methodDescriptor.method.toLowerCase()
-  },
+  }
 
   /**
    * Returns host name without trailing slash
-   * Example: http://example.org
-   *
-   * @return {String}
+   * Example: 'http://example.org'
    */
-  host () {
+  public host() {
     const { allowResourceHostOverride, hostAttr, host } = this.methodDescriptor
     const originalHost = allowResourceHostOverride
       ? this.requestParams[hostAttr] || host || ''
       : host || ''
 
-    return originalHost.replace(REGEXP_TRAILING_SLASH, '')
-  },
+    if (typeof originalHost === 'string') {
+      return originalHost.replace(REGEXP_TRAILING_SLASH, '')
+    }
+
+    return ''
+  }
 
   /**
    * Returns path with parameters and leading slash.
-   * Example: /some/path?param1=true
+   * Example: '/some/path?param1=true'
    *
    * @throws {Error} if any dynamic segment is missing.
    * Example:
-   * Imagine the path '/some/{name}', the error will be similar to:
-   * '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
-   *
-   * @return {String}
+   *  Imagine the path '/some/{name}', the error will be similar to:
+   *    '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
    */
-  path () {
+  public path() {
     const params = this.params()
 
     let path
@@ -104,8 +114,9 @@ Request.prototype = {
 
     for (let key of dynamicSegmentKeys) {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
-      if (params[key] != null) {
-        path = path.replace(pattern, encodeURIComponent(params[key]))
+      const value = params[key]
+      if (value != null && typeof value !== 'object') {
+        path = path.replace(pattern, encodeURIComponent(value))
         delete params[key]
       }
     }
@@ -121,9 +132,12 @@ Request.prototype = {
 
     const aliasedParams = Object.keys(params).reduce((aliased, key) => {
       const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
-      aliased[aliasedKey] = params[key]
+      const value = params[key]
+      if (value != null && typeof value !== 'object') {
+        aliased[aliasedKey] = value
+      }
       return aliased
-    }, {})
+    }, {} as Record<string, Primitive>)
 
     const queryString = toQueryString(aliasedParams)
     if (queryString.length !== 0) {
@@ -132,107 +146,97 @@ Request.prototype = {
     }
 
     return path
-  },
+  }
 
   /**
    * Returns the template path, without params, before interpolation.
    * If path is a function, returns the result of request.path()
-   * Example: /some/{param}/path
-   *
-   * @return {String|Function}
+   * Example: '/some/{param}/path'
    */
-  pathTemplate () {
+  public pathTemplate() {
     let path = this.methodDescriptor.path
 
-    if (typeof this.methodDescriptor.path !== 'function' && path[0] !== '/') {
+    if (typeof this.methodDescriptor.path !== 'function' && this.methodDescriptor.path[0] !== '/') {
       path = `/${path}`
     }
 
     return path
-  },
+  }
 
   /**
    * Returns the full URL
    * Example: http://example.org/some/path?param1=true
    *
-   * @return {String}
    */
-  url () {
+  public url() {
     return `${this.host()}${this.path()}`
-  },
+  }
 
   /**
    * Returns an object with the headers. Header names are converted to
    * lowercase
-   *
-   * @return {Object}
    */
-  headers () {
+  public headers() {
     return lowerCaseObjectKeys(
       assign(
         {},
         this.methodDescriptor.headers,
-        this.requestParams[this.methodDescriptor.headersAttr]
+        this.requestParams?.[this.methodDescriptor.headersAttr]
       )
     )
-  },
+  }
 
   /**
    * Utility method to get a header value by name
-   *
-   * @param {String} name
-   *
-   * @return {String|Undefined}
    */
-  header (name) {
+  public header(name: string) {
     return this.headers()[name.toLowerCase()]
-  },
+  }
 
-  body () {
-    return this.requestParams[this.methodDescriptor.bodyAttr]
-  },
+  public body() {
+    return this.requestParams?.[this.methodDescriptor.bodyAttr]
+  }
 
-  auth () {
-    return this.requestParams[this.methodDescriptor.authAttr]
-  },
+  public auth() {
+    return this.requestParams?.[this.methodDescriptor.authAttr]
+  }
 
-  timeout () {
-    return this.requestParams[this.methodDescriptor.timeoutAttr]
-  },
+  public timeout() {
+    return this.requestParams?.[this.methodDescriptor.timeoutAttr]
+  }
 
   /**
    * Enhances current request returning a new Request
-   * @param {Object} extras
-   *   @param {Object} extras.params - it will be merged with current params
-   *   @param {Object} extras.headers - it will be merged with current headers
-   *   @param {String|Object} extras.body - it will replace the current body
+   * @param {RequestParams} extras
    *   @param {Object} extras.auth - it will replace the current auth
-   *   @param {Number} extras.timeout - it will replace the current timeout
+   *   @param {String|Object} extras.body - it will replace the current body
+   *   @param {Headers} extras.headers - it will be merged with current headers
    *   @param {String} extras.host - it will replace the current timeout
+   *   @param {Parameters} extras.params - it will be merged with current params
+   *   @param {Number} extras.timeout - it will replace the current timeout
    */
-  enhance (extras) {
-    const headerKey = this.methodDescriptor.headersAttr
-    const bodyKey = this.methodDescriptor.bodyAttr
+  public enhance(extras: RequestParams) {
     const authKey = this.methodDescriptor.authAttr
-    const timeoutKey = this.methodDescriptor.timeoutAttr
+    const bodyKey = this.methodDescriptor.bodyAttr
+    const headerKey = this.methodDescriptor.headersAttr
     const hostKey = this.methodDescriptor.hostAttr
-    const requestParams = assign({}, this.requestParams, extras.params)
+    const timeoutKey = this.methodDescriptor.timeoutAttr
 
-    requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
-    extras.body && (requestParams[bodyKey] = extras.body)
+    const requestParams = assign({}, this.requestParams, extras.params)
+    requestParams[headerKey] = assign({}, this.requestParams?.[headerKey], extras.headers)
+
     extras.auth && (requestParams[authKey] = extras.auth)
-    extras.timeout && (requestParams[timeoutKey] = extras.timeout)
+    extras.body && (requestParams[bodyKey] = extras.body)
     extras.host && (requestParams[hostKey] = extras.host)
+    extras.timeout && (requestParams[timeoutKey] = extras.timeout)
 
     return new Request(this.methodDescriptor, requestParams)
-  },
+  }
 
   /**
    * Is the request expecting a binary response?
-   *
-   * @return {Boolean}
    */
-  isBinary () {
+  public isBinary() {
     return this.methodDescriptor.binary
   }
 }
