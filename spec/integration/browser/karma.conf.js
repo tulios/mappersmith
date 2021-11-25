@@ -6,13 +6,12 @@ module.exports = function (config) {
 
   config.set({
     browsers: process.platform === 'win32' ? ['EdgeHeadless'] : ['ChromeHeadless'],
-    frameworks: ['jasmine', 'karma-typescript'],
-    reporters: ['spec', 'karma-typescript'],
+    frameworks: ['jasmine'],
+    reporters: ['spec'],
 
     plugins: [
       'karma-webpack',
       'karma-jasmine',
-      'karma-typescript',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       '@chiragrupani/karma-chromium-edge-launcher',
@@ -22,13 +21,11 @@ module.exports = function (config) {
     singleRun: process.env.SINGLE_RUN || false,
 
     files: [
-      { pattern: '../../../src/**/*.ts', watched: false },
       { pattern: '*.spec.js', watched: false }
     ],
 
     preprocessors: {
-      '*.spec.js': ['webpack', 'sourcemap'],
-      '../../../src/**/*.ts': ['karma-typescript', 'webpack']
+      '*.spec.js': ['webpack', 'sourcemap']
     },
 
     proxies: {

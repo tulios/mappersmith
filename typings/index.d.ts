@@ -11,15 +11,16 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
+  export type Headers = import('../src/types').Headers
+  export type Parameters = import('../src/types').RequestParams
+
   export type Request = import('../src/request').Request
   export type AbortFn = import('../src/method-descriptor').AbortFn
   export type Authorization = import('../src/method-descriptor').Authorization
   export type Context = import('../src/method-descriptor').Context
-  export type Headers = import('../src/method-descriptor').Headers
   export type Middleware = import('../src/method-descriptor').Middleware
   export type MiddlewareDescriptor = import('../src/method-descriptor').MiddlewareDescriptor
   export type MiddlewareParams = import('../src/method-descriptor').MiddlewareParams
-  export type Parameters = import('../src/method-descriptor').Parameters
   export type RenewFn = import('../src/method-descriptor').RenewFn
   export type RequestGetter = import('../src/method-descriptor').RequestGetter
   export type ResponseGetter = import('../src/method-descriptor').ResponseGetter
@@ -59,7 +60,7 @@ declare module 'mappersmith' {
     dispatchClientError(message: string, error: Error): void
     dispatchResponse(response: Response): void
     // eslint-disable-next-line @typescript-eslint/ban-types
-    extends(methods: {[fn: string]: Function}): void
+    extends(methods: { [fn: string]: Function }): void
     options(): object
     prepareBody(method: string, headers: Headers): string
     shouldEmulateHTTP(): boolean
@@ -151,5 +152,7 @@ declare module 'mappersmith' {
 
   export function setContext(context: Context): void
 
-  export default function forge<ResourcesType>(options: Options<ResourcesType>): Client<ResourcesType>
+  export default function forge<ResourcesType>(
+    options: Options<ResourcesType>
+  ): Client<ResourcesType>
 }

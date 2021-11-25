@@ -48,21 +48,21 @@ export interface MiddlewareParams {
 export type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor
 
 interface MethodDescriptorParams {
-  allowResourceHostOverride: boolean
-  authAttr: string
-  binary: boolean
-  bodyAttr: string
+  allowResourceHostOverride?: boolean
+  authAttr?: string
+  binary?: boolean
+  bodyAttr?: string
   headers: Headers
-  headersAttr: string
+  headersAttr?: string
   host: string
-  hostAttr: string
-  method: string
-  middleware: Array<Middleware>
-  middlewares: Array<Middleware>
+  hostAttr?: string
+  method?: string
+  middleware?: Array<Middleware>
+  middlewares?: Array<Middleware>
   params: Parameters
   path: string | ((args: Record<string, unknown>) => string)
-  queryParamAlias: Record<string, string>
-  timeoutAttr: string
+  queryParamAlias?: Record<string, string>
+  timeoutAttr?: string
 }
 
 /**

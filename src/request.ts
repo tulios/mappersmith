@@ -1,20 +1,11 @@
 import MethodDescriptor, { Parameters } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 import type { Primitive } from './utils'
+import type { RequestParams } from './types'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
-
-export interface RequestParams {
-  readonly auth?: Record<string, string>
-  readonly body?: Record<string, string> | string
-  readonly headers?: Headers
-  readonly host?: string
-  readonly params?: Parameters
-  readonly timeout?: number
-  [param: string]: object | string | number | boolean | undefined
-}
 
 /**
  * @typedef Request
@@ -215,7 +206,7 @@ export class Request {
     const hostKey = this.methodDescriptor.hostAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
 
-    const requestParams = assign({}, this.requestParams, extras.params)
+    const requestParams = assign({}, this.requestParams, extras.params) as RequestParams
     requestParams[headerKey] = assign({}, this.requestParams?.[headerKey], extras.headers)
 
     extras.auth && (requestParams[authKey] = extras.auth)
