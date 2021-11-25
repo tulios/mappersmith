@@ -11,10 +11,11 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
+  export type Request = import('../src/request').Request
   export type Headers = import('../src/types').Headers
   export type Parameters = import('../src/types').RequestParams
+  export type Response = import('../src/response').Response
 
-  export type Request = import('../src/request').Request
   export type AbortFn = import('../src/method-descriptor').AbortFn
   export type Authorization = import('../src/method-descriptor').Authorization
   export type Context = import('../src/method-descriptor').Context
@@ -24,27 +25,6 @@ declare module 'mappersmith' {
   export type RenewFn = import('../src/method-descriptor').RenewFn
   export type RequestGetter = import('../src/method-descriptor').RequestGetter
   export type ResponseGetter = import('../src/method-descriptor').ResponseGetter
-
-  export interface ResponseParams {
-    readonly status: number
-    readonly rawData: string
-    readonly headers: Headers
-    readonly error: Error
-  }
-
-  export interface Response {
-    readonly responseStatus: number
-    request(): Request
-    status(): number
-    success(): boolean
-    headers(): Headers
-    header(name: string): string | undefined
-    rawData(): string | null
-    data<DataType = object | string>(): DataType
-    isContentTypeJSON(): boolean
-    error(): Error | null
-    enhance(extras: Partial<ResponseParams>): Response
-  }
 
   export type AsyncFunctions<HashType> = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

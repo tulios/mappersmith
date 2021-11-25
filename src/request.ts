@@ -2,6 +2,7 @@ import MethodDescriptor, { Parameters } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 import type { Primitive } from './utils'
 import type { RequestParams } from './types'
+import type { Headers } from './method-descriptor'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
@@ -161,13 +162,10 @@ export class Request {
    * lowercase
    */
   public headers() {
-    return lowerCaseObjectKeys(
-      assign(
-        {},
-        this.methodDescriptor.headers,
-        this.requestParams?.[this.methodDescriptor.headersAttr]
-      )
-    )
+    const headerAttr = this.methodDescriptor.headersAttr
+    const headers = (this.requestParams[headerAttr] || {}) as Headers
+    const mergedHeaders = { ...this.methodDescriptor.headers, ...headers } as Headers
+    return lowerCaseObjectKeys(mergedHeaders)
   }
 
   /**

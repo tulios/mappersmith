@@ -1,7 +1,7 @@
 // COMBAK: All of these should not live here, they were moved from typings/index.d.ts
 
 export interface Headers {
-  readonly [header: string]: string
+  readonly [header: string]: string | number | boolean
 }
 
 export interface Authorization {
@@ -12,7 +12,7 @@ export interface Authorization {
 export interface Parameters {
   readonly auth?: Authorization
   readonly timeout?: number
-  [param: string]: object | string | number | boolean | undefined
+  [param: string]: object | string | number | boolean | undefined | null
 }
 
 export type Context = object
@@ -52,14 +52,14 @@ interface MethodDescriptorParams {
   authAttr?: string
   binary?: boolean
   bodyAttr?: string
-  headers: Headers
+  headers?: Headers
   headersAttr?: string
   host: string
   hostAttr?: string
   method?: string
   middleware?: Array<Middleware>
   middlewares?: Array<Middleware>
-  params: Parameters
+  params?: Parameters
   path: string | ((args: Record<string, unknown>) => string)
   queryParamAlias?: Record<string, string>
   timeoutAttr?: string
@@ -85,20 +85,20 @@ interface MethodDescriptorParams {
  *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
 export default class MethodDescriptor {
-  public allowResourceHostOverride: boolean
-  public authAttr: string
-  public binary: boolean
-  public bodyAttr: string
-  public headers: Headers
-  public headersAttr: string
-  public host: string
-  public hostAttr: string
-  public method: string
-  public middleware: Middleware[]
-  public params: Parameters
-  public path: string | ((args: Parameters) => string)
-  public queryParamAlias: Record<string, string>
-  public timeoutAttr: string
+  public readonly allowResourceHostOverride: boolean
+  public readonly authAttr: string
+  public readonly binary: boolean
+  public readonly bodyAttr: string
+  public readonly headers?: Headers
+  public readonly headersAttr: string
+  public readonly host: string
+  public readonly hostAttr: string
+  public readonly method: string
+  public readonly middleware: Middleware[]
+  public readonly params?: Parameters
+  public readonly path: string | ((args: Parameters) => string)
+  public readonly queryParamAlias: Record<string, string>
+  public readonly timeoutAttr: string
 
   constructor(params: MethodDescriptorParams) {
     this.allowResourceHostOverride = params.allowResourceHostOverride || false
