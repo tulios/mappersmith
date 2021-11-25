@@ -1,4 +1,5 @@
-// eslint-disable-next-line no-undef
+import type { Primitive } from './types'
+
 let _process: NodeJS.Process,
   getNanoSeconds: (() => number) | undefined,
   loadTime: number | undefined
@@ -30,7 +31,6 @@ const isNeitherNullNorUndefined = <T>(x: T | undefined | null): x is T =>
 export const validKeys = (entry: Record<string, unknown>) =>
   Object.keys(entry).filter((key) => isNeitherNullNorUndefined(entry[key]))
 
-export type Primitive = string | number | boolean
 export const buildRecursive = (
   key: string,
   value: Primitive | Primitive[] | Record<string, Primitive>,

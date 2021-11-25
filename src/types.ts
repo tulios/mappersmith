@@ -9,7 +9,7 @@ interface Auth {
 }
 
 export interface Params {
-  readonly [key: string]: Primitive
+  readonly [key: string]: object | Primitive | undefined | null
 }
 
 export interface RequestParams {
@@ -19,5 +19,5 @@ export interface RequestParams {
   readonly host?: string
   readonly params?: Params
   readonly timeout?: number
-  [param: string]: object | Primitive | undefined
+  [param: string]: object | Primitive | undefined | null
 }

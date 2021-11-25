@@ -1,6 +1,6 @@
 import { lowerCaseObjectKeys } from './utils'
 import { Request } from './request'
-import type { Headers } from './method-descriptor'
+import type { Headers } from './types'
 
 const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
 

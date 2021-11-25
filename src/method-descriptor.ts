@@ -1,18 +1,10 @@
-// COMBAK: All of these should not live here, they were moved from typings/index.d.ts
+import { Headers, RequestParams, Params } from './types'
 
-export interface Headers {
-  readonly [header: string]: string | number | boolean
-}
+// COMBAK: All of these should not live here, they were moved from typings/index.d.ts
 
 export interface Authorization {
   readonly password: string
   readonly username: string
-}
-
-export interface Parameters {
-  readonly auth?: Authorization
-  readonly timeout?: number
-  [param: string]: object | string | number | boolean | undefined | null
 }
 
 export type Context = object
@@ -59,8 +51,8 @@ interface MethodDescriptorParams {
   method?: string
   middleware?: Array<Middleware>
   middlewares?: Array<Middleware>
-  params?: Parameters
-  path: string | ((args: Record<string, unknown>) => string)
+  params?: Params
+  path: string | ((args: RequestParams) => string)
   queryParamAlias?: Record<string, string>
   timeoutAttr?: string
 }
@@ -79,12 +71,12 @@ interface MethodDescriptorParams {
  *   @param {String} params.method
  *   @param {Middleware[]} params.middleware
  *   @param {Middleware[]} params.middlewares - alias for middleware
- *   @param {Parameters} params.params
+ *   @param {RequestParams} params.params
  *   @param {String|Function} params.path
  *   @param {Object} params.queryParamAlias
  *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
-export default class MethodDescriptor {
+export class MethodDescriptor {
   public readonly allowResourceHostOverride: boolean
   public readonly authAttr: string
   public readonly binary: boolean
@@ -95,8 +87,8 @@ export default class MethodDescriptor {
   public readonly hostAttr: string
   public readonly method: string
   public readonly middleware: Middleware[]
-  public readonly params?: Parameters
-  public readonly path: string | ((args: Parameters) => string)
+  public readonly params?: RequestParams
+  public readonly path: string | ((args: RequestParams) => string)
   public readonly queryParamAlias: Record<string, string>
   public readonly timeoutAttr: string
 
@@ -120,3 +112,5 @@ export default class MethodDescriptor {
     this.middleware = resourceMiddleware
   }
 }
+
+export default MethodDescriptor

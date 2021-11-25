@@ -1,8 +1,6 @@
-import MethodDescriptor, { Parameters } from './method-descriptor'
+import { MethodDescriptor } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
-import type { Primitive } from './utils'
-import type { RequestParams } from './types'
-import type { Headers } from './method-descriptor'
+import type { Headers, Primitive, RequestParams } from './types'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
@@ -22,22 +20,25 @@ export class Request {
     this.requestParams = requestParams
   }
 
-  public params() {
-    const params = assign({}, this.methodDescriptor.params, this.requestParams)
-
-    const isParam = (key: string) =>
+  private isParam(key: string) {
+    return (
       key !== this.methodDescriptor.headersAttr &&
       key !== this.methodDescriptor.bodyAttr &&
       key !== this.methodDescriptor.authAttr &&
       key !== this.methodDescriptor.timeoutAttr &&
       key !== this.methodDescriptor.hostAttr
+    )
+  }
+
+  public params() {
+    const params = assign({}, this.methodDescriptor.params, this.requestParams)
 
     return Object.keys(params).reduce((obj, key) => {
-      if (isParam(key)) {
+      if (this.isParam(key)) {
         obj[key] = params[key]
       }
       return obj
-    }, {} as Parameters)
+    }, {} as RequestParams)
   }
 
   /**
@@ -139,13 +140,15 @@ export class Request {
    * Example: '/some/{param}/path'
    */
   public pathTemplate() {
-    let path = this.methodDescriptor.path
+    const path = this.methodDescriptor.path
 
-    if (typeof this.methodDescriptor.path !== 'function' && this.methodDescriptor.path[0] !== '/') {
-      path = `/${path}`
+    const prependSlash = (str: string) => (str[0] !== '/' ? `/${str}` : str)
+
+    if (typeof path === 'function') {
+      return prependSlash(path(this.params()))
     }
 
-    return path
+    return prependSlash(path)
   }
 
   /**
@@ -176,15 +179,15 @@ export class Request {
   }
 
   public body() {
-    return this.requestParams?.[this.methodDescriptor.bodyAttr]
+    return this.requestParams[this.methodDescriptor.bodyAttr]
   }
 
   public auth() {
-    return this.requestParams?.[this.methodDescriptor.authAttr]
+    return this.requestParams[this.methodDescriptor.authAttr]
   }
 
   public timeout() {
-    return this.requestParams?.[this.methodDescriptor.timeoutAttr]
+    return this.requestParams[this.methodDescriptor.timeoutAttr]
   }
 
   /**
@@ -194,7 +197,7 @@ export class Request {
    *   @param {String|Object} extras.body - it will replace the current body
    *   @param {Headers} extras.headers - it will be merged with current headers
    *   @param {String} extras.host - it will replace the current timeout
-   *   @param {Parameters} extras.params - it will be merged with current params
+   *   @param {RequestParams} extras.params - it will be merged with current params
    *   @param {Number} extras.timeout - it will replace the current timeout
    */
   public enhance(extras: RequestParams) {
@@ -205,7 +208,7 @@ export class Request {
     const timeoutKey = this.methodDescriptor.timeoutAttr
 
     const requestParams = assign({}, this.requestParams, extras.params) as RequestParams
-    requestParams[headerKey] = assign({}, this.requestParams?.[headerKey], extras.headers)
+    requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
 
     extras.auth && (requestParams[authKey] = extras.auth)
     extras.body && (requestParams[bodyKey] = extras.body)
