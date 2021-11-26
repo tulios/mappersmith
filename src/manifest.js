@@ -12,7 +12,7 @@ import { assign } from './utils'
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
  * @param {Object} globalConfigs
  */
-function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }) {
+function Manifest(obj, { gatewayConfigs = null, middleware = [], context = {} }) {
   this.host = obj.host
   this.allowResourceHostOverride = obj.allowResourceHostOverride || false
   this.bodyAttr = obj.bodyAttr
@@ -36,7 +36,7 @@ function Manifest (obj, { gatewayConfigs = null, middleware = [], context = {} }
 }
 
 Manifest.prototype = {
-  eachResource (callback) {
+  eachResource(callback) {
     Object.keys(this.resources).forEach(resourceName => {
       const methods = this.eachMethod(resourceName, methodName => ({
         name: methodName,
@@ -47,11 +47,11 @@ Manifest.prototype = {
     })
   },
 
-  eachMethod (resourceName, callback) {
+  eachMethod(resourceName, callback) {
     return Object.keys(this.resources[resourceName]).map(callback)
   },
 
-  createMethodDescriptor (resourceName, methodName) {
+  createMethodDescriptor(resourceName, methodName) {
     const definition = this.resources[resourceName][methodName]
 
     if (!definition || !definition.path) {
@@ -86,19 +86,19 @@ Manifest.prototype = {
    *
    * @return {Array<Object>}
    */
-  createMiddleware (args = {}) {
+  createMiddleware(args = {}) {
     const createInstance = middlewareFactory =>
       assign(
         {
           __name: middlewareFactory.name || middlewareFactory.toString(),
-          response (next) {
+          response(next) {
             return next()
           },
           /**
            * @since 2.27.0
            * Replaced the request method
            */
-          prepareRequest (next) {
+          prepareRequest(next) {
             return this.request ? next().then(req => this.request(req)) : next()
           }
         },

@@ -14,9 +14,9 @@ import { assign } from '../utils'
  * // => header: "Authorization: Basic Ym9iOmJvYg=="
  */
 export default authConfig =>
-  function BasicAuthMiddleware () {
+  function BasicAuthMiddleware() {
     return {
-      prepareRequest (next) {
+      prepareRequest(next) {
         return next().then(request => {
           const auth = request.auth()
           return !auth // Keep the override

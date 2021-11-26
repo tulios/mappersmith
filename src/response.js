@@ -11,7 +11,7 @@ const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
  * @param {Object} responseHeaders, defaults to an empty object ({})
  * @param {Array<Error>} errors, defaults to an empty array ([])
  */
-function Response (originalRequest, responseStatus, responseData, responseHeaders, errors) {
+function Response(originalRequest, responseStatus, responseData, responseHeaders, errors) {
   if (originalRequest.requestParams && originalRequest.requestParams.auth) {
     const maskedAuth = assign({}, originalRequest.requestParams.auth, { password: '***' })
     this.originalRequest = originalRequest.enhance({ auth: maskedAuth })
@@ -30,14 +30,14 @@ Response.prototype = {
   /**
    * @return {Request}
    */
-  request () {
+  request() {
     return this.originalRequest
   },
 
   /**
    * @return {Integer}
    */
-  status () {
+  status() {
     // IE sends 1223 instead of 204
     if (this.responseStatus === 1223) {
       return 204
@@ -51,7 +51,7 @@ Response.prototype = {
    *
    * @return {Boolean}
    */
-  success () {
+  success() {
     const status = this.status()
     return status >= 200 && status < 400
   },
@@ -62,7 +62,7 @@ Response.prototype = {
    *
    * @return {Object}
    */
-  headers () {
+  headers() {
     return lowerCaseObjectKeys(this.responseHeaders)
   },
 
@@ -73,14 +73,14 @@ Response.prototype = {
    *
    * @return {String|Undefined}
    */
-  header (name) {
+  header(name) {
     return this.headers()[name.toLowerCase()]
   },
 
   /**
    * Returns the original response data
    */
-  rawData () {
+  rawData() {
     return this.responseData
   },
 
@@ -90,7 +90,7 @@ Response.prototype = {
    *
    * @return {String|Object}
    */
-  data () {
+  data() {
     let data = this.responseData
 
     if (this.isContentTypeJSON()) {
@@ -100,7 +100,7 @@ Response.prototype = {
     return data
   },
 
-  isContentTypeJSON () {
+  isContentTypeJSON() {
     return REGEXP_CONTENT_TYPE_JSON.test(this.headers()['content-type'])
   },
 
@@ -109,7 +109,7 @@ Response.prototype = {
    *
    * @return {Error|null}
    */
-  error () {
+  error() {
     const lastError = this.errors[this.errors.length - 1] || null
     if (typeof lastError === 'string') {
       return new Error(lastError)
@@ -129,7 +129,7 @@ Response.prototype = {
    *
    * @return {Response}
    */
-  enhance (extras) {
+  enhance(extras) {
     const enhancedResponse = new Response(
       this.request(),
       extras.status || this.status(),

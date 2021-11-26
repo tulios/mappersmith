@@ -100,7 +100,7 @@ export default class MethodDescriptor {
   public queryParamAlias: Record<string, string>
   public timeoutAttr: string
 
-  constructor (params: MethodDescriptorParams) {
+  constructor(params: MethodDescriptorParams) {
     this.allowResourceHostOverride = params.allowResourceHostOverride || false
     this.binary = params.binary || false
     this.headers = params.headers

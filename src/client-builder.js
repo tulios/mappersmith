@@ -7,7 +7,7 @@ import { assign } from './utils'
  * @param {Object} manifest - manifest definition with at least the `resources` key
  * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
-function ClientBuilder (manifest, GatewayClassFactory, configs) {
+function ClientBuilder(manifest, GatewayClassFactory, configs) {
   if (!manifest) {
     throw new Error(
       `[Mappersmith] invalid manifest (${manifest})`
@@ -27,7 +27,7 @@ function ClientBuilder (manifest, GatewayClassFactory, configs) {
 }
 
 ClientBuilder.prototype = {
-  build () {
+  build() {
     const client = { _manifest: this.manifest }
 
     this.manifest.eachResource((name, methods) => {
@@ -37,7 +37,7 @@ ClientBuilder.prototype = {
     return client
   },
 
-  buildResource (resourceName, methods) {
+  buildResource(resourceName, methods) {
     return methods.reduce((resource, method) => assign(resource, {
       [method.name]: (requestParams) => {
         const request = new Request(method.descriptor, requestParams)
@@ -46,7 +46,7 @@ ClientBuilder.prototype = {
     }), {})
   },
 
-  invokeMiddlewares (resourceName, resourceMethod, initialRequest) {
+  invokeMiddlewares(resourceName, resourceMethod, initialRequest) {
     const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod })
     const GatewayClass = this.GatewayClassFactory()
     const gatewayConfigs = this.manifest.gatewayConfigs

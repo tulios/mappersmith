@@ -12,7 +12,7 @@ var responses = require('./support/responses')
 
 var CSRF_TOKEN = 'qwerty'
 
-function extractRawBody (req, res, buf) {
+function extractRawBody(req, res, buf) {
   req.rawBody = buf.toString('utf-8')
 }
 

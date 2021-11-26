@@ -14,7 +14,7 @@ import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
  *     @param {object} props.response.headers
  *     @param {integer} props.response.status
  */
-function MockRequest (id, props) {
+function MockRequest(id, props) {
   this.id = id
 
   this.method = props.method || 'get'
@@ -40,7 +40,7 @@ MockRequest.prototype = {
    *
    * @public
    */
-  setResponseData (responseData) {
+  setResponseData(responseData) {
     if (isPlainObject(responseData)) {
       this.responseData = JSON.stringify(responseData)
       if (!this.responseHeaders['content-type']) {
@@ -54,7 +54,7 @@ MockRequest.prototype = {
   /**
    * @return {Response}
    */
-  call (request) {
+  call(request) {
     const assertObject = this.assertObject()
 
     if (this.responseHandler) {
@@ -78,7 +78,7 @@ MockRequest.prototype = {
   /**
    * @return {MockAssert}
    */
-  assertObject () {
+  assertObject() {
     return new MockAssert(this.calls)
   },
 
@@ -87,7 +87,7 @@ MockRequest.prototype = {
    *
    * @return {boolean}
    */
-  isExactMatch (request) {
+  isExactMatch(request) {
     const bodyMatch = () => this.bodyFunction
       ? this.body(request.body())
       : this.body === toSortedQueryString(request.body())
@@ -110,7 +110,7 @@ MockRequest.prototype = {
    *
    * @return {boolean}
    */
-  isPartialMatch (request) {
+  isPartialMatch(request) {
     return new RegExp(this.method).test(request.method()) &&
       new RegExp(this.url).test(request.url())
   },
@@ -118,7 +118,7 @@ MockRequest.prototype = {
   /**
    * @return {MockRequest}
    */
-  toMockRequest () {
+  toMockRequest() {
     return this
   }
 }

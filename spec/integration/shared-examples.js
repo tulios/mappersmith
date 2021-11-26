@@ -14,7 +14,7 @@ import {
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 import RetryMiddleware from 'src/middlewares/retry/v2'
 
-export default function IntegrationTestsForGateway (gateway, params, extraTests) {
+export default function IntegrationTestsForGateway(gateway, params, extraTests) {
   let successLogBuffer,
     errorLogBuffer,
     previousGateway,

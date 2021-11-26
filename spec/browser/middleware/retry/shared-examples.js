@@ -2,7 +2,7 @@ import Request from 'src/request'
 import Response from 'src/response'
 import MethodDescriptor from 'src/method-descriptor'
 
-export function retryMiddlewareExamples (middleware, retries, headerRetryCount, headerRetryTime) {
+export function retryMiddlewareExamples(middleware, retries, headerRetryCount, headerRetryTime) {
   const newRequest = method =>
     new Request(new MethodDescriptor({ host: 'example.com', path: '/', method }), {})
 

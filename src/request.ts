@@ -25,40 +25,33 @@ export class Request {
   public methodDescriptor: MethodDescriptor
   public requestParams: RequestParams
 
-  constructor (methodDescriptor: MethodDescriptor, requestParams: RequestParams = {}) {
+  constructor(methodDescriptor: MethodDescriptor, requestParams: RequestParams = {}) {
     this.methodDescriptor = methodDescriptor
     this.requestParams = requestParams
   }
 
-  public params () {
-    const params = assign(
-      {},
-      this.methodDescriptor.params,
-      this.requestParams
-    )
+  public params() {
+    const params = assign({}, this.methodDescriptor.params, this.requestParams)
 
-    const isParam = (key: string) => (
+    const isParam = (key: string) =>
       key !== this.methodDescriptor.headersAttr &&
-        key !== this.methodDescriptor.bodyAttr &&
-        key !== this.methodDescriptor.authAttr &&
-        key !== this.methodDescriptor.timeoutAttr &&
-        key !== this.methodDescriptor.hostAttr
-    )
+      key !== this.methodDescriptor.bodyAttr &&
+      key !== this.methodDescriptor.authAttr &&
+      key !== this.methodDescriptor.timeoutAttr &&
+      key !== this.methodDescriptor.hostAttr
 
-    return Object
-      .keys(params)
-      .reduce((obj, key) => {
-        if (isParam(key)) {
-          obj[key] = params[key]
-        }
-        return obj
-      }, {} as Parameters)
+    return Object.keys(params).reduce((obj, key) => {
+      if (isParam(key)) {
+        obj[key] = params[key]
+      }
+      return obj
+    }, {} as Parameters)
   }
 
   /**
    * Returns the HTTP method in lowercase
    */
-  public method () {
+  public method() {
     return this.methodDescriptor.method.toLowerCase()
   }
 
@@ -66,7 +59,7 @@ export class Request {
    * Returns host name without trailing slash
    * Example: 'http://example.org'
    */
-  public host () {
+  public host() {
     const { allowResourceHostOverride, hostAttr, host } = this.methodDescriptor
     const originalHost = allowResourceHostOverride
       ? this.requestParams[hostAttr] || host || ''
@@ -88,7 +81,7 @@ export class Request {
    *  Imagine the path '/some/{name}', the error will be similar to:
    *    '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
    */
-  public path () {
+  public path() {
     const params = this.params()
 
     let path
@@ -153,7 +146,7 @@ export class Request {
    * If path is a function, returns the result of request.path()
    * Example: '/some/{param}/path'
    */
-  public pathTemplate () {
+  public pathTemplate() {
     let path = this.methodDescriptor.path
 
     if (typeof this.methodDescriptor.path !== 'function' && this.methodDescriptor.path[0] !== '/') {
@@ -168,7 +161,7 @@ export class Request {
    * Example: http://example.org/some/path?param1=true
    *
    */
-  public url () {
+  public url() {
     return `${this.host()}${this.path()}`
   }
 
@@ -176,7 +169,7 @@ export class Request {
    * Returns an object with the headers. Header names are converted to
    * lowercase
    */
-  public headers () {
+  public headers() {
     return lowerCaseObjectKeys(
       assign(
         {},
@@ -189,19 +182,19 @@ export class Request {
   /**
    * Utility method to get a header value by name
    */
-  public header (name: string) {
+  public header(name: string) {
     return this.headers()[name.toLowerCase()]
   }
 
-  public body () {
+  public body() {
     return this.requestParams?.[this.methodDescriptor.bodyAttr]
   }
 
-  public auth () {
+  public auth() {
     return this.requestParams?.[this.methodDescriptor.authAttr]
   }
 
-  public timeout () {
+  public timeout() {
     return this.requestParams?.[this.methodDescriptor.timeoutAttr]
   }
 
@@ -215,7 +208,7 @@ export class Request {
    *   @param {Parameters} extras.params - it will be merged with current params
    *   @param {Number} extras.timeout - it will replace the current timeout
    */
-  public enhance (extras: RequestParams) {
+  public enhance(extras: RequestParams) {
     const authKey = this.methodDescriptor.authAttr
     const bodyKey = this.methodDescriptor.bodyAttr
     const headerKey = this.methodDescriptor.headersAttr
@@ -236,7 +229,7 @@ export class Request {
   /**
    * Is the request expecting a binary response?
    */
-  public isBinary () {
+  public isBinary() {
     return this.methodDescriptor.binary
   }
 }

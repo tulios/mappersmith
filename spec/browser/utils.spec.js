@@ -110,7 +110,7 @@ describe('utils', () => {
 
   describe('#isPlainObject', () => {
     it('returns true for plain objects', () => {
-      function Custom () {
+      function Custom() {
         return undefined
       }
       expect(isPlainObject(new Custom())).toEqual(false)

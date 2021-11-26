@@ -1,13 +1,13 @@
 import forge, { Middleware } from 'mappersmith'
 
 const MyMiddleware: Middleware = () => ({
-  request (request) {
+  request(request) {
     return request.enhance({
       headers: { 'x-special-request': '->' }
     })
   },
 
-  response (next) {
+  response(next) {
     return next().then((response) => response.enhance({
       headers: { 'x-special-response': '<-' }
     }))

@@ -5,7 +5,7 @@ const github = forge({
   host: 'https://status.github.com',
   gatewayConfigs: {
     HTTP: {
-      configure () {
+      configure() {
         return {
           port: '1234'
         }

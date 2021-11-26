@@ -1,6 +1,6 @@
 import { isPlainObject, validKeys, buildRecursive } from '../utils'
 
-export function toSortedQueryString (entry) {
+export function toSortedQueryString(entry) {
   if (!isPlainObject(entry)) {
     return entry
   }
@@ -19,7 +19,7 @@ export function toSortedQueryString (entry) {
   * @param {Function} predicate - A function of type (key: string) => boolean
   * @returns {Object} The filtered object
   */
-function filterByPredicate (object, predicate) {
+function filterByPredicate(object, predicate) {
   return Object.entries(object)
     .filter(([key]) => predicate(key))
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
@@ -35,7 +35,7 @@ function filterByPredicate (object, predicate) {
  * @param {Object} B - The superset object to verify against
  * @returns A boolean representing if A is a shallow subset of B
  */
-export function isSubset (A, B) {
+export function isSubset(A, B) {
   // Make B only contain the non-nullish keys it has in in common with A
   const keysFromA = validKeys(A)
   const filteredB = filterByPredicate(B, keyFromB => keysFromA.includes(keyFromB))
@@ -49,7 +49,7 @@ export function isSubset (A, B) {
  *
  * @param {String} url - a URL that should be sorted (with or without query params)
  */
-export function sortedUrl (url) {
+export function sortedUrl(url) {
   const urlParts = url.split('?')
   if (urlParts.length > 1) {
     const query = urlParts[1]

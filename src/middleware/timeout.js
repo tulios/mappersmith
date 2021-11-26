@@ -11,9 +11,9 @@
  * client.User.all({ timeout: 100 })
  */
 export default timeoutValue =>
-  function TimeoutMiddleware () {
+  function TimeoutMiddleware() {
     return {
-      prepareRequest (next) {
+      prepareRequest(next) {
         return next().then(request => {
           const timeout = request.timeout()
           return !timeout // Keep the override

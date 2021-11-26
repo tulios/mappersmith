@@ -40,12 +40,12 @@ export const setRetryConfigs = newConfigs => {
  */
 let middlewareInstance = RetryMiddlewareV2(retryConfigs)()
 
-export default function RetryMiddleware () {
+export default function RetryMiddleware() {
   return {
-    request (request) {
+    request(request) {
       return middlewareInstance.request(request)
     },
-    response (next) {
+    response(next) {
       return middlewareInstance.response(next)
     }
   }
