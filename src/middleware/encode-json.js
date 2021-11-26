@@ -29,7 +29,7 @@ const EncodeJsonMiddleware = () => ({
             body: encodedBody
           })
         }
-      } catch (e) {}
+      } catch (e) {} // eslint-disable-line no-empty
       return request
     })
   }

@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-undef
 let _process: NodeJS.Process, getNanoSeconds: (() => number) | undefined, loadTime: number | undefined
-try { _process = eval('typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
+// eslint-disable-next-line no-eval, no-empty
+try { _process = eval('typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined') } catch (e) {}
 
 const hasProcessHrtime = () => {
   return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime

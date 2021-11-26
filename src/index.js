@@ -2,7 +2,8 @@ var lib = require('./mappersmith')
 var _process, defaultGateway
 
 // Prevents webpack to load the nodejs processs polyfill
-try { _process = eval('typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
+// eslint-disable-next-line no-eval, no-empty
+try { _process = eval('typeof process === "object" ? process : undefined') } catch (e) {}
 
 if (typeof XMLHttpRequest !== 'undefined') {
   // For browsers use XHR adapter

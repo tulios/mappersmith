@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import { lowerCaseObjectKeys, assign } from './utils'
 
 const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
