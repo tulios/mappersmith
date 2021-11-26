@@ -26,7 +26,7 @@
     "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
     "build": "yarn build:types && yarn build:node && yarn build:browser",
     "release": "./scripts/release.sh",
-    "lint": "yarn eslint \"{src,spec}/**/*.js\""
+    "lint": "yarn eslint \"{src,spec,typings}/**/*.[j|t]s\""
   },
   "repository": {
     "type": "git",

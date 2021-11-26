@@ -1,4 +1,4 @@
-import MethodDescriptor, { Parameters } from './method-descriptor';
+import MethodDescriptor, { Parameters } from './method-descriptor'
 export interface RequestParams {
     readonly auth?: Record<string, string>;
     readonly body?: Record<string, string> | string;
@@ -77,4 +77,4 @@ export declare class Request {
      */
     isBinary(): boolean;
 }
-export default Request;
+export default Request

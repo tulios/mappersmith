@@ -87,4 +87,4 @@ export default class MethodDescriptor {
     timeoutAttr: string;
     constructor(params: MethodDescriptorParams);
 }
-export {};
+export {}

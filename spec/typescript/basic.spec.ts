@@ -5,9 +5,9 @@ const github = forge({
   host: 'https://status.github.com',
   gatewayConfigs: {
     HTTP: {
-      configure() {
+      configure () {
         return {
-          port: "1234"
+          port: '1234'
         }
       }
     }
@@ -21,6 +21,6 @@ const github = forge({
   }
 })
 
-github.Status.lastMessage({ randomParam: 10, another: { foo: "hi" } }).then((response) => {
+github.Status.lastMessage({ randomParam: 10, another: { foo: 'hi' } }).then((response) => {
   console.log(`status: ${response.data()}`)
 })
