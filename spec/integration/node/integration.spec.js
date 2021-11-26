@@ -62,7 +62,7 @@ describe('integration', () => {
 
       it('should call the callbacks', (done) => {
         const Client = forge(createManifest(params.host), gateway)
-        Client.Book.all().then((response) => {
+        Client.Book.all().then(() => {
           expect(gatewayConfigs.onRequestWillStart).toHaveBeenCalledWith(jasmine.any(Object))
           expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledWith(jasmine.any(Object))
           expect(gatewayConfigs.onSocketLookup).toHaveBeenCalledWith(jasmine.any(Object))

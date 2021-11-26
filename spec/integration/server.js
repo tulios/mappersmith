@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 var express = require('express')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')

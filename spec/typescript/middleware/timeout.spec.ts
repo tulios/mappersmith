@@ -3,7 +3,7 @@ import TimeoutMiddleware from 'mappersmith/middleware/timeout'
 
 const Timeout = TimeoutMiddleware(500)
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const client = forge({
   middleware: [ Timeout ],
   clientId: 'github',

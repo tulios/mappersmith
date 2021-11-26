@@ -8,8 +8,12 @@ const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 function Gateway (request, configs = {}) {
   this.request = request
   this.configs = configs
-  this.successCallback = function () {}
-  this.failCallback = function () {}
+  this.successCallback = function () {
+    return undefined
+  }
+  this.failCallback = function () {
+    return undefined
+  }
 }
 
 Gateway.extends = (methods) => assign({}, Gateway.prototype, methods)

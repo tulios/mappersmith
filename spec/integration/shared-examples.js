@@ -225,7 +225,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
   describe('log middleware', () => {
     it('logs request and response', (done) => {
       Client.Book.all()
-        .then((response) => {
+        .then(() => {
           expect(successLogBuffer.length).toEqual(2) // request and response
           expect(successLogBuffer).toEqual([
             `-> GET ${params.host}/api/books.json`,
@@ -244,7 +244,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
           .then((response) => {
             done.fail(`Expected this request to fail: ${errorMessage(response)}`)
           })
-          .catch((response) => {
+          .catch(() => {
             expect(successLogBuffer.length).toEqual(1) // only request
             expect(errorLogBuffer.length).toEqual(1) // only response
             expect(successLogBuffer).toEqual([`-> GET ${params.host}/api/failure.json`])
@@ -295,7 +295,7 @@ export default function IntegrationTestsForGateway (gateway, params, extraTests)
     describe('a response earlier in the middleware chain throws', () => {
       beforeEach(() => {
         const BrokenMiddleware = () => ({
-          response: (next) => next().then(response => {
+          response: (next) => next().then(() => {
             throw new Error('💣')
           })
         })

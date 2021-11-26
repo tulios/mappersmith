@@ -60,7 +60,7 @@ interface MethodDescriptorParams {
   middleware: Array<Middleware>
   middlewares: Array<Middleware>
   params: Parameters
-  path: string | ((args: Record<string, any>) => string)
+  path: string | ((args: Record<string, unknown>) => string)
   queryParamAlias: Record<string, string>
   timeoutAttr: string
 }

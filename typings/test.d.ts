@@ -59,5 +59,5 @@ declare module 'mappersmith/test' {
 
   export function mockRequest(args: MockRequestArgs): MockAssert
 
-  export var m: TestMatchFunctions
+  export const m: TestMatchFunctions
 }

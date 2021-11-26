@@ -12,7 +12,7 @@ const retryConfigs: RetryMiddlewareOptions = {
   validateRetry: (response) => response.responseStatus >= 500 // a function that returns true if the request should be retried
 }
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const client = forge({
   middleware: [ Retry(retryConfigs) ],
   clientId: 'github',

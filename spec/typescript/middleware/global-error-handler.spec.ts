@@ -6,7 +6,7 @@ setErrorHandler((response) => {
   return response.status() === 500
 })
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const client = forge({
   middleware: [ GlobalErrorHandler ],
   clientId: 'github',

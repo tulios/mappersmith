@@ -112,7 +112,7 @@ export class Request {
       dynamicSegmentKeys.push(match[1])
     }
 
-    for (let key of dynamicSegmentKeys) {
+    for (const key of dynamicSegmentKeys) {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
       const value = params[key]
       if (value != null && typeof value !== 'object') {

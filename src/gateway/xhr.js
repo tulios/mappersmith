@@ -5,7 +5,7 @@ import { createTimeoutError } from './timeout-error'
 
 const toBase64 = window.btoa || btoa
 
-function XHR (request) {
+function XHR () {
   Gateway.apply(this, arguments)
 }
 

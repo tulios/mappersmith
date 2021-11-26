@@ -19,7 +19,7 @@ if (!fetch) {
  * use browser specific code, with a proper "fetch" implementation it can also be
  * used with node.js
  */
-function Fetch (request) {
+function Fetch () {
   Gateway.apply(this, arguments)
 }
 

@@ -107,8 +107,9 @@ export const lowerCaseObjectKeys = (obj: Record<string, unknown>) => {
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export const assign = Object.assign || function (target: Record<string, unknown>) {
   for (let i = 1; i < arguments.length; i++) {
+    // eslint-disable-next-line prefer-rest-params
     const source = arguments[i]
-    for (let key in source) {
+    for (const key in source) {
       if (hasOwnProperty.call(source, key)) {
         target[key] = source[key]
       }

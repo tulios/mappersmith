@@ -3,6 +3,6 @@ declare module 'mappersmith/middleware/encode-json' {
 
   const EncodeJson: Middleware
 
-  export var CONTENT_TYPE_JSON: string
+  export const CONTENT_TYPE_JSON: string
   export default EncodeJson
 }

@@ -7,7 +7,7 @@ import Gateway from '../gateway'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
 
-function HTTP (request) {
+function HTTP () {
   Gateway.apply(this, arguments)
 }
 

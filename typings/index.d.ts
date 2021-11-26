@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference path="./middleware/basic-auth.d.ts" />
 /// <reference path="./middleware/csrf.d.ts" />
 /// <reference path="./middleware/duration.d.ts" />
@@ -45,7 +46,7 @@ declare module 'mappersmith' {
   }
 
   export type AsyncFunctions<HashType> = {
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
   }
 
@@ -57,6 +58,7 @@ declare module 'mappersmith' {
     call(): void
     dispatchClientError(message: string, error: Error): void
     dispatchResponse(response: Response): void
+    // eslint-disable-next-line @typescript-eslint/ban-types
     extends(methods: {[fn: string]: Function}): void
     options(): object
     prepareBody(method: string, headers: Headers): string
@@ -72,7 +74,7 @@ declare module 'mappersmith' {
     put(): void
   }
 
-  export interface FetchGateway extends Gateway {}
+  export type FetchGateway = Gateway
 
   export interface HTTPGateway extends Gateway, NetworkGateway {
     createResponse(response: Response, rawData: string): Response
@@ -98,6 +100,7 @@ declare module 'mappersmith' {
   }
 
   export interface HTTPRequestParams {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
   }
 
@@ -128,6 +131,7 @@ declare module 'mappersmith' {
     gatewayConfigs: GatewayConfiguration
     maxMiddlewareStackExecutionAllowed: number
     middleware: Middleware[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Promise: Promise<any>
   }
 
@@ -143,7 +147,7 @@ declare module 'mappersmith' {
     readonly resources: ResourcesType
   }
 
-  export var configs: Configuration
+  export const configs: Configuration
 
   export function setContext(context: Context): void
 

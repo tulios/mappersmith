@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 var lib = require('./mappersmith')
 var _process, defaultGateway
 

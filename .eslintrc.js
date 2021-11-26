@@ -7,7 +7,7 @@ module.exports = {
   extends: [
     'standard',
     'eslint:recommended',
-    // 'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended'
   ],
   env: {
     browser: true,
