@@ -16,15 +16,15 @@ declare module 'mappersmith' {
   export type Parameters = import('../src/types').RequestParams
   export type Response = import('../src/response').Response
 
-  export type AbortFn = import('../src/method-descriptor').AbortFn
-  export type Authorization = import('../src/method-descriptor').Authorization
-  export type Context = import('../src/method-descriptor').Context
-  export type Middleware = import('../src/method-descriptor').Middleware
-  export type MiddlewareDescriptor = import('../src/method-descriptor').MiddlewareDescriptor
-  export type MiddlewareParams = import('../src/method-descriptor').MiddlewareParams
-  export type RenewFn = import('../src/method-descriptor').RenewFn
-  export type RequestGetter = import('../src/method-descriptor').RequestGetter
-  export type ResponseGetter = import('../src/method-descriptor').ResponseGetter
+  export type AbortFn = import('../src/middleware').AbortFn
+  export type Authorization = import('../src/middleware').Authorization
+  export type Context = import('../src/middleware').Context
+  export type Middleware = import('../src/middleware').Middleware
+  export type MiddlewareDescriptor = import('../src/middleware').MiddlewareDescriptor
+  export type MiddlewareParams = import('../src/middleware').MiddlewareParams
+  export type RenewFn = import('../src/middleware').RenewFn
+  export type RequestGetter = import('../src/middleware').RequestGetter
+  export type ResponseGetter = import('../src/middleware').ResponseGetter
 
   export type AsyncFunctions<HashType> = {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

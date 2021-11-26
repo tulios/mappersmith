@@ -17,7 +17,6 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "spec/typescript/*"
+    "node_modules"
   ]
 }

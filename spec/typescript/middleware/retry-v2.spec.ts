@@ -9,13 +9,12 @@ const retryConfigs: RetryMiddlewareOptions = {
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
   retries: 5, // max retries
-  validateRetry: (response) => response.responseStatus >= 500 // a function that returns true if the request should be retried
+  validateRetry: (response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const client = forge({
-  middleware: [ Retry(retryConfigs) ],
+forge({
+  middleware: [Retry(retryConfigs)],
   clientId: 'github',
   host: 'https://status.github.com',
-  resources: {}
+  resources: {},
 })

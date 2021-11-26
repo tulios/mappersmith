@@ -1,5 +1,5 @@
 declare module 'mappersmith/middleware/retry/v2' {
-  import { Middleware } from 'mappersmith'
+  import { Middleware, Response } from 'mappersmith'
 
   export interface RetryMiddlewareOptions {
     readonly headerRetryCount: string
