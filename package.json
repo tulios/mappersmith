@@ -52,6 +52,10 @@
     "./src/gateway/http.js": false,
     "./gateway/http.js": false
   },
+  "volta": {
+    "node": "12.22.7",
+    "yarn": "1.22.11"
+  },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
