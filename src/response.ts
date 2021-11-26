@@ -4,7 +4,7 @@ import type { Headers } from './types'
 
 const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
 
-interface ResponseParams {
+export interface ResponseParams {
   readonly status?: number
   readonly rawData?: string
   readonly headers?: Headers

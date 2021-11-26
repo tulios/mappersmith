@@ -13,7 +13,7 @@
 declare module 'mappersmith' {
   export type Request = import('../src/request').Request
   export type Headers = import('../src/types').Headers
-  export type Parameters = import('../src/types').RequestParams
+  export type Parameters = import('../src/types').Params
   export type Response = import('../src/response').Response
 
   export type AbortFn = import('../src/middleware').AbortFn
@@ -123,7 +123,9 @@ declare module 'mappersmith' {
     readonly ignoreGlobalMiddleware?: boolean
     readonly middleware?: Middleware[]
     readonly gatewayConfigs?: Partial<GatewayConfiguration>
-    // @alias middleware
+    /**
+     * @alias middleware
+     */
     readonly middlewares?: Middleware[]
     readonly resources: ResourcesType
   }

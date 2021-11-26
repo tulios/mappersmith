@@ -432,7 +432,7 @@ describe('Request', () => {
       expect(request.pathTemplate()).toEqual('/without-slash')
     })
 
-    it.skip('returns result of method descriptor path function', async () => {
+    it('returns result of method descriptor path function', async () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
         path: (params) => {

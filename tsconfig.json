@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
+    "noEmit": true,
     "incremental": true,
-    "declaration": true,
     "strict": true,
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true,
