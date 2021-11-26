@@ -1,9 +1,0 @@
-{
-  "extends": ["standard"],
-  "plugins": [],
-  "env": {
-    "jasmine": true,
-    "jest": true
-  },
-  "globals": {}
-}
