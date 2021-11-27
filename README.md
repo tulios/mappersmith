@@ -1313,6 +1313,10 @@ console.log(mock.calls())
 
 ## <a name="development"></a> Development
 
+### Volta
+
+This project uses [Volta](https://docs.volta.sh/guide/getting-started) to manage the node/npm and yarn versions used via package.json.
+
 ### Running unit tests:
 
 ```sh
@@ -1339,6 +1343,10 @@ yarn test
 ```sh
 NODE_ENV=production yarn build
 ```
+
+## Linting
+
+This project uses prettier and eslint, it is recommended to install extensions in your browser to format on save.
 
 ## Contributors
 
