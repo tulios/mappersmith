@@ -27,7 +27,6 @@ declare module 'mappersmith' {
   export type ResponseGetter = import('../src/middleware').ResponseGetter
 
   export type AsyncFunctions<HashType> = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
   }
 

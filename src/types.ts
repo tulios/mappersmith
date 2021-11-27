@@ -1,5 +1,9 @@
 export type Primitive = string | number | boolean
 
+export interface Hash {
+  [key: string]: Primitive
+}
+
 export interface Headers {
   readonly [key: string]: Primitive
 }

@@ -1,4 +1,4 @@
-import type { Primitive } from './types'
+import type { Primitive, Hash } from './types'
 
 let _process: NodeJS.Process,
   getNanoSeconds: (() => number) | undefined,
@@ -28,7 +28,7 @@ const R20 = /%20/g
 const isNeitherNullNorUndefined = <T>(x: T | undefined | null): x is T =>
   x !== null && x !== undefined
 
-export const validKeys = (entry: Record<string, unknown>) =>
+export const validKeys = (entry: Hash) =>
   Object.keys(entry).filter((key) => isNeitherNullNorUndefined(entry[key]))
 
 export const buildRecursive = (
@@ -83,7 +83,7 @@ export const performanceNow = () => {
  * This method parses that string into a user-friendly key/value pair object.
  */
 export const parseResponseHeaders = (headerStr: string) => {
-  const headers: Record<string, unknown> = {}
+  const headers: Hash = {}
   if (!headerStr) {
     return headers
   }
@@ -103,18 +103,17 @@ export const parseResponseHeaders = (headerStr: string) => {
   return headers
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const lowerCaseObjectKeys = <T extends Record<string, any>>(obj: T) => {
+export const lowerCaseObjectKeys = (obj: Hash) => {
   return Object.keys(obj).reduce((target, key) => {
-    target[key.toLowerCase() as keyof T] = obj[key]
+    target[key.toLowerCase()] = obj[key]
     return target
-  }, {} as T)
+  }, {} as Hash)
 }
 
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export const assign =
   Object.assign ||
-  function (target: Record<string, unknown>) {
+  function (target: Hash) {
     for (let i = 1; i < arguments.length; i++) {
       // eslint-disable-next-line prefer-rest-params
       const source = arguments[i]
@@ -128,7 +127,7 @@ export const assign =
   }
 
 const toString = Object.prototype.toString
-export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+export const isPlainObject = (value: unknown): value is object => {
   return (
     toString.call(value) === '[object Object]' &&
     Object.getPrototypeOf(value) === Object.getPrototypeOf({})

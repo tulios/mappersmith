@@ -8,7 +8,7 @@ export const configs = {
   context: {},
   middleware: [],
   Promise: typeof Promise === 'function' ? Promise : null,
-  fetch: typeof fetch === 'function' ? fetch : null, // eslint-disable-line no-undef
+  fetch: typeof fetch === 'function' ? fetch : null,
 
   /**
    * The maximum amount of executions allowed before it is considered an infinite loop.
@@ -58,7 +58,7 @@ export const configs = {
        * @param {XMLHttpRequest} xhr
        * @default null
        */
-      configure: null
+      configure: null,
     },
 
     HTTP: {
@@ -86,7 +86,7 @@ export const configs = {
       onSocketConnect: null,
       onSocketSecureConnect: null,
       onResponseReadable: null,
-      onResponseEnd: null
+      onResponseEnd: null,
     },
 
     Fetch: {
@@ -102,9 +102,9 @@ export const configs = {
        *
        * @default "omit"
        */
-      credentials: 'omit'
-    }
-  }
+      credentials: 'omit',
+    },
+  },
 }
 
 /**
@@ -112,7 +112,9 @@ export const configs = {
  * @param {Object} context
  */
 export const setContext = (context) => {
-  console.warn('The use of setContext is deprecated - you need to find another way to pass data between your middlewares.')
+  console.warn(
+    'The use of setContext is deprecated - you need to find another way to pass data between your middlewares.'
+  )
   configs.context = assign(configs.context, context)
 }
 

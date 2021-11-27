@@ -15,31 +15,29 @@ module.exports = function (config) {
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
       '@chiragrupani/karma-chromium-edge-launcher',
-      'karma-spec-reporter'
+      'karma-spec-reporter',
     ],
 
     singleRun: process.env.SINGLE_RUN || false,
 
-    files: [
-      { pattern: '*.spec.js', watched: false }
-    ],
+    files: [{ pattern: '*.spec.js', watched: false }],
 
     preprocessors: {
-      '*.spec.js': ['webpack', 'sourcemap']
+      '*.spec.js': ['webpack', 'sourcemap'],
     },
 
     proxies: {
-      '/proxy': 'http://localhost:9090'
+      '/proxy': 'http://localhost:9090',
     },
 
     karmaTypescriptConfig: {
-      tsconfig: '../../../tsconfig.karma.json'
+      tsconfig: '../../../tsconfig.karma.json',
     },
 
     webpack: webpackConfig,
 
     webpackMiddleware: {
-      stats: 'errors-only'
-    }
+      stats: 'errors-only',
+    },
   })
 }

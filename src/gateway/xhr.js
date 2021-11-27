@@ -90,9 +90,7 @@ XHR.prototype = Gateway.extends({
       }
 
       clearTimeout(this.timer)
-      const guessedErrorCause = e
-        ? e.message || e.name
-        : xmlHttpRequest.responseText
+      const guessedErrorCause = e ? e.message || e.name : xmlHttpRequest.responseText
 
       const errorMessage = 'Network error'
       const enhancedMessage = guessedErrorCause ? `: ${guessedErrorCause}` : ''
@@ -131,12 +129,7 @@ XHR.prototype = Gateway.extends({
     const status = xmlHttpRequest.status
     const data = this.request.isBinary() ? xmlHttpRequest.response : xmlHttpRequest.responseText
     const responseHeaders = parseResponseHeaders(xmlHttpRequest.getAllResponseHeaders())
-    return new Response(
-      this.request,
-      status,
-      data,
-      responseHeaders
-    )
+    return new Response(this.request, status, data, responseHeaders)
   },
 
   setHeaders(xmlHttpRequest, customHeaders) {
@@ -148,18 +141,16 @@ XHR.prototype = Gateway.extends({
     }
 
     const headers = assign(customHeaders, this.request.headers())
-    Object
-      .keys(headers)
-      .forEach((headerName) => {
-        xmlHttpRequest.setRequestHeader(headerName, headers[headerName])
-      })
+    Object.keys(headers).forEach((headerName) => {
+      xmlHttpRequest.setRequestHeader(headerName, headers[headerName])
+    })
   },
 
   createXHR() {
-    const xmlHttpRequest = new XMLHttpRequest() // eslint-disable-line no-undef
+    const xmlHttpRequest = new XMLHttpRequest()
     this.configureCallbacks(xmlHttpRequest)
     return xmlHttpRequest
-  }
+  },
 })
 
 export default XHR
