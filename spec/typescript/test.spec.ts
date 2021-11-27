@@ -12,16 +12,16 @@ const github = forge({
     Status: {
       current: { path: '/api/status.json' },
       messages: { path: '/api/messages.json' },
-      lastMessage: { path: '/api/last-message.json' },
-    },
-  },
+      lastMessage: { path: '/api/last-message.json' }
+    }
+  }
 })
 
 const mock = mockClient<typeof github>(github)
   .resource('Status')
   .method('current')
   .with({
-    id: 'abc',
+    id: 'abc'
   })
   .response({ allUsers: [] })
   .headers({ 'x-header': 'nope' })
@@ -60,7 +60,7 @@ mockRequest({
 
 mockRequest({
   method: 'post',
-  url: m.stringContaining("something"),
+  url: m.stringContaining('something'),
   body: m.stringContaining('something')
 })
 
@@ -68,4 +68,3 @@ m.stringMatching(/test/)
 m.stringContaining('test')
 m.uuid4()
 m.anything()
-

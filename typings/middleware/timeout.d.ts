@@ -1,5 +1,5 @@
 declare module 'mappersmith/middleware/timeout' {
-  import {Middleware} from 'mappersmith'
+  import { Middleware } from 'mappersmith'
 
   export type Milliseconds = number
 

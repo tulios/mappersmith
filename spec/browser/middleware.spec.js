@@ -239,7 +239,7 @@ describe('ClientBuilder middleware', () => {
   describe('when a middleware throws an error in the request phase', () => {
     it('rethrows the error with the middleware name', async () => {
       const m1 = () => ({
-        request: request => {
+        request: () => {
           throw new Error('Random error!')
         }
       })
@@ -255,7 +255,7 @@ describe('ClientBuilder middleware', () => {
 
   describe('when a middleware pass a non-request object to the next phase', () => {
     it('throws an error with the middleware name and type', async () => {
-      const m1 = () => ({ request: request => true })
+      const m1 = () => ({ request: () => true })
       const m2 = () => ({ request: request => request.enhance() })
 
       manifest.middleware = [m1, m2]
@@ -364,7 +364,7 @@ describe('ClientBuilder middleware', () => {
 
     it('can capture errors from other middlewares', async () => {
       const buggy = () => ({
-        request: request => {
+        request: () => {
           throw new Error('from buggy')
         }
       })

@@ -1,4 +1,4 @@
-import forge, {Middleware, MiddlewareParams} from 'mappersmith'
+import forge, { Middleware, MiddlewareParams } from 'mappersmith'
 
 const MyMiddleware: Middleware = () => ({
   prepareRequest(next) {

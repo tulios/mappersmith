@@ -4,7 +4,7 @@ import Response from 'src/response'
 import MethodDescriptor from 'src/method-descriptor'
 import { configs as defaultConfigs } from 'src/index'
 
-export function createGatewayAsserts (gatewayArgsGenerator) {
+export function createGatewayAsserts(gatewayArgsGenerator) {
   return {
     assertSuccess: () => {
       return createGatewaySuccessAssert(...gatewayArgsGenerator())
@@ -16,7 +16,7 @@ export function createGatewayAsserts (gatewayArgsGenerator) {
   }
 }
 
-export function createGatewaySuccessAssert (Gateway, methodDescriptor, requestParams) {
+export function createGatewaySuccessAssert(Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
     const gateway = new Gateway(request, defaultConfigs.gatewayConfigs)
@@ -34,7 +34,7 @@ export function createGatewaySuccessAssert (Gateway, methodDescriptor, requestPa
   }
 }
 
-export function createGatewayFailureAssert (Gateway, methodDescriptor, requestParams) {
+export function createGatewayFailureAssert(Gateway, methodDescriptor, requestParams) {
   return (done, assertsCallback) => {
     const request = new Request(methodDescriptor, requestParams)
     const gateway = new Gateway(request, defaultConfigs.gatewayConfigs)
@@ -52,7 +52,7 @@ export function createGatewayFailureAssert (Gateway, methodDescriptor, requestPa
   }
 }
 
-export function respondWith (responseObj, assertsCallback) {
+export function respondWith(responseObj, assertsCallback) {
   fauxJax.on('request', (fauxJaxRequest) => {
     assertsCallback && assertsCallback(fauxJaxRequest)
     fauxJaxRequest.respond(
@@ -64,7 +64,7 @@ export function respondWith (responseObj, assertsCallback) {
 }
 
 export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
-  request (request) {
+  request(request) {
     return request.enhance({
       headers: {
         'x-middleware-phase': 'request'
@@ -72,7 +72,7 @@ export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
     })
   },
 
-  response (next) {
+  response(next) {
     return next().then((response) => response.enhance({
       headers: {
         'x-middleware-phase': 'response',
@@ -84,7 +84,7 @@ export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
 })
 
 export const headerMiddlewareV2 = ({ resourceName, resourceMethod }) => ({
-  prepareRequest (next) {
+  prepareRequest(next) {
     return next().then(request => request.enhance({
       headers: {
         'x-middleware-phase': 'prepare-request'
@@ -92,7 +92,7 @@ export const headerMiddlewareV2 = ({ resourceName, resourceMethod }) => ({
     }))
   },
 
-  response (next) {
+  response(next) {
     return next().then((response) => response.enhance({
       headers: {
         'x-middleware-phase': 'response',
@@ -104,7 +104,7 @@ export const headerMiddlewareV2 = ({ resourceName, resourceMethod }) => ({
 })
 
 export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
-  async request (request) {
+  async request(request) {
     return request.enhance({
       headers: {
         'x-middleware-phase': 'request'
@@ -112,7 +112,7 @@ export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
     })
   },
 
-  response (next) {
+  response(next) {
     return next().then((response) => response.enhance({
       headers: {
         'x-middleware-phase': 'response',
@@ -124,7 +124,7 @@ export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
 })
 
 export const hostMiddleware = () => ({
-  prepareRequest (next) {
+  prepareRequest(next) {
     return next().then((request) =>
       request.enhance({
         host: 'http://new-host.com'
@@ -144,11 +144,11 @@ export const resetCountMiddleware = () => {
 }
 
 export const countMiddleware = () => ({
-  request (request) {
+  request(request) {
     return request
   },
 
-  response (next) {
+  response(next) {
     return next().then((response) => {
       countMiddlewareStack.push(response.data())
       return new Response(response.request(), 200, ++countMiddlewareCurrent)
@@ -167,7 +167,7 @@ export const resetCountPrepareRequestMiddleware = () => {
 }
 
 export const countPrepareRequestMiddleware = () => ({
-  prepareRequest (next) {
+  prepareRequest(next) {
     return next().then((request) => {
       const count = parseInt(request.header('x-count'), 10)
       countPrepareRequestMiddlewareStack.push(count)
@@ -175,7 +175,7 @@ export const countPrepareRequestMiddleware = () => ({
     })
   },
 
-  response (next) {
+  response(next) {
     return next()
   }
 })

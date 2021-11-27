@@ -2,7 +2,7 @@ import LogMiddleware from 'src/middlewares/log'
 import CsrfMiddleware from 'src/middlewares/csrf'
 const Csrf = CsrfMiddleware('csrfToken', 'x-csrf-token')
 
-export default function createManifest (host = null, middlewares = []) {
+export default function createManifest(host = null, middlewares = []) {
   return {
     host: host,
     resources: {

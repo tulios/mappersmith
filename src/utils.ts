@@ -1,5 +1,7 @@
+// eslint-disable-next-line no-undef
 let _process: NodeJS.Process, getNanoSeconds: (() => number) | undefined, loadTime: number | undefined
-try { _process = eval('typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined') } catch (e) {} // eslint-disable-line no-eval
+// eslint-disable-next-line no-eval, no-empty
+try { _process = eval('typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined') } catch (e) {}
 
 const hasProcessHrtime = () => {
   return (typeof _process !== 'undefined' && _process !== null) && _process.hrtime
@@ -105,8 +107,9 @@ export const lowerCaseObjectKeys = (obj: Record<string, unknown>) => {
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export const assign = Object.assign || function (target: Record<string, unknown>) {
   for (let i = 1; i < arguments.length; i++) {
+    // eslint-disable-next-line prefer-rest-params
     const source = arguments[i]
-    for (let key in source) {
+    for (const key in source) {
       if (hasOwnProperty.call(source, key)) {
         target[key] = source[key]
       }

@@ -5,26 +5,30 @@ import { isTimeoutError } from './gateway/timeout-error'
 
 const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 
-function Gateway (request, configs = {}) {
+function Gateway(request, configs = {}) {
   this.request = request
   this.configs = configs
-  this.successCallback = function () {}
-  this.failCallback = function () {}
+  this.successCallback = function () {
+    return undefined
+  }
+  this.failCallback = function () {
+    return undefined
+  }
 }
 
 Gateway.extends = (methods) => assign({}, Gateway.prototype, methods)
 
 Gateway.prototype = {
-  options () {
+  options() {
     return this.configs
   },
 
-  shouldEmulateHTTP () {
+  shouldEmulateHTTP() {
     return this.options().emulateHTTP &&
       REGEXP_EMULATE_HTTP.test(this.request.method())
   },
 
-  call () {
+  call() {
     const timeStart = performanceNow()
     return new defaultConfigs.Promise((resolve, reject) => {
       this.successCallback = (response) => {
@@ -45,13 +49,13 @@ Gateway.prototype = {
     })
   },
 
-  dispatchResponse (response) {
+  dispatchResponse(response) {
     response.success()
       ? this.successCallback(response)
       : this.failCallback(response)
   },
 
-  dispatchClientError (message, error) {
+  dispatchClientError(message, error) {
     if (isTimeoutError(error) && this.options().enableHTTP408OnTimeouts) {
       this.failCallback(new Response(this.request, 408, message, {}, [error]))
     } else {
@@ -59,7 +63,7 @@ Gateway.prototype = {
     }
   },
 
-  prepareBody (method, headers) {
+  prepareBody(method, headers) {
     let body = this.request.body()
 
     if (this.shouldEmulateHTTP()) {

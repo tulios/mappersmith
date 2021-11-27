@@ -1,5 +1,5 @@
 declare module 'mappersmith/middleware/global-error-handler' {
-  import {Middleware, Response} from 'mappersmith'
+  import { Middleware, Response } from 'mappersmith'
 
   const GlobalErrorHandler: Middleware
 

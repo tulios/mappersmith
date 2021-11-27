@@ -7,36 +7,36 @@ import Gateway from '../gateway'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
 
-function HTTP (request) {
+function HTTP() {
   Gateway.apply(this, arguments)
 }
 
 HTTP.prototype = Gateway.extends({
-  get () {
+  get() {
     this.performRequest('get')
   },
 
-  head () {
+  head() {
     this.performRequest('head')
   },
 
-  post () {
+  post() {
     this.performRequest('post')
   },
 
-  put () {
+  put() {
     this.performRequest('put')
   },
 
-  patch () {
+  patch() {
     this.performRequest('patch')
   },
 
-  delete () {
+  delete() {
     this.performRequest('delete')
   },
 
-  performRequest (method) {
+  performRequest(method) {
     const headers = {}
     // eslint-disable-next-line node/no-deprecated-api
     const defaults = url.parse(this.request.url())
@@ -122,7 +122,7 @@ HTTP.prototype = Gateway.extends({
     httpRequest.end()
   },
 
-  onResponse (httpResponse, httpOptions, requestParams) {
+  onResponse(httpResponse, httpOptions, requestParams) {
     const rawData = []
 
     if (!this.request.isBinary()) {
@@ -152,7 +152,7 @@ HTTP.prototype = Gateway.extends({
     })
   },
 
-  onError (e) {
+  onError(e) {
     if (this.canceled) {
       return
     }
@@ -160,7 +160,7 @@ HTTP.prototype = Gateway.extends({
     this.dispatchClientError(e.message, e)
   },
 
-  createResponse (httpResponse, rawData) {
+  createResponse(httpResponse, rawData) {
     return new Response(
       this.request,
       httpResponse.statusCode,

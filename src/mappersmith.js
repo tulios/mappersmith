@@ -119,7 +119,7 @@ export const setContext = (context) => {
 /**
  * @param {Object} manifest
  */
-export default function forge (manifest) {
+export default function forge(manifest) {
   const GatewayClassFactory = () => configs.gateway
   return new ClientBuilder(manifest, GatewayClassFactory, configs).build()
 }

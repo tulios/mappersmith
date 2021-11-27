@@ -35,6 +35,16 @@ declare module 'mappersmith/test' {
   export type MockRequestBodyFunction = (requestBody: MockRequestBody) => MockRequestBody
   export type MockRequestHeaders = Headers
   export type MockRequestHeadersFunction = (requestHeaders: MockRequestHeaders) => MockRequestHeaders
+
+  export type TestMatchPredicate = (value: string) => boolean;
+
+  export interface TestMatchFunctions {
+    stringMatching(value: RegExp): TestMatchPredicate
+    stringContaining(value: string): TestMatchPredicate
+    uuid4(): TestMatchPredicate
+    anything(): TestMatchPredicate
+  }
+
   export interface MockRequestArgs {
     method: string
     url: string | MockRequestUrlFunction | TestMatchPredicate
@@ -49,14 +59,5 @@ declare module 'mappersmith/test' {
 
   export function mockRequest(args: MockRequestArgs): MockAssert
 
-  export type TestMatchPredicate = (value: string) => boolean;
-  export interface TestMatchFunctions {
-    stringMatching(value: RegExp): TestMatchPredicate
-    stringContaining(value: string): TestMatchPredicate
-    uuid4(): TestMatchPredicate
-    anything(): TestMatchPredicate
-  }
-
-  export var m: TestMatchFunctions
+  export const m: TestMatchFunctions
 }
-

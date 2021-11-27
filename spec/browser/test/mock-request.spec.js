@@ -178,7 +178,7 @@ describe('Test lib / mock request', () => {
         const error = response.rawData ? response.rawData() : response
         done.fail(`Expected this request to fail: ${error}`)
       })
-      .catch((response) => {
+      .catch(() => {
         done()
       })
   })

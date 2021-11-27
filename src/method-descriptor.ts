@@ -28,7 +28,7 @@ export type RenewFn = () => Promise<object>
 export interface MiddlewareDescriptor {
   /**
    * @deprecated: Please use prepareRequest instead
-   */ 
+   */
   request?(request: Request): Promise<Request> | Request
   /**
    * @since 2.27.0
@@ -60,7 +60,7 @@ interface MethodDescriptorParams {
   middleware: Array<Middleware>
   middlewares: Array<Middleware>
   params: Parameters
-  path: string | ((args: Record<string, any>) => string)
+  path: string | ((args: Record<string, unknown>) => string)
   queryParamAlias: Record<string, string>
   timeoutAttr: string
 }
@@ -84,7 +84,7 @@ interface MethodDescriptorParams {
  *   @param {Object} params.queryParamAlias
  *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
- export default class MethodDescriptor {
+export default class MethodDescriptor {
   public allowResourceHostOverride: boolean
   public authAttr: string
   public binary: boolean

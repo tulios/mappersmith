@@ -35,15 +35,15 @@ export const defaultRetryConfigs = {
  *   @param {Number} retryConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} retryConfigs.retries (default: 5) - max retries
  */
-export default (customConfigs = {}) => function RetryMiddleware () {
+export default (customConfigs = {}) => function RetryMiddleware() {
   return {
-    request (request) {
+    request(request) {
       this.enableRetry = (request.method() === 'get')
       this.inboundRequest = request
       return request
     },
 
-    response (next) {
+    response(next) {
       const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
 
       if (!this.enableRetry) {

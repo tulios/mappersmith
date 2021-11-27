@@ -2,7 +2,7 @@
  * Adds started_at, ended_at and duration headers to the response
  */
 const DurationMiddleware = ({ mockRequest } = {}) => ({
-  prepareRequest (next) {
+  prepareRequest(next) {
     if (mockRequest) {
       return next()
     }
@@ -12,7 +12,7 @@ const DurationMiddleware = ({ mockRequest } = {}) => ({
     }))
   },
 
-  response (next) {
+  response(next) {
     return next().then((response) => {
       const endedAt = Date.now()
       const startedAt = response.request().headers()['x-started-at']

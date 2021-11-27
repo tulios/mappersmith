@@ -11,7 +11,7 @@ export const setErrorHandler = (errorHandler) => {
  * function returns `true` it prevents the original promise to continue.
  */
 const GlobalErrorHandlerMiddleware = () => ({
-  response (next) {
+  response(next) {
     return new configs.Promise((resolve, reject) => {
       next()
         .then((response) => resolve(response))

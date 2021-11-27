@@ -26,7 +26,7 @@
     "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
     "build": "yarn build:types && yarn build:node && yarn build:browser",
     "release": "./scripts/release.sh",
-    "lint": "yarn eslint \"{src,spec}/**/*.js\""
+    "lint": "yarn eslint \"{src,spec,typings}/**/*.[j|t]s\""
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,10 @@
     "./src/gateway/http.js": false,
     "./gateway/http.js": false
   },
+  "volta": {
+    "node": "12.22.7",
+    "yarn": "1.22.11"
+  },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
@@ -63,6 +67,8 @@
     "@babel/register": "<7.12.0",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.1",
     "@types/node": "^16.10.3",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.2.2",

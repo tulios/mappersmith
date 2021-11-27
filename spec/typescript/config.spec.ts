@@ -14,7 +14,7 @@ const MyMiddleware: Middleware = () => ({
   }
 })
 
-setContext({ some: 'data'})
+setContext({ some: 'data' })
 
 configs.maxMiddlewareStackExecutionAllowed = 2
 configs.middleware = [MyMiddleware]
@@ -26,7 +26,7 @@ configs.gatewayConfigs.Fetch = {
 configs.gatewayConfigs.HTTP = {
   configure() {
     return {
-      port: "1234"
+      port: '1234'
     }
   }
 }

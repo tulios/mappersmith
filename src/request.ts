@@ -31,28 +31,21 @@ export class Request {
   }
 
   public params() {
-    const params = assign(
-      {},
-      this.methodDescriptor.params,
-      this.requestParams
-    )
+    const params = assign({}, this.methodDescriptor.params, this.requestParams)
 
-    const isParam = (key: string) => (
+    const isParam = (key: string) =>
       key !== this.methodDescriptor.headersAttr &&
-        key !== this.methodDescriptor.bodyAttr &&
-        key !== this.methodDescriptor.authAttr &&
-        key !== this.methodDescriptor.timeoutAttr &&
-        key !== this.methodDescriptor.hostAttr
-    )
+      key !== this.methodDescriptor.bodyAttr &&
+      key !== this.methodDescriptor.authAttr &&
+      key !== this.methodDescriptor.timeoutAttr &&
+      key !== this.methodDescriptor.hostAttr
 
-    return Object
-      .keys(params)
-      .reduce((obj, key) => {
-        if (isParam(key)) {
-          obj[key] = params[key]
-        }
-        return obj
-      }, {} as Parameters)
+    return Object.keys(params).reduce((obj, key) => {
+      if (isParam(key)) {
+        obj[key] = params[key]
+      }
+      return obj
+    }, {} as Parameters)
   }
 
   /**
@@ -112,7 +105,7 @@ export class Request {
       dynamicSegmentKeys.push(match[1])
     }
 
-    for (let key of dynamicSegmentKeys) {
+    for (const key of dynamicSegmentKeys) {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
       const value = params[key]
       if (value != null && typeof value !== 'object') {

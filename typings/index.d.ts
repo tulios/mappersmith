@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference path="./middleware/basic-auth.d.ts" />
 /// <reference path="./middleware/csrf.d.ts" />
 /// <reference path="./middleware/duration.d.ts" />
@@ -10,7 +11,18 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
-  type Request = import("../src/request").Request
+  export type Request = import('../src/request').Request
+  export type AbortFn = import('../src/method-descriptor').AbortFn
+  export type Authorization = import('../src/method-descriptor').Authorization
+  export type Context = import('../src/method-descriptor').Context
+  export type Headers = import('../src/method-descriptor').Headers
+  export type Middleware = import('../src/method-descriptor').Middleware
+  export type MiddlewareDescriptor = import('../src/method-descriptor').MiddlewareDescriptor
+  export type MiddlewareParams = import('../src/method-descriptor').MiddlewareParams
+  export type Parameters = import('../src/method-descriptor').Parameters
+  export type RenewFn = import('../src/method-descriptor').RenewFn
+  export type RequestGetter = import('../src/method-descriptor').RequestGetter
+  export type ResponseGetter = import('../src/method-descriptor').ResponseGetter
 
   export interface ResponseParams {
     readonly status: number
@@ -33,19 +45,8 @@ declare module 'mappersmith' {
     enhance(extras: Partial<ResponseParams>): Response
   }
 
-  type AbortFn = import("../src/method-descriptor").AbortFn
-  type Authorization = import("../src/method-descriptor").Authorization
-  type Context = import("../src/method-descriptor").Context
-  type Headers = import("../src/method-descriptor").Headers
-  type Middleware = import("../src/method-descriptor").Middleware
-  type MiddlewareDescriptor = import("../src/method-descriptor").MiddlewareDescriptor
-  type MiddlewareParams = import("../src/method-descriptor").MiddlewareParams
-  type Parameters = import("../src/method-descriptor").Parameters
-  type RenewFn = import("../src/method-descriptor").RenewFn
-  type RequestGetter = import("../src/method-descriptor").RequestGetter
-  type ResponseGetter = import("../src/method-descriptor").ResponseGetter
-
   export type AsyncFunctions<HashType> = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
   }
 
@@ -53,22 +54,11 @@ declare module 'mappersmith' {
     [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
   }
 
-  export interface Options<ResourcesType> {
-    readonly clientId?: string
-    readonly host?: string
-    readonly allowResourceHostOverride?: boolean
-    readonly ignoreGlobalMiddleware?: boolean
-    readonly middleware?: Middleware[]
-    readonly gatewayConfigs?: Partial<GatewayConfiguration>
-    // @alias middleware
-    readonly middlewares?: Middleware[]
-    readonly resources: ResourcesType
-  }
-
   export interface Gateway {
     call(): void
     dispatchClientError(message: string, error: Error): void
     dispatchResponse(response: Response): void
+    // eslint-disable-next-line @typescript-eslint/ban-types
     extends(methods: {[fn: string]: Function}): void
     options(): object
     prepareBody(method: string, headers: Headers): string
@@ -84,7 +74,7 @@ declare module 'mappersmith' {
     put(): void
   }
 
-  export interface FetchGateway extends Gateway {}
+  export type FetchGateway = Gateway
 
   export interface HTTPGateway extends Gateway, NetworkGateway {
     createResponse(response: Response, rawData: string): Response
@@ -110,6 +100,7 @@ declare module 'mappersmith' {
   }
 
   export interface HTTPRequestParams {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
   }
 
@@ -140,10 +131,23 @@ declare module 'mappersmith' {
     gatewayConfigs: GatewayConfiguration
     maxMiddlewareStackExecutionAllowed: number
     middleware: Middleware[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Promise: Promise<any>
   }
 
-  export var configs: Configuration
+  export interface Options<ResourcesType> {
+    readonly clientId?: string
+    readonly host?: string
+    readonly allowResourceHostOverride?: boolean
+    readonly ignoreGlobalMiddleware?: boolean
+    readonly middleware?: Middleware[]
+    readonly gatewayConfigs?: Partial<GatewayConfiguration>
+    // @alias middleware
+    readonly middlewares?: Middleware[]
+    readonly resources: ResourcesType
+  }
+
+  export const configs: Configuration
 
   export function setContext(context: Context): void
 

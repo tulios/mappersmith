@@ -1,4 +1,4 @@
-import forge, {Middleware} from 'mappersmith'
+import forge, { Middleware } from 'mappersmith'
 
 const MyMiddleware: Middleware = () => ({
   request(request) {
