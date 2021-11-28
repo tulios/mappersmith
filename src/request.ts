@@ -102,7 +102,8 @@ export class Request {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
       const value = params[key]
       if (value != null && typeof value !== 'object') {
-        path = path.replace(pattern, encodeURIComponent(value))
+        const valueToReplace = this.methodDescriptor.disableParamsEncode ? value.toString() : encodeURIComponent(value)
+        path = path.replace(pattern, valueToReplace)
         delete params[key]
       }
     }

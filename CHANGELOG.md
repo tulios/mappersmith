@@ -11,6 +11,10 @@ Refactored:
   - Migrated `Request` to typescript
   - Migrated `Response` to typescript
 
+## 2.36.0
+
+  - Disable encodeURI on parameters if `disableParamsEncode=true`
+
 ## 2.35.0
 
 Fixed:

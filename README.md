@@ -176,6 +176,16 @@ client.User.byId(/* missing id */)
 // throw '[Mappersmith] required parameter missing (id), "/users/{id}" cannot be resolved'
 ```
 
+**NOTE**: Since version `2.36.0` you can set `disableParamsEncode: true` to disable encodeURI on parameters.
+
+```javascript
+const client = forge({
+  host: 'https://custom-host.com',
+  disableParamsEncode: true,
+  resources: { ... }
+})
+```
+
 ### <a name="default-parameters"></a> Default Parameters
 
 It is possible to configure default parameters for your resources, just use the key `params` in the definition. It will replace params in the URL or include query strings.

@@ -6,6 +6,7 @@ import { assign } from './utils'
  * @param {Object} obj
  *   @param {String} obj.host
  *   @param {boolean} obj.allowResourceHostOverride - default: false
+ *   @param {boolean} obj.disableParamsEncode - default: false
  *   @param {Object} obj.gatewayConfigs - default: base values from mappersmith
  *   @param {Object} obj.ignoreGlobalMiddleware - default: false
  *   @param {Object} obj.resources - default: {}
@@ -15,6 +16,7 @@ import { assign } from './utils'
 function Manifest(obj, { gatewayConfigs = null, middleware = [], context = {} }) {
   this.host = obj.host
   this.allowResourceHostOverride = obj.allowResourceHostOverride || false
+  this.disableParamsEncode = obj.disableParamsEncode || false
   this.bodyAttr = obj.bodyAttr
   this.headersAttr = obj.headersAttr
   this.authAttr = obj.authAttr
@@ -65,6 +67,7 @@ Manifest.prototype = {
         {
           host: this.host,
           allowResourceHostOverride: this.allowResourceHostOverride,
+          disableParamsEncode: this.disableParamsEncode,
           bodyAttr: this.bodyAttr,
           headersAttr: this.headersAttr,
           authAttr: this.authAttr,
