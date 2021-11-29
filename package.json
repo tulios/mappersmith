@@ -21,7 +21,7 @@
     "test:types": "yarn tsc --noEmit",
     "test:types:watch": "yarn test:types --watch",
     "test:unit": "concurrently --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn integration-server\"",
-    "test": "yarn test:types && yarn prettier --check . && yarn test:unit",
+    "test": "yarn test:types && yarn prettier --check . && yarn lint && yarn test:unit",
     "build:node": "rm -rf lib/* && yarn babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.ts'",
     "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
     "build": "yarn build:node && yarn build:browser",
