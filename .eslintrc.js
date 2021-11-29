@@ -2,18 +2,7 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
-  extends: ['standard', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
-  rules: {
-    'space-before-function-paren': [
-      'error',
-      {
-        anonymous: 'always',
-        named: 'never',
-        asyncArrow: 'always',
-      },
-    ],
-    'comma-dangle': ['error', 'only-multiline'],
-  },
+  extends: ['standard', 'eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
   env: {
     browser: true,
     node: true,
