@@ -1,68 +1,22 @@
-// COMBAK: All of these should not live here, they were moved from typings/index.d.ts
-
-export interface Headers {
-  readonly [header: string]: string
-}
-
-export interface Authorization {
-  readonly password: string
-  readonly username: string
-}
-
-export interface Parameters {
-  readonly auth?: Authorization
-  readonly timeout?: number
-  [param: string]: object | string | number | boolean | undefined
-}
-
-export type Context = object
-
-export type RequestGetter = () => Promise<Request>
-
-export type ResponseGetter = () => Promise<Response>
-
-export type AbortFn = (error: Error) => void
-
-export type RenewFn = () => Promise<object>
-
-export interface MiddlewareDescriptor {
-  /**
-   * @deprecated: Please use prepareRequest instead
-   */
-  request?(request: Request): Promise<Request> | Request
-  /**
-   * @since 2.27.0
-   * Replaced the request method
-   */
-  prepareRequest?(next: RequestGetter, abort: AbortFn): Promise<Request | void>
-  response?(next: ResponseGetter, renew: RenewFn): Promise<Response | object>
-}
-
-export interface MiddlewareParams {
-  readonly clientId: string
-  readonly context: Context
-  readonly resourceMethod: string
-  readonly resourceName: string
-}
-
-export type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor
+import type { Headers, RequestParams, Params } from './types'
+import type { Middleware } from './middleware'
 
 interface MethodDescriptorParams {
-  allowResourceHostOverride: boolean
-  authAttr: string
-  binary: boolean
-  bodyAttr: string
-  headers: Headers
-  headersAttr: string
+  allowResourceHostOverride?: boolean
+  authAttr?: string
+  binary?: boolean
+  bodyAttr?: string
+  headers?: Headers
+  headersAttr?: string
   host: string
-  hostAttr: string
-  method: string
-  middleware: Array<Middleware>
-  middlewares: Array<Middleware>
-  params: Parameters
-  path: string | ((args: Record<string, unknown>) => string)
-  queryParamAlias: Record<string, string>
-  timeoutAttr: string
+  hostAttr?: string
+  method?: string
+  middleware?: Array<Middleware>
+  middlewares?: Array<Middleware>
+  params?: Params
+  path: string | ((args: RequestParams) => string)
+  queryParamAlias?: Record<string, string>
+  timeoutAttr?: string
 }
 
 /**
@@ -79,26 +33,26 @@ interface MethodDescriptorParams {
  *   @param {String} params.method
  *   @param {Middleware[]} params.middleware
  *   @param {Middleware[]} params.middlewares - alias for middleware
- *   @param {Parameters} params.params
+ *   @param {RequestParams} params.params
  *   @param {String|Function} params.path
  *   @param {Object} params.queryParamAlias
  *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
-export default class MethodDescriptor {
-  public allowResourceHostOverride: boolean
-  public authAttr: string
-  public binary: boolean
-  public bodyAttr: string
-  public headers: Headers
-  public headersAttr: string
-  public host: string
-  public hostAttr: string
-  public method: string
-  public middleware: Middleware[]
-  public params: Parameters
-  public path: string | ((args: Parameters) => string)
-  public queryParamAlias: Record<string, string>
-  public timeoutAttr: string
+export class MethodDescriptor {
+  public readonly allowResourceHostOverride: boolean
+  public readonly authAttr: string
+  public readonly binary: boolean
+  public readonly bodyAttr: string
+  public readonly headers?: Headers
+  public readonly headersAttr: string
+  public readonly host: string
+  public readonly hostAttr: string
+  public readonly method: string
+  public readonly middleware: Middleware[]
+  public readonly params?: RequestParams
+  public readonly path: string | ((args: RequestParams) => string)
+  public readonly queryParamAlias: Record<string, string>
+  public readonly timeoutAttr: string
 
   constructor(params: MethodDescriptorParams) {
     this.allowResourceHostOverride = params.allowResourceHostOverride || false
@@ -120,3 +74,5 @@ export default class MethodDescriptor {
     this.middleware = resourceMiddleware
   }
 }
+
+export default MethodDescriptor

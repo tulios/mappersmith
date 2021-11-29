@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
+    "noEmit": true,
     "incremental": true,
-    "declaration": true,
     "strict": true,
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true,
@@ -17,7 +16,6 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "spec/**/*",
+    "node_modules"
   ]
 }

@@ -4,10 +4,12 @@
 
 Fixed:
   - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match
+  - Fix `Request.pathTemplate` to return result of the function instead of the function itself
 
 Refactored:
   - Migrated `MethodDescriptor` to typescript
   - Migrated `Request` to typescript
+  - Migrated `Response` to typescript
 
 ## 2.35.0
 

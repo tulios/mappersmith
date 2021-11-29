@@ -38,6 +38,7 @@ HTTP.prototype = Gateway.extends({
 
   performRequest(method) {
     const headers = {}
+    // FIXME: Deprecated API
     // eslint-disable-next-line node/no-deprecated-api
     const defaults = url.parse(this.request.url())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
@@ -50,11 +51,11 @@ HTTP.prototype = Gateway.extends({
       headers['content-length'] = Buffer.byteLength(body)
     }
 
-    const handler = (defaults.protocol === 'https:') ? https : http
+    const handler = defaults.protocol === 'https:' ? https : http
 
     const requestParams = assign(defaults, {
       method: requestMethod,
-      headers: assign(headers, this.request.headers())
+      headers: assign(headers, this.request.headers()),
     })
 
     const auth = this.request.auth()
@@ -78,10 +79,11 @@ HTTP.prototype = Gateway.extends({
       httpOptions.onRequestWillStart(requestParams)
     }
 
-    const httpRequest = handler
-      .request(requestParams, (httpResponse) => this.onResponse(httpResponse, httpOptions, requestParams))
+    const httpRequest = handler.request(requestParams, (httpResponse) =>
+      this.onResponse(httpResponse, httpOptions, requestParams)
+    )
 
-    httpRequest.on('socket', socket => {
+    httpRequest.on('socket', (socket) => {
       if (httpOptions.onRequestSocketAssigned) {
         httpOptions.onRequestSocketAssigned(requestParams)
       }
@@ -167,7 +169,7 @@ HTTP.prototype = Gateway.extends({
       this.request.isBinary() ? Buffer.concat(rawData) : rawData.join(''),
       httpResponse.headers
     )
-  }
+  },
 })
 
 export default HTTP

@@ -12,41 +12,21 @@
 
 declare module 'mappersmith' {
   export type Request = import('../src/request').Request
-  export type AbortFn = import('../src/method-descriptor').AbortFn
-  export type Authorization = import('../src/method-descriptor').Authorization
-  export type Context = import('../src/method-descriptor').Context
-  export type Headers = import('../src/method-descriptor').Headers
-  export type Middleware = import('../src/method-descriptor').Middleware
-  export type MiddlewareDescriptor = import('../src/method-descriptor').MiddlewareDescriptor
-  export type MiddlewareParams = import('../src/method-descriptor').MiddlewareParams
-  export type Parameters = import('../src/method-descriptor').Parameters
-  export type RenewFn = import('../src/method-descriptor').RenewFn
-  export type RequestGetter = import('../src/method-descriptor').RequestGetter
-  export type ResponseGetter = import('../src/method-descriptor').ResponseGetter
+  export type Headers = import('../src/types').Headers
+  export type Parameters = import('../src/types').Params
+  export type Response = import('../src/response').Response
 
-  export interface ResponseParams {
-    readonly status: number
-    readonly rawData: string
-    readonly headers: Headers
-    readonly error: Error
-  }
-
-  export interface Response {
-    readonly responseStatus: number
-    request(): Request
-    status(): number
-    success(): boolean
-    headers(): Headers
-    header(name: string): string | undefined
-    rawData(): string | null
-    data<DataType = object | string>(): DataType
-    isContentTypeJSON(): boolean
-    error(): Error | null
-    enhance(extras: Partial<ResponseParams>): Response
-  }
+  export type AbortFn = import('../src/middleware').AbortFn
+  export type Authorization = import('../src/middleware').Authorization
+  export type Context = import('../src/middleware').Context
+  export type Middleware = import('../src/middleware').Middleware
+  export type MiddlewareDescriptor = import('../src/middleware').MiddlewareDescriptor
+  export type MiddlewareParams = import('../src/middleware').MiddlewareParams
+  export type RenewFn = import('../src/middleware').RenewFn
+  export type RequestGetter = import('../src/middleware').RequestGetter
+  export type ResponseGetter = import('../src/middleware').ResponseGetter
 
   export type AsyncFunctions<HashType> = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
   }
 
@@ -59,7 +39,7 @@ declare module 'mappersmith' {
     dispatchClientError(message: string, error: Error): void
     dispatchResponse(response: Response): void
     // eslint-disable-next-line @typescript-eslint/ban-types
-    extends(methods: {[fn: string]: Function}): void
+    extends(methods: { [fn: string]: Function }): void
     options(): object
     prepareBody(method: string, headers: Headers): string
     shouldEmulateHTTP(): boolean
@@ -142,7 +122,9 @@ declare module 'mappersmith' {
     readonly ignoreGlobalMiddleware?: boolean
     readonly middleware?: Middleware[]
     readonly gatewayConfigs?: Partial<GatewayConfiguration>
-    // @alias middleware
+    /**
+     * @alias middleware
+     */
     readonly middlewares?: Middleware[]
     readonly resources: ResourcesType
   }
@@ -151,5 +133,7 @@ declare module 'mappersmith' {
 
   export function setContext(context: Context): void
 
-  export default function forge<ResourcesType>(options: Options<ResourcesType>): Client<ResourcesType>
+  export default function forge<ResourcesType>(
+    options: Options<ResourcesType>
+  ): Client<ResourcesType>
 }

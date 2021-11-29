@@ -1,10 +1,9 @@
 import forge from 'mappersmith'
 import EncodeJson from 'mappersmith/middleware/encode-json'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const client = forge({
-  middleware: [ EncodeJson ],
+forge({
+  middleware: [EncodeJson],
   clientId: 'github',
   host: 'https://status.github.com',
-  resources: {}
+  resources: {},
 })

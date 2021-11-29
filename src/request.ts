@@ -1,20 +1,10 @@
-import MethodDescriptor, { Parameters } from './method-descriptor'
+import { MethodDescriptor } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
-import type { Primitive } from './utils'
+import type { Headers, Primitive, RequestParams } from './types'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
-
-export interface RequestParams {
-  readonly auth?: Record<string, string>
-  readonly body?: Record<string, string> | string
-  readonly headers?: Headers
-  readonly host?: string
-  readonly params?: Parameters
-  readonly timeout?: number
-  [param: string]: object | string | number | boolean | undefined
-}
 
 /**
  * @typedef Request
@@ -30,22 +20,25 @@ export class Request {
     this.requestParams = requestParams
   }
 
-  public params() {
-    const params = assign({}, this.methodDescriptor.params, this.requestParams)
-
-    const isParam = (key: string) =>
+  private isParam(key: string) {
+    return (
       key !== this.methodDescriptor.headersAttr &&
       key !== this.methodDescriptor.bodyAttr &&
       key !== this.methodDescriptor.authAttr &&
       key !== this.methodDescriptor.timeoutAttr &&
       key !== this.methodDescriptor.hostAttr
+    )
+  }
+
+  public params() {
+    const params = assign({}, this.methodDescriptor.params, this.requestParams)
 
     return Object.keys(params).reduce((obj, key) => {
-      if (isParam(key)) {
+      if (this.isParam(key)) {
         obj[key] = params[key]
       }
       return obj
-    }, {} as Parameters)
+    }, {} as RequestParams)
   }
 
   /**
@@ -147,13 +140,15 @@ export class Request {
    * Example: '/some/{param}/path'
    */
   public pathTemplate() {
-    let path = this.methodDescriptor.path
+    const path = this.methodDescriptor.path
 
-    if (typeof this.methodDescriptor.path !== 'function' && this.methodDescriptor.path[0] !== '/') {
-      path = `/${path}`
+    const prependSlash = (str: string) => (str[0] !== '/' ? `/${str}` : str)
+
+    if (typeof path === 'function') {
+      return prependSlash(path(this.params()))
     }
 
-    return path
+    return prependSlash(path)
   }
 
   /**
@@ -170,13 +165,10 @@ export class Request {
    * lowercase
    */
   public headers() {
-    return lowerCaseObjectKeys(
-      assign(
-        {},
-        this.methodDescriptor.headers,
-        this.requestParams?.[this.methodDescriptor.headersAttr]
-      )
-    )
+    const headerAttr = this.methodDescriptor.headersAttr
+    const headers = (this.requestParams[headerAttr] || {}) as Headers
+    const mergedHeaders = { ...this.methodDescriptor.headers, ...headers } as Headers
+    return lowerCaseObjectKeys(mergedHeaders)
   }
 
   /**
@@ -187,15 +179,15 @@ export class Request {
   }
 
   public body() {
-    return this.requestParams?.[this.methodDescriptor.bodyAttr]
+    return this.requestParams[this.methodDescriptor.bodyAttr]
   }
 
   public auth() {
-    return this.requestParams?.[this.methodDescriptor.authAttr]
+    return this.requestParams[this.methodDescriptor.authAttr]
   }
 
   public timeout() {
-    return this.requestParams?.[this.methodDescriptor.timeoutAttr]
+    return this.requestParams[this.methodDescriptor.timeoutAttr]
   }
 
   /**
@@ -205,7 +197,7 @@ export class Request {
    *   @param {String|Object} extras.body - it will replace the current body
    *   @param {Headers} extras.headers - it will be merged with current headers
    *   @param {String} extras.host - it will replace the current timeout
-   *   @param {Parameters} extras.params - it will be merged with current params
+   *   @param {RequestParams} extras.params - it will be merged with current params
    *   @param {Number} extras.timeout - it will replace the current timeout
    */
   public enhance(extras: RequestParams) {
@@ -215,8 +207,13 @@ export class Request {
     const hostKey = this.methodDescriptor.hostAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
 
-    const requestParams = assign({}, this.requestParams, extras.params)
-    requestParams[headerKey] = assign({}, this.requestParams?.[headerKey], extras.headers)
+    // Note: The result of merging an instance of RequestParams with instance of Params
+    // is simply a RequestParams with even more [param: string]'s on it.
+    const requestParams: RequestParams = assign({}, this.requestParams, extras.params)
+
+    const headers = this.requestParams[headerKey] as Headers | undefined
+    const mergedHeaders = assign({}, headers, extras.headers)
+    requestParams[headerKey] = mergedHeaders
 
     extras.auth && (requestParams[authKey] = extras.auth)
     extras.body && (requestParams[bodyKey] = extras.body)
