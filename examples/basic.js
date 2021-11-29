@@ -7,9 +7,9 @@ const github = forge({
   host: 'https://status.github.com',
   resources: {
     Status: {
-      lastMessage: { path: '/api/last-message.json' }
-    }
-  }
+      lastMessage: { path: '/api/last-message.json' },
+    },
+  },
 })
 
 // profit!

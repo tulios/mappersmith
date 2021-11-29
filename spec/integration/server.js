@@ -21,7 +21,18 @@ app.use(bodyParser.json({ verify: extractRawBody }))
 app.use(bodyParser.urlencoded({ extended: true, verify: extractRawBody }))
 
 app.use(function (req, res, next) {
-  console.log(req.method.toUpperCase() + ' ' + req.path + ', RawBody: ' + req.rawBody + ', Body: ' + JSON.stringify(req.body) + ', Headers: ' + JSON.stringify(req.headers) + '\n')
+  console.log(
+    req.method.toUpperCase() +
+      ' ' +
+      req.path +
+      ', RawBody: ' +
+      req.rawBody +
+      ', Body: ' +
+      JSON.stringify(req.body) +
+      ', Headers: ' +
+      JSON.stringify(req.headers) +
+      '\n'
+  )
   next()
 })
 
@@ -87,9 +98,7 @@ app.get('/api/secure.json', function (req, res) {
 
 app.get('/api/timeout.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiTimeout' })
-  var waitTime = req.query.waitTime
-    ? parseInt(req.query.waitTime, 10)
-    : 100
+  var waitTime = req.query.waitTime ? parseInt(req.query.waitTime, 10) : 100
 
   setTimeout(function () {
     res.send(responses.apiTimeout)

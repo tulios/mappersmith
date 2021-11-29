@@ -1,13 +1,14 @@
 import forge, { setContext } from 'src/index'
 import MockAssert from 'src/mocks/mock-assert'
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
-import { getManifest, headerMiddleware, headerMiddlewareV2, asyncHeaderMiddleware } from 'spec/helper'
-
 import {
-  install as installMock,
-  uninstall as uninstallMock,
-  mockClient
-} from 'src/test'
+  getManifest,
+  headerMiddleware,
+  headerMiddlewareV2,
+  asyncHeaderMiddleware,
+} from 'spec/helper'
+
+import { install as installMock, uninstall as uninstallMock, mockClient } from 'src/test'
 
 describe('Test lib / mock resources', () => {
   let client
@@ -34,19 +35,18 @@ describe('Test lib / mock resources', () => {
   })
 
   it('defaults status 200 and automatically includes "application/json" for object responses', (done) => {
-    mockClient(client)
-      .resource('User')
-      .method('all')
-      .response({ ok1: true })
+    mockClient(client).resource('User').method('all').response({ ok1: true })
 
     client.User.all()
       .then((response) => {
         expect(response.request().method()).toEqual('get')
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual({ ok1: true })
-        expect(response.headers()).toEqual(jasmine.objectContaining({
-          'content-type': 'application/json'
-        }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({
+            'content-type': 'application/json',
+          })
+        )
         done()
       })
       .catch((response) => {
@@ -94,10 +94,7 @@ describe('Test lib / mock resources', () => {
   })
 
   it('works with different http methods', (done) => {
-    mockClient(client)
-      .resource('Blog')
-      .method('post')
-      .response({ created: true })
+    mockClient(client).resource('Blog').method('post').response({ created: true })
 
     client.Blog.post()
       .then((response) => {
@@ -113,10 +110,7 @@ describe('Test lib / mock resources', () => {
   })
 
   it('works with text responses', (done) => {
-    mockClient(client)
-      .resource('Blog')
-      .method('post')
-      .response('just text!')
+    mockClient(client).resource('Blog').method('post').response('just text!')
 
     client.Blog.post()
       .then((response) => {
@@ -132,19 +126,17 @@ describe('Test lib / mock resources', () => {
   })
 
   it('sets responseData and content type correctly over multiple mock requests', (done) => {
-    mockClient(client)
-      .resource('User')
-      .method('all')
-      .response({ key: 'value' })
+    mockClient(client).resource('User').method('all').response({ key: 'value' })
 
-    Promise
-      .resolve()
+    Promise.resolve()
       .then(() => client.User.all())
       .then((response) => {
         expect(response.responseData).toEqual('{"key":"value"}')
-        expect(response.headers()).toEqual(jasmine.objectContaining({
-          'content-type': 'application/json'
-        }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({
+            'content-type': 'application/json',
+          })
+        )
       })
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
@@ -153,9 +145,11 @@ describe('Test lib / mock resources', () => {
       .then(() => client.User.all())
       .then((response) => {
         expect(response.responseData).toEqual('{"key":"value"}')
-        expect(response.headers()).toEqual(jasmine.objectContaining({
-          'content-type': 'application/json'
-        }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({
+            'content-type': 'application/json',
+          })
+        )
         done()
       })
       .catch((response) => {
@@ -165,19 +159,15 @@ describe('Test lib / mock resources', () => {
   })
 
   it('works with functional responses', (done) => {
-    const getStatus = (request, mock) => mock.callsCount() === 0 ? 204 : 200
-    const getResponse = (request, mock) => mock.callsCount() === 0 ? 'first' : 'second'
+    const getStatus = (request, mock) => (mock.callsCount() === 0 ? 204 : 200)
+    const getResponse = (request, mock) => (mock.callsCount() === 0 ? 'first' : 'second')
 
-    mockClient(client)
-      .resource('Blog')
-      .method('post')
-      .status(getStatus)
-      .response(getResponse)
+    mockClient(client).resource('Blog').method('post').status(getStatus).response(getResponse)
 
-    Promise
-      .resolve()
+    Promise.resolve()
       .then(() => client.Blog.post())
-      .then((response) => { // returns first value of yield
+      .then((response) => {
+        // returns first value of yield
         expect(response.request().method()).toEqual('post')
         expect(response.status()).toEqual(204)
         expect(response.data()).toEqual('first')
@@ -187,7 +177,8 @@ describe('Test lib / mock resources', () => {
         done.fail(`test failed with promise error: ${error}`)
       })
       .then(() => client.Blog.post())
-      .then((response) => { // returns second value of yield
+      .then((response) => {
+        // returns second value of yield
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual('second')
       })
@@ -196,7 +187,8 @@ describe('Test lib / mock resources', () => {
         done.fail(`test failed with promise error: ${error}`)
       })
       .then(() => client.Blog.post())
-      .then((response) => { // keeps returning second value
+      .then((response) => {
+        // keeps returning second value
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual('second')
         done()
@@ -208,10 +200,7 @@ describe('Test lib / mock resources', () => {
   })
 
   it('works without a response', (done) => {
-    mockClient(client)
-      .resource('Blog')
-      .method('post')
-      .status(204)
+    mockClient(client).resource('Blog').method('post').status(204)
 
     client.Blog.post()
       .then((response) => {
@@ -337,10 +326,7 @@ describe('Test lib / mock resources', () => {
   })
 
   it('matches the query params independent of order', (done) => {
-    mockClient(client)
-      .resource('User')
-      .method('all')
-      .with({ param1: 'value1', param2: 'value2' })
+    mockClient(client).resource('User').method('all').with({ param1: 'value1', param2: 'value2' })
 
     client.User.all({ param1: 'value1', param2: 'value2' })
       .then((response) => {
@@ -407,9 +393,7 @@ describe('Test lib / mock resources', () => {
   })
 
   it('skips matching headers if none are provided by the mock', (done) => {
-    mockClient(client)
-      .resource('User')
-      .method('all')
+    mockClient(client).resource('User').method('all')
 
     client.User.all({ headers: { 'x-custom-header': 'value' } })
       .then((response) => {
@@ -423,12 +407,9 @@ describe('Test lib / mock resources', () => {
   })
 
   it('accepts a matcher function for header parameter', (done) => {
-    const isExpectedHeader = headers => headers['x-custom-header'] === 'value'
+    const isExpectedHeader = (headers) => headers['x-custom-header'] === 'value'
 
-    mockClient(client)
-      .resource('User')
-      .method('all')
-      .with({ headers: isExpectedHeader })
+    mockClient(client).resource('User').method('all').with({ headers: isExpectedHeader })
 
     client.User.all({ headers: { 'x-custom-header': 'value' } })
       .then((response) => {
@@ -468,8 +449,8 @@ describe('Test lib / mock resources', () => {
       params = {
         body: {
           title: 'blog title',
-          text: 'lorem ipsum'
-        }
+          text: 'lorem ipsum',
+        },
       }
     })
 
@@ -481,8 +462,7 @@ describe('Test lib / mock resources', () => {
         .status(200)
         .response({ ok: true })
 
-      client.Blog
-        .post(params)
+      client.Blog.post(params)
         .then((response) => {
           expect(response.status()).toEqual(200)
           expect(response.request().headers()['x-middleware-phase']).toEqual('request')
@@ -507,8 +487,7 @@ describe('Test lib / mock resources', () => {
         .response({ ok: true })
         .assertObject()
 
-      client.Blog
-        .post(params)
+      client.Blog.post(params)
         .then((response) => {
           expect(response.status()).toEqual(200)
           expect(response.request().headers()['x-middleware-phase']).toEqual('prepare-request')
@@ -533,8 +512,8 @@ describe('Test lib / mock resources', () => {
       params = {
         body: {
           title: 'blog title',
-          text: 'lorem ipsum'
-        }
+          text: 'lorem ipsum',
+        },
       }
     })
 
@@ -561,14 +540,14 @@ describe('Test lib / mock resources', () => {
 
     beforeEach(() => {
       const ContextMiddleware = ({ context }) => ({
-        request: req => req.enhance({ headers: { 'x-context': context.headerFromContext } })
+        request: (req) => req.enhance({ headers: { 'x-context': context.headerFromContext } }),
       })
       client = forge(getManifest([ContextMiddleware]))
       params = {
         body: {
           title: 'blog title',
-          text: 'lorem ipsum'
-        }
+          text: 'lorem ipsum',
+        },
       }
     })
 
@@ -582,8 +561,7 @@ describe('Test lib / mock resources', () => {
 
       setContext({ headerFromContext: 'header from context' })
 
-      client.Blog
-        .post(params)
+      client.Blog.post(params)
         .then((response) => {
           expect(response.status()).toEqual(200)
           expect(response.request().headers()['x-context']).toEqual('header from context')

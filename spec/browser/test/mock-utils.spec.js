@@ -5,12 +5,12 @@ describe('Test lib / mock utils', () => {
     it('is true when the B has all keys from A (and the same values)', () => {
       const A = {
         a: 1,
-        b: 2
+        b: 2,
       }
 
       const B = {
         ...A,
-        c: 3
+        c: 3,
       }
 
       expect(isSubset(A, B)).toBe(true)
@@ -19,12 +19,12 @@ describe('Test lib / mock utils', () => {
     it('is false if B is missing any keys from A', () => {
       const A = {
         a: 1,
-        b: 2
+        b: 2,
       }
 
       const B = {
         a: 1,
-        c: 3
+        c: 3,
       }
 
       expect(isSubset(A, B)).toBe(false)
@@ -33,12 +33,12 @@ describe('Test lib / mock utils', () => {
     it('is false when the B has all keys from A (but not the same values)', () => {
       const A = {
         a: 1,
-        b: 2
+        b: 2,
       }
 
       const B = {
         ...A,
-        b: 3
+        b: 3,
       }
 
       expect(isSubset(A, B)).toBe(false)
@@ -48,12 +48,12 @@ describe('Test lib / mock utils', () => {
       const A = {
         a: 1,
         b: undefined,
-        c: null
+        c: null,
       }
 
       const B = {
         a: 1,
-        c: 3
+        c: 3,
       }
 
       expect(isSubset(A, B)).toBe(true)
@@ -63,16 +63,16 @@ describe('Test lib / mock utils', () => {
       const A = {
         a: 1,
         b: {
-          c: 'I am nested'
-        }
+          c: 'I am nested',
+        },
       }
 
       const B = {
         a: 1,
         b: {
           c: 'I am nested',
-          d: 'me too'
-        }
+          d: 'me too',
+        },
       }
 
       expect(isSubset(A, B)).toBe(false)

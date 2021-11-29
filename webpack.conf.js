@@ -7,21 +7,17 @@ const env = process.env.NODE_ENV || 'development'
 const version = packageJson.version
 const link = packageJson.homepage
 
-let plugins = [
-  new webpack.DefinePlugin({ VERSION: JSON.stringify(version) })
-]
+let plugins = [new webpack.DefinePlugin({ VERSION: JSON.stringify(version) })]
 
-const devTool = (env === 'test')
-  ? 'inline-source-map'
-  : 'source-map'
+const devTool = env === 'test' ? 'inline-source-map' : 'source-map'
 
 if (env === 'production') {
   plugins = plugins.concat([
     new webpack.BannerPlugin({
       banner: `/*!\n * Mappersmith ${version}\n * ${link}\n */`,
       raw: true,
-      entryOnly: true
-    })
+      entryOnly: true,
+    }),
   ])
 }
 
@@ -30,10 +26,7 @@ module.exports = {
   context: __dirname,
   resolve: {
     extensions: ['.ts', '.js'],
-    modules: [
-      path.join(__dirname, '/node_modules'),
-      __dirname
-    ]
+    modules: [path.join(__dirname, '/node_modules'), __dirname],
   },
   entry: './src/index.js',
   output: {
@@ -41,21 +34,21 @@ module.exports = {
     filename: 'mappersmith.js',
     sourceMapFilename: 'mappersmith.map',
     library: 'mappersmith',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
   target: 'web',
   node: {
-    process: false
+    process: false,
   },
   optimization: {
     minimizer: [
       new UglifyJsPlugin({
         sourceMap: true,
         uglifyOptions: {
-          warnings: false
-        }
-      })
-    ]
+          warnings: false,
+        },
+      }),
+    ],
   },
   plugins: plugins,
   devtool: devTool,
@@ -64,8 +57,8 @@ module.exports = {
       {
         test: /\.[j|t]s$/,
         exclude: /node_modules/,
-        use: 'babel-loader'
-      }
-    ]
-  }
+        use: 'babel-loader',
+      },
+    ],
+  },
 }

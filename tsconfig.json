@@ -10,12 +10,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": [
-    "typings/**/*",
-    "spec/**/*",
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["typings/**/*", "spec/**/*", "src/**/*"],
+  "exclude": ["node_modules"]
 }

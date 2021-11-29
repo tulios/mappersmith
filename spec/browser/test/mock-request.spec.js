@@ -8,7 +8,7 @@ import {
   mockRequest,
   mockClient,
   unusedMocks,
-  m
+  m,
 } from 'src/test'
 
 describe('Test lib / mock request', () => {
@@ -28,8 +28,8 @@ describe('Test lib / mock request', () => {
       method: 'get',
       url: 'http://example.org/users?sort=desc',
       response: {
-        body: { ok3: true }
-      }
+        body: { ok3: true },
+      },
     })
 
     expect(mock instanceof MockAssert).toEqual(true)
@@ -40,8 +40,8 @@ describe('Test lib / mock request', () => {
       method: 'get',
       url: 'http://example.org/users?sort=desc',
       response: {
-        body: { ok3: true }
-      }
+        body: { ok3: true },
+      },
     })
 
     client.User.all({ sort: 'desc' })
@@ -49,9 +49,11 @@ describe('Test lib / mock request', () => {
         expect(response.request().method()).toEqual('get')
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual({ ok3: true })
-        expect(response.headers()).toEqual(jasmine.objectContaining({
-          'content-type': 'application/json'
-        }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({
+            'content-type': 'application/json',
+          })
+        )
         done()
       })
       .catch((response) => {
@@ -66,8 +68,8 @@ describe('Test lib / mock request', () => {
       response: {
         status: 201,
         headers: { 'x-test-response': 'mock' },
-        body: { ok4: true }
-      }
+        body: { ok4: true },
+      },
     })
 
     client.User.byId({ id: 16 })
@@ -89,8 +91,8 @@ describe('Test lib / mock request', () => {
       url: 'http://example.org/users/15',
       response: {
         status: 503,
-        body: { error: true }
-      }
+        body: { error: true },
+      },
     })
 
     client.User.byId({ id: 15 })
@@ -111,12 +113,11 @@ describe('Test lib / mock request', () => {
       url: 'http://example.org/blogs',
       body: 'param1=A&param2=B',
       response: {
-        body: { created: true }
-      }
+        body: { created: true },
+      },
     })
 
-    client.Blog
-      .post({ body: { param1: 'A', param2: 'B' } })
+    client.Blog.post({ body: { param1: 'A', param2: 'B' } })
       .then((response) => {
         expect(response.request().method()).toEqual('post')
         expect(response.status()).toEqual(200)
@@ -134,8 +135,8 @@ describe('Test lib / mock request', () => {
       method: 'post',
       url: 'http://example.org/blogs',
       response: {
-        body: 'just text!'
-      }
+        body: 'just text!',
+      },
     })
 
     client.Blog.post()
@@ -157,8 +158,8 @@ describe('Test lib / mock request', () => {
       url: 'http://example.org/blogs',
       body: (body) => body === 'ok',
       response: {
-        body: 'just text!'
-      }
+        body: 'just text!',
+      },
     })
 
     client.Blog.post({ body: 'ok' })
@@ -189,8 +190,8 @@ describe('Test lib / mock request', () => {
       url: 'http://example.org/blogs',
       body: { param1: 'value1', param2: 'value2' },
       response: {
-        body: 'just text!'
-      }
+        body: 'just text!',
+      },
     })
 
     client.Blog.post({ body: { param1: 'value1', param2: 'value2' } })
@@ -221,8 +222,8 @@ describe('Test lib / mock request', () => {
       method: 'get',
       url: m.stringMatching(/abc123def/),
       response: {
-        body: 'just text!'
-      }
+        body: 'just text!',
+      },
     })
 
     client.User.byId({ id: 'abc123def' })
@@ -243,7 +244,7 @@ describe('Test lib / mock request', () => {
       .resource('Blog')
       .method('post')
       .with({
-        body: m.anything()
+        body: m.anything(),
       })
       .response((request) => request.body())
       .assertObject()
@@ -258,7 +259,7 @@ describe('Test lib / mock request', () => {
       .resource('User')
       .method('byId')
       .with({
-        id: m.anything()
+        id: m.anything(),
       })
       .response((request) => request.params())
       .assertObject()
@@ -273,9 +274,9 @@ describe('Test lib / mock request', () => {
       .resource('Blog')
       .method('post')
       .with({
-        body: m.anything()
+        body: m.anything(),
       })
-      .status((request) => request.body().created ? 201 : 200)
+      .status((request) => (request.body().created ? 201 : 200))
       .assertObject()
 
     const response = await client.Blog.post({ body: { created: true } })
@@ -288,9 +289,9 @@ describe('Test lib / mock request', () => {
       .resource('User')
       .method('byId')
       .with({
-        id: m.anything()
+        id: m.anything(),
       })
-      .status((request) => request.params().id === 123 ? 200 : 404)
+      .status((request) => (request.params().id === 123 ? 200 : 404))
       .assertObject()
 
     const response = await client.User.byId({ id: 123 })
@@ -307,9 +308,11 @@ describe('Test lib / mock request', () => {
 
     it('returns count of unused mockClients when mock is being used', async () => {
       mockClient(client).resource('Blog').method('post')
-      mockClient(client).resource('Blog').method('post')
+      mockClient(client)
+        .resource('Blog')
+        .method('post')
         .with({
-          body: m.anything()
+          body: m.anything(),
         })
         .response((request) => request.body())
         .assertObject()
@@ -320,15 +323,31 @@ describe('Test lib / mock request', () => {
     })
 
     it('returns count of all unused mockRequest', async () => {
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
 
       expect(unusedMocks()).toEqual(2)
     })
 
     it('returns count of unused mockRequest when mock is being used', async () => {
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
 
       expect(unusedMocks()).toEqual(2)
       await client.User.all({ sort: 'desc' })
@@ -336,8 +355,16 @@ describe('Test lib / mock request', () => {
     })
 
     it('should return same count if same method is being mocked twice and called twice', async () => {
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
 
       await client.User.all({ sort: 'desc' })
       expect(unusedMocks()).toEqual(1)
@@ -348,8 +375,16 @@ describe('Test lib / mock request', () => {
 
     it('should return count 0 when all mocks are used', async () => {
       expect(unusedMocks()).toEqual(0)
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=desc', response: { body: { ok3: true } } })
-      mockRequest({ method: 'get', url: 'http://example.org/users?sort=asc', response: { body: { ok3: true } } })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=asc',
+        response: { body: { ok3: true } },
+      })
 
       expect(unusedMocks()).toEqual(2)
       await client.User.all({ sort: 'desc' })

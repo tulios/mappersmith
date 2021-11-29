@@ -7,9 +7,11 @@ const DurationMiddleware = ({ mockRequest } = {}) => ({
       return next()
     }
 
-    return next().then(request => request.enhance({
-      headers: { 'X-Started-At': Date.now() }
-    }))
+    return next().then((request) =>
+      request.enhance({
+        headers: { 'X-Started-At': Date.now() },
+      })
+    )
   },
 
   response(next) {
@@ -21,11 +23,11 @@ const DurationMiddleware = ({ mockRequest } = {}) => ({
         headers: {
           'X-Started-At': startedAt,
           'X-Ended-At': endedAt,
-          'X-Duration': endedAt - startedAt
-        }
+          'X-Duration': endedAt - startedAt,
+        },
       })
     })
-  }
+  },
 })
 
 export default DurationMiddleware

@@ -13,16 +13,16 @@ import { assign } from '../utils'
  * client.User.all()
  * // => header: "Authorization: Basic Ym9iOmJvYg=="
  */
-export default authConfig =>
+export default (authConfig) =>
   function BasicAuthMiddleware() {
     return {
       prepareRequest(next) {
-        return next().then(request => {
+        return next().then((request) => {
           const auth = request.auth()
           return !auth // Keep the override
             ? request.enhance({ auth: assign({}, authConfig) })
             : request
         })
-      }
+      },
     }
   }

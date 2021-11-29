@@ -7,15 +7,8 @@
   "testEnvironment": "node",
   "timers": "fake",
   "browser": false,
-  "testMatch": [ "**/?(*.)+(spec).[jt]s?(x)" ],
-  "roots": [
-    "<rootDir>/src/",
-    "<rootDir>/spec/node/"
-  ],
-  "modulePaths": [
-    "<rootDir>"
-  ],
-  "setupFiles": [
-    "<rootDir>/jestSetup/index.js"
-  ]
+  "testMatch": ["**/?(*.)+(spec).[jt]s?(x)"],
+  "roots": ["<rootDir>/src/", "<rootDir>/spec/node/"],
+  "modulePaths": ["<rootDir>"],
+  "setupFiles": ["<rootDir>/jestSetup/index.js"]
 }

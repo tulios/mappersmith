@@ -3,15 +3,17 @@ import forge, { Middleware } from 'mappersmith'
 const MyMiddleware: Middleware = () => ({
   request(request) {
     return request.enhance({
-      headers: { 'x-special-request': '->' }
+      headers: { 'x-special-request': '->' },
     })
   },
 
   response(next) {
-    return next().then((response) => response.enhance({
-      headers: { 'x-special-response': '<-' }
-    }))
-  }
+    return next().then((response) =>
+      response.enhance({
+        headers: { 'x-special-response': '<-' },
+      })
+    )
+  },
 })
 
 const github = forge({
@@ -22,9 +24,9 @@ const github = forge({
     Status: {
       current: { path: '/api/status.json' },
       messages: { path: '/api/messages.json' },
-      lastMessage: { path: '/api/last-message.json' }
-    }
-  }
+      lastMessage: { path: '/api/last-message.json' },
+    },
+  },
 })
 
 github.Status.lastMessage().then((response) => {

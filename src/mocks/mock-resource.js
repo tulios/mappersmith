@@ -109,9 +109,7 @@ MockResource.prototype = {
    * @return {MockRequest}
    */
   toMockRequest() {
-    const finalRequest = this.asyncFinalRequest
-      ? this.asyncFinalRequest
-      : this.createRequest()
+    const finalRequest = this.asyncFinalRequest ? this.asyncFinalRequest : this.createRequest()
 
     const responseStatus = this.responseStatusHandler || this.responseStatus
 
@@ -125,8 +123,8 @@ MockResource.prototype = {
           status: responseStatus,
           headers: this.responseHeaders,
           body: this.responseData,
-          handler: this.responseHandler
-        }
+          handler: this.responseHandler,
+        },
       })
     }
 
@@ -198,7 +196,10 @@ MockResource.prototype = {
    * It never runs the middleware stack
    */
   createRequest() {
-    const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
+    const methodDescriptor = this.manifest.createMethodDescriptor(
+      this.resourceName,
+      this.methodName
+    )
     return new Request(methodDescriptor, this.requestParams)
   },
 
@@ -207,28 +208,28 @@ MockResource.prototype = {
    * Always runs the middleware stack
    */
   createAsyncRequest() {
-    const methodDescriptor = this.manifest.createMethodDescriptor(this.resourceName, this.methodName)
+    const methodDescriptor = this.manifest.createMethodDescriptor(
+      this.resourceName,
+      this.methodName
+    )
     const initialRequest = new Request(methodDescriptor, this.requestParams)
     const middleware = this.manifest.createMiddleware({
       resourceName: this.resourceName,
       resourceMethod: this.methodName,
-      mockRequest: true
+      mockRequest: true,
     })
     const abort = (error) => {
       throw error
     }
     const getInitialRequest = () => configs.Promise.resolve(initialRequest)
-    const prepareRequest = middleware
-      .reduce(
-        (next, middleware) => () =>
-          configs.Promise
-            .resolve()
-            .then(() => middleware.prepareRequest(next, abort)),
-        getInitialRequest
-      )
+    const prepareRequest = middleware.reduce(
+      (next, middleware) => () =>
+        configs.Promise.resolve().then(() => middleware.prepareRequest(next, abort)),
+      getInitialRequest
+    )
 
     return prepareRequest()
-  }
+  },
 }
 
 export default MockResource

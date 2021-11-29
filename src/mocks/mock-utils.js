@@ -13,12 +13,12 @@ export function toSortedQueryString(entry) {
 }
 
 /**
-  * Filters an `object` by keeping only the keys fulfilling the `predicate`
-  *
-  * @param {Object} object - An object
-  * @param {Function} predicate - A function of type (key: string) => boolean
-  * @returns {Object} The filtered object
-  */
+ * Filters an `object` by keeping only the keys fulfilling the `predicate`
+ *
+ * @param {Object} object - An object
+ * @param {Function} predicate - A function of type (key: string) => boolean
+ * @returns {Object} The filtered object
+ */
 function filterByPredicate(object, predicate) {
   return Object.entries(object)
     .filter(([key]) => predicate(key))
@@ -38,7 +38,7 @@ function filterByPredicate(object, predicate) {
 export function isSubset(A, B) {
   // Make B only contain the non-nullish keys it has in in common with A
   const keysFromA = validKeys(A)
-  const filteredB = filterByPredicate(B, keyFromB => keysFromA.includes(keyFromB))
+  const filteredB = filterByPredicate(B, (keyFromB) => keysFromA.includes(keyFromB))
 
   return toSortedQueryString(A) === toSortedQueryString(filteredB)
 }

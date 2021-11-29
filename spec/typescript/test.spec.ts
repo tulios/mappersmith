@@ -12,16 +12,16 @@ const github = forge({
     Status: {
       current: { path: '/api/status.json' },
       messages: { path: '/api/messages.json' },
-      lastMessage: { path: '/api/last-message.json' }
-    }
-  }
+      lastMessage: { path: '/api/last-message.json' },
+    },
+  },
 })
 
 const mock = mockClient<typeof github>(github)
   .resource('Status')
   .method('current')
   .with({
-    id: 'abc'
+    id: 'abc',
   })
   .response({ allUsers: [] })
   .headers({ 'x-header': 'nope' })
@@ -38,8 +38,8 @@ const mock2 = mockRequest({
   response: {
     status: 503,
     body: { error: true },
-    headers: { 'x-header': 'nope' }
-  }
+    headers: { 'x-header': 'nope' },
+  },
 })
 
 console.log(mock2.mostRecentCall())
@@ -49,19 +49,19 @@ console.log(mock2.calls())
 mockRequest({
   method: 'post',
   url: (requestUrl, params) => `${requestUrl}+${JSON.stringify(params)}`,
-  body: (requestBody) => `~${requestBody}~`
+  body: (requestBody) => `~${requestBody}~`,
 })
 
 mockRequest({
   method: 'post',
   url: 'http://example.org/blogs',
-  body: m.stringContaining('something')
+  body: m.stringContaining('something'),
 })
 
 mockRequest({
   method: 'post',
   url: m.stringContaining('something'),
-  body: m.stringContaining('something')
+  body: m.stringContaining('something'),
 })
 
 m.stringMatching(/test/)

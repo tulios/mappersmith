@@ -17,7 +17,7 @@ let retryConfigs = assign({}, defaultRetryConfigs)
  *   @param {Number} newConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} newConfigs.retries (default: 5) - max retries
  */
-export const setRetryConfigs = newConfigs => {
+export const setRetryConfigs = (newConfigs) => {
   console.warn('The use of setRetryConfigs is deprecated - use RetryMiddleware v2 instead.')
   retryConfigs = assign({}, retryConfigs, newConfigs)
   middlewareInstance = RetryMiddlewareV2(retryConfigs)()
@@ -47,7 +47,7 @@ export default function RetryMiddleware() {
     },
     response(next) {
       return middlewareInstance.response(next)
-    }
+    },
   }
 }
 

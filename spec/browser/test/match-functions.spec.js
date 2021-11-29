@@ -9,8 +9,9 @@ describe('Test lib / match functions', () => {
     })
 
     it('throws an exception if the argument is not a regexp', () => {
-      expect(() => m.stringMatching({}))
-        .toThrowError('[Mappersmith Test] "stringMatching" received an invalid regexp ([object Object])')
+      expect(() => m.stringMatching({})).toThrowError(
+        '[Mappersmith Test] "stringMatching" received an invalid regexp ([object Object])'
+      )
     })
   })
 
@@ -22,8 +23,9 @@ describe('Test lib / match functions', () => {
     })
 
     it('throws an exception if the argument is not a string', () => {
-      expect(() => m.stringContaining({}))
-        .toThrowError('[Mappersmith Test] "stringContaining" received an invalid string ([object Object])')
+      expect(() => m.stringContaining({})).toThrowError(
+        '[Mappersmith Test] "stringContaining" received an invalid string ([object Object])'
+      )
     })
   })
 

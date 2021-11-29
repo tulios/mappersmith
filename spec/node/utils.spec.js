@@ -1,6 +1,4 @@
-import {
-  performanceNow
-} from 'src/utils'
+import { performanceNow } from 'src/utils'
 
 describe('#performanceNow', () => {
   beforeEach(() => {
@@ -17,7 +15,7 @@ describe('#performanceNow', () => {
   })
 
   it('has less than 10 microseconds overhead', () => {
-    expect(Math.abs(performanceNow() - performanceNow()) < 0.010).toEqual(true)
+    expect(Math.abs(performanceNow() - performanceNow()) < 0.01).toEqual(true)
   })
 
   it('shows that at least 990 ms has passed after a timeout of 1 second', (done) => {

@@ -10,7 +10,7 @@ export const defaultRetryConfigs = {
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
   retries: 5, // max retries
-  validateRetry: response => response.responseStatus >= 500 // a function that returns true if the request should be retried
+  validateRetry: (response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
 }
 
 /**
@@ -35,28 +35,34 @@ export const defaultRetryConfigs = {
  *   @param {Number} retryConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} retryConfigs.retries (default: 5) - max retries
  */
-export default (customConfigs = {}) => function RetryMiddleware() {
-  return {
-    request(request) {
-      this.enableRetry = (request.method() === 'get')
-      this.inboundRequest = request
-      return request
-    },
+export default (customConfigs = {}) =>
+  function RetryMiddleware() {
+    return {
+      request(request) {
+        this.enableRetry = request.method() === 'get'
+        this.inboundRequest = request
+        return request
+      },
 
-    response(next) {
-      const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
+      response(next) {
+        const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
 
-      if (!this.enableRetry) {
-        return next()
-      }
+        if (!this.enableRetry) {
+          return next()
+        }
 
-      return new configs.Promise((resolve, reject) => {
-        const retryTime = retryConfigs.initialRetryTimeInSecs * 1000
-        retriableRequest(resolve, reject, next, this.inboundRequest)(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
-      })
+        return new configs.Promise((resolve, reject) => {
+          const retryTime = retryConfigs.initialRetryTimeInSecs * 1000
+          retriableRequest(
+            resolve,
+            reject,
+            next,
+            this.inboundRequest
+          )(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
+        })
+      },
     }
   }
-}
 
 const retriableRequest = (resolve, reject, next, request) => {
   const retry = (retryTime, retryCount, retryConfigs) => {
@@ -72,7 +78,15 @@ const retriableRequest = (resolve, reject, next, request) => {
           scheduleRequest()
         } else {
           try {
-            resolve(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
+            resolve(
+              enhancedResponse(
+                response,
+                retryConfigs.headerRetryCount,
+                retryCount,
+                retryConfigs.headerRetryTime,
+                retryTime
+              )
+            )
           } catch (e) {
             const errorMessage = response instanceof Error ? response.message : e.message
             reject(new Response(request, 400, errorMessage, {}, [response]))
@@ -84,7 +98,15 @@ const retriableRequest = (resolve, reject, next, request) => {
           scheduleRequest()
         } else {
           try {
-            reject(enhancedResponse(response, retryConfigs.headerRetryCount, retryCount, retryConfigs.headerRetryTime, retryTime))
+            reject(
+              enhancedResponse(
+                response,
+                retryConfigs.headerRetryCount,
+                retryCount,
+                retryConfigs.headerRetryTime,
+                retryTime
+              )
+            )
           } catch (e) {
             const errorMessage = response instanceof Error ? response.message : e.message
             reject(new Response(request, 400, errorMessage, {}, [response]))
@@ -103,10 +125,11 @@ const retriableRequest = (resolve, reject, next, request) => {
  *
  * @return {Number}
  */
-export const calculateExponentialRetryTime = (retryTime, retryConfigs) => Math.min(
-  randomFromRetryTime(retryTime, retryConfigs.factor) * retryConfigs.multiplier,
-  retryConfigs.maxRetryTimeInSecs * 1000
-)
+export const calculateExponentialRetryTime = (retryTime, retryConfigs) =>
+  Math.min(
+    randomFromRetryTime(retryTime, retryConfigs.factor) * retryConfigs.multiplier,
+    retryConfigs.maxRetryTimeInSecs * 1000
+  )
 
 const randomFromRetryTime = (retryTime, factor) => {
   const delta = factor * retryTime
@@ -117,9 +140,10 @@ const random = (min, max) => {
   return Math.random() * (max - min) + min
 }
 
-const enhancedResponse = (response, headerRetryCount, retryCount, headerRetryTime, retryTime) => response.enhance({
-  headers: {
-    [headerRetryCount]: retryCount,
-    [headerRetryTime]: retryTime
-  }
-})
+const enhancedResponse = (response, headerRetryCount, retryCount, headerRetryTime, retryTime) =>
+  response.enhance({
+    headers: {
+      [headerRetryCount]: retryCount,
+      [headerRetryTime]: retryTime,
+    },
+  })

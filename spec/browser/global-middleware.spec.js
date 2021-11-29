@@ -38,7 +38,7 @@ describe('when global middleware is present', () => {
 
     beforeEach(() => {
       gatewayInstance = { call: jest.fn() }
-      configs.gateway = jest.fn(request => {
+      configs.gateway = jest.fn((request) => {
         response = new Response(request, 200, 'success')
         gatewayInstance.call.mockReturnValue(Promise.resolve(response))
         return gatewayInstance

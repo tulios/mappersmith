@@ -2,16 +2,20 @@ import { configs, setContext, Middleware } from 'mappersmith'
 
 const MyMiddleware: Middleware = () => ({
   prepareRequest(next) {
-    return next().then(response => response.enhance({
-      headers: { 'x-special-request': '->' }
-    }))
+    return next().then((response) =>
+      response.enhance({
+        headers: { 'x-special-request': '->' },
+      })
+    )
   },
 
   response(next) {
-    return next().then(response => response.enhance({
-      headers: { 'x-special-response': '<-' }
-    }))
-  }
+    return next().then((response) =>
+      response.enhance({
+        headers: { 'x-special-response': '<-' },
+      })
+    )
+  },
 })
 
 setContext({ some: 'data' })
@@ -21,18 +25,18 @@ configs.middleware = [MyMiddleware]
 configs.fetch = fetch
 configs.gatewayConfigs.Mock = {}
 configs.gatewayConfigs.Fetch = {
-  credentials: 'same-origin'
+  credentials: 'same-origin',
 }
 configs.gatewayConfigs.HTTP = {
   configure() {
     return {
-      port: '1234'
+      port: '1234',
     }
-  }
+  },
 }
 configs.gatewayConfigs.XHR = {
   withCredentials: true,
   configure(xhr) {
     xhr.ontimeout = () => console.error('timeout!')
-  }
+  },
 }

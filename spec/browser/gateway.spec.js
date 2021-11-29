@@ -97,7 +97,8 @@ describe('Gateway', () => {
 
     describe('when successCallback is called', () => {
       it('assigns response.timeElapsed and resolve the promise', (done) => {
-        gateway.call()
+        gateway
+          .call()
           .then((response) => {
             expect(response.timeElapsed).not.toBeNull()
             done()
@@ -113,7 +114,8 @@ describe('Gateway', () => {
 
     describe('when failCallback is called', () => {
       it('assigns response.timeElapsed and reject the promise', (done) => {
-        gateway.call()
+        gateway
+          .call()
           .then((response) => {
             done.fail(`Expected this promise to fail: ${response}`)
           })

@@ -1,1 +1,8 @@
-export { default, defaultSuccessLogger, defaultErrorLogger, setSuccessLogger, setErrorLogger, setLoggerEnabled } from '../middleware/log'
+export {
+  default,
+  defaultSuccessLogger,
+  defaultErrorLogger,
+  setSuccessLogger,
+  setErrorLogger,
+  setLoggerEnabled,
+} from '../middleware/log'

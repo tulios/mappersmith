@@ -4,5 +4,5 @@ import { configs } from 'mappersmith'
 configs.gateway = FetchGateway
 
 configs.gatewayConfigs.Fetch = {
-  credentials: 'same-origin'
+  credentials: 'same-origin',
 }

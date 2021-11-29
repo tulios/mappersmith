@@ -1,6 +1,6 @@
 import RetryMiddleware, {
   setRetryConfigs,
-  calculateExponentialRetryTime
+  calculateExponentialRetryTime,
 } from 'src/middlewares/retry'
 import { retryMiddlewareExamples } from '../shared-examples'
 
@@ -25,7 +25,7 @@ describe('calculateExponentialRetryTime', () => {
     setRetryConfigs({
       factor: 0.5,
       multiplier: 2,
-      maxRetryTimeInSecs: 0.25
+      maxRetryTimeInSecs: 0.25,
     })
   })
 
