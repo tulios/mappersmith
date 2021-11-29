@@ -207,8 +207,13 @@ export class Request {
     const hostKey = this.methodDescriptor.hostAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
 
-    const requestParams = assign({}, this.requestParams, extras.params) as RequestParams
-    requestParams[headerKey] = assign({}, this.requestParams[headerKey], extras.headers)
+    // Note: The result of merging an instance of RequestParams with instance of Params
+    // is simply a RequestParams with even more [param: string]'s on it.
+    const requestParams: RequestParams = assign({}, this.requestParams, extras.params)
+
+    const headers = this.requestParams[headerKey] as Headers | undefined
+    const mergedHeaders = assign({}, headers, extras.headers)
+    requestParams[headerKey] = mergedHeaders
 
     extras.auth && (requestParams[authKey] = extras.auth)
     extras.body && (requestParams[bodyKey] = extras.body)
