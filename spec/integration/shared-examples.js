@@ -8,17 +8,14 @@ import {
   setErrorLogger,
   setLoggerEnabled,
   defaultSuccessLogger,
-  defaultErrorLogger
+  defaultErrorLogger,
 } from 'src/middlewares/log'
 
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 import RetryMiddleware from 'src/middlewares/retry/v2'
 
 export default function IntegrationTestsForGateway(gateway, params, extraTests) {
-  let successLogBuffer,
-    errorLogBuffer,
-    previousGateway,
-    Client
+  let successLogBuffer, errorLogBuffer, previousGateway, Client
 
   beforeEach(() => {
     successLogBuffer = []
@@ -45,7 +42,9 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     Client.Book.all()
       .then((response) => {
         expect(response.status()).toEqual(200)
-        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiBooks' }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({ 'x-api-response': 'apiBooks' })
+        )
         expect(response.data()).toEqual(apiResponses.apiBooks)
         done()
       })
@@ -58,10 +57,12 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     Client.Book.byId({ id: 1 })
       .then((response) => {
         expect(response.status()).toEqual(200)
-        expect(response.headers()).toEqual(jasmine.objectContaining({
-          'x-api-response': 'apiBooksById',
-          'x-param-id': '1'
-        }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({
+            'x-api-response': 'apiBooksById',
+            'x-param-id': '1',
+          })
+        )
         expect(response.data()).toEqual(apiResponses.apiBooksById)
         done()
       })
@@ -74,7 +75,9 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     Client.PlainText.get()
       .then((response) => {
         expect(response.status()).toEqual(200)
-        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiPlainText' }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({ 'x-api-response': 'apiPlainText' })
+        )
         expect(response.data()).toEqual(apiResponses.apiPlainText)
         done()
       })
@@ -88,11 +91,13 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     Client.Pictures.create(params)
       .then((response) => {
         expect(response.status()).toEqual(200)
-        expect(response.headers()).toEqual(jasmine.objectContaining({
-          'x-api-response': 'apiPicturesCreate',
-          'x-param-category': 'sports',
-          'x-raw-body': 'payload=test&foo=bar'
-        }))
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({
+            'x-api-response': 'apiPicturesCreate',
+            'x-param-category': 'sports',
+            'x-raw-body': 'payload=test&foo=bar',
+          })
+        )
         expect(response.data()).toEqual(apiResponses.apiPicturesCreate)
         done()
       })
@@ -106,17 +111,19 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
       const params = {
         category: 'sports',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'test2' })
+        body: JSON.stringify({ name: 'test2' }),
       }
 
       Client.Pictures.add(params)
         .then((response) => {
           expect(response.status()).toEqual(200)
-          expect(response.headers()).toEqual(jasmine.objectContaining({
-            'x-api-response': 'apiPicturesAdd',
-            'x-param-category': 'sports',
-            'x-raw-body': JSON.stringify({ name: 'test2' })
-          }))
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({
+              'x-api-response': 'apiPicturesAdd',
+              'x-param-category': 'sports',
+              'x-raw-body': JSON.stringify({ name: 'test2' }),
+            })
+          )
           expect(response.data()).toEqual(apiResponses.apiPicturesAdd)
           done()
         })
@@ -134,7 +141,9 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
         })
         .catch((response) => {
           expect(response.status()).toEqual(500)
-          expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiFailure' }))
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({ 'x-api-response': 'apiFailure' })
+          )
           expect(response.data()).toEqual(apiResponses.apiFailure)
           done()
         })
@@ -146,8 +155,12 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
       Client.Secure.get({ auth: { username: 'bob', password: 'bob' } })
         .then((response) => {
           expect(response.status()).toEqual(200)
-          expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-api-response': 'apiSecure' }))
-          expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-header-authorization': 'Basic Ym9iOmJvYg==' }))
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({ 'x-api-response': 'apiSecure' })
+          )
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({ 'x-header-authorization': 'Basic Ym9iOmJvYg==' })
+          )
           expect(response.data()).toEqual(apiResponses.apiSecure)
           done()
         })
@@ -186,9 +199,10 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
       configs.gatewayConfigs.enableHTTP408OnTimeouts = true
       Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)
 
-      Client.Timeout.get({ waitTime: 1000, timeout: 100, cache: Date.now() }).then((response) => {
-        done.fail(`Expected this request to fail: ${errorMessage(response)}`)
-      })
+      Client.Timeout.get({ waitTime: 1000, timeout: 100, cache: Date.now() })
+        .then((response) => {
+          done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+        })
         .catch((response) => {
           expect(response.status()).toEqual(408)
           expect(response.data()).toEqual('Timeout (100ms)')
@@ -202,17 +216,19 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
       Client = forge(createManifest(params.host, [EncodeJsonMiddleware]), gateway)
       const requestParams = {
         category: 'sports',
-        body: { name: 'test2' }
+        body: { name: 'test2' },
       }
 
       Client.Pictures.add(requestParams)
         .then((response) => {
           expect(response.status()).toEqual(200)
-          expect(response.headers()).toEqual(jasmine.objectContaining({
-            'x-api-response': 'apiPicturesAdd',
-            'x-param-category': 'sports',
-            'x-raw-body': JSON.stringify({ name: 'test2' })
-          }))
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({
+              'x-api-response': 'apiPicturesAdd',
+              'x-param-category': 'sports',
+              'x-raw-body': JSON.stringify({ name: 'test2' }),
+            })
+          )
           expect(response.data()).toEqual(apiResponses.apiPicturesAdd)
           done()
         })
@@ -229,7 +245,7 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
           expect(successLogBuffer.length).toEqual(2) // request and response
           expect(successLogBuffer).toEqual([
             `-> GET ${params.host}/api/books.json`,
-            `<- GET ${params.host}/api/books.json status=200 '[{"id":1,"title":"Lorem ipsum dolor sit amet","description":"consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"},{"id":2,"title":"Ut enim ad minim veniam","description":"quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"}]'`
+            `<- GET ${params.host}/api/books.json status=200 '[{"id":1,"title":"Lorem ipsum dolor sit amet","description":"consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"},{"id":2,"title":"Ut enim ad minim veniam","description":"quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat"}]'`,
           ])
           done()
         })
@@ -249,7 +265,7 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
             expect(errorLogBuffer.length).toEqual(1) // only response
             expect(successLogBuffer).toEqual([`-> GET ${params.host}/api/failure.json`])
             expect(errorLogBuffer).toEqual([
-              `<- (ERROR) GET ${params.host}/api/failure.json status=500 '{"errorMessage":"something went bad"}'`
+              `<- (ERROR) GET ${params.host}/api/failure.json status=500 '{"errorMessage":"something went bad"}'`,
             ])
             done()
           })
@@ -259,17 +275,24 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
 
   describe('retry middleware', () => {
     beforeEach(() => {
-      Client = forge(createManifest(params.host, [RetryMiddleware({ initialRetryTimeInSecs: 0.05, retries: 3 })]), gateway)
+      Client = forge(
+        createManifest(params.host, [
+          RetryMiddleware({ initialRetryTimeInSecs: 0.05, retries: 3 }),
+        ]),
+        gateway
+      )
     })
 
     it('retries failed GET requests', (done) => {
       Client.Failure.onOdd({ cache: Date.now() })
         .then((response) => {
-          expect(response.headers()).toEqual(jasmine.objectContaining({
-            'x-api-response': 'apiFailOnOdd',
-            'x-mappersmith-retry-count': 1,
-            'x-mappersmith-retry-time': jasmine.any(Number)
-          }))
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({
+              'x-api-response': 'apiFailOnOdd',
+              'x-mappersmith-retry-count': 1,
+              'x-mappersmith-retry-time': jasmine.any(Number),
+            })
+          )
           done()
         })
         .catch((response) => {
@@ -283,11 +306,13 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
           done.fail(`Expected this request to fail: ${errorMessage(response)}`)
         })
         .catch((response) => {
-          expect(response.headers()).toEqual(jasmine.objectContaining({
-            'x-api-response': 'apiFailure',
-            'x-mappersmith-retry-count': 3,
-            'x-mappersmith-retry-time': jasmine.any(Number)
-          }))
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({
+              'x-api-response': 'apiFailure',
+              'x-mappersmith-retry-count': 3,
+              'x-mappersmith-retry-time': jasmine.any(Number),
+            })
+          )
           done()
         })
     })
@@ -295,11 +320,18 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     describe('a response earlier in the middleware chain throws', () => {
       beforeEach(() => {
         const BrokenMiddleware = () => ({
-          response: (next) => next().then(() => {
-            throw new Error('💣')
-          })
+          response: (next) =>
+            next().then(() => {
+              throw new Error('💣')
+            }),
         })
-        Client = forge(createManifest(params.host, [BrokenMiddleware, RetryMiddleware({ initialRetryTimeInSecs: 0.05, retries: 3 })]), gateway)
+        Client = forge(
+          createManifest(params.host, [
+            BrokenMiddleware,
+            RetryMiddleware({ initialRetryTimeInSecs: 0.05, retries: 3 }),
+          ]),
+          gateway
+        )
       })
 
       it('should handle the promise rejection', (done) => {

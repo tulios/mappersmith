@@ -67,12 +67,7 @@ MockRequest.prototype = {
 
     this.calls.push(request)
 
-    return new Response(
-      request,
-      status,
-      this.responseData,
-      this.responseHeaders
-    )
+    return new Response(request, status, this.responseData, this.responseHeaders)
   },
 
   /**
@@ -88,19 +83,20 @@ MockRequest.prototype = {
    * @return {boolean}
    */
   isExactMatch(request) {
-    const bodyMatch = () => this.bodyFunction
-      ? this.body(request.body())
-      : this.body === toSortedQueryString(request.body())
+    const bodyMatch = () =>
+      this.bodyFunction
+        ? this.body(request.body())
+        : this.body === toSortedQueryString(request.body())
 
     const urlMatch = this.urlFunction
       ? this.url(request.url(), request.params())
       : sortedUrl(this.url) === sortedUrl(request.url())
 
-    const headerMatch = !this.headers || (
-      this.headersFunction
+    const headerMatch =
+      !this.headers ||
+      (this.headersFunction
         ? this.headers(request.headers())
-        : isSubset(this.headersObject, request.headers())
-    )
+        : isSubset(this.headersObject, request.headers()))
 
     return this.method === request.method() && urlMatch && bodyMatch() && headerMatch
   },
@@ -111,8 +107,9 @@ MockRequest.prototype = {
    * @return {boolean}
    */
   isPartialMatch(request) {
-    return new RegExp(this.method).test(request.method()) &&
-      new RegExp(this.url).test(request.url())
+    return (
+      new RegExp(this.method).test(request.method()) && new RegExp(this.url).test(request.url())
+    )
   },
 
   /**
@@ -120,7 +117,7 @@ MockRequest.prototype = {
    */
   toMockRequest() {
     return this
-  }
+  },
 }
 
 export default MockRequest

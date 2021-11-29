@@ -24,8 +24,7 @@ Gateway.prototype = {
   },
 
   shouldEmulateHTTP() {
-    return this.options().emulateHTTP &&
-      REGEXP_EMULATE_HTTP.test(this.request.method())
+    return this.options().emulateHTTP && REGEXP_EMULATE_HTTP.test(this.request.method())
   },
 
   call() {
@@ -50,9 +49,7 @@ Gateway.prototype = {
   },
 
   dispatchResponse(response) {
-    response.success()
-      ? this.successCallback(response)
-      : this.failCallback(response)
+    response.success() ? this.successCallback(response) : this.failCallback(response)
   },
 
   dispatchClientError(message, error) {
@@ -82,7 +79,7 @@ Gateway.prototype = {
     }
 
     return bodyString
-  }
+  },
 }
 
 export default Gateway

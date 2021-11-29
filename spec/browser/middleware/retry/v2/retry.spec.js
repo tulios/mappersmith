@@ -19,7 +19,7 @@ describe('calculateExponentialRetryTime', () => {
     const retryConfigs = {
       factor: 0.5,
       multiplier: 2,
-      maxRetryTimeInSecs: 0.25
+      maxRetryTimeInSecs: 0.25,
     }
 
     spyOn(Math, 'random').and.returnValues(0.32, 0.25, 0.6)

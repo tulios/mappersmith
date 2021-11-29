@@ -73,7 +73,7 @@ export const clear = () => {
 export const unusedMocks = () => {
   const mocks = store.map((mock) => mock.toMockRequest())
   let count = 0
-  mocks.forEach(mock => {
+  mocks.forEach((mock) => {
     if (mock.calls.length === 0) count++
   })
   return count
@@ -88,10 +88,10 @@ export const unusedMocks = () => {
  * @throws Will throw an error if it doesn't find a mock to match the given request
  */
 export const lookupResponseAsync = (request) => {
-  const mocksPendingMiddlewareExecution = store.filter(mock => mock.pendingMiddlewareExecution)
-  return configs
-    .Promise.all(mocksPendingMiddlewareExecution.map(mock => mock.executeMiddlewareStack()))
-    .then(() => lookupResponse(request))
+  const mocksPendingMiddlewareExecution = store.filter((mock) => mock.pendingMiddlewareExecution)
+  return configs.Promise.all(
+    mocksPendingMiddlewareExecution.map((mock) => mock.executeMiddlewareStack())
+  ).then(() => lookupResponse(request))
 }
 
 /**
@@ -102,21 +102,19 @@ export const lookupResponseAsync = (request) => {
 export const lookupResponse = (request) => {
   const mocks = store.map((mock) => mock.toMockRequest())
 
-  const exactMatch = mocks
-    .filter((mock) => mock.isExactMatch(request))
-    .pop()
+  const exactMatch = mocks.filter((mock) => mock.isExactMatch(request)).pop()
 
   if (exactMatch) {
     return exactMatch.call(request)
   }
 
-  const partialMatch = mocks
-    .filter((mock) => mock.isPartialMatch(request))
-    .pop()
+  const partialMatch = mocks.filter((mock) => mock.isPartialMatch(request)).pop()
 
   if (partialMatch) {
     throw new Error(
-      `[Mappersmith Test] No exact match found for ${requestToLog(request)}, partial match with ${mockToLog(partialMatch)}, check your mock definition`
+      `[Mappersmith Test] No exact match found for ${requestToLog(
+        request
+      )}, partial match with ${mockToLog(partialMatch)}, check your mock definition`
     )
   }
 
@@ -138,7 +136,9 @@ export const m = {
 
   stringContaining: (sample) => {
     if (typeof sample !== 'string') {
-      throw new Error(`[Mappersmith Test] "stringContaining" received an invalid string (${sample})`)
+      throw new Error(
+        `[Mappersmith Test] "stringContaining" received an invalid string (${sample})`
+      )
     }
 
     return (string) => stringIncludes(string, sample)
@@ -148,18 +148,20 @@ export const m = {
     // NOTE: based on https://github.com/chriso/validator.js/blob/3443132beccddf06c3f0a5e88c1dd2ee6513b612/src/lib/isUUID.js
     const uuid4Rx = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
 
-    return string => uuid4Rx.test(string)
+    return (string) => uuid4Rx.test(string)
   },
 
-  anything: () => () => true
+  anything: () => () => true,
 }
 
-const requestToLog = (request) => (
-  `"${request.method().toUpperCase()} ${request.url()}" (body: "${toQueryString(request.body())}"; headers: "${toQueryString(request.headers())}")`
-)
-const mockToLog = (requestMock) => (
-  `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${requestMock.body}"; headers: "${requestMock.headers}")`
-)
+const requestToLog = (request) =>
+  `"${request.method().toUpperCase()} ${request.url()}" (body: "${toQueryString(
+    request.body()
+  )}"; headers: "${toQueryString(request.headers())}")`
+const mockToLog = (requestMock) =>
+  `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${
+    requestMock.body
+  }"; headers: "${requestMock.headers}")`
 
 const stringIncludes = (str, search, start) => {
   if (typeof start !== 'number') {

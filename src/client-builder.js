@@ -9,15 +9,11 @@ import { assign } from './utils'
  */
 function ClientBuilder(manifest, GatewayClassFactory, configs) {
   if (!manifest) {
-    throw new Error(
-      `[Mappersmith] invalid manifest (${manifest})`
-    )
+    throw new Error(`[Mappersmith] invalid manifest (${manifest})`)
   }
 
   if (!GatewayClassFactory || !GatewayClassFactory()) {
-    throw new Error(
-      '[Mappersmith] gateway class not configured (configs.gateway)'
-    )
+    throw new Error('[Mappersmith] gateway class not configured (configs.gateway)')
   }
 
   this.Promise = configs.Promise
@@ -38,12 +34,16 @@ ClientBuilder.prototype = {
   },
 
   buildResource(resourceName, methods) {
-    return methods.reduce((resource, method) => assign(resource, {
-      [method.name]: (requestParams) => {
-        const request = new Request(method.descriptor, requestParams)
-        return this.invokeMiddlewares(resourceName, method.name, request)
-      }
-    }), {})
+    return methods.reduce(
+      (resource, method) =>
+        assign(resource, {
+          [method.name]: (requestParams) => {
+            const request = new Request(method.descriptor, requestParams)
+            return this.invokeMiddlewares(resourceName, method.name, request)
+          },
+        }),
+      {}
+    )
   },
 
   invokeMiddlewares(resourceName, resourceMethod, initialRequest) {
@@ -53,7 +53,7 @@ ClientBuilder.prototype = {
     const requestPhaseFailureContext = {
       middleware: null,
       returnedInvalidRequest: false,
-      abortExecution: false
+      abortExecution: false,
     }
 
     const getInitialRequest = () => this.Promise.resolve(initialRequest)
@@ -63,23 +63,25 @@ ClientBuilder.prototype = {
         throw error
       }
 
-      return this.Promise
-        .resolve()
+      return this.Promise.resolve()
         .then(() => middleware.prepareRequest(next, abort))
-        .then(request => {
+        .then((request) => {
           if (request instanceof Request) {
             return request
           }
 
           requestPhaseFailureContext.returnedInvalidRequest = true
           const typeValue = typeof request
-          const prettyType = (typeValue === 'object' || typeValue === 'function')
-            ? request.name || typeValue
-            : typeValue
+          const prettyType =
+            typeValue === 'object' || typeValue === 'function'
+              ? request.name || typeValue
+              : typeValue
 
-          throw new Error(`[Mappersmith] middleware "${middleware.__name}" should return "Request" but returned "${prettyType}"`)
+          throw new Error(
+            `[Mappersmith] middleware "${middleware.__name}" should return "Request" but returned "${prettyType}"`
+          )
         })
-        .catch(e => {
+        .catch((e) => {
           requestPhaseFailureContext.middleware = middleware.__name
           throw e
         })
@@ -88,39 +90,42 @@ ClientBuilder.prototype = {
     const prepareRequest = middleware.reduce(chainRequestPhase, getInitialRequest)
     let executions = 0
 
-    const executeMiddlewareStack = () => prepareRequest()
-      .catch(e => {
-        const { returnedInvalidRequest, abortExecution, middleware } = requestPhaseFailureContext
-        if (returnedInvalidRequest || abortExecution) {
-          throw e
-        }
+    const executeMiddlewareStack = () =>
+      prepareRequest()
+        .catch((e) => {
+          const { returnedInvalidRequest, abortExecution, middleware } = requestPhaseFailureContext
+          if (returnedInvalidRequest || abortExecution) {
+            throw e
+          }
 
-        const error = new Error(`[Mappersmith] middleware "${middleware}" failed in the request phase: ${e.message}`)
-        error.stack = e.stack
-        throw error
-      })
-      .then(finalRequest => {
-        executions++
-
-        if (executions > this.maxMiddlewareStackExecutionAllowed) {
-          throw new Error(
-            `[Mappersmith] infinite loop detected (middleware stack invoked ${executions} times). Check the use of "renew" in one of the middleware.`
+          const error = new Error(
+            `[Mappersmith] middleware "${middleware}" failed in the request phase: ${e.message}`
           )
-        }
+          error.stack = e.stack
+          throw error
+        })
+        .then((finalRequest) => {
+          executions++
 
-        const renew = executeMiddlewareStack
-        const chainResponsePhase = (next, middleware) => () => middleware.response(next, renew)
-        const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
-        const execute = middleware.reduce(chainResponsePhase, callGateway)
-        return execute()
-      })
+          if (executions > this.maxMiddlewareStackExecutionAllowed) {
+            throw new Error(
+              `[Mappersmith] infinite loop detected (middleware stack invoked ${executions} times). Check the use of "renew" in one of the middleware.`
+            )
+          }
+
+          const renew = executeMiddlewareStack
+          const chainResponsePhase = (next, middleware) => () => middleware.response(next, renew)
+          const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
+          const execute = middleware.reduce(chainResponsePhase, callGateway)
+          return execute()
+        })
 
     return new this.Promise((resolve, reject) => {
       executeMiddlewareStack()
-        .then(response => resolve(response))
+        .then((response) => resolve(response))
         .catch(reject)
     })
-  }
+  },
 }
 
 export default ClientBuilder

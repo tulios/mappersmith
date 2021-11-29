@@ -42,7 +42,7 @@ const log = (request, response) => {
  */
 const ConsoleLogMiddleware = () => ({
   prepareRequest(next) {
-    return next().then(request => log(request))
+    return next().then((request) => log(request))
   },
 
   response(next) {
@@ -52,7 +52,7 @@ const ConsoleLogMiddleware = () => ({
         log(response.request(), response)
         throw response
       })
-  }
+  },
 })
 
 export default ConsoleLogMiddleware

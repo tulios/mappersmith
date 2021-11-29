@@ -15,7 +15,7 @@ import {
   getCountPrepareRequestMiddlewareStack,
   resetCountPrepareRequestMiddleware,
   getManifest,
-  createRequest
+  createRequest,
 } from 'spec/helper'
 
 describe('ClientBuilder middleware', () => {
@@ -28,7 +28,7 @@ describe('ClientBuilder middleware', () => {
     manifest = getManifest()
 
     gatewayInstance = { call: jest.fn() }
-    configs.gateway = jest.fn(request => {
+    configs.gateway = jest.fn((request) => {
       response = new Response(request, 200, responseValue)
       gatewayInstance.call.mockReturnValue(Promise.resolve(response))
       return gatewayInstance
@@ -52,7 +52,7 @@ describe('ClientBuilder middleware', () => {
         resourceName: 'User',
         resourceMethod: 'byId',
         context: {},
-        clientId: null
+        clientId: null,
       })
     )
   })
@@ -93,7 +93,7 @@ describe('ClientBuilder middleware', () => {
 
     const middleware = () => ({
       request: requestPhase,
-      response: responsePhase
+      response: responsePhase,
     })
     manifest.middleware = [middleware]
 
@@ -106,7 +106,7 @@ describe('ClientBuilder middleware', () => {
     const requestPhase = jest.fn()
     const responsePhase = jest.fn()
 
-    const myRequestFn = request => {
+    const myRequestFn = (request) => {
       requestPhase(request)
       return request
     }
@@ -118,7 +118,7 @@ describe('ClientBuilder middleware', () => {
 
     const middleware = () => ({
       request: myRequestFn,
-      response: myResponseFn
+      response: myResponseFn,
     })
 
     manifest.middleware = [middleware]
@@ -157,17 +157,17 @@ describe('ClientBuilder middleware', () => {
     let m2ResponseCalled = false
 
     const m1 = () => ({
-      request: request => {
+      request: (request) => {
         m1RequestCalled = true
         return request
-      }
+      },
     })
 
     const m2 = () => ({
-      response: next => {
+      response: (next) => {
         m2ResponseCalled = true
         return next()
-      }
+      },
     })
 
     manifest.middleware = [m1, m2]
@@ -180,12 +180,12 @@ describe('ClientBuilder middleware', () => {
 
   it('accepts async request phase', async () => {
     const m1 = () => ({
-      request: request =>
+      request: (request) =>
         Promise.resolve(
           request.enhance({
-            headers: { token: 'abc' }
+            headers: { token: 'abc' },
           })
-        )
+        ),
     })
 
     manifest.middleware = [m1]
@@ -197,12 +197,12 @@ describe('ClientBuilder middleware', () => {
   it('can renew the request from the response phase', async () => {
     let token = 'not-renewed'
     const m1 = () => ({
-      request: request => request.enhance({ headers: { Token: token } })
+      request: (request) => request.enhance({ headers: { Token: token } }),
     })
 
     const m2 = () => ({
       response: (next, renew) => {
-        return next().then(response => {
+        return next().then((response) => {
           if (response.request().header('token') === 'not-renewed') {
             token = 'renewed'
             return renew()
@@ -210,7 +210,7 @@ describe('ClientBuilder middleware', () => {
 
           return response
         })
-      }
+      },
     })
 
     manifest.middleware = [m1, m2]
@@ -225,7 +225,7 @@ describe('ClientBuilder middleware', () => {
       response: (next, renew) => {
         executionCount++
         return executionCount < 5 ? renew() : next()
-      }
+      },
     })
 
     manifest.middleware = [m1]
@@ -241,7 +241,7 @@ describe('ClientBuilder middleware', () => {
       const m1 = () => ({
         request: () => {
           throw new Error('Random error!')
-        }
+        },
       })
 
       manifest.middleware = [m1]
@@ -256,7 +256,7 @@ describe('ClientBuilder middleware', () => {
   describe('when a middleware pass a non-request object to the next phase', () => {
     it('throws an error with the middleware name and type', async () => {
       const m1 = () => ({ request: () => true })
-      const m2 = () => ({ request: request => request.enhance() })
+      const m2 = () => ({ request: (request) => request.enhance() })
 
       manifest.middleware = [m1, m2]
 
@@ -273,7 +273,7 @@ describe('ClientBuilder middleware', () => {
 
     const middleware = () => ({
       prepareRequest: prepareRequestPhase,
-      response: responsePhase
+      response: responsePhase,
     })
     manifest.middleware = [middleware]
 
@@ -296,18 +296,14 @@ describe('ClientBuilder middleware', () => {
 
     it('can change host of the final request object when allowResourceHostOverride=true', async () => {
       manifest.allowResourceHostOverride = true
-      manifest.middleware = [
-        hostMiddleware
-      ]
+      manifest.middleware = [hostMiddleware]
       const response = await createClient().User.byId({ id: 1 })
       expect(response.request().host()).toEqual('http://new-host.com')
     })
 
     it('can not change host of the final request object when allowResourceHostOverride=false', async () => {
       manifest.allowResourceHostOverride = false
-      manifest.middleware = [
-        hostMiddleware
-      ]
+      manifest.middleware = [hostMiddleware]
       const response = await createClient().User.byId({ id: 1 })
       expect(response.request().host()).toEqual('http://example.org')
     })
@@ -319,12 +315,12 @@ describe('ClientBuilder middleware', () => {
         countPrepareRequestMiddleware,
         countPrepareRequestMiddleware,
         countPrepareRequestMiddleware,
-        countPrepareRequestMiddleware
+        countPrepareRequestMiddleware,
       ]
 
       const response = await createClient().User.byId({
         id: 1,
-        headers: { 'x-count': 0 }
+        headers: { 'x-count': 0 },
       })
       expect(response.request().header('x-count')).toEqual(4)
       expect(getCountPrepareRequestMiddlewareStack()).toEqual([0, 1, 2, 3])
@@ -334,10 +330,10 @@ describe('ClientBuilder middleware', () => {
       let m1RequestCalled = false
 
       const m1 = () => ({
-        prepareRequest: next => {
+        prepareRequest: (next) => {
           m1RequestCalled = true
           return next()
-        }
+        },
       })
 
       manifest.middleware = [m1]
@@ -351,7 +347,7 @@ describe('ClientBuilder middleware', () => {
       const middleware = () => ({
         prepareRequest: (_, abort) => {
           abort(new Error('failed to fetch access token'))
-        }
+        },
       })
 
       manifest.middleware = [middleware]
@@ -366,14 +362,14 @@ describe('ClientBuilder middleware', () => {
       const buggy = () => ({
         request: () => {
           throw new Error('from buggy')
-        }
+        },
       })
       const errorMapper = () => ({
         prepareRequest: (next, abort) => {
-          return next().catch(e => {
+          return next().catch((e) => {
             abort(new Error(`wrapped error: ${e.message}`))
           })
-        }
+        },
       })
 
       manifest.middleware = [buggy, errorMapper]
@@ -386,7 +382,7 @@ describe('ClientBuilder middleware', () => {
 
     it('supports old middlewares with async request phases', async () => {
       const asyncRequest = () => ({
-        request: request => Promise.resolve(request)
+        request: (request) => Promise.resolve(request),
       })
 
       manifest.middleware = [asyncRequest, headerMiddlewareV2]

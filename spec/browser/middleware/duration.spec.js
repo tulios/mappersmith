@@ -6,10 +6,8 @@ import MethodDescriptor from 'src/method-descriptor'
 describe('Middleware / DurationMiddleware', () => {
   let middleware
 
-  const newRequest = (method) => new Request(
-    new MethodDescriptor({ host: 'example.com', path: '/', method }),
-    {}
-  )
+  const newRequest = (method) =>
+    new Request(new MethodDescriptor({ host: 'example.com', path: '/', method }), {})
 
   const newResponse = (request, responseStatus = 200, responseData = {}, responseHeaders = {}) => {
     return new Response(request, responseStatus, responseData, responseHeaders)

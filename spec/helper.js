@@ -12,7 +12,7 @@ export function createGatewayAsserts(gatewayArgsGenerator) {
 
     assertFailure: () => {
       return createGatewayFailureAssert(...gatewayArgsGenerator())
-    }
+    },
   }
 }
 
@@ -67,70 +67,78 @@ export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
   request(request) {
     return request.enhance({
       headers: {
-        'x-middleware-phase': 'request'
-      }
+        'x-middleware-phase': 'request',
+      },
     })
   },
 
   response(next) {
-    return next().then((response) => response.enhance({
-      headers: {
-        'x-middleware-phase': 'response',
-        'x-resource-name': resourceName,
-        'x-resource-method': resourceMethod
-      }
-    }))
-  }
+    return next().then((response) =>
+      response.enhance({
+        headers: {
+          'x-middleware-phase': 'response',
+          'x-resource-name': resourceName,
+          'x-resource-method': resourceMethod,
+        },
+      })
+    )
+  },
 })
 
 export const headerMiddlewareV2 = ({ resourceName, resourceMethod }) => ({
   prepareRequest(next) {
-    return next().then(request => request.enhance({
-      headers: {
-        'x-middleware-phase': 'prepare-request'
-      }
-    }))
+    return next().then((request) =>
+      request.enhance({
+        headers: {
+          'x-middleware-phase': 'prepare-request',
+        },
+      })
+    )
   },
 
   response(next) {
-    return next().then((response) => response.enhance({
-      headers: {
-        'x-middleware-phase': 'response',
-        'x-resource-name': resourceName,
-        'x-resource-method': resourceMethod
-      }
-    }))
-  }
+    return next().then((response) =>
+      response.enhance({
+        headers: {
+          'x-middleware-phase': 'response',
+          'x-resource-name': resourceName,
+          'x-resource-method': resourceMethod,
+        },
+      })
+    )
+  },
 })
 
 export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
   async request(request) {
     return request.enhance({
       headers: {
-        'x-middleware-phase': 'request'
-      }
+        'x-middleware-phase': 'request',
+      },
     })
   },
 
   response(next) {
-    return next().then((response) => response.enhance({
-      headers: {
-        'x-middleware-phase': 'response',
-        'x-resource-name': resourceName,
-        'x-resource-method': resourceMethod
-      }
-    }))
-  }
+    return next().then((response) =>
+      response.enhance({
+        headers: {
+          'x-middleware-phase': 'response',
+          'x-resource-name': resourceName,
+          'x-resource-method': resourceMethod,
+        },
+      })
+    )
+  },
 })
 
 export const hostMiddleware = () => ({
   prepareRequest(next) {
     return next().then((request) =>
       request.enhance({
-        host: 'http://new-host.com'
+        host: 'http://new-host.com',
       })
     )
-  }
+  },
 })
 
 let countMiddlewareCurrent = 0
@@ -153,7 +161,7 @@ export const countMiddleware = () => ({
       countMiddlewareStack.push(response.data())
       return new Response(response.request(), 200, ++countMiddlewareCurrent)
     })
-  }
+  },
 })
 
 let countPrepareRequestMiddlewareCurrent = 0
@@ -177,7 +185,7 @@ export const countPrepareRequestMiddleware = () => ({
 
   response(next) {
     return next()
-  }
+  },
 })
 
 export const getManifest = (middleware = [], gatewayConfigs = null, clientId = null) => ({
@@ -188,16 +196,20 @@ export const getManifest = (middleware = [], gatewayConfigs = null, clientId = n
   resources: {
     User: {
       all: { path: '/users' },
-      byId: { path: '/users/{id}' }
+      byId: { path: '/users/{id}' },
     },
     Blog: {
       post: { method: 'post', path: '/blogs' },
-      addComment: { method: 'put', path: '/blogs/{id}/comment' }
-    }
-  }
+      addComment: { method: 'put', path: '/blogs/{id}/comment' },
+    },
+  },
 })
 
-export const getManifestWithResourceConf = (middleware = [], gatewayConfigs = null, clientId = null) => ({
+export const getManifestWithResourceConf = (
+  middleware = [],
+  gatewayConfigs = null,
+  clientId = null
+) => ({
   clientId,
   host: 'http://example.org',
   bodyAttr: 'customAttr',
@@ -206,13 +218,13 @@ export const getManifestWithResourceConf = (middleware = [], gatewayConfigs = nu
   resources: {
     User: {
       all: { path: '/users' },
-      byId: { path: '/users/{id}' }
+      byId: { path: '/users/{id}' },
     },
     Blog: {
       post: { method: 'post', path: '/blogs' },
-      addComment: { method: 'put', path: '/blogs/{id}/comment' }
-    }
-  }
+      addComment: { method: 'put', path: '/blogs/{id}/comment' },
+    },
+  },
 })
 
 export const createRequest = (args = {}) => new Request(new MethodDescriptor(args))

@@ -1,7 +1,7 @@
 var path = require('path')
 var rootDir = path.join(__dirname, '..')
 
-function exec (command, cwd) {
+function exec(command, cwd) {
   // pass the parent´s stdio to the child process
   // http://stackoverflow.com/a/31104898
   require('child_process').execSync(command, { cwd: cwd, stdio: [0, 1, 2] })

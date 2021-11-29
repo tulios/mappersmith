@@ -21,7 +21,7 @@ const GlobalErrorHandlerMiddleware = () => ({
           proceed && reject(response)
         })
     })
-  }
+  },
 })
 
 export default GlobalErrorHandlerMiddleware

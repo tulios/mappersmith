@@ -94,7 +94,7 @@ Fetch.prototype = Gateway.extends({
           responseData = fetchResponse.text()
         }
 
-        responseData.then(data => {
+        responseData.then((data) => {
           this.dispatchResponse(this.createResponse(fetchResponse, data))
         })
       })
@@ -115,13 +115,8 @@ Fetch.prototype = Gateway.extends({
       responseHeaders[key] = value
     })
 
-    return new Response(
-      this.request,
-      status,
-      data,
-      responseHeaders
-    )
-  }
+    return new Response(this.request, status, data, responseHeaders)
+  },
 })
 
 export default Fetch

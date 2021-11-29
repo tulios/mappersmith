@@ -8,9 +8,9 @@ const github = forge({
     Endpoint: {
       withParam: { path: '/param/:id' },
       withBody: { method: 'POST', path: '/body' },
-      withNothingSpecial: { path: '/nothing' }
-    }
-  }
+      withNothingSpecial: { path: '/nothing' },
+    },
+  },
 })
 
 describe('#mockClient', () => {
@@ -35,7 +35,7 @@ describe('#mockClient', () => {
         .resource('Endpoint')
         .method('withBody')
         .with({
-          body: m.anything()
+          body: m.anything(),
         })
         .response((request) => request.body())
         .assertObject()
@@ -50,7 +50,7 @@ describe('#mockClient', () => {
         .resource('Endpoint')
         .method('withParam')
         .with({
-          id: m.anything()
+          id: m.anything(),
         })
         .response((request) => request.params())
         .assertObject()

@@ -37,10 +37,10 @@ function Manifest(obj, { gatewayConfigs = null, middleware = [], context = {} })
 
 Manifest.prototype = {
   eachResource(callback) {
-    Object.keys(this.resources).forEach(resourceName => {
-      const methods = this.eachMethod(resourceName, methodName => ({
+    Object.keys(this.resources).forEach((resourceName) => {
+      const methods = this.eachMethod(resourceName, (methodName) => ({
         name: methodName,
-        descriptor: this.createMethodDescriptor(resourceName, methodName)
+        descriptor: this.createMethodDescriptor(resourceName, methodName),
       }))
 
       callback(resourceName, methods)
@@ -69,7 +69,7 @@ Manifest.prototype = {
           headersAttr: this.headersAttr,
           authAttr: this.authAttr,
           timeoutAttr: this.timeoutAttr,
-          hostAttr: this.hostAttr
+          hostAttr: this.hostAttr,
         },
         definition
       )
@@ -87,7 +87,7 @@ Manifest.prototype = {
    * @return {Array<Object>}
    */
   createMiddleware(args = {}) {
-    const createInstance = middlewareFactory =>
+    const createInstance = (middlewareFactory) =>
       assign(
         {
           __name: middlewareFactory.name || middlewareFactory.toString(),
@@ -99,13 +99,13 @@ Manifest.prototype = {
            * Replaced the request method
            */
           prepareRequest(next) {
-            return this.request ? next().then(req => this.request(req)) : next()
-          }
+            return this.request ? next().then((req) => this.request(req)) : next()
+          },
         },
         middlewareFactory(
           assign(args, {
             clientId: this.clientId,
-            context: assign({}, this.context)
+            context: assign({}, this.context),
           })
         )
       )
@@ -115,7 +115,7 @@ Manifest.prototype = {
     const middlewares = [...resourceMiddleware, ...this.middleware]
 
     return middlewares.map(createInstance)
-  }
+  },
 }
 
 export default Manifest

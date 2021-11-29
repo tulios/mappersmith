@@ -9,16 +9,13 @@ describe('mappersmith', () => {
 
       expect(configs.context).toEqual({
         foo: 'bar',
-        bar: 'baz'
+        bar: 'baz',
       })
     })
   })
 
   describe('#forge', () => {
-    let originalConfig,
-      manifest,
-      gatewayClass,
-      gatewayInstance
+    let originalConfig, manifest, gatewayClass, gatewayInstance
 
     beforeEach(() => {
       if (!originalConfig) {
@@ -28,9 +25,9 @@ describe('mappersmith', () => {
       manifest = {
         resources: {
           Test: {
-            method: { path: '/test' }
-          }
-        }
+            method: { path: '/test' },
+          },
+        },
       }
 
       gatewayInstance = { call: jest.fn(() => Promise.resolve('response')) }

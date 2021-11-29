@@ -54,7 +54,7 @@ describe('integration', () => {
           onSocketLookup: jasmine.createSpy('onRequestWillStart'),
           onSocketConnect: jasmine.createSpy('onRequestWillStart'),
           onResponseReadable: jasmine.createSpy('onRequestWillStart'),
-          onResponseEnd: jasmine.createSpy('onRequestWillStart')
+          onResponseEnd: jasmine.createSpy('onRequestWillStart'),
         }
 
         configs.gatewayConfigs.HTTP = gatewayConfigs
