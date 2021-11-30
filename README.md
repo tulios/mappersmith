@@ -176,7 +176,7 @@ client.User.byId(/* missing id */)
 // throw '[Mappersmith] required parameter missing (id), "/users/{id}" cannot be resolved'
 ```
 
-**NOTE**: Since version `2.36.0` you can set `disableParamsEncode: true` to disable encodeURI on parameters.
+You can optionally set `disableParamsEncode: true` to disable encodeURI on parameters. This is useful when you are calling an endpoint which requires `[explanation here]`
 
 ```javascript
 const client = forge({
