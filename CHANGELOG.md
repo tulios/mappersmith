@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 Added
-  - Add option `disableParamsEncode` which can optionally be used to disable encoding request params. Default is false (backwards compatible change).
+  - Add option `paramsEncodingOverride` which can optionally be used to override the encoding function for request params. Default is `encodeURIComponent` (backwards compatible change).
 
 Fixed:
   - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match

@@ -3,7 +3,7 @@ import type { Middleware } from './middleware'
 
 interface MethodDescriptorParams {
   allowResourceHostOverride?: boolean
-  disableParamsEncode?: boolean
+  paramsEncodingOverride?: typeof encodeURIComponent
   authAttr?: string
   binary?: boolean
   bodyAttr?: string
@@ -24,7 +24,7 @@ interface MethodDescriptorParams {
  * @typedef MethodDescriptor
  * @param {MethodDescriptorParams} params
  *   @param {boolean} params.allowResourceHostOverride
- *   @param {boolean} params.disableParamsEncode
+ *   @param {Function} params.paramsEncodingOverride
  *   @param {String} params.authAttr - auth attribute name. Default: 'auth'
  *   @param {boolean} params.binary
  *   @param {String} params.bodyAttr - body attribute name. Default: 'body'
@@ -42,7 +42,7 @@ interface MethodDescriptorParams {
  */
 export class MethodDescriptor {
   public readonly allowResourceHostOverride: boolean
-  public readonly disableParamsEncode: boolean
+  public readonly paramsEncodingOverride: typeof encodeURIComponent
   public readonly authAttr: string
   public readonly binary: boolean
   public readonly bodyAttr: string
@@ -59,7 +59,7 @@ export class MethodDescriptor {
 
   constructor(params: MethodDescriptorParams) {
     this.allowResourceHostOverride = params.allowResourceHostOverride || false
-    this.disableParamsEncode = params.disableParamsEncode || false
+    this.paramsEncodingOverride = params.paramsEncodingOverride || encodeURIComponent
     this.binary = params.binary || false
     this.headers = params.headers
     this.host = params.host
