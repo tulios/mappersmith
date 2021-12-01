@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+Added
+  - Add option `disableParamsEncode` which can optionally be used to disable encoding request params. Default is false (backwards compatible change).
+
 Fixed:
   - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match
   - Fix `Request.pathTemplate` to return result of the function instead of the function itself
@@ -10,10 +13,6 @@ Refactored:
   - Migrated `MethodDescriptor` to typescript
   - Migrated `Request` to typescript
   - Migrated `Response` to typescript
-
-## 2.36.0
-
-  - Disable encodeURI on parameters if `disableParamsEncode=true`
 
 ## 2.35.0
 
