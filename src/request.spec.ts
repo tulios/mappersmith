@@ -300,6 +300,29 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json?email=email%2Btest%40example.com')
     })
 
+    it('encodes params if disableParamsEncode is true', () => {
+      const methodDescriptor = new MethodDescriptor({
+        ...methodDescriptorArgs,
+        params: { role: 'mocked:uuid:role' },
+        disableParamsEncode: true,
+        path: '/api/mock/{role}',
+      })
+
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/mock/mocked:uuid:role')
+    })
+
+    it('does not encodes params if disableParamsEncode is not set', () => {
+      const methodDescriptor = new MethodDescriptor({
+        ...methodDescriptorArgs,
+        params: { role: 'mocked:uuid:role' },
+        path: '/api/mock/{role}',
+      })
+
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/mock/mocked%3Auuid%3Arole')
+    })
+
     it('does not apply queryParamAlias to interpolated dynamic segments', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
