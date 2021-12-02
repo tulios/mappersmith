@@ -119,7 +119,7 @@ declare module 'mappersmith' {
     readonly clientId?: string
     readonly host?: string
     readonly allowResourceHostOverride?: boolean
-    readonly paramsEncodingOverride?: typeof encodeURIComponent
+    readonly parameterEncoder?: typeof encodeURIComponent
     readonly ignoreGlobalMiddleware?: boolean
     readonly middleware?: Middleware[]
     readonly gatewayConfigs?: Partial<GatewayConfiguration>

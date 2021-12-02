@@ -300,11 +300,11 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json?email=email%2Btest%40example.com')
     })
 
-    it('encodes params with the function of the paramsEncodingOverride parameter', () => {
+    it('encodes params with the function of the parameterEncoder parameter', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
         params: { role: 'mocked:uuid:role' },
-        paramsEncodingOverride: encodeURI as typeof encodeURIComponent,
+        parameterEncoder: encodeURI as typeof encodeURIComponent,
         path: '/api/mock/{role}',
       })
 
@@ -312,7 +312,7 @@ describe('Request', () => {
       expect(path).toEqual('/api/mock/mocked:uuid:role')
     })
 
-    it('encodes params with the default encodeURIComponent if paramsEncodingOverride is not set', () => {
+    it('encodes params with the default encodeURIComponent if parameterEncoder is not set', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
         params: { role: 'mocked:uuid:role' },

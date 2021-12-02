@@ -102,7 +102,7 @@ export class Request {
       const pattern = new RegExp(`{${key}\\??}`, 'g')
       const value = params[key]
       if (value != null && typeof value !== 'object') {
-        path = path.replace(pattern, this.methodDescriptor.paramsEncodingOverride(value))
+        path = path.replace(pattern, this.methodDescriptor.parameterEncoder(value))
         delete params[key]
       }
     }

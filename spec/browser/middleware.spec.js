@@ -308,13 +308,13 @@ describe('ClientBuilder middleware', () => {
       expect(response.request().host()).toEqual('http://example.org')
     })
 
-    it('encode params of the request path with the default function when paramsEncodingOverride is not set', async () => {
+    it('encode params of the request path with the default function when parameterEncoder is not set', async () => {
       const response = await createClient().User.byId({ id: 'mock:uuid:5678' })
       expect(response.request().path()).toEqual('/users/mock%3Auuid%3A5678')
     })
 
-    it('encode params of the request path with the custom function when paramsEncodingOverride is set', async () => {
-      manifest.paramsEncodingOverride = encodeURI
+    it('encode params of the request path with the custom function when parameterEncoder is set', async () => {
+      manifest.parameterEncoder = encodeURI
       const response = await createClient().User.byId({ id: 'custom:id:1234' })
       expect(response.request().path()).toEqual('/users/custom:id:1234')
     })
