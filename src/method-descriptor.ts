@@ -1,9 +1,9 @@
-import type { Headers, RequestParams, Params } from './types'
+import type { Headers, RequestParams, ParameterEncoderFn, Params } from './types'
 import type { Middleware } from './middleware'
 
 interface MethodDescriptorParams {
   allowResourceHostOverride?: boolean
-  parameterEncoder?: typeof encodeURIComponent
+  parameterEncoder?: ParameterEncoderFn
   authAttr?: string
   binary?: boolean
   bodyAttr?: string
@@ -42,7 +42,7 @@ interface MethodDescriptorParams {
  */
 export class MethodDescriptor {
   public readonly allowResourceHostOverride: boolean
-  public readonly parameterEncoder: typeof encodeURIComponent
+  public readonly parameterEncoder: ParameterEncoderFn
   public readonly authAttr: string
   public readonly binary: boolean
   public readonly bodyAttr: string

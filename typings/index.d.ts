@@ -25,6 +25,7 @@ declare module 'mappersmith' {
   export type RenewFn = import('../src/middleware').RenewFn
   export type RequestGetter = import('../src/middleware').RequestGetter
   export type ResponseGetter = import('../src/middleware').ResponseGetter
+  type ParameterEncoderFn = import('../src/types').ParameterEncoderFn
 
   export type AsyncFunctions<HashType> = {
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
@@ -119,7 +120,7 @@ declare module 'mappersmith' {
     readonly clientId?: string
     readonly host?: string
     readonly allowResourceHostOverride?: boolean
-    readonly parameterEncoder?: typeof encodeURIComponent
+    readonly parameterEncoder?: ParameterEncoderFn
     readonly ignoreGlobalMiddleware?: boolean
     readonly middleware?: Middleware[]
     readonly gatewayConfigs?: Partial<GatewayConfiguration>

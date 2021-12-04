@@ -304,7 +304,7 @@ describe('Request', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
         params: { role: 'mocked:uuid:role' },
-        parameterEncoder: encodeURI as typeof encodeURIComponent,
+        parameterEncoder: (arg) => encodeURI(arg.toString()),
         path: '/api/mock/{role}',
       })
 
