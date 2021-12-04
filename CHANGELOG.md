@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+Added
+  - Add option `parameterEncoder` which can optionally be used to override the encoding function for request params. Default is `encodeURIComponent` (backwards compatible change).
+
 Fixed:
   - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match
   - Fix `Request.pathTemplate` to return result of the function instead of the function itself

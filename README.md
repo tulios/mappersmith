@@ -176,6 +176,16 @@ client.User.byId(/* missing id */)
 // throw '[Mappersmith] required parameter missing (id), "/users/{id}" cannot be resolved'
 ```
 
+You can optionally set `parameterEncoder: yourEncodingFunction` to change the default encoding function for parameters. This is useful when you are calling an endpoint which for example requires not encoded characters like `:` that are otherwise encoded by the default behaviour of the `encodeURIComponent` function ([external documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent?retiredLocale=it#description)).
+
+```javascript
+const client = forge({
+  host: 'https://custom-host.com',
+  parameterEncoder: yourEncodingFunction,
+  resources: { ... }
+})
+```
+
 ### <a name="default-parameters"></a> Default Parameters
 
 It is possible to configure default parameters for your resources, just use the key `params` in the definition. It will replace params in the URL or include query strings.

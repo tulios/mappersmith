@@ -25,3 +25,5 @@ export interface RequestParams {
   readonly timeout?: number
   [param: string]: object | Primitive | undefined | null
 }
+
+export type ParameterEncoderFn = (arg: Primitive) => string
