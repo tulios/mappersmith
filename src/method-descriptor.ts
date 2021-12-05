@@ -1,7 +1,7 @@
 import type { Headers, RequestParams, ParameterEncoderFn, Params } from './types'
 import type { Middleware } from './middleware'
 
-interface MethodDescriptorParams {
+export interface MethodDescriptorParams {
   allowResourceHostOverride?: boolean
   parameterEncoder?: ParameterEncoderFn
   authAttr?: string
