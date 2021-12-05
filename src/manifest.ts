@@ -1,10 +1,10 @@
 import { MethodDescriptor, MethodDescriptorParams } from './method-descriptor'
 import { assign } from './utils'
-import type { ParameterEncoderFn } from './types'
+import type { GatewayConfiguration, ParameterEncoderFn } from './types'
 import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware'
 
 interface GlobalConfigs {
-  gatewayConfigs?: object
+  gatewayConfigs?: GatewayConfiguration
   middleware: Middleware[]
   context?: Context
 }
@@ -23,7 +23,7 @@ interface ManifestOptions {
   timeoutAttr?: string
   hostAttr?: string
   clientId?: string
-  gatewayConfigs?: object
+  gatewayConfigs?: GatewayConfiguration
   resources?: Resource
   middleware?: Middleware[]
   /**
@@ -56,15 +56,14 @@ export class Manifest {
   public timeoutAttr?: string
   public hostAttr?: string
   public clientId: string | null
-  // FIXME: Real type
-  public gatewayConfigs: object
+  public gatewayConfigs: GatewayConfiguration
   public resources: Resource
   public context: Context
   public middleware: Middleware[]
 
   constructor(
     options: ManifestOptions,
-    { gatewayConfigs = {}, middleware = [], context = {} }: GlobalConfigs
+    { gatewayConfigs, middleware, context = {} }: GlobalConfigs
   ) {
     this.host = options.host
     this.allowResourceHostOverride = options.allowResourceHostOverride || false

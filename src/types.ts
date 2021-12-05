@@ -27,3 +27,64 @@ export interface RequestParams {
 }
 
 export type ParameterEncoderFn = (arg: Primitive) => string
+
+/**
+ * Gateway types:
+ */
+export interface HTTPRequestParams {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
+}
+
+export interface HTTPGatewayConfiguration {
+  configure?(requestParams: HTTPRequestParams): HTTPRequestParams
+  onRequestWillStart?(requestParams: HTTPRequestParams): void
+  onRequestSocketAssigned?(requestParams: HTTPRequestParams): void
+  onSocketLookup?(requestParams: HTTPRequestParams): void
+  onSocketConnect?(requestParams: HTTPRequestParams): void
+  onSocketSecureConnect?(requestParams: HTTPRequestParams): void
+  onResponseReadable?(requestParams: HTTPRequestParams): void
+  onResponseEnd?(requestParams: HTTPRequestParams): void
+  useSocketConnectionTimeout?: boolean
+}
+
+export interface Gateway {
+  call(): void
+  dispatchClientError(message: string, error: Error): void
+  dispatchResponse(response: Response): void
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  extends(methods: { [fn: string]: Function }): void
+  options(): object
+  prepareBody(method: string, headers: Headers): string
+  shouldEmulateHTTP(): boolean
+}
+
+export interface NetworkGateway {
+  delete?(): void
+  get(): void
+  head(): void
+  patch(): void
+  post(): void
+  put(): void
+}
+
+export interface XhrGateway extends Gateway, NetworkGateway {
+  readonly withCredentials: boolean
+  configure(xmlHttpRequest: XMLHttpRequest): void
+  configureBinary(xmlHttpRequest: XMLHttpRequest): void
+  configureCallbacks(xmlHttpRequest: XMLHttpRequest): void
+  configureTimeout(xmlHttpRequest: XMLHttpRequest): void
+  createResponse(xmlHttpRequest: XMLHttpRequest): void
+  createXHR(): XMLHttpRequest
+  performRequest(method: string): void
+  setHeaders(xmlHttpRequest: XMLHttpRequest, headers: Headers): void
+}
+
+export interface GatewayConfiguration {
+  Fetch: object
+  HTTP: HTTPGatewayConfiguration
+  Mock: object
+  XHR: Partial<XhrGateway>
+  enableHTTP408OnTimeouts?: boolean
+  emulateHTTP?: boolean
+}
