@@ -28,7 +28,7 @@ const R20 = /%20/g
 const isNeitherNullNorUndefined = <T>(x: T | undefined | null): x is T =>
   x !== null && x !== undefined
 
-export const validKeys = (entry: Hash) =>
+export const validKeys = (entry: Record<string, object | Primitive | undefined | null>) =>
   Object.keys(entry).filter((key) => isNeitherNullNorUndefined(entry[key]))
 
 export const buildRecursive = (
@@ -49,19 +49,21 @@ export const buildRecursive = (
     .join('&')
 }
 
-export const toQueryString = (entry: string | Record<string, Primitive>) => {
+export const toQueryString = (
+  entry: Primitive | undefined | null | Record<string, object | Primitive | undefined | null>
+) => {
   if (!isPlainObject(entry)) {
     return entry
   }
 
   return validKeys(entry)
-    .map((key) => buildRecursive(key, entry[key]))
+    .map((key) => buildRecursive(key, entry[key] as Primitive))
     .join('&')
     .replace(R20, '+')
 }
 
 /**
- * Gives time in miliseconds, but with sub-milisecond precision for Browser
+ * Gives time in milliseconds, but with sub-millisecond precision for Browser
  * and Nodejs
  */
 export const performanceNow = () => {
@@ -138,7 +140,7 @@ export const isPlainObject = (value: unknown): value is object => {
  * borrowed from: {@link https://github.com/davidchambers/Base64.js}
  */
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
-export const btoa = (input: string) => {
+export const btoa = (input: object | Primitive | null) => {
   let output = ''
   let map = CHARS
   const str = String(input)

@@ -1,4 +1,4 @@
-import { performanceNow } from 'src/utils'
+import { performanceNow } from '../../src/utils'
 
 describe('#performanceNow', () => {
   beforeEach(() => {
