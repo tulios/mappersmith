@@ -5,10 +5,10 @@ import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './m
 
 interface GlobalConfigs {
   gatewayConfigs?: GatewayConfiguration
-  middleware: Middleware[]
+  middleware?: Middleware[]
   context?: Context
 }
-interface Resource {
+interface Resources {
   [resourceName: string]: {
     [methodName: string]: Omit<MethodDescriptorParams, 'host'> & { host?: string }
   }
@@ -24,7 +24,7 @@ interface ManifestOptions {
   hostAttr?: string
   clientId?: string
   gatewayConfigs?: GatewayConfiguration
-  resources?: Resource
+  resources?: Resources
   middleware?: Middleware[]
   /**
    * @deprecated - use `middleware` instead
@@ -57,13 +57,13 @@ export class Manifest {
   public hostAttr?: string
   public clientId: string | null
   public gatewayConfigs: GatewayConfiguration
-  public resources: Resource
+  public resources: Resources
   public context: Context
   public middleware: Middleware[]
 
   constructor(
     options: ManifestOptions,
-    { gatewayConfigs, middleware, context = {} }: GlobalConfigs
+    { gatewayConfigs, middleware = [], context = {} }: GlobalConfigs
   ) {
     this.host = options.host
     this.allowResourceHostOverride = options.allowResourceHostOverride || false
