@@ -126,7 +126,7 @@ export class Request {
     }, {} as Record<string, Primitive>)
 
     const queryString = toQueryString(aliasedParams)
-    if (queryString.length !== 0) {
+    if (typeof queryString === 'string' && queryString.length !== 0) {
       const hasQuery = path.includes('?')
       path += `${hasQuery ? '&' : '?'}${queryString}`
     }

@@ -1,13 +1,10 @@
-import MockDate from 'mockdate'
-
 import {
   toQueryString,
   parseResponseHeaders,
   lowerCaseObjectKeys,
-  performanceNow,
   isPlainObject,
   btoa,
-} from 'src/utils'
+} from './utils'
 
 describe('utils', () => {
   describe('#toQueryString', () => {
@@ -41,24 +38,30 @@ describe('utils', () => {
 
       describe('with object values', () => {
         it('converts the keys to "key[another-key]" pattern', () => {
-          const params = decodeURIComponent(toQueryString({ a: { b: 1, c: 2 } }))
+          const params = decodeURIComponent(
+            toQueryString({ a: { b: 1, c: 2 } })?.toString() as string
+          )
           expect(params).toEqual('a[b]=1&a[c]=2')
         })
 
         it('works with nested objects', () => {
-          const params = decodeURIComponent(toQueryString({ a: { b: 1, c: { d: 2 } }, e: 3 }))
+          const params = decodeURIComponent(
+            toQueryString({ a: { b: 1, c: { d: 2 } }, e: 3 })?.toString() as string
+          )
           expect(params).toEqual('a[b]=1&a[c][d]=2&e=3')
         })
       })
 
       describe('with array values', () => {
         it('converts the keys to "key[]" pattern', () => {
-          const params = decodeURIComponent(toQueryString({ a: [1, 2, 3] }))
+          const params = decodeURIComponent(toQueryString({ a: [1, 2, 3] })?.toString() as string)
           expect(params).toEqual('a[]=1&a[]=2&a[]=3')
         })
 
         it('works with nested arrays', () => {
-          const params = decodeURIComponent(toQueryString({ a: [1, [2, [3, 4]]] }))
+          const params = decodeURIComponent(
+            toQueryString({ a: [1, [2, [3, 4]]] })?.toString() as string
+          )
           expect(params).toEqual('a[]=1&a[][]=2&a[][][]=3&a[][][]=4')
         })
       })
@@ -66,7 +69,7 @@ describe('utils', () => {
   })
 
   describe('#parseResponseHeaders', () => {
-    let responseHeaders
+    let responseHeaders: string
 
     beforeEach(() => {
       /* eslint-disable */
@@ -110,20 +113,22 @@ describe('utils', () => {
     })
   })
 
-  describe('#performanceNow', () => {
-    it('returns the same value as "new Date().getTime()"', () => {
-      MockDate.set('2017-08-08T20:57:00Z')
-      expect(performanceNow()).toEqual(Date.now())
-    })
-  })
-
   describe('#isPlainObject', () => {
-    it('returns true for plain objects', () => {
-      function Custom() {
-        return undefined
-      }
+    it('returns false for non-plain objects', () => {
+      class Custom {}
       expect(isPlainObject(new Custom())).toEqual(false)
+      expect(isPlainObject(false)).toEqual(false)
+      expect(isPlainObject(null)).toEqual(false)
+      expect(isPlainObject(undefined)).toEqual(false)
+      expect(isPlainObject('string')).toEqual(false)
+      expect(isPlainObject(1)).toEqual(false)
+      expect(isPlainObject([])).toEqual(false)
+    })
+
+    it('returns true for plain objects', () => {
+      expect(isPlainObject({})).toEqual(true)
       expect(isPlainObject({ plain: true })).toEqual(true)
+      expect(isPlainObject({ a: { b: 1, c: undefined }, d: null })).toEqual(true)
     })
   })
 
