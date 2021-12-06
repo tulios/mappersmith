@@ -17,6 +17,7 @@ export type AbortFn = (error: Error) => void
 export type RenewFn = () => Promise<object>
 
 export interface MiddlewareDescriptor {
+  __name?: string
   /**
    * @deprecated: Please use prepareRequest instead
    */
@@ -30,10 +31,11 @@ export interface MiddlewareDescriptor {
 }
 
 export interface MiddlewareParams {
-  readonly clientId: string
+  readonly clientId: string | null
   readonly context: Context
   readonly resourceMethod: string
   readonly resourceName: string
+  readonly mockRequest?: boolean
 }
 
 export type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor
