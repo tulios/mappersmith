@@ -1,19 +1,25 @@
 import { MethodDescriptor, MethodDescriptorParams } from './method-descriptor'
 import { assign } from './utils'
-import type { GatewayConfiguration, ParameterEncoderFn } from './types'
+import type { Gateway, GatewayConfiguration, ParameterEncoderFn } from './types'
 import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware'
 
-interface GlobalConfigs {
-  gatewayConfigs?: GatewayConfiguration
-  middleware?: Middleware[]
-  context?: Context
+export interface GlobalConfigs {
+  context: Context
+  middleware: Middleware[]
+  Promise: PromiseConstructor | null
+  fetch: typeof fetch | null
+  gateway: Gateway | null
+  gatewayConfigs: GatewayConfiguration
+  maxMiddlewareStackExecutionAllowed: number
 }
+
 interface Resources {
   [resourceName: string]: {
     [methodName: string]: Omit<MethodDescriptorParams, 'host'> & { host?: string }
   }
 }
-interface ManifestOptions {
+
+export interface ManifestOptions {
   host: string
   allowResourceHostOverride?: boolean
   parameterEncoder?: ParameterEncoderFn
@@ -32,8 +38,8 @@ interface ManifestOptions {
   middlewares?: Middleware[]
   ignoreGlobalMiddleware?: boolean
 }
-type Method = { name: string; descriptor: MethodDescriptor }
-type EachResourceCallbackFn = (name: string, methods: Method[]) => string
+export type Method = { name: string; descriptor: MethodDescriptor }
+type EachResourceCallbackFn = (name: string, methods: Method[]) => void
 type EachMethodCallbackFn = (name: string) => Method
 type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'resourceMethod'>> &
   Pick<MiddlewareParams, 'resourceName' | 'resourceMethod'>
