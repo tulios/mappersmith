@@ -37,14 +37,14 @@ export interface HTTPRequestParams {
 }
 
 export interface HTTPGatewayConfiguration {
-  configure?(requestParams: HTTPRequestParams): HTTPRequestParams
-  onRequestWillStart?(requestParams: HTTPRequestParams): void
-  onRequestSocketAssigned?(requestParams: HTTPRequestParams): void
-  onSocketLookup?(requestParams: HTTPRequestParams): void
-  onSocketConnect?(requestParams: HTTPRequestParams): void
-  onSocketSecureConnect?(requestParams: HTTPRequestParams): void
-  onResponseReadable?(requestParams: HTTPRequestParams): void
-  onResponseEnd?(requestParams: HTTPRequestParams): void
+  configure?: ((requestParams: HTTPRequestParams) => HTTPRequestParams) | null
+  onRequestWillStart?: ((requestParams: HTTPRequestParams) => void) | null
+  onRequestSocketAssigned?: ((requestParams: HTTPRequestParams) => void) | null
+  onSocketLookup?: ((requestParams: HTTPRequestParams) => void) | null
+  onSocketConnect?: ((requestParams: HTTPRequestParams) => void) | null
+  onSocketSecureConnect?: ((requestParams: HTTPRequestParams) => void) | null
+  onResponseReadable?: ((requestParams: HTTPRequestParams) => void) | null
+  onResponseEnd?: ((requestParams: HTTPRequestParams) => void) | null
   useSocketConnectionTimeout?: boolean
 }
 
@@ -70,7 +70,7 @@ export interface NetworkGateway {
 
 export interface XhrGateway extends Gateway, NetworkGateway {
   readonly withCredentials: boolean
-  configure(xmlHttpRequest: XMLHttpRequest): void
+  configure?: ((xmlHttpRequest: XMLHttpRequest) => void) | null
   configureBinary(xmlHttpRequest: XMLHttpRequest): void
   configureCallbacks(xmlHttpRequest: XMLHttpRequest): void
   configureTimeout(xmlHttpRequest: XMLHttpRequest): void
@@ -83,7 +83,7 @@ export interface XhrGateway extends Gateway, NetworkGateway {
 export interface GatewayConfiguration {
   Fetch: object
   HTTP: HTTPGatewayConfiguration
-  Mock: object
+  Mock?: object
   XHR: Partial<XhrGateway>
   enableHTTP408OnTimeouts?: boolean
   emulateHTTP?: boolean

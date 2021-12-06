@@ -1,71 +1,102 @@
-import Manifest from './manifest'
-import Request from './request'
+import { Manifest, ManifestOptions, GlobalConfigs, Method } from './manifest'
+import { Request } from './request'
 import { assign } from './utils'
+import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
+import type { Gateway, GatewayConfiguration, RequestParams } from './types'
+
+/**
+ * NAME?
+ */
+interface RequestPhaseFailureContext {
+  middleware: string | null
+  returnedInvalidRequest: boolean
+  abortExecution: boolean
+}
 
 /**
  * @typedef ClientBuilder
- * @param {Object} manifest - manifest definition with at least the `resources` key
+ * @param {Object} manifestDefinition - manifest definition with at least the `resources` key
  * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
-function ClientBuilder(manifest, GatewayClassFactory, configs) {
-  if (!manifest) {
-    throw new Error(`[Mappersmith] invalid manifest (${manifest})`)
-  }
 
-  if (!GatewayClassFactory || !GatewayClassFactory()) {
-    throw new Error('[Mappersmith] gateway class not configured (configs.gateway)')
-  }
-
-  this.Promise = configs.Promise
-  this.manifest = new Manifest(manifest, configs)
-  this.GatewayClassFactory = GatewayClassFactory
-  this.maxMiddlewareStackExecutionAllowed = configs.maxMiddlewareStackExecutionAllowed
+interface GatewayConstructor {
+  new (request: Request, gatewayConfigs: GatewayConfiguration): Gateway
+  readonly prototype: Gateway
 }
 
-ClientBuilder.prototype = {
-  build() {
-    const client = { _manifest: this.manifest }
+export class ClientBuilder {
+  public Promise: PromiseConstructor
+  public manifest: Manifest
+  public GatewayClassFactory: () => GatewayConstructor
+  public maxMiddlewareStackExecutionAllowed: number
+
+  constructor(
+    manifestDefinition: ManifestOptions,
+    GatewayClassFactory: () => GatewayConstructor,
+    configs: GlobalConfigs
+  ) {
+    if (!manifestDefinition) {
+      throw new Error(`[Mappersmith] invalid manifest (${manifestDefinition})`)
+    }
+
+    if (!GatewayClassFactory || !GatewayClassFactory()) {
+      throw new Error('[Mappersmith] gateway class not configured (configs.gateway)')
+    }
+
+    if (!configs.Promise) {
+      throw new Error('[Mappersmith] Promise not configured (configs.Promise)')
+    }
+
+    this.Promise = configs.Promise
+    this.manifest = new Manifest(manifestDefinition, configs)
+    this.GatewayClassFactory = GatewayClassFactory
+    this.maxMiddlewareStackExecutionAllowed = configs.maxMiddlewareStackExecutionAllowed
+  }
+
+  public build() {
+    // FIXME: What is this returning
+    const client: { [clientName: string]: unknown } = { _manifest: this.manifest }
 
     this.manifest.eachResource((name, methods) => {
       client[name] = this.buildResource(name, methods)
     })
 
     return client
-  },
+  }
 
-  buildResource(resourceName, methods) {
+  private buildResource(resourceName: string, methods: Method[]) {
     return methods.reduce(
       (resource, method) =>
         assign(resource, {
-          [method.name]: (requestParams) => {
+          [method.name]: (requestParams: RequestParams) => {
             const request = new Request(method.descriptor, requestParams)
             return this.invokeMiddlewares(resourceName, method.name, request)
           },
         }),
       {}
     )
-  },
+  }
 
-  invokeMiddlewares(resourceName, resourceMethod, initialRequest) {
+  private invokeMiddlewares(resourceName: string, resourceMethod: string, initialRequest: Request) {
     const middleware = this.manifest.createMiddleware({ resourceName, resourceMethod })
     const GatewayClass = this.GatewayClassFactory()
     const gatewayConfigs = this.manifest.gatewayConfigs
-    const requestPhaseFailureContext = {
+    const requestPhaseFailureContext: RequestPhaseFailureContext = {
       middleware: null,
       returnedInvalidRequest: false,
       abortExecution: false,
     }
 
     const getInitialRequest = () => this.Promise.resolve(initialRequest)
-    const chainRequestPhase = (next, middleware) => () => {
-      const abort = (error) => {
+    const chainRequestPhase = (next: RequestGetter, middleware: MiddlewareDescriptor) => () => {
+      const abort = (error: Error) => {
         requestPhaseFailureContext.abortExecution = true
         throw error
       }
 
       return this.Promise.resolve()
         .then(() => middleware.prepareRequest(next, abort))
-        .then((request) => {
+        .then((request: unknown) => {
           if (request instanceof Request) {
             return request
           }
@@ -74,7 +105,7 @@ ClientBuilder.prototype = {
           const typeValue = typeof request
           const prettyType =
             typeValue === 'object' || typeValue === 'function'
-              ? request.name || typeValue
+              ? (request as any).name || typeValue
               : typeValue
 
           throw new Error(
@@ -82,7 +113,7 @@ ClientBuilder.prototype = {
           )
         })
         .catch((e) => {
-          requestPhaseFailureContext.middleware = middleware.__name
+          requestPhaseFailureContext.middleware = middleware.__name || null
           throw e
         })
     }
@@ -90,7 +121,7 @@ ClientBuilder.prototype = {
     const prepareRequest = middleware.reduce(chainRequestPhase, getInitialRequest)
     let executions = 0
 
-    const executeMiddlewareStack = () =>
+    const executeMiddlewareStack: () => Promise<Response | void> = () =>
       prepareRequest()
         .catch((e) => {
           const { returnedInvalidRequest, abortExecution, middleware } = requestPhaseFailureContext
@@ -114,9 +145,11 @@ ClientBuilder.prototype = {
           }
 
           const renew = executeMiddlewareStack
-          const chainResponsePhase = (next, middleware) => () => middleware.response(next, renew)
+          const chainResponsePhase =
+            (next: ResponseGetter, middleware: MiddlewareDescriptor) => () =>
+              middleware.response(next, renew as any)
           const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
-          const execute = middleware.reduce(chainResponsePhase, callGateway)
+          const execute = middleware.reduce(chainResponsePhase as any, callGateway)
           return execute()
         })
 
@@ -125,7 +158,7 @@ ClientBuilder.prototype = {
         .then((response) => resolve(response))
         .catch(reject)
     })
-  },
+  }
 }
 
 export default ClientBuilder

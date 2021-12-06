@@ -14,20 +14,20 @@ export type ResponseGetter = () => Promise<Response>
 
 export type AbortFn = (error: Error) => void
 
-export type RenewFn = () => Promise<object>
+export type RenewFn = () => Promise<Response>
 
 export interface MiddlewareDescriptor {
   __name?: string
   /**
-   * @deprecated: Please use prepareRequest instead
+   * @deprecated: Use prepareRequest
    */
   request?(request: Request): Promise<Request> | Request
   /**
    * @since 2.27.0
    * Replaced the request method
    */
-  prepareRequest?(next: RequestGetter, abort: AbortFn): Promise<Request | void>
-  response?(next: ResponseGetter, renew: RenewFn): Promise<Response | object>
+  prepareRequest(next: RequestGetter, abort: AbortFn): Promise<Request | void>
+  response(next: ResponseGetter, renew: RenewFn): Promise<Response | void>
 }
 
 export interface MiddlewareParams {
@@ -38,4 +38,4 @@ export interface MiddlewareParams {
   readonly mockRequest?: boolean
 }
 
-export type Middleware = (params: MiddlewareParams) => MiddlewareDescriptor
+export type Middleware = (params: MiddlewareParams) => Partial<MiddlewareDescriptor>
