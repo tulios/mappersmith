@@ -14,12 +14,13 @@ declare module 'mappersmith' {
   export type Request = import('./generated/request').Request
   export type Headers = import('./generated/types').Headers
   export type Parameters = import('./generated/types').Params
-  export type Gateway = import('./generated/types').Gateway
-  type NetworkGateway = import('./generated/types').NetworkGateway
-  export type XhrGateway = import('./generated/types').XhrGateway
-  export type HTTPRequestParams = import('./generated/types').HTTPRequestParams
-  export type HTTPGatewayConfiguration = import('./generated/types').HTTPGatewayConfiguration
-  export type GatewayConfiguration = import('./generated/types').GatewayConfiguration
+  export type Gateway = import('./generated/gateway/types').Gateway
+  type NetworkGateway = import('./generated/gateway/types').NetworkGateway
+  export type XhrGateway = import('./generated/gateway/types').XhrGateway
+  export type HTTPRequestParams = import('./generated/gateway/types').HTTPRequestParams
+  export type HTTPGatewayConfiguration =
+    import('./generated/gateway/types').HTTPGatewayConfiguration
+  export type GatewayConfiguration = import('./generated/gateway/types').GatewayConfiguration
   type ParameterEncoderFn = import('./generated/types').ParameterEncoderFn
   export type Response = import('./generated/response').Response
 

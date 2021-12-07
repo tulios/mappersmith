@@ -1,10 +1,15 @@
 import { MethodDescriptor, MethodDescriptorParams } from './method-descriptor';
-import type { GatewayConfiguration, ParameterEncoderFn } from './types';
+import type { ParameterEncoderFn } from './types';
+import type { Gateway, GatewayConfiguration } from './gateway/types';
 import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware';
-interface GlobalConfigs {
-    gatewayConfigs?: GatewayConfiguration;
-    middleware?: Middleware[];
-    context?: Context;
+export interface GlobalConfigs {
+    context: Context;
+    middleware: Middleware[];
+    Promise: PromiseConstructor | null;
+    fetch: typeof fetch | null;
+    gateway: Gateway | null;
+    gatewayConfigs: GatewayConfiguration;
+    maxMiddlewareStackExecutionAllowed: number;
 }
 interface Resources {
     [resourceName: string]: {
@@ -13,7 +18,7 @@ interface Resources {
         };
     };
 }
-interface ManifestOptions {
+export interface ManifestOptions {
     host: string;
     allowResourceHostOverride?: boolean;
     parameterEncoder?: ParameterEncoderFn;
@@ -32,11 +37,11 @@ interface ManifestOptions {
     middlewares?: Middleware[];
     ignoreGlobalMiddleware?: boolean;
 }
-declare type Method = {
+export declare type Method = {
     name: string;
     descriptor: MethodDescriptor;
 };
-declare type EachResourceCallbackFn = (name: string, methods: Method[]) => string;
+declare type EachResourceCallbackFn = (name: string, methods: Method[]) => void;
 declare type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'resourceMethod'>> & Pick<MiddlewareParams, 'resourceName' | 'resourceMethod'>;
 /**
  * @typedef Manifest
@@ -75,6 +80,6 @@ export declare class Manifest {
      *
      * @return {Array<Object>}
      */
-    createMiddleware(args: CreateMiddlewareParams): MiddlewareDescriptor[];
+    createMiddleware(args: CreateMiddlewareParams): (MiddlewareDescriptor & Partial<MiddlewareDescriptor>)[];
 }
 export default Manifest;

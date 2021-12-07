@@ -1,16 +1,20 @@
 import { Manifest, ManifestOptions, GlobalConfigs, Method } from './manifest'
+import { Response } from './response'
 import { Request } from './request'
 import { assign } from './utils'
 import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
-import type { Gateway, GatewayConfiguration, RequestParams } from './types'
+import type { Gateway, GatewayConfiguration } from './gateway/types'
+import type { RequestParams } from './types'
 
-/**
- * NAME?
- */
 interface RequestPhaseFailureContext {
   middleware: string | null
   returnedInvalidRequest: boolean
   abortExecution: boolean
+}
+
+interface GatewayConstructor {
+  new (request: Request, gatewayConfigs: GatewayConfiguration): Gateway
+  readonly prototype: Gateway
 }
 
 /**
@@ -18,12 +22,6 @@ interface RequestPhaseFailureContext {
  * @param {Object} manifestDefinition - manifest definition with at least the `resources` key
  * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
-
-interface GatewayConstructor {
-  new (request: Request, gatewayConfigs: GatewayConfiguration): Gateway
-  readonly prototype: Gateway
-}
-
 export class ClientBuilder {
   public Promise: PromiseConstructor
   public manifest: Manifest
@@ -53,8 +51,8 @@ export class ClientBuilder {
     this.maxMiddlewareStackExecutionAllowed = configs.maxMiddlewareStackExecutionAllowed
   }
 
+  // FIXME: Type
   public build() {
-    // FIXME: What is this returning
     const client: { [clientName: string]: unknown } = { _manifest: this.manifest }
 
     this.manifest.eachResource((name, methods) => {
@@ -64,6 +62,7 @@ export class ClientBuilder {
     return client
   }
 
+  // FIXME: Type
   private buildResource(resourceName: string, methods: Method[]) {
     return methods.reduce(
       (resource, method) =>
@@ -101,11 +100,15 @@ export class ClientBuilder {
             return request
           }
 
+          // FIXME: Here be dragons: prepareRequest is typed as Promise<Response | void>
+          // but this code clearly expects it can be something else... anything.
+          // Hence manual cast to `unknown` above.
           requestPhaseFailureContext.returnedInvalidRequest = true
           const typeValue = typeof request
           const prettyType =
             typeValue === 'object' || typeValue === 'function'
-              ? (request as any).name || typeValue
+              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (request as any).name || typeValue
               : typeValue
 
           throw new Error(
@@ -121,7 +124,7 @@ export class ClientBuilder {
     const prepareRequest = middleware.reduce(chainRequestPhase, getInitialRequest)
     let executions = 0
 
-    const executeMiddlewareStack: () => Promise<Response | void> = () =>
+    const executeMiddlewareStack = () =>
       prepareRequest()
         .catch((e) => {
           const { returnedInvalidRequest, abortExecution, middleware } = requestPhaseFailureContext
@@ -146,14 +149,17 @@ export class ClientBuilder {
 
           const renew = executeMiddlewareStack
           const chainResponsePhase =
-            (next: ResponseGetter, middleware: MiddlewareDescriptor) => () =>
-              middleware.response(next, renew as any)
+            (previousValue: ResponseGetter, currentValue: MiddlewareDescriptor) => () => {
+              // Deliberately putting this on two separate lines - to get typescript to not return "any"
+              const nextValue = currentValue.response(previousValue, renew)
+              return nextValue
+            }
           const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()
-          const execute = middleware.reduce(chainResponsePhase as any, callGateway)
+          const execute = middleware.reduce(chainResponsePhase, callGateway)
           return execute()
         })
 
-    return new this.Promise((resolve, reject) => {
+    return new this.Promise<Response>((resolve, reject) => {
       executeMiddlewareStack()
         .then((response) => resolve(response))
         .catch(reject)
