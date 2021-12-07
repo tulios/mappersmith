@@ -14,12 +14,12 @@ declare module 'mappersmith' {
   export type Request = import('../src/request').Request
   export type Headers = import('../src/types').Headers
   export type Parameters = import('../src/types').Params
-  export type Gateway = import('../src/types').Gateway
-  type NetworkGateway = import('../src/types').NetworkGateway
-  export type XhrGateway = import('../src/types').XhrGateway
-  export type HTTPRequestParams = import('../src/types').HTTPRequestParams
-  export type HTTPGatewayConfiguration = import('../src/types').HTTPGatewayConfiguration
-  export type GatewayConfiguration = import('../src/types').GatewayConfiguration
+  export type Gateway = import('../src/gateway/types').Gateway
+  type NetworkGateway = import('../src/gateway/types').NetworkGateway
+  export type XhrGateway = import('../src/gateway/types').XhrGateway
+  export type HTTPRequestParams = import('../src/gateway/types').HTTPRequestParams
+  export type HTTPGatewayConfiguration = import('../src/gateway/types').HTTPGatewayConfiguration
+  export type GatewayConfiguration = import('../src/gateway/types').GatewayConfiguration
   export type Response = import('../src/response').Response
 
   export type AbortFn = import('../src/middleware').AbortFn

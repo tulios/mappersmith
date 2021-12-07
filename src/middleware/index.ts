@@ -27,7 +27,7 @@ export interface MiddlewareDescriptor {
    * Replaced the request method
    */
   prepareRequest(next: RequestGetter, abort: AbortFn): Promise<Request | void>
-  response(next: ResponseGetter, renew: RenewFn): Promise<Response | void>
+  response(next: ResponseGetter, renew: RenewFn): Promise<Response>
 }
 
 export interface MiddlewareParams {
