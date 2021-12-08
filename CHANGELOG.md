@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## 2.36.0
 
 Added
   - Add option `parameterEncoder` which can optionally be used to override the encoding function for request params. Default is `encodeURIComponent` (backwards compatible change).
