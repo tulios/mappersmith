@@ -1,10 +1,17 @@
 import { Manifest, ManifestOptions, GlobalConfigs, Method } from './manifest'
 import { Response } from './response'
 import { Request } from './request'
-import { assign } from './utils'
 import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
 import type { Gateway, GatewayConfiguration } from './gateway/types'
-import type { RequestParams } from './types'
+import type { Params } from './types'
+
+type AsyncFunctions<HashType> = {
+  [Key in keyof HashType]: (params?: Params) => Promise<Response>
+}
+
+type Client<ResourcesType> = {
+  [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
+}
 
 interface RequestPhaseFailureContext {
   middleware: string | null
@@ -52,28 +59,33 @@ export class ClientBuilder {
   }
 
   // FIXME: Type
-  public build() {
-    const client: { [clientName: string]: unknown } = { _manifest: this.manifest }
+  public build<T>() {
+    const client: Client<T> = { _manifest: this.manifest } as never
 
-    this.manifest.eachResource((name, methods) => {
-      client[name] = this.buildResource(name, methods)
+    this.manifest.eachResource((resourceName, methods) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore: This is hard
+      client[resourceName] = this.buildResource(resourceName, methods)
     })
 
     return client
   }
 
-  // FIXME: Type
   private buildResource(resourceName: string, methods: Method[]) {
-    return methods.reduce(
-      (resource, method) =>
-        assign(resource, {
-          [method.name]: (requestParams: RequestParams) => {
-            const request = new Request(method.descriptor, requestParams)
-            return this.invokeMiddlewares(resourceName, method.name, request)
-          },
-        }),
-      {}
-    )
+    const initialResourceValue: Record<string, (requestParams: Params) => Promise<Response>> = {}
+
+    const resource = methods.reduce((resource, method) => {
+      const resourceMethod = (requestParams: Params) => {
+        const request = new Request(method.descriptor, requestParams)
+        return this.invokeMiddlewares(resourceName, method.name, request)
+      }
+      return {
+        ...resource,
+        [method.name]: resourceMethod,
+      }
+    }, initialResourceValue)
+
+    return resource
   }
 
   private invokeMiddlewares(resourceName: string, resourceMethod: string, initialRequest: Request) {
