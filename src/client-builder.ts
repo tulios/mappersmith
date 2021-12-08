@@ -5,12 +5,18 @@ import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './midd
 import type { Gateway, GatewayConfiguration } from './gateway/types'
 import type { Params } from './types'
 
+type AsyncFunction = (params?: Params) => Promise<Response>
+
 type AsyncFunctions<HashType> = {
-  [Key in keyof HashType]: (params?: Params) => Promise<Response>
+  [Key in keyof HashType]: AsyncFunction
 }
 
 type Client<ResourcesType> = {
   [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
+}
+
+type ResourceConstraint = {
+  [key: string]: AsyncFunction
 }
 
 interface RequestPhaseFailureContext {
@@ -58,26 +64,26 @@ export class ClientBuilder {
     this.maxMiddlewareStackExecutionAllowed = configs.maxMiddlewareStackExecutionAllowed
   }
 
-  // FIXME: Type
-  public build<T>() {
+  public build<T extends ResourceConstraint>() {
     const client: Client<T> = { _manifest: this.manifest } as never
 
-    this.manifest.eachResource((resourceName, methods) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore: This is hard
-      client[resourceName] = this.buildResource(resourceName, methods)
+    this.manifest.eachResource((resourceName: keyof T, methods) => {
+      client[resourceName] = this.buildResource<T>(resourceName, methods)
     })
 
     return client
   }
 
-  private buildResource(resourceName: string, methods: Method[]) {
-    const initialResourceValue: Record<string, (requestParams: Params) => Promise<Response>> = {}
+  private buildResource<T, K extends keyof T = keyof T>(resourceName: K, methods: Method[]) {
+    type Resource = AsyncFunctions<T[K]>
+    const initialResourceValue: Partial<Resource> = {}
 
     const resource = methods.reduce((resource, method) => {
       const resourceMethod = (requestParams: Params) => {
         const request = new Request(method.descriptor, requestParams)
-        return this.invokeMiddlewares(resourceName, method.name, request)
+        // `resourceName` can be `PropertyKey`, making this `string | number | Symbol`, therefore the string conversion
+        // to stop type bleeding.
+        return this.invokeMiddlewares(String(resourceName), method.name, request)
       }
       return {
         ...resource,
@@ -85,7 +91,10 @@ export class ClientBuilder {
       }
     }, initialResourceValue)
 
-    return resource
+    // @hint: This type assert is needed as the compiler cannot be made to understand that the reduce produce a
+    // non-partial result on a partial input. This is due to a shortcoming of the type signature for Array<T>.reduce().
+    // @link: https://github.com/microsoft/TypeScript/blob/v3.7.2/lib/lib.es5.d.ts#L1186
+    return resource as Resource
   }
 
   private invokeMiddlewares(resourceName: string, resourceMethod: string, initialRequest: Request) {

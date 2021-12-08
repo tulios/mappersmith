@@ -1,6 +1,18 @@
 import { Manifest, ManifestOptions, GlobalConfigs } from './manifest';
+import { Response } from './response';
 import { Request } from './request';
 import type { Gateway, GatewayConfiguration } from './gateway/types';
+import type { Params } from './types';
+declare type AsyncFunction = (params?: Params) => Promise<Response>;
+declare type AsyncFunctions<HashType> = {
+    [Key in keyof HashType]: AsyncFunction;
+};
+declare type Client<ResourcesType> = {
+    [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>;
+};
+declare type ResourceConstraint = {
+    [key: string]: AsyncFunction;
+};
 interface GatewayConstructor {
     new (request: Request, gatewayConfigs: GatewayConfiguration): Gateway;
     readonly prototype: Gateway;
@@ -16,9 +28,7 @@ export declare class ClientBuilder {
     GatewayClassFactory: () => GatewayConstructor;
     maxMiddlewareStackExecutionAllowed: number;
     constructor(manifestDefinition: ManifestOptions, GatewayClassFactory: () => GatewayConstructor, configs: GlobalConfigs);
-    build(): {
-        [clientName: string]: unknown;
-    };
+    build<T extends ResourceConstraint>(): Client<T>;
     private buildResource;
     private invokeMiddlewares;
 }
