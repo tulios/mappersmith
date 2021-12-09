@@ -11,27 +11,27 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
-  export type Request = import('../src/request').Request
-  export type Headers = import('../src/types').Headers
-  export type Parameters = import('../src/types').Params
-  export type Gateway = import('../src/types').Gateway
-  type NetworkGateway = import('../src/types').NetworkGateway
-  export type XhrGateway = import('../src/types').XhrGateway
-  export type HTTPRequestParams = import('../src/types').HTTPRequestParams
-  export type HTTPGatewayConfiguration = import('../src/types').HTTPGatewayConfiguration
-  export type GatewayConfiguration = import('../src/types').GatewayConfiguration
-  export type Response = import('../src/response').Response
+  export type Request = import('./generated/request').Request
+  export type Headers = import('./generated/types').Headers
+  export type Parameters = import('./generated/types').Params
+  export type Gateway = import('./generated/types').Gateway
+  type NetworkGateway = import('./generated/types').NetworkGateway
+  export type XhrGateway = import('./generated/types').XhrGateway
+  export type HTTPRequestParams = import('./generated/types').HTTPRequestParams
+  export type HTTPGatewayConfiguration = import('./generated/types').HTTPGatewayConfiguration
+  export type GatewayConfiguration = import('./generated/types').GatewayConfiguration
+  type ParameterEncoderFn = import('./generated/types').ParameterEncoderFn
+  export type Response = import('./generated/response').Response
 
-  export type AbortFn = import('../src/middleware').AbortFn
-  export type Authorization = import('../src/middleware').Authorization
-  export type Context = import('../src/middleware').Context
-  export type Middleware = import('../src/middleware').Middleware
-  export type MiddlewareDescriptor = import('../src/middleware').MiddlewareDescriptor
-  export type MiddlewareParams = import('../src/middleware').MiddlewareParams
-  export type RenewFn = import('../src/middleware').RenewFn
-  export type RequestGetter = import('../src/middleware').RequestGetter
-  export type ResponseGetter = import('../src/middleware').ResponseGetter
-  type ParameterEncoderFn = import('../src/types').ParameterEncoderFn
+  export type AbortFn = import('./generated/middleware').AbortFn
+  export type Authorization = import('./generated/middleware').Authorization
+  export type Context = import('./generated/middleware').Context
+  export type Middleware = import('./generated/middleware').Middleware
+  export type MiddlewareDescriptor = import('./generated/middleware').MiddlewareDescriptor
+  export type MiddlewareParams = import('./generated/middleware').MiddlewareParams
+  export type RenewFn = import('./generated/middleware').RenewFn
+  export type RequestGetter = import('./generated/middleware').RequestGetter
+  export type ResponseGetter = import('./generated/middleware').ResponseGetter
 
   export type AsyncFunctions<HashType> = {
     [Key in keyof HashType]: (params?: Parameters) => Promise<Response>

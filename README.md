@@ -1356,7 +1356,7 @@ NODE_ENV=production yarn build
 
 ## Linting
 
-This project uses prettier and eslint, it is recommended to install extensions in your browser to format on save.
+This project uses prettier and eslint, it is recommended to install extensions in your editor to format on save.
 
 ## Contributors
 
