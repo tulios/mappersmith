@@ -22,12 +22,12 @@ interface GatewayConstructor {
  * @param {Object} manifestDefinition - manifest definition with at least the `resources` key
  * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
-export declare class ClientBuilder<ResourcesType extends ResourceTypeConstraint> {
+export declare class ClientBuilder<Resources extends ResourceTypeConstraint> {
     Promise: PromiseConstructor;
-    manifest: Manifest<ResourcesType>;
+    manifest: Manifest<Resources>;
     GatewayClassFactory: () => GatewayConstructor;
     maxMiddlewareStackExecutionAllowed: number;
-    constructor(manifestDefinition: ManifestOptions<ResourcesType>, GatewayClassFactory: () => GatewayConstructor, configs: GlobalConfigs);
+    constructor(manifestDefinition: ManifestOptions<Resources>, GatewayClassFactory: () => GatewayConstructor, configs: GlobalConfigs);
     build<T extends ResourceConstraint>(): Client<T>;
     private buildResource;
     private invokeMiddlewares;

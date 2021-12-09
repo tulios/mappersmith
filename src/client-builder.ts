@@ -41,14 +41,14 @@ interface GatewayConstructor {
  * @param {Object} manifestDefinition - manifest definition with at least the `resources` key
  * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
-export class ClientBuilder<ResourcesType extends ResourceTypeConstraint> {
+export class ClientBuilder<Resources extends ResourceTypeConstraint> {
   public Promise: PromiseConstructor
-  public manifest: Manifest<ResourcesType>
+  public manifest: Manifest<Resources>
   public GatewayClassFactory: () => GatewayConstructor
   public maxMiddlewareStackExecutionAllowed: number
 
   constructor(
-    manifestDefinition: ManifestOptions<ResourcesType>,
+    manifestDefinition: ManifestOptions<Resources>,
     GatewayClassFactory: () => GatewayConstructor,
     configs: GlobalConfigs
   ) {

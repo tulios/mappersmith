@@ -34,12 +34,11 @@ declare module 'mappersmith' {
   export type RequestGetter = import('./generated/middleware').RequestGetter
   export type ResponseGetter = import('./generated/middleware').ResponseGetter
 
-  export type ManifestOptions<ResourcesType> =
-    import('./generated/manifest').ManifestOptions<ResourcesType>
+  export type ManifestOptions<Resources> = import('./generated/manifest').ManifestOptions<Resources>
   /**
    * @deprecated, use ManifestOptions instead
    */
-  export type Options<ResourcesType> = ManifestOptions<ResourcesType>
+  export type Options<Resources> = ManifestOptions<Resources>
   export type GlobalConfigs = import('./generated/manifest').GlobalConfigs
   /**
    * @deprecated, use GlobalConfigs instead
@@ -48,7 +47,7 @@ declare module 'mappersmith' {
 
   export type AsyncFunctions<HashType> =
     import('./generated/client-builder').AsyncFunctions<HashType>
-  export type Client<ResourcesType> = import('./generated/client-builder').Client<ResourcesType>
+  export type Client<Resources> = import('./generated/client-builder').Client<Resources>
 
   export type FetchGateway = Gateway
 
@@ -70,7 +69,5 @@ declare module 'mappersmith' {
    */
   export function setContext(context: Context): void
 
-  export default function forge<ResourcesType>(
-    options: ManifestOptions<ResourcesType>
-  ): Client<ResourcesType>
+  export default function forge<Resources>(options: ManifestOptions<Resources>): Client<Resources>
 }

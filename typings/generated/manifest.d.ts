@@ -18,7 +18,7 @@ export declare type ResourceTypeConstraint = {
         };
     };
 };
-export interface ManifestOptions<ResourcesType extends ResourceTypeConstraint> {
+export interface ManifestOptions<Resources extends ResourceTypeConstraint> {
     host: string;
     allowResourceHostOverride?: boolean;
     parameterEncoder?: ParameterEncoderFn;
@@ -29,7 +29,7 @@ export interface ManifestOptions<ResourcesType extends ResourceTypeConstraint> {
     hostAttr?: string;
     clientId?: string;
     gatewayConfigs?: Partial<GatewayConfiguration>;
-    resources?: ResourcesType;
+    resources?: Resources;
     middleware?: Middleware[];
     /**
      * @deprecated - use `middleware` instead
@@ -52,7 +52,7 @@ declare type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceNa
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
  * @param {Object} globalConfigs
  */
-export declare class Manifest<ResourcesType extends ResourceTypeConstraint> {
+export declare class Manifest<Resources extends ResourceTypeConstraint> {
     host: string;
     allowResourceHostOverride: boolean;
     parameterEncoder: ParameterEncoderFn;
@@ -63,10 +63,10 @@ export declare class Manifest<ResourcesType extends ResourceTypeConstraint> {
     hostAttr?: string;
     clientId: string | null;
     gatewayConfigs: GatewayConfiguration;
-    resources: ResourcesType;
+    resources: Resources;
     context: Context;
     middleware: Middleware[];
-    constructor(options: ManifestOptions<ResourcesType>, { gatewayConfigs, middleware, context }: GlobalConfigs);
+    constructor(options: ManifestOptions<Resources>, { gatewayConfigs, middleware, context }: GlobalConfigs);
     eachResource(callback: EachResourceCallbackFn): void;
     private eachMethod;
     createMethodDescriptor(resourceName: string, methodName: string): MethodDescriptor;

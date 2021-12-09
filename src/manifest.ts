@@ -20,7 +20,7 @@ export type ResourceTypeConstraint = {
   }
 }
 
-export interface ManifestOptions<ResourcesType extends ResourceTypeConstraint> {
+export interface ManifestOptions<Resources extends ResourceTypeConstraint> {
   host: string
   allowResourceHostOverride?: boolean
   parameterEncoder?: ParameterEncoderFn
@@ -31,7 +31,7 @@ export interface ManifestOptions<ResourcesType extends ResourceTypeConstraint> {
   hostAttr?: string
   clientId?: string
   gatewayConfigs?: Partial<GatewayConfiguration>
-  resources?: ResourcesType
+  resources?: Resources
   middleware?: Middleware[]
   /**
    * @deprecated - use `middleware` instead
@@ -54,7 +54,7 @@ type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'r
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
  * @param {Object} globalConfigs
  */
-export class Manifest<ResourcesType extends ResourceTypeConstraint> {
+export class Manifest<Resources extends ResourceTypeConstraint> {
   public host: string
   public allowResourceHostOverride: boolean
   public parameterEncoder: ParameterEncoderFn
@@ -65,12 +65,12 @@ export class Manifest<ResourcesType extends ResourceTypeConstraint> {
   public hostAttr?: string
   public clientId: string | null
   public gatewayConfigs: GatewayConfiguration
-  public resources: ResourcesType
+  public resources: Resources
   public context: Context
   public middleware: Middleware[]
 
   constructor(
-    options: ManifestOptions<ResourcesType>,
+    options: ManifestOptions<Resources>,
     { gatewayConfigs, middleware = [], context = {} }: GlobalConfigs
   ) {
     this.host = options.host
@@ -83,7 +83,7 @@ export class Manifest<ResourcesType extends ResourceTypeConstraint> {
     this.hostAttr = options.hostAttr
     this.clientId = options.clientId || null
     this.gatewayConfigs = assign({}, gatewayConfigs, options.gatewayConfigs)
-    this.resources = options.resources || ({} as ResourcesType)
+    this.resources = options.resources || ({} as Resources)
     this.context = context
 
     // TODO: deprecate obj.middlewares in favor of obj.middleware
