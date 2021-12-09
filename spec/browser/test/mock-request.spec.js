@@ -1,6 +1,6 @@
 import forge from 'src/index'
 import MockAssert from 'src/mocks/mock-assert'
-import { getManifest } from 'spec/helper'
+import { getManifest } from 'spec/ts-helper'
 
 import {
   install as installMock,

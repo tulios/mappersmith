@@ -21,18 +21,14 @@ export type Client<ResourcesType> = {
   [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
 }
 
-type ResourceConstraint = {
-  [key: string]: AsyncFunction
-}
-
 interface RequestPhaseFailureContext {
   middleware: string | null
   returnedInvalidRequest: boolean
   abortExecution: boolean
 }
 
-interface GatewayConstructor {
-  new (request: Request, gatewayConfigs: GatewayConfiguration): Gateway
+export interface GatewayConstructor {
+  new (request: Request, gatewayConfigs: Partial<GatewayConfiguration>): Gateway
   readonly prototype: Gateway
 }
 
@@ -70,11 +66,11 @@ export class ClientBuilder<Resources extends ResourceTypeConstraint> {
     this.maxMiddlewareStackExecutionAllowed = configs.maxMiddlewareStackExecutionAllowed
   }
 
-  public build<T extends ResourceConstraint>() {
-    const client: Client<T> = { _manifest: this.manifest } as never
+  public build() {
+    const client: Client<Resources> = { _manifest: this.manifest } as never
 
-    this.manifest.eachResource((resourceName: keyof T, methods) => {
-      client[resourceName] = this.buildResource<T>(resourceName, methods)
+    this.manifest.eachResource((resourceName: keyof Resources, methods) => {
+      client[resourceName] = this.buildResource(resourceName, methods)
     })
 
     return client

@@ -1,12 +1,8 @@
 import forge, { setContext } from 'src/index'
 import MockAssert from 'src/mocks/mock-assert'
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
-import {
-  getManifest,
-  headerMiddleware,
-  headerMiddlewareV2,
-  asyncHeaderMiddleware,
-} from 'spec/helper'
+import { headerMiddleware, headerMiddlewareV2, asyncHeaderMiddleware } from 'spec/helper'
+import { getManifest } from 'spec/ts-helper'
 
 import { install as installMock, uninstall as uninstallMock, mockClient } from 'src/test'
 

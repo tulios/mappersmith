@@ -188,43 +188,4 @@ export const countPrepareRequestMiddleware = () => ({
   },
 })
 
-export const getManifest = (middleware = [], gatewayConfigs = null, clientId = null) => ({
-  clientId,
-  host: 'http://example.org',
-  gatewayConfigs,
-  middleware,
-  resources: {
-    User: {
-      all: { path: '/users' },
-      byId: { path: '/users/{id}' },
-    },
-    Blog: {
-      post: { method: 'post', path: '/blogs' },
-      addComment: { method: 'put', path: '/blogs/{id}/comment' },
-    },
-  },
-})
-
-export const getManifestWithResourceConf = (
-  middleware = [],
-  gatewayConfigs = null,
-  clientId = null
-) => ({
-  clientId,
-  host: 'http://example.org',
-  bodyAttr: 'customAttr',
-  gatewayConfigs,
-  middleware,
-  resources: {
-    User: {
-      all: { path: '/users' },
-      byId: { path: '/users/{id}' },
-    },
-    Blog: {
-      post: { method: 'post', path: '/blogs' },
-      addComment: { method: 'put', path: '/blogs/{id}/comment' },
-    },
-  },
-})
-
 export const createRequest = (args = {}) => new Request(new MethodDescriptor(args))
