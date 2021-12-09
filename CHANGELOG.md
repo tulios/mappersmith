@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+  - Fix broken typings in index.d.ts (#257)
+
 ## 2.36.0
 
 Added
