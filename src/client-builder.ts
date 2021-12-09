@@ -7,11 +7,11 @@ import type { Params } from './types'
 
 type AsyncFunction = (params?: Params) => Promise<Response>
 
-type AsyncFunctions<HashType> = {
+export type AsyncFunctions<HashType> = {
   [Key in keyof HashType]: AsyncFunction
 }
 
-type Client<ResourcesType> = {
+export type Client<ResourcesType> = {
   [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
 }
 

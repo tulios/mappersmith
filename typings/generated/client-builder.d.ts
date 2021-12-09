@@ -4,10 +4,10 @@ import { Request } from './request';
 import type { Gateway, GatewayConfiguration } from './gateway/types';
 import type { Params } from './types';
 declare type AsyncFunction = (params?: Params) => Promise<Response>;
-declare type AsyncFunctions<HashType> = {
+export declare type AsyncFunctions<HashType> = {
     [Key in keyof HashType]: AsyncFunction;
 };
-declare type Client<ResourcesType> = {
+export declare type Client<ResourcesType> = {
     [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>;
 };
 declare type ResourceConstraint = {

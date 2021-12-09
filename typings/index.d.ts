@@ -34,13 +34,9 @@ declare module 'mappersmith' {
   export type RequestGetter = import('./generated/middleware').RequestGetter
   export type ResponseGetter = import('./generated/middleware').ResponseGetter
 
-  export type AsyncFunctions<HashType> = {
-    [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
-  }
-
-  export type Client<ResourcesType> = {
-    [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
-  }
+  export type AsyncFunctions<HashType> =
+    import('./generated/client-builder').AsyncFunctions<HashType>
+  export type Client<ResourcesType> = import('./generated/client-builder').Client<ResourcesType>
 
   export type FetchGateway = Gateway
 
