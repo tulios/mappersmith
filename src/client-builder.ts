@@ -1,4 +1,10 @@
-import { Manifest, ManifestOptions, GlobalConfigs, Method } from './manifest'
+import {
+  Manifest,
+  ManifestOptions,
+  GlobalConfigs,
+  Method,
+  ResourceTypeConstraint,
+} from './manifest'
 import { Response } from './response'
 import { Request } from './request'
 import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
@@ -35,14 +41,14 @@ interface GatewayConstructor {
  * @param {Object} manifestDefinition - manifest definition with at least the `resources` key
  * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
-export class ClientBuilder {
+export class ClientBuilder<ResourcesType extends ResourceTypeConstraint> {
   public Promise: PromiseConstructor
-  public manifest: Manifest
+  public manifest: Manifest<ResourcesType>
   public GatewayClassFactory: () => GatewayConstructor
   public maxMiddlewareStackExecutionAllowed: number
 
   constructor(
-    manifestDefinition: ManifestOptions,
+    manifestDefinition: ManifestOptions<ResourcesType>,
     GatewayClassFactory: () => GatewayConstructor,
     configs: GlobalConfigs
   ) {

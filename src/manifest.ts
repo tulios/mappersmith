@@ -14,13 +14,13 @@ export interface GlobalConfigs {
   maxMiddlewareStackExecutionAllowed: number
 }
 
-interface Resources {
+export type ResourceTypeConstraint = {
   [resourceName: string]: {
     [methodName: string]: Omit<MethodDescriptorParams, 'host'> & { host?: string }
   }
 }
 
-export interface ManifestOptions {
+export interface ManifestOptions<ResourcesType extends ResourceTypeConstraint> {
   host: string
   allowResourceHostOverride?: boolean
   parameterEncoder?: ParameterEncoderFn
@@ -30,8 +30,8 @@ export interface ManifestOptions {
   timeoutAttr?: string
   hostAttr?: string
   clientId?: string
-  gatewayConfigs?: GatewayConfiguration
-  resources?: Resources
+  gatewayConfigs?: Partial<GatewayConfiguration>
+  resources?: ResourcesType
   middleware?: Middleware[]
   /**
    * @deprecated - use `middleware` instead
@@ -39,6 +39,7 @@ export interface ManifestOptions {
   middlewares?: Middleware[]
   ignoreGlobalMiddleware?: boolean
 }
+
 export type Method = { name: string; descriptor: MethodDescriptor }
 type EachResourceCallbackFn = (name: string, methods: Method[]) => void
 type EachMethodCallbackFn = (name: string) => Method
@@ -53,7 +54,7 @@ type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'r
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
  * @param {Object} globalConfigs
  */
-export class Manifest {
+export class Manifest<ResourcesType extends ResourceTypeConstraint> {
   public host: string
   public allowResourceHostOverride: boolean
   public parameterEncoder: ParameterEncoderFn
@@ -64,12 +65,12 @@ export class Manifest {
   public hostAttr?: string
   public clientId: string | null
   public gatewayConfigs: GatewayConfiguration
-  public resources: Resources
+  public resources: ResourcesType
   public context: Context
   public middleware: Middleware[]
 
   constructor(
-    options: ManifestOptions,
+    options: ManifestOptions<ResourcesType>,
     { gatewayConfigs, middleware = [], context = {} }: GlobalConfigs
   ) {
     this.host = options.host
@@ -82,7 +83,7 @@ export class Manifest {
     this.hostAttr = options.hostAttr
     this.clientId = options.clientId || null
     this.gatewayConfigs = assign({}, gatewayConfigs, options.gatewayConfigs)
-    this.resources = options.resources || {}
+    this.resources = options.resources || ({} as ResourcesType)
     this.context = context
 
     // TODO: deprecate obj.middlewares in favor of obj.middleware

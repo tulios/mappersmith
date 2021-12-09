@@ -34,6 +34,18 @@ declare module 'mappersmith' {
   export type RequestGetter = import('./generated/middleware').RequestGetter
   export type ResponseGetter = import('./generated/middleware').ResponseGetter
 
+  export type ManifestOptions<ResourcesType> =
+    import('./generated/manifest').ManifestOptions<ResourcesType>
+  /**
+   * @deprecated, use ManifestOptions instead
+   */
+  export type Options<ResourcesType> = ManifestOptions<ResourcesType>
+  export type GlobalConfigs = import('./generated/manifest').GlobalConfigs
+  /**
+   * @deprecated, use GlobalConfigs instead
+   */
+  export type Configuration = GlobalConfigs
+
   export type AsyncFunctions<HashType> =
     import('./generated/client-builder').AsyncFunctions<HashType>
   export type Client<ResourcesType> = import('./generated/client-builder').Client<ResourcesType>
@@ -51,36 +63,14 @@ declare module 'mappersmith' {
     callMock(): Promise<Response>
   }
 
-  export interface Configuration {
-    fetch: typeof fetch
-    gateway: Gateway
-    gatewayConfigs: GatewayConfiguration
-    maxMiddlewareStackExecutionAllowed: number
-    middleware: Middleware[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Promise: Promise<any>
-  }
+  export const configs: GlobalConfigs
 
-  export interface Options<ResourcesType> {
-    readonly clientId?: string
-    readonly host?: string
-    readonly allowResourceHostOverride?: boolean
-    readonly parameterEncoder?: ParameterEncoderFn
-    readonly ignoreGlobalMiddleware?: boolean
-    readonly middleware?: Middleware[]
-    readonly gatewayConfigs?: Partial<GatewayConfiguration>
-    /**
-     * @alias middleware
-     */
-    readonly middlewares?: Middleware[]
-    readonly resources: ResourcesType
-  }
-
-  export const configs: Configuration
-
+  /**
+   * @deprecated Shouldn't be used, not safe for concurrent use.
+   */
   export function setContext(context: Context): void
 
   export default function forge<ResourcesType>(
-    options: Options<ResourcesType>
+    options: ManifestOptions<ResourcesType>
   ): Client<ResourcesType>
 }

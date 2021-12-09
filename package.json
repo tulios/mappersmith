@@ -25,7 +25,7 @@
     "build:node": "rm -rf lib/* && yarn babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.ts'",
     "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
     "build:types": "rm -rf typings/generated && yarn tsc --project tsconfig.build.json",
-    "build": "yarn build:node && yarn build:browser",
+    "build": "yarn build:types && yarn build:node && yarn build:browser",
     "release": "./scripts/release.sh",
     "lint": "yarn eslint \"{src,spec,typings}/**/*.[j|t]s\""
   },
