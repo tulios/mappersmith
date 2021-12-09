@@ -10,11 +10,8 @@ export declare type AsyncFunctions<HashType> = {
 export declare type Client<ResourcesType> = {
     [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>;
 };
-declare type ResourceConstraint = {
-    [key: string]: AsyncFunction;
-};
-interface GatewayConstructor {
-    new (request: Request, gatewayConfigs: GatewayConfiguration): Gateway;
+export interface GatewayConstructor {
+    new (request: Request, gatewayConfigs: Partial<GatewayConfiguration>): Gateway;
     readonly prototype: Gateway;
 }
 /**
@@ -28,7 +25,7 @@ export declare class ClientBuilder<Resources extends ResourceTypeConstraint> {
     GatewayClassFactory: () => GatewayConstructor;
     maxMiddlewareStackExecutionAllowed: number;
     constructor(manifestDefinition: ManifestOptions<Resources>, GatewayClassFactory: () => GatewayConstructor, configs: GlobalConfigs);
-    build<T extends ResourceConstraint>(): Client<T>;
+    build(): Client<Resources>;
     private buildResource;
     private invokeMiddlewares;
 }
