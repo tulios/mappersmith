@@ -11,7 +11,7 @@ import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './midd
 import type { Gateway, GatewayConfiguration } from './gateway/types'
 import type { Params } from './types'
 
-type AsyncFunction = (params?: Params) => Promise<Response>
+export type AsyncFunction = (params?: Params) => Promise<Response>
 
 export type AsyncFunctions<HashType> = {
   [Key in keyof HashType]: AsyncFunction

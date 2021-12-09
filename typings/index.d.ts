@@ -45,6 +45,7 @@ declare module 'mappersmith' {
    */
   export type Configuration = GlobalConfigs
 
+  export type AsyncFunction = import('./generated/client-builder').AsyncFunction
   export type AsyncFunctions<HashType> =
     import('./generated/client-builder').AsyncFunctions<HashType>
   export type Client<Resources> = import('./generated/client-builder').Client<Resources>
