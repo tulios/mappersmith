@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.36.1
 
 Fixed:
   - Fix broken typings in index.d.ts (#257)
