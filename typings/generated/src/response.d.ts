@@ -14,7 +14,7 @@ export interface ResponseParams {
  * @param {Object} responseHeaders, defaults to an empty object ({})
  * @param {Array<Error>} errors, defaults to an empty array ([])
  */
-export declare class Response {
+export declare class Response<DataType extends object | string | null = object> {
     readonly originalRequest: Request;
     readonly responseStatus: number;
     readonly responseData: string | null;
@@ -47,7 +47,7 @@ export declare class Response {
      * Friendly reminder:
      *  - JSON.parse() can return null, an Array or an object.
      */
-    data<DataType extends object | string | null>(): DataType;
+    data(): DataType;
     isContentTypeJSON(): boolean;
     /**
      * Returns the last error instance that caused the request to fail
@@ -62,6 +62,6 @@ export declare class Response {
      *   @param {Object} extras.headers - it will be merged with current headers
      *   @param {Error} extras.error    - it will be added to the list of errors
      */
-    enhance(extras: ResponseParams): Response;
+    enhance(extras: ResponseParams): Response<DataType>;
 }
 export default Response;

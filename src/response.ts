@@ -19,7 +19,7 @@ export interface ResponseParams {
  * @param {Object} responseHeaders, defaults to an empty object ({})
  * @param {Array<Error>} errors, defaults to an empty array ([])
  */
-export class Response {
+export class Response<DataType extends object | string | null = object> {
   public readonly originalRequest: Request
   public readonly responseStatus: number
   public readonly responseData: string | null
@@ -104,7 +104,7 @@ export class Response {
    * Friendly reminder:
    *  - JSON.parse() can return null, an Array or an object.
    */
-  public data<DataType extends object | string | null>(): DataType {
+  public data(): DataType {
     if (this.isContentTypeJSON() && this.responseData !== null) {
       try {
         return JSON.parse(this.responseData) as DataType
@@ -148,7 +148,7 @@ export class Response {
    */
   public enhance(extras: ResponseParams) {
     const mergedHeaders = { ...this.headers(), ...(extras.headers || {}) }
-    const enhancedResponse = new Response(
+    const enhancedResponse = new Response<DataType>(
       this.request(),
       extras.status || this.status(),
       extras.rawData || this.rawData() || undefined,
