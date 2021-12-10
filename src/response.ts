@@ -19,7 +19,7 @@ export interface ResponseParams {
  * @param {Object} responseHeaders, defaults to an empty object ({})
  * @param {Array<Error>} errors, defaults to an empty array ([])
  */
-export class Response<DataType extends object | string | null = object> {
+export class Response<DataType = unknown> {
   public readonly originalRequest: Request
   public readonly responseStatus: number
   public readonly responseData: string | null
@@ -104,14 +104,14 @@ export class Response<DataType extends object | string | null = object> {
    * Friendly reminder:
    *  - JSON.parse() can return null, an Array or an object.
    */
-  public data(): DataType {
+  public data() {
     if (this.isContentTypeJSON() && this.responseData !== null) {
       try {
         return JSON.parse(this.responseData) as DataType
       } catch (e) {} // eslint-disable-line no-empty
     }
 
-    return this.responseData as DataType
+    return this.responseData
   }
 
   public isContentTypeJSON() {

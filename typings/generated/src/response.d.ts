@@ -14,7 +14,7 @@ export interface ResponseParams {
  * @param {Object} responseHeaders, defaults to an empty object ({})
  * @param {Array<Error>} errors, defaults to an empty array ([])
  */
-export declare class Response<DataType extends object | string | null = object> {
+export declare class Response<DataType = unknown> {
     readonly originalRequest: Request;
     readonly responseStatus: number;
     readonly responseData: string | null;
@@ -47,7 +47,7 @@ export declare class Response<DataType extends object | string | null = object> 
      * Friendly reminder:
      *  - JSON.parse() can return null, an Array or an object.
      */
-    data(): DataType;
+    data(): string | DataType | null;
     isContentTypeJSON(): boolean;
     /**
      * Returns the last error instance that caused the request to fail

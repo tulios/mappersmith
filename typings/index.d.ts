@@ -23,7 +23,7 @@ declare module 'mappersmith' {
     import('./generated/src/gateway/types').HTTPGatewayConfiguration
   export type GatewayConfiguration = import('./generated/src/gateway/types').GatewayConfiguration
   type ParameterEncoderFn = import('./generated/src/types').ParameterEncoderFn
-  export type Response = import('./generated/src/response').Response
+  export type Response<DataType = unknown> = import('./generated/src/response').Response<DataType>
 
   export type AbortFn = import('./generated/src/middleware').AbortFn
   export type Authorization = import('./generated/src/middleware').Authorization
