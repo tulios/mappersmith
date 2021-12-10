@@ -39,14 +39,14 @@ export interface NetworkGateway {
 
 export interface XhrGateway extends Gateway, NetworkGateway {
   readonly withCredentials: boolean
-  configure?: ((xmlHttpRequest: XMLHttpRequest) => void) | null
-  configureBinary(xmlHttpRequest: XMLHttpRequest): void
-  configureCallbacks(xmlHttpRequest: XMLHttpRequest): void
-  configureTimeout(xmlHttpRequest: XMLHttpRequest): void
-  createResponse(xmlHttpRequest: XMLHttpRequest): void
-  createXHR(): XMLHttpRequest
-  performRequest(method: string): void
-  setHeaders(xmlHttpRequest: XMLHttpRequest, headers: Headers): void
+  configure: ((xmlHttpRequest: XMLHttpRequest) => void) | null
+  configureBinary?: (xmlHttpRequest: XMLHttpRequest) => void
+  configureCallbacks?: (xmlHttpRequest: XMLHttpRequest) => void
+  configureTimeout?: (xmlHttpRequest: XMLHttpRequest) => void
+  createResponse?: (xmlHttpRequest: XMLHttpRequest) => void
+  setHeaders?: (xmlHttpRequest: XMLHttpRequest, headers: Headers) => void
+  createXHR?(): XMLHttpRequest
+  performRequest?(method: string): void
 }
 
 export interface GatewayConfiguration {
@@ -54,6 +54,6 @@ export interface GatewayConfiguration {
   HTTP: HTTPGatewayConfiguration
   Mock?: object
   XHR: Partial<XhrGateway>
-  enableHTTP408OnTimeouts?: boolean
-  emulateHTTP?: boolean
+  enableHTTP408OnTimeouts: boolean
+  emulateHTTP: boolean
 }
