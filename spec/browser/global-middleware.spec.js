@@ -1,6 +1,13 @@
 import forge, { configs } from 'src/mappersmith'
 import Response from 'src/response'
-import { getManifest } from 'spec/helper'
+import { getManifest } from 'spec/ts-helper'
+
+/**
+ * There is a weird side-effect going on when importing from this file
+ * where it runs `src/index` and sets configs.gateway:
+ * `defaultGateway = require('./gateway/xhr').default`
+ */
+import * as thisIsFishy from 'spec/helper' // eslint-disable-line @typescript-eslint/no-unused-vars
 
 describe('when global middleware is present', () => {
   beforeEach(() => {

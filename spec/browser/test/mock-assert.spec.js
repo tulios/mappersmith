@@ -1,5 +1,5 @@
 import forge from 'src/index'
-import { getManifest } from 'spec/helper'
+import { getManifest } from 'spec/ts-helper'
 
 import { install as installMock, uninstall as uninstallMock, mockClient } from 'src/test'
 

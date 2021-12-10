@@ -1,19 +1,26 @@
 import { MethodDescriptor, MethodDescriptorParams } from './method-descriptor'
 import { assign } from './utils'
-import type { GatewayConfiguration, ParameterEncoderFn } from './types'
+import type { ParameterEncoderFn } from './types'
+import type { Gateway, GatewayConfiguration } from './gateway/types'
 import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware'
 
-interface GlobalConfigs {
-  gatewayConfigs?: GatewayConfiguration
-  middleware?: Middleware[]
-  context?: Context
+export interface GlobalConfigs {
+  context: Context
+  middleware: Middleware[]
+  Promise: PromiseConstructor | null
+  fetch: typeof fetch | null
+  gateway: Gateway | null
+  gatewayConfigs: Partial<GatewayConfiguration>
+  maxMiddlewareStackExecutionAllowed: number
 }
-interface Resources {
+
+export type ResourceTypeConstraint = {
   [resourceName: string]: {
     [methodName: string]: Omit<MethodDescriptorParams, 'host'> & { host?: string }
   }
 }
-interface ManifestOptions {
+
+export interface ManifestOptions<Resources extends ResourceTypeConstraint> {
   host: string
   allowResourceHostOverride?: boolean
   parameterEncoder?: ParameterEncoderFn
@@ -23,7 +30,7 @@ interface ManifestOptions {
   timeoutAttr?: string
   hostAttr?: string
   clientId?: string
-  gatewayConfigs?: GatewayConfiguration
+  gatewayConfigs?: Partial<GatewayConfiguration>
   resources?: Resources
   middleware?: Middleware[]
   /**
@@ -32,8 +39,9 @@ interface ManifestOptions {
   middlewares?: Middleware[]
   ignoreGlobalMiddleware?: boolean
 }
-type Method = { name: string; descriptor: MethodDescriptor }
-type EachResourceCallbackFn = (name: string, methods: Method[]) => string
+
+export type Method = { name: string; descriptor: MethodDescriptor }
+type EachResourceCallbackFn = (name: string, methods: Method[]) => void
 type EachMethodCallbackFn = (name: string) => Method
 type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'resourceMethod'>> &
   Pick<MiddlewareParams, 'resourceName' | 'resourceMethod'>
@@ -46,7 +54,7 @@ type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'r
  *   @param {Array}  obj.middleware or obj.middlewares - default: []
  * @param {Object} globalConfigs
  */
-export class Manifest {
+export class Manifest<Resources extends ResourceTypeConstraint> {
   public host: string
   public allowResourceHostOverride: boolean
   public parameterEncoder: ParameterEncoderFn
@@ -56,13 +64,13 @@ export class Manifest {
   public timeoutAttr?: string
   public hostAttr?: string
   public clientId: string | null
-  public gatewayConfigs: GatewayConfiguration
+  public gatewayConfigs: Partial<GatewayConfiguration>
   public resources: Resources
   public context: Context
   public middleware: Middleware[]
 
   constructor(
-    options: ManifestOptions,
+    options: ManifestOptions<Resources>,
     { gatewayConfigs, middleware = [], context = {} }: GlobalConfigs
   ) {
     this.host = options.host
@@ -75,7 +83,7 @@ export class Manifest {
     this.hostAttr = options.hostAttr
     this.clientId = options.clientId || null
     this.gatewayConfigs = assign({}, gatewayConfigs, options.gatewayConfigs)
-    this.resources = options.resources || {}
+    this.resources = options.resources || ({} as Resources)
     this.context = context
 
     // TODO: deprecate obj.middlewares in favor of obj.middleware

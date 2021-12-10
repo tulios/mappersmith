@@ -11,35 +11,45 @@
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
-  export type Request = import('./generated/request').Request
-  export type Headers = import('./generated/types').Headers
-  export type Parameters = import('./generated/types').Params
-  export type Gateway = import('./generated/types').Gateway
-  type NetworkGateway = import('./generated/types').NetworkGateway
-  export type XhrGateway = import('./generated/types').XhrGateway
-  export type HTTPRequestParams = import('./generated/types').HTTPRequestParams
-  export type HTTPGatewayConfiguration = import('./generated/types').HTTPGatewayConfiguration
-  export type GatewayConfiguration = import('./generated/types').GatewayConfiguration
-  type ParameterEncoderFn = import('./generated/types').ParameterEncoderFn
-  export type Response = import('./generated/response').Response
+  export type Request = import('./generated/src/request').Request
+  export type Headers = import('./generated/src/types').Headers
+  export type Parameters = import('./generated/src/types').Params
+  export type Gateway = import('./generated/src/gateway/types').Gateway
+  type NetworkGateway = import('./generated/src/gateway/types').NetworkGateway
+  export type XhrGateway = import('./generated/src/gateway/types').XhrGateway
+  export type HTTPRequestParams = import('./generated/src/gateway/types').HTTPRequestParams
+  export type HTTPGatewayConfiguration =
+    import('./generated/src/gateway/types').HTTPGatewayConfiguration
+  export type GatewayConfiguration = import('./generated/src/gateway/types').GatewayConfiguration
+  type ParameterEncoderFn = import('./generated/src/types').ParameterEncoderFn
+  export type Response = import('./generated/src/response').Response
 
-  export type AbortFn = import('./generated/middleware').AbortFn
-  export type Authorization = import('./generated/middleware').Authorization
-  export type Context = import('./generated/middleware').Context
-  export type Middleware = import('./generated/middleware').Middleware
-  export type MiddlewareDescriptor = import('./generated/middleware').MiddlewareDescriptor
-  export type MiddlewareParams = import('./generated/middleware').MiddlewareParams
-  export type RenewFn = import('./generated/middleware').RenewFn
-  export type RequestGetter = import('./generated/middleware').RequestGetter
-  export type ResponseGetter = import('./generated/middleware').ResponseGetter
+  export type AbortFn = import('./generated/src/middleware').AbortFn
+  export type Authorization = import('./generated/src/middleware').Authorization
+  export type Context = import('./generated/src/middleware').Context
+  export type Middleware = import('./generated/src/middleware').Middleware
+  export type MiddlewareDescriptor = import('./generated/src/middleware').MiddlewareDescriptor
+  export type MiddlewareParams = import('./generated/src/middleware').MiddlewareParams
+  export type RenewFn = import('./generated/src/middleware').RenewFn
+  export type RequestGetter = import('./generated/src/middleware').RequestGetter
+  export type ResponseGetter = import('./generated/src/middleware').ResponseGetter
 
-  export type AsyncFunctions<HashType> = {
-    [Key in keyof HashType]: (params?: Parameters) => Promise<Response>
-  }
+  export type ManifestOptions<Resources> =
+    import('./generated/src/manifest').ManifestOptions<Resources>
+  /**
+   * @deprecated, use ManifestOptions instead
+   */
+  export type Options<Resources> = ManifestOptions<Resources>
+  export type GlobalConfigs = import('./generated/src/manifest').GlobalConfigs
+  /**
+   * @deprecated, use GlobalConfigs instead
+   */
+  export type Configuration = GlobalConfigs
 
-  export type Client<ResourcesType> = {
-    [ResourceKey in keyof ResourcesType]: AsyncFunctions<ResourcesType[ResourceKey]>
-  }
+  export type AsyncFunction = import('./generated/src/client-builder').AsyncFunction
+  export type AsyncFunctions<HashType> =
+    import('./generated/src/client-builder').AsyncFunctions<HashType>
+  export type Client<Resources> = import('./generated/src/client-builder').Client<Resources>
 
   export type FetchGateway = Gateway
 
@@ -54,36 +64,12 @@ declare module 'mappersmith' {
     callMock(): Promise<Response>
   }
 
-  export interface Configuration {
-    fetch: typeof fetch
-    gateway: Gateway
-    gatewayConfigs: GatewayConfiguration
-    maxMiddlewareStackExecutionAllowed: number
-    middleware: Middleware[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Promise: Promise<any>
-  }
+  export const configs: GlobalConfigs
 
-  export interface Options<ResourcesType> {
-    readonly clientId?: string
-    readonly host?: string
-    readonly allowResourceHostOverride?: boolean
-    readonly parameterEncoder?: ParameterEncoderFn
-    readonly ignoreGlobalMiddleware?: boolean
-    readonly middleware?: Middleware[]
-    readonly gatewayConfigs?: Partial<GatewayConfiguration>
-    /**
-     * @alias middleware
-     */
-    readonly middlewares?: Middleware[]
-    readonly resources: ResourcesType
-  }
-
-  export const configs: Configuration
-
+  /**
+   * @deprecated Shouldn't be used, not safe for concurrent use.
+   */
   export function setContext(context: Context): void
 
-  export default function forge<ResourcesType>(
-    options: Options<ResourcesType>
-  ): Client<ResourcesType>
+  export default function forge<Resources>(options: ManifestOptions<Resources>): Client<Resources>
 }

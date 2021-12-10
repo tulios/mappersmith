@@ -14,9 +14,10 @@ import {
   getCountPrepareRequestMiddlewareCurrent,
   getCountPrepareRequestMiddlewareStack,
   resetCountPrepareRequestMiddleware,
-  getManifest,
   createRequest,
 } from 'spec/helper'
+
+import { getManifest } from 'spec/ts-helper'
 
 describe('ClientBuilder middleware', () => {
   let manifest, gatewayInstance, response, responseValue
