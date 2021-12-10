@@ -47,7 +47,7 @@ export declare class Response<DataType = unknown> {
      * Friendly reminder:
      *  - JSON.parse() can return null, an Array or an object.
      */
-    data(): string | DataType | null;
+    data<T = DataType>(): T;
     isContentTypeJSON(): boolean;
     /**
      * Returns the last error instance that caused the request to fail

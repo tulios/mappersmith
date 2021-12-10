@@ -104,14 +104,14 @@ export class Response<DataType = unknown> {
    * Friendly reminder:
    *  - JSON.parse() can return null, an Array or an object.
    */
-  public data() {
+  public data<T = DataType>() {
     if (this.isContentTypeJSON() && this.responseData !== null) {
       try {
-        return JSON.parse(this.responseData) as DataType
+        return JSON.parse(this.responseData) as T
       } catch (e) {} // eslint-disable-line no-empty
     }
 
-    return this.responseData
+    return this.responseData as unknown as T
   }
 
   public isContentTypeJSON() {
