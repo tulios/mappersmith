@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.36.2
+## 2.36.3
 
 Fixed:
   - Fix missing retry-v2 typings in index.d.ts (#261)
@@ -9,8 +9,6 @@ Fixed:
 
 Fixed:
   - Fix broken typings in index.d.ts (#257)
-
-## 2.36.0
 
 Added
   - Add option `parameterEncoder` which can optionally be used to override the encoding function for request params. Default is `encodeURIComponent` (backwards compatible change).
