@@ -1,16 +1,26 @@
 # Changelog
 
+## Unreleased
+
+Added:
+  - Make Response accept a generic type that specifies the form of the data returned (#265)
+
 ## 2.36.3
 
 Fixed:
   - Fix missing retry-v2 typings in index.d.ts (#261)
+
+Refactored:
+  - Migrated `ClientBuilder` to typescript
 
 ## 2.36.1
 
 Fixed:
   - Fix broken typings in index.d.ts (#257)
 
-Added
+## 2.36.0
+
+Added:
   - Add option `parameterEncoder` which can optionally be used to override the encoding function for request params. Default is `encodeURIComponent` (backwards compatible change).
 
 Fixed:
@@ -18,6 +28,7 @@ Fixed:
   - Fix `Request.pathTemplate` to return result of the function instead of the function itself
 
 Refactored:
+  - Migrated `Manifest` to typescript
   - Migrated `MethodDescriptor` to typescript
   - Migrated `Request` to typescript
   - Migrated `Response` to typescript
