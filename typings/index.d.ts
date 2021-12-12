@@ -6,6 +6,7 @@
 /// <reference path="./middleware/global-error-handler.d.ts" />
 /// <reference path="./middleware/log.d.ts" />
 /// <reference path="./middleware/retry.d.ts" />
+/// <reference path="./middleware/retry-v2.d.ts" />
 /// <reference path="./middleware/timeout.d.ts" />
 /// <reference path="./gateway/fetch.d.ts" />
 /// <reference path="./test.d.ts" />
