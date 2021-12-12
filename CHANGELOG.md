@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+  - Fix missing retry-v2 typings in index.d.ts (#260)
+
 ## 2.36.1
 
 Fixed:
