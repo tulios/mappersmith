@@ -10,11 +10,12 @@ export const defaultRetryConfigs = {
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
   retries: 5, // max retries
+  enableRetry: (request) => request.method() === 'get', // a function that returns true if retry should be enabled (by default only GET requests)
   validateRetry: (response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
 }
 
 /**
- * This middleware will automatically retry GET requests up to the configured amount of
+ * This middleware will automatically retry requests up to the configured amount of
  * retries using a randomization function that grows exponentially. The retry count and
  * the time used will be included as a header in the response.
  *
@@ -39,7 +40,6 @@ export default (customConfigs = {}) =>
   function RetryMiddleware() {
     return {
       request(request) {
-        this.enableRetry = request.method() === 'get'
         this.inboundRequest = request
         return request
       },
@@ -47,7 +47,7 @@ export default (customConfigs = {}) =>
       response(next) {
         const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
 
-        if (!this.enableRetry) {
+        if (!retryConfigs.enableRetry(this.inboundRequest)) {
           return next()
         }
 

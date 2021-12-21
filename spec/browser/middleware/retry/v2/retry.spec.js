@@ -1,4 +1,7 @@
+import Request from 'src/request'
+import Response from 'src/response'
 import RetryMiddleware, { calculateExponentialRetryTime } from 'src/middlewares/retry/v2'
+import MethodDescriptor from 'src/method-descriptor'
 import { retryMiddlewareExamples } from '../shared-examples'
 
 describe('Middleware / RetryMiddleware', () => {
@@ -12,6 +15,42 @@ describe('Middleware / RetryMiddleware', () => {
   })
 
   retryMiddlewareExamples(middleware, retries, headerRetryCount, headerRetryTime)
+
+  describe('custom enable retry function', () => {
+    describe('when post is allowed to retry', () => {
+      describe('when the call succeeds within the configured number of retries', () => {
+        it('resolves the promise adding the number of retries as a header', (done) => {
+          const middleware = RetryMiddleware({
+            retries,
+            headerRetryCount,
+            headerRetryTime,
+            enableRetry: (request) => request.method() === 'post',
+          })()
+
+          const request = new Request(
+            new MethodDescriptor({ host: 'example.com', path: '/', method: 'post' }),
+            {}
+          )
+          const response = new Response(middleware.request(request), 500, {}, {})
+          let callsCount = 0
+
+          const next = () => {
+            response.responseStatus = ++callsCount < 3 ? 500 : 200
+            return response.status() !== 200 ? Promise.reject(response) : Promise.resolve(response)
+          }
+
+          middleware
+            .response(next)
+            .then((response) => {
+              expect(response.header(headerRetryCount)).toEqual(2)
+              expect(response.header(headerRetryTime)).toEqual(expect.any(Number))
+              done()
+            })
+            .catch(done.fail)
+        })
+      })
+    })
+  })
 })
 
 describe('calculateExponentialRetryTime', () => {
