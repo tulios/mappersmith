@@ -8,7 +8,7 @@ export interface GlobalConfigs {
     Promise: PromiseConstructor | null;
     fetch: typeof fetch | null;
     gateway: Gateway | null;
-    gatewayConfigs: Partial<GatewayConfiguration>;
+    gatewayConfigs: GatewayConfiguration;
     maxMiddlewareStackExecutionAllowed: number;
 }
 export declare type ResourceTypeConstraint = {
@@ -62,7 +62,7 @@ export declare class Manifest<Resources extends ResourceTypeConstraint> {
     timeoutAttr?: string;
     hostAttr?: string;
     clientId: string | null;
-    gatewayConfigs: Partial<GatewayConfiguration>;
+    gatewayConfigs: GatewayConfiguration;
     resources: Resources;
     context: Context;
     middleware: Middleware[];
