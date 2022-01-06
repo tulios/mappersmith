@@ -1,5 +1,5 @@
 declare module 'mappersmith/test' {
-  import { Client, Parameters, Request, Headers } from 'mappersmith'
+  import { Client, Parameters, Response, Request, Headers } from 'mappersmith'
 
   export interface MockAssert {
     calls(): Request[]
@@ -62,6 +62,17 @@ declare module 'mappersmith/test' {
   }
 
   export function mockRequest(args: MockRequestArgs): MockAssert
+
+  export interface ResponseFactoryArgs<T> {
+    method?: string
+    host?: string
+    path?: string
+    status?: number
+    data?: T | string
+    headers?: Record<string, string | number | boolean>
+    errors?: Array<Error | string>
+  }
+  export function responseFactory<T>(args: ResponseFactoryArgs<T>): Response<T>
 
   export const m: TestMatchFunctions
 }

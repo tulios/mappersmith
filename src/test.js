@@ -3,6 +3,9 @@ import MockResource from './mocks/mock-resource'
 import MockGateway from './gateway/mock'
 import { configs } from './index'
 import { toQueryString } from './utils'
+import { MethodDescriptor } from './method-descriptor'
+import { Request } from './request'
+import { Response } from './response'
 
 let store = []
 let ids = 1
@@ -177,4 +180,39 @@ const stringIncludes = (str, search, start) => {
   }
 
   return str.indexOf(search, start) !== -1
+}
+
+/**
+ * Create a response to use in tests
+ * @returns Response
+ */
+export const responseFactory = ({
+  method = 'get',
+  host = 'http://example.org',
+  path = '/path',
+  status = 200,
+  data = {},
+  headers = {},
+  errors = [],
+}) => {
+  const methodDescriptor = new MethodDescriptor({ method, host, path })
+  const request = new Request(methodDescriptor)
+
+  let responseData
+  let contentType
+  if (typeof data === 'string') {
+    contentType = 'text/plain'
+    responseData = data
+  } else {
+    contentType = 'application/json'
+    responseData = JSON.stringify(data)
+  }
+
+  return new Response(
+    request,
+    status,
+    responseData,
+    { 'content-type': contentType, ...headers },
+    errors
+  )
 }
