@@ -72,7 +72,32 @@ declare module 'mappersmith/test' {
     headers?: Record<string, string | number | boolean>
     errors?: Array<Error | string>
   }
-  export function responseFactory<T>(args: ResponseFactoryArgs<T>): Response<T>
+  export function responseFactory<T>(args?: ResponseFactoryArgs<T>): Response<T>
+
+  type Primitive = string | number | boolean
+
+  interface Auth {
+    readonly [key: string]: Primitive
+  }
+
+  interface Params {
+    readonly [key: string]: object | Primitive | undefined | null
+  }
+
+  export interface RequestFactoryArgs {
+    // MethodDescriptorParams
+    method?: string
+    host?: string
+    path?: string
+    // RequestParams
+    auth?: Auth
+    body?: object | string
+    headers?: Headers
+    params?: Params
+    timeout?: number
+    [param: string]: object | Primitive | undefined | null
+  }
+  export function requestFactory(args?: RequestFactoryArgs): Request
 
   export const m: TestMatchFunctions
 }

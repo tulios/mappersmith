@@ -183,20 +183,45 @@ const stringIncludes = (str, search, start) => {
 }
 
 /**
+ * Create a request to use in tests
+ * @returns Request
+ */
+export const requestFactory = ({
+  method = 'GET',
+  host = 'http://example.org',
+  path = '/path',
+  auth,
+  body,
+  headers,
+  params,
+  timeout,
+  ...rest
+} = {}) => {
+  const methodDescriptor = new MethodDescriptor({ method, host, path })
+  return new Request(methodDescriptor, {
+    auth,
+    body,
+    headers,
+    params,
+    timeout,
+    ...rest,
+  })
+}
+
+/**
  * Create a response to use in tests
  * @returns Response
  */
 export const responseFactory = ({
-  method = 'get',
+  method = 'GET',
   host = 'http://example.org',
   path = '/path',
   status = 200,
   data = {},
   headers = {},
   errors = [],
-}) => {
-  const methodDescriptor = new MethodDescriptor({ method, host, path })
-  const request = new Request(methodDescriptor)
+} = {}) => {
+  const request = requestFactory({ method, host, path })
 
   let responseData
   let contentType

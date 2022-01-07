@@ -1,4 +1,5 @@
 import forge, { Middleware, MiddlewareParams } from 'mappersmith'
+import { responseFactory } from 'mappersmith/test'
 
 const MyMiddleware: Middleware = () => ({
   prepareRequest(next) {
@@ -61,3 +62,23 @@ const github = forge({
 github.Status.lastMessage().then((response) => {
   console.log(`status: ${response.data()}`)
 })
+
+const myMiddleware = MyMiddleware({
+  clientId: 'github',
+  resourceName: 'Status',
+  resourceMethod: 'current',
+  context: {},
+})
+
+const renewFn = async () => responseFactory()
+
+export const test = async () => {
+  if (myMiddleware.response) {
+    const originalResponse = responseFactory({ data: { a: 1 } })
+    const originalData = originalResponse.data()
+    const response = await myMiddleware.response(async () => originalResponse, renewFn)
+    const data = response.data()
+    // Right now these are different types
+    console.log({ originalData, data })
+  }
+}
