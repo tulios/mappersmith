@@ -39,14 +39,14 @@ export interface NetworkGateway {
 
 export interface XhrGateway extends Gateway, NetworkGateway {
   readonly withCredentials: boolean
-  configure: ((xmlHttpRequest: XMLHttpRequest) => void) | null
-  configureBinary?: (xmlHttpRequest: XMLHttpRequest) => void
-  configureCallbacks?: (xmlHttpRequest: XMLHttpRequest) => void
-  configureTimeout?: (xmlHttpRequest: XMLHttpRequest) => void
-  createResponse?: (xmlHttpRequest: XMLHttpRequest) => void
-  setHeaders?: (xmlHttpRequest: XMLHttpRequest, headers: Headers) => void
-  createXHR?(): XMLHttpRequest
-  performRequest?(method: string): void
+  configure?: ((xmlHttpRequest: XMLHttpRequest) => void) | null
+  configureBinary(xmlHttpRequest: XMLHttpRequest): void
+  configureCallbacks(xmlHttpRequest: XMLHttpRequest): void
+  configureTimeout(xmlHttpRequest: XMLHttpRequest): void
+  createResponse(xmlHttpRequest: XMLHttpRequest): void
+  createXHR(): XMLHttpRequest
+  performRequest(method: string): void
+  setHeaders(xmlHttpRequest: XMLHttpRequest, headers: Headers): void
 }
 
 export interface GatewayConfiguration {
