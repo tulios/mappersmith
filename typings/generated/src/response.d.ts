@@ -14,7 +14,9 @@ export interface ResponseParams {
  * @param {Object} responseHeaders, defaults to an empty object ({})
  * @param {Array<Error>} errors, defaults to an empty array ([])
  */
-export declare class Response<DataType = unknown> {
+declare type SerializableJSON = number | string | boolean | null | Record<string, unknown>;
+export declare type ParsedJSON = SerializableJSON | SerializableJSON[];
+export declare class Response<DataType extends ParsedJSON = ParsedJSON> {
     readonly originalRequest: Request;
     readonly responseStatus: number;
     readonly responseData: string | null;

@@ -1,5 +1,5 @@
 declare module 'mappersmith/test' {
-  import { Client, Parameters, Response, Request, Headers } from 'mappersmith'
+  import { Client, Parameters, Response, Request, Headers, ParsedJSON } from 'mappersmith'
 
   export interface MockAssert {
     calls(): Request[]
@@ -72,7 +72,7 @@ declare module 'mappersmith/test' {
     headers?: Record<string, string | number | boolean>
     errors?: Array<Error | string>
   }
-  export function responseFactory<T>(args?: ResponseFactoryArgs<T>): Response<T>
+  export function responseFactory<T extends ParsedJSON>(args?: ResponseFactoryArgs<T>): Response<T>
 
   type Primitive = string | number | boolean
 
