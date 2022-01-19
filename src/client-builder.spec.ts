@@ -1,6 +1,6 @@
 import { ClientBuilder, GatewayConstructor } from './client-builder'
 import { Manifest, GlobalConfigs } from './manifest'
-import { Gateway } from './gateway/types'
+import { Gateway, GatewayConfiguration } from './gateway/types'
 import Request from './request'
 import { getManifest, getManifestWithResourceConf } from '../spec/ts-helper'
 
@@ -23,7 +23,7 @@ describe('ClientBuilder', () => {
       gateway: null,
       gatewayConfigs: {
         Fetch: { config: 'configs' },
-      },
+      } as GatewayConfiguration,
     }
   })
 
@@ -74,7 +74,7 @@ describe('ClientBuilder', () => {
       gateway: null,
       gatewayConfigs: {
         Fetch: { config: 'configs' },
-      },
+      } as GatewayConfiguration,
     }
 
     GatewayClassFactory = () => gatewayClass

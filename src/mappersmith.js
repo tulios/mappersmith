@@ -1,6 +1,10 @@
 /* global VERSION */
 import ClientBuilder from './client-builder'
 import { assign } from './utils'
+/**
+ * Can be used to test for `instanceof Response`
+ */
+export { Response } from './response'
 
 export const version = VERSION
 

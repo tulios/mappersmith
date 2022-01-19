@@ -113,7 +113,7 @@ describe('Response', () => {
 
   describe('#data', () => {
     it('returns the response data', () => {
-      expect(response.data<string>()).toEqual(responseData)
+      expect(response.data()).toEqual(responseData)
     })
 
     describe('when responseData is JSON', () => {

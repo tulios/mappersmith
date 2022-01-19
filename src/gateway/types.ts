@@ -54,6 +54,6 @@ export interface GatewayConfiguration {
   HTTP: HTTPGatewayConfiguration
   Mock?: object
   XHR: Partial<XhrGateway>
-  enableHTTP408OnTimeouts?: boolean
-  emulateHTTP?: boolean
+  enableHTTP408OnTimeouts: boolean
+  emulateHTTP: boolean
 }

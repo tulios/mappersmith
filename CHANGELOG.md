@@ -1,41 +1,53 @@
 # Changelog
 
+## Unreleased
+
+Added:
+  - Make Response accept a generic type that specifies the form of the data returned #265
+  - Add `responseFactory` and `requestFactory` helpers to `mappersmith/test` #265
+
 ## 2.36.3
 
 Fixed:
-  - Fix missing retry-v2 typings in index.d.ts (#261)
+  - Fix missing retry-v2 typings in index.d.ts #261
+
+Refactored:
+  - Migrated `ClientBuilder` to typescript #259
 
 ## 2.36.1
 
 Fixed:
-  - Fix broken typings in index.d.ts (#257)
+  - Fix broken typings in index.d.ts #257
 
-Added
-  - Add option `parameterEncoder` which can optionally be used to override the encoding function for request params. Default is `encodeURIComponent` (backwards compatible change).
+## 2.36.0
+
+Added:
+  - Add option `parameterEncoder` which can optionally be used to override the encoding function for request params. Default is `encodeURIComponent` #251
 
 Fixed:
-  - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match
-  - Fix `Request.pathTemplate` to return result of the function instead of the function itself
+  - Fix `x-started-at` header getting set to new `Date.now()` during testing and failing header match #248
+  - Fix `Request.pathTemplate` to return result of the function instead of the function itself #249
 
 Refactored:
-  - Migrated `MethodDescriptor` to typescript
-  - Migrated `Request` to typescript
-  - Migrated `Response` to typescript
+  - Migrated `Manifest` to typescript #254
+  - Migrated `MethodDescriptor` to typescript #245
+  - Migrated `Request` to typescript #245
+  - Migrated `Response` to typescript #249
 
 ## 2.35.0
 
 Fixed:
-  - Respect `allowResourceHostOverride` configuration in middlewares (#240)
-  - A successful middleware should no longer overwriting a previous middleware's `error` (#230)
+  - Respect `allowResourceHostOverride` configuration in middlewares #240
+  - A successful middleware should no longer overwriting a previous middleware's `error` #230
 
 Added:
-  - `mappersmith`: `Request.pathTemplate` - Returns the template path, without params, before interpolation (#194)
-  - `mappersmith/test`: `unusedMocks` - get count of unused mocks (#227)
-  - The `+json` family of MIME types are parsed as json (#223)
-  - Add headers to mock matching strategy (#168)
+  - `mappersmith`: `Request.pathTemplate` - Returns the template path, without params, before interpolation #194
+  - `mappersmith/test`: `unusedMocks` - get count of unused mocks #227
+  - The `+json` family of MIME types are parsed as json #223
+  - Add headers to mock matching strategy #168
 
 Deprecated:
-  - `mappersmith`: `setContext` - this is not safe for concurrent use (#239)
+  - `mappersmith`: `setContext` - this is not safe for concurrent use #239
 
 ## 2.34.0
 
