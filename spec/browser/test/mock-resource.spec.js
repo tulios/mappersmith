@@ -298,9 +298,9 @@ describe('Test lib / mock resources', () => {
     mockClient(client)
       .resource('Blog')
       .method('post')
-      .with({ body: { param1: 'value1', param2: 'value2' } })
+      .with({ body: { param1: 'value1', param2: 'value2', param3: { A: 1, B: 2 } } })
 
-    client.Blog.post({ body: { param1: 'value1', param2: 'value2' } })
+    client.Blog.post({ body: { param1: 'value1', param2: 'value2', param3: { A: 1, B: 2 } } })
       .then((response) => {
         expect(response.status()).toEqual(200)
         done()
@@ -310,7 +310,7 @@ describe('Test lib / mock resources', () => {
         done.fail(`test failed with promise error: ${error}`)
       })
 
-    client.Blog.post({ body: { param2: 'value2', param1: 'value1' } })
+    client.Blog.post({ body: { param2: 'value2', param1: 'value1', param3: { B: 2, A: 1 } } })
       .then((response) => {
         expect(response.status()).toEqual(200)
         done()

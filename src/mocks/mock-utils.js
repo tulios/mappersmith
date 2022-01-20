@@ -7,7 +7,15 @@ export function toSortedQueryString(entry) {
 
   return validKeys(entry)
     .sort()
-    .map((key) => buildRecursive(key, entry[key]))
+    .map((key) => {
+      const value = entry[key]
+
+      if (isPlainObject(value)) {
+        return toSortedQueryString(value)
+      }
+
+      return buildRecursive(key, value)
+    })
     .join('&')
     .replace(/%20/g, '+')
 }
