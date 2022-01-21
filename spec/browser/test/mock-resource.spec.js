@@ -298,26 +298,37 @@ describe('Test lib / mock resources', () => {
     mockClient(client)
       .resource('Blog')
       .method('post')
-      .with({ body: { param1: 'value1', param2: 'value2', param3: { A: 1, B: 2 } } })
+      .with({
+        body: {
+          param4: { C: 3, A: 1, B: 2 },
+          param3: 'value3',
+          param1: 'value1',
+          param2: 'value2',
+        },
+      })
 
-    client.Blog.post({ body: { param1: 'value1', param2: 'value2', param3: { A: 1, B: 2 } } })
+    client.Blog.post({
+      body: { param1: 'value1', param2: 'value2', param3: 'value3', param4: { A: 1, B: 2, C: 3 } },
+    })
       .then((response) => {
         expect(response.status()).toEqual(200)
         done()
       })
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
+        done.fail(`test 1 failed with promise error: ${error}`)
       })
 
-    client.Blog.post({ body: { param2: 'value2', param1: 'value1', param3: { B: 2, A: 1 } } })
+    client.Blog.post({
+      body: { param2: 'value2', param3: 'value3', param4: { B: 2, C: 3, A: 1 }, param1: 'value1' },
+    })
       .then((response) => {
         expect(response.status()).toEqual(200)
         done()
       })
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
-        done.fail(`test failed with promise error: ${error}`)
+        done.fail(`test 2 failed with promise error: ${error}`)
       })
   })
 
