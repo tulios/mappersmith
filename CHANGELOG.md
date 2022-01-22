@@ -3,8 +3,9 @@
 ## Unreleased
 
 Added:
-  - Make Response accept a generic type that specifies the form of the data returned #265
-  - Add `responseFactory` and `requestFactory` helpers to `mappersmith/test` #265
+  - `mappersmith`: Make Response accept a generic type that specifies the form of the data returned #265
+  - `mappersmith/test`: Add `responseFactory` and `requestFactory` helpers to `mappersmith/test` #265
+  - `mappersmith/test`: Fix bug in mockRequest/mockClient where body params did not match independent of order #268
 
 ## 2.36.3
 
