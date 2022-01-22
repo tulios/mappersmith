@@ -83,10 +83,15 @@ MockRequest.prototype = {
    * @return {boolean}
    */
   isExactMatch(request) {
-    const bodyMatch = () =>
-      this.bodyFunction
+    const bodyMatch = () => {
+      if (this.body === undefined) {
+        return true
+      }
+
+      return this.bodyFunction
         ? this.body(request.body())
         : this.body === toSortedQueryString(request.body())
+    }
 
     const urlMatch = this.urlFunction
       ? this.url(request.url(), request.params())

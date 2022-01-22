@@ -238,6 +238,38 @@ describe('Test lib / mock request', () => {
       })
   })
 
+  it('mockRequest by default matches on any body', (done) => {
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      response: {
+        status: 201,
+        body: 'Anything, really',
+      },
+    })
+
+    client.Blog.post({ body: { title: 'Oompa', metadata: { date: '2022-01-22' } } })
+      .then((response) => {
+        expect(response.status()).toEqual(201)
+        expect(response.data()).toEqual('Anything, really')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('mockClient by default matches on any body', async () => {
+    const dynamicResponseData = { [new Date().getTime()]: 'hello' }
+    mockClient(client).resource('Blog').method('post').response(dynamicResponseData).assertObject()
+
+    const dynamicRequestBody = { date: new Date().getTime() }
+    const response = await client.Blog.post({ body: dynamicRequestBody })
+
+    expect(response.data()).toEqual(dynamicResponseData)
+  })
+
   it('allows for response to be a function of request body', async () => {
     mockClient(client)
       .resource('Blog')
