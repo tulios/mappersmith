@@ -6,7 +6,6 @@
   "rootDir": "../../",
   "testEnvironment": "node",
   "timers": "fake",
-  "browser": false,
   "testMatch": ["**/?(*.)+(spec).[jt]s?(x)"],
   "roots": ["<rootDir>/src/", "<rootDir>/spec/node/"],
   "modulePaths": ["<rootDir>"],
