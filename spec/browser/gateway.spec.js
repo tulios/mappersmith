@@ -87,7 +87,7 @@ describe('Gateway', () => {
 
     beforeEach(() => {
       gateway = new Gateway(request, configs.gatewayConfigs)
-      gateway.get = jasmine.createSpy('GatewayGET')
+      gateway.get = jest.fn()
     })
 
     it('calls the http method defined in the gateway', () => {

@@ -10,6 +10,5 @@
   "testMatch": ["**/?(*.)+(spec).[jt]s?(x)"],
   "roots": ["<rootDir>/src/", "<rootDir>/spec/browser/"],
   "modulePaths": ["<rootDir>"],
-  "testRunner": "jest-jasmine2",
   "setupFiles": ["<rootDir>/jestSetup/index.js", "<rootDir>/jestSetup/web.js"]
 }

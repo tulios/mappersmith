@@ -50,7 +50,7 @@ describe('Test lib / mock request', () => {
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual({ ok3: true })
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             'content-type': 'application/json',
           })
         )
@@ -75,7 +75,7 @@ describe('Test lib / mock request', () => {
     client.User.byId({ id: 16 })
       .then((response) => {
         expect(response.status()).toEqual(201)
-        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-test-response': 'mock' }))
+        expect(response.headers()).toEqual(expect.objectContaining({ 'x-test-response': 'mock' }))
         expect(response.data()).toEqual({ ok4: true })
         done()
       })
@@ -198,7 +198,6 @@ describe('Test lib / mock request', () => {
       .then((response) => {
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual('just text!')
-        done()
       })
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response

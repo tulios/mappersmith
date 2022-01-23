@@ -56,7 +56,7 @@ describe('Gateway / Fetch', () => {
           expect(response.status()).toEqual(200)
           expect(response.data()).toEqual({ work: true })
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({ 'content-type': 'application/json' })
+            expect.objectContaining({ 'content-type': 'application/json' })
           )
           expect(response.timeElapsed).not.toBeNull()
         })
@@ -69,7 +69,7 @@ describe('Gateway / Fetch', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               authorization: 'token',
             })
           )
@@ -92,7 +92,7 @@ describe('Gateway / Fetch', () => {
             expect(response.timeElapsed).not.toBeNull()
             expect(response.data()).toEqual({ fail: true })
             expect(response.headers()).toEqual(
-              jasmine.objectContaining({
+              expect.objectContaining({
                 'content-type': 'application/json',
               })
             )
@@ -116,7 +116,7 @@ describe('Gateway / Fetch', () => {
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestBody).toEqual('firstName=John&lastName=Doe')
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
             })
           )
@@ -135,7 +135,7 @@ describe('Gateway / Fetch', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'content-type': 'application/json',
             })
           )
@@ -184,7 +184,7 @@ describe('Gateway / Fetch', () => {
       it(`adds header X-HTTP-Method-Override=${methodName}`, (done) => {
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'x-http-method-override': methodName,
             })
           )
@@ -212,7 +212,7 @@ describe('Gateway / Fetch', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               authorization: `Basic ${btoa('bob:bob')}`,
             })
           )

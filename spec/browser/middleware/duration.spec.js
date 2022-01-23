@@ -30,8 +30,8 @@ describe('Middleware / DurationMiddleware', () => {
     const startedAt = finalResponse.header('x-started-at')
     const endedAt = finalResponse.header('x-ended-at')
 
-    expect(startedAt).toEqual(jasmine.anything())
-    expect(endedAt).toEqual(jasmine.anything())
+    expect(startedAt).toEqual(expect.anything())
+    expect(endedAt).toEqual(expect.anything())
     expect(finalResponse.header('x-duration')).toEqual(endedAt - startedAt)
   })
 })

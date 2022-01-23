@@ -39,7 +39,7 @@ describe('Test lib / mock resources', () => {
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual({ ok1: true })
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             'content-type': 'application/json',
           })
         )
@@ -63,7 +63,7 @@ describe('Test lib / mock resources', () => {
     client.User.byId({ id: 1 })
       .then((response) => {
         expect(response.status()).toEqual(204)
-        expect(response.headers()).toEqual(jasmine.objectContaining({ 'x-test': 'mock' }))
+        expect(response.headers()).toEqual(expect.objectContaining({ 'x-test': 'mock' }))
         expect(response.data()).toEqual({ ok2: true })
         done()
       })
@@ -129,7 +129,7 @@ describe('Test lib / mock resources', () => {
       .then((response) => {
         expect(response.responseData).toEqual('{"key":"value"}')
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             'content-type': 'application/json',
           })
         )
@@ -142,7 +142,7 @@ describe('Test lib / mock resources', () => {
       .then((response) => {
         expect(response.responseData).toEqual('{"key":"value"}')
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             'content-type': 'application/json',
           })
         )
@@ -312,7 +312,6 @@ describe('Test lib / mock resources', () => {
     })
       .then((response) => {
         expect(response.status()).toEqual(200)
-        done()
       })
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
@@ -338,7 +337,6 @@ describe('Test lib / mock resources', () => {
     client.User.all({ param1: 'value1', param2: 'value2' })
       .then((response) => {
         expect(response.status()).toEqual(200)
-        done()
       })
       .catch((response) => {
         const error = response.rawData ? response.rawData() : response
