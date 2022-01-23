@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-var express = require('express')
-var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
-var multer = require('multer')
-var path = require('path')
-var fs = require('fs')
-var upload = multer({ storage: multer.memoryStorage() })
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
+const upload = multer({ storage: multer.memoryStorage() })
 
-var app = express()
-var responses = require('./support/responses')
+const app = express()
+const responses = require('./support/responses')
 
-var CSRF_TOKEN = 'qwerty'
+const CSRF_TOKEN = 'qwerty'
 
 function extractRawBody(req, res, buf) {
   req.rawBody = buf.toString('utf-8')
@@ -82,7 +82,7 @@ app.get('/api/failure.json', function (req, res) {
   res.send(responses.apiFailure)
 })
 
-var number = 0
+let number = 0
 app.get('/api/fail-on-odd.json', function (req, res) {
   number++
   res.set({ 'X-Api-Response': 'apiFailOnOdd' })
@@ -98,7 +98,7 @@ app.get('/api/secure.json', function (req, res) {
 
 app.get('/api/timeout.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiTimeout' })
-  var waitTime = req.query.waitTime ? parseInt(req.query.waitTime, 10) : 100
+  const waitTime = req.query.waitTime ? parseInt(req.query.waitTime, 10) : 100
 
   setTimeout(function () {
     res.send(responses.apiTimeout)
@@ -106,7 +106,7 @@ app.get('/api/timeout.json', function (req, res) {
 })
 
 app.get('/api/binary.pdf', function (req, res) {
-  var pdf = fs.readFileSync(path.join(__dirname, './support/fixture/hello_world.pdf'))
+  const pdf = fs.readFileSync(path.join(__dirname, './support/fixture/hello_world.pdf'))
   res.send(pdf)
 })
 
@@ -116,8 +116,8 @@ app.get('/api/csrf', function (req, res) {
 })
 
 app.get('/api/csrf/test', function (req, res) {
-  var csrfHeader = req.headers['x-csrf-token']
-  var csrfCookie = req.cookies['csrfToken']
+  const csrfHeader = req.headers['x-csrf-token']
+  const csrfCookie = req.cookies['csrfToken']
   res.cookie('csrfToken', CSRF_TOKEN, { httpOnly: false })
   res.sendStatus(csrfHeader === csrfCookie ? 200 : 403)
 })
