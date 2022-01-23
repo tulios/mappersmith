@@ -9,6 +9,5 @@
   "testMatch": ["**/?(*.)+(spec).[jt]s?(x)"],
   "roots": ["<rootDir>/src/", "<rootDir>/spec/node/"],
   "modulePaths": ["<rootDir>"],
-  "testRunner": "jest-jasmine2",
   "setupFiles": ["<rootDir>/jestSetup/index.js"]
 }

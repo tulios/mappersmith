@@ -87,21 +87,21 @@ describe('utils', () => {
 
     it('returns an object with all headers with lowercase keys', () => {
       const headers = parseResponseHeaders(responseHeaders)
-      expect(headers).toEqual(jasmine.objectContaining({ 'x-ratelimit-remaining': '57' }))
+      expect(headers).toEqual(expect.objectContaining({ 'x-ratelimit-remaining': '57' }))
       expect(headers).toEqual(
-        jasmine.objectContaining({ 'last-modified': 'Mon, 09 Nov 2015 19:06:15 GMT' })
+        expect.objectContaining({ 'last-modified': 'Mon, 09 Nov 2015 19:06:15 GMT' })
       )
       expect(headers).toEqual(
-        jasmine.objectContaining({ etag: 'W/"679e71e24e6d901f5b36a55c5d80a32d"' })
+        expect.objectContaining({ etag: 'W/"679e71e24e6d901f5b36a55c5d80a32d"' })
       )
       expect(headers).toEqual(
-        jasmine.objectContaining({ 'content-type': 'application/json; charset=utf-8' })
+        expect.objectContaining({ 'content-type': 'application/json; charset=utf-8' })
       )
       expect(headers).toEqual(
-        jasmine.objectContaining({ 'cache-control': 'public, max-age=60, s-maxage=60' })
+        expect.objectContaining({ 'cache-control': 'public, max-age=60, s-maxage=60' })
       )
-      expect(headers).toEqual(jasmine.objectContaining({ 'x-ratelimit-reset': '1447102379' }))
-      expect(headers).toEqual(jasmine.objectContaining({ 'x-ratelimit-limit': '60' }))
+      expect(headers).toEqual(expect.objectContaining({ 'x-ratelimit-reset': '1447102379' }))
+      expect(headers).toEqual(expect.objectContaining({ 'x-ratelimit-limit': '60' }))
     })
   })
 
