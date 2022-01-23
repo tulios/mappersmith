@@ -4,7 +4,7 @@ const Csrf = CsrfMiddleware('csrfToken', 'x-csrf-token')
 
 export default function createManifest(host = null, middlewares = []) {
   return {
-    host: host,
+    host,
     resources: {
       Book: {
         all: { path: '/api/books.json' },

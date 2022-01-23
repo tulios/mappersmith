@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-var lib = require('./mappersmith')
-var _process, defaultGateway
+const lib = require('./mappersmith')
+let _process, defaultGateway
 
 // Prevents webpack to load the nodejs processs polyfill
 try {

@@ -8,10 +8,9 @@ describe('Middleware / RetryMiddleware', () => {
   const retries = 3
   const headerRetryCount = 'X-Mappersmith-Retry-Count'
   const headerRetryTime = 'X-Mappersmith-Retry-Time'
-  let middleware
 
   setRetryConfigs({ retries, headerRetryCount, headerRetryTime })
-  middleware = RetryMiddleware()
+  const middleware = RetryMiddleware()
 
   it('exposes name', () => {
     expect(RetryMiddleware.name).toEqual('RetryMiddleware')

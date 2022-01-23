@@ -348,7 +348,7 @@ describe('Request', () => {
       it('removes optional dynamic segments with null or undefined value', () => {
         const methodDescriptor = new MethodDescriptor({
           ...methodDescriptorArgs,
-          params: { undefined: undefined, null: null },
+          params: { undefined, null: null },
           path: '/api/{null?}/path/{undefined?}/example.json',
         })
         const path = new Request(methodDescriptor).path()

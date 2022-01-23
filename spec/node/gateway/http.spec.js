@@ -43,7 +43,7 @@ describe('Gateway / HTTP', () => {
     configs.gatewayConfigs = originalConfigs
   })
 
-  for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
+  for (const methodName of ['get', 'post', 'put', 'delete', 'patch']) {
     describe(`#${methodName}`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -102,7 +102,7 @@ describe('Gateway / HTTP', () => {
     })
   }
 
-  for (let methodName of ['post', 'put', 'delete', 'patch']) {
+  for (const methodName of ['post', 'put', 'delete', 'patch']) {
     describe(`#${methodName} with body`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -173,7 +173,7 @@ describe('Gateway / HTTP', () => {
     })
   }
 
-  for (let methodName of ['put', 'delete', 'patch']) {
+  for (const methodName of ['put', 'delete', 'patch']) {
     describe(`#${methodName} emulating HTTP method`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -216,7 +216,7 @@ describe('Gateway / HTTP', () => {
     })
   }
 
-  for (let methodName of ['get', 'post', 'put', 'delete', 'patch']) {
+  for (const methodName of ['get', 'post', 'put', 'delete', 'patch']) {
     describe(`#${methodName} with request.auth() configured`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -338,7 +338,7 @@ describe('Gateway / HTTP', () => {
   })
 
   describe('with event callbacks', () => {
-    for (let callbackName of [
+    for (const callbackName of [
       'onRequestWillStart',
       'onRequestSocketAssigned',
       'onResponseReadable',
