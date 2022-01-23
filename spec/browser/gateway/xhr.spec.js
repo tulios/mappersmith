@@ -56,7 +56,7 @@ describe('Gateway / XHR', () => {
           expect(response.status()).toEqual(200)
           expect(response.data()).toEqual({ work: true })
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({ 'content-type': 'application/json' })
+            expect.objectContaining({ 'content-type': 'application/json' })
           )
           expect(response.timeElapsed).not.toBeNull()
         })
@@ -69,7 +69,7 @@ describe('Gateway / XHR', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               authorization: 'token',
             })
           )
@@ -92,7 +92,7 @@ describe('Gateway / XHR', () => {
             expect(response.timeElapsed).not.toBeNull()
             expect(response.data()).toEqual({ fail: true })
             expect(response.headers()).toEqual(
-              jasmine.objectContaining({
+              expect.objectContaining({
                 'content-type': 'application/json',
               })
             )
@@ -116,7 +116,7 @@ describe('Gateway / XHR', () => {
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestBody).toEqual('firstName=John&lastName=Doe')
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
             })
           )
@@ -135,7 +135,7 @@ describe('Gateway / XHR', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'content-type': 'application/json',
             })
           )
@@ -184,7 +184,7 @@ describe('Gateway / XHR', () => {
       it(`adds header X-HTTP-Method-Override=${methodName}`, (done) => {
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'x-http-method-override': methodName,
             })
           )
@@ -212,7 +212,7 @@ describe('Gateway / XHR', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               authorization: `Basic ${btoa('bob:bob')}`,
             })
           )
@@ -229,13 +229,13 @@ describe('Gateway / XHR', () => {
   describe('with option "configure"', () => {
     it('calls the callback with xhr object', (done) => {
       methodDescriptor.method = 'get'
-      const configure = jasmine.createSpy('XHRConfigureCallback')
+      const configure = jest.fn()
       configs.gatewayConfigs.XHR.configure = configure
 
       respondWith(httpResponse)
       assertSuccess()(done, (response) => {
         expect(response.status()).toEqual(200)
-        expect(configure).toHaveBeenCalledWith(jasmine.any(XMLHttpRequest)) // eslint-disable-line no-undef
+        expect(configure).toHaveBeenCalledWith(expect.any(XMLHttpRequest)) // eslint-disable-line no-undef
       })
     })
   })

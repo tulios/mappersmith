@@ -56,7 +56,7 @@ describe('Gateway / HTTP', () => {
           expect(response.status()).toEqual(200)
           expect(response.data()).toEqual({ work: true })
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({ 'content-type': 'application/json' })
+            expect.objectContaining({ 'content-type': 'application/json' })
           )
           expect(response.timeElapsed).not.toBeNull()
         })
@@ -69,7 +69,7 @@ describe('Gateway / HTTP', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               authorization: 'token',
             })
           )
@@ -92,7 +92,7 @@ describe('Gateway / HTTP', () => {
             expect(response.timeElapsed).not.toBeNull()
             expect(response.data()).toEqual({ fail: true })
             expect(response.headers()).toEqual(
-              jasmine.objectContaining({
+              expect.objectContaining({
                 'content-type': 'application/json',
               })
             )
@@ -116,7 +116,7 @@ describe('Gateway / HTTP', () => {
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestBody).toEqual('firstName=John&lastName=Doe')
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
             })
           )
@@ -135,7 +135,7 @@ describe('Gateway / HTTP', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'content-type': 'application/json',
             })
           )
@@ -161,7 +161,7 @@ describe('Gateway / HTTP', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({ 'content-length': '23' })
+            expect.objectContaining({ 'content-length': '23' })
           )
           expect(fauxJaxRequest.requestBody).toEqual(JSON.stringify(body))
         })
@@ -203,7 +203,7 @@ describe('Gateway / HTTP', () => {
       it(`adds header X-HTTP-Method-Override=${methodName}`, (done) => {
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'x-http-method-override': methodName,
             })
           )
@@ -231,7 +231,7 @@ describe('Gateway / HTTP', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               authorization: `Basic ${btoa('bob:bob')}`,
             })
           )
@@ -258,7 +258,7 @@ describe('Gateway / HTTP', () => {
         expect(response.status()).toEqual(200)
         expect(response.data()).toEqual('')
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({ 'content-type': 'application/json' })
+          expect.objectContaining({ 'content-type': 'application/json' })
         )
         expect(response.timeElapsed).not.toBeNull()
       })
@@ -271,7 +271,7 @@ describe('Gateway / HTTP', () => {
 
       respondWith(httpResponse, (fauxJaxRequest) => {
         expect(fauxJaxRequest.requestHeaders).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             authorization: 'token',
           })
         )
@@ -291,7 +291,7 @@ describe('Gateway / HTTP', () => {
           expect(response.timeElapsed).not.toBeNull()
           expect(response.data()).toEqual('')
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'content-type': 'application/json',
             })
           )
@@ -309,7 +309,7 @@ describe('Gateway / HTTP', () => {
 
         respondWith(httpResponse, (fauxJaxRequest) => {
           expect(fauxJaxRequest.requestHeaders).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               authorization: `Basic ${btoa('bob:bob')}`,
             })
           )
@@ -326,13 +326,13 @@ describe('Gateway / HTTP', () => {
   describe('with option "configure"', () => {
     it('calls the callback with request params', (done) => {
       methodDescriptor.method = 'get'
-      const configure = jasmine.createSpy('HTTPConfigureCallback')
+      const configure = jest.fn()
       configs.gatewayConfigs.HTTP.configure = configure
 
       respondWith(httpResponse)
       assertSuccess()(done, (response) => {
         expect(response.status()).toEqual(200)
-        expect(configure).toHaveBeenCalledWith(jasmine.any(Object))
+        expect(configure).toHaveBeenCalledWith(expect.any(Object))
       })
     })
   })
@@ -346,13 +346,13 @@ describe('Gateway / HTTP', () => {
     ]) {
       it(`calls the ${callbackName} callback with request params`, (done) => {
         methodDescriptor.method = 'get'
-        const callback = jasmine.createSpy(callbackName)
+        const callback = jest.fn()
         configs.gatewayConfigs.HTTP[callbackName] = callback
 
         respondWith(httpResponse)
         assertSuccess()(done, (response) => {
           expect(response.status()).toEqual(200)
-          expect(callback).toHaveBeenCalledWith(jasmine.any(Object))
+          expect(callback).toHaveBeenCalledWith(expect.any(Object))
         })
       })
     }

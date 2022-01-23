@@ -22,7 +22,11 @@ describe('calculateExponentialRetryTime', () => {
       maxRetryTimeInSecs: 0.25,
     }
 
-    spyOn(Math, 'random').and.returnValues(0.32, 0.25, 0.6)
+    jest
+      .spyOn(Math, 'random')
+      .mockReturnValueOnce(0.32)
+      .mockReturnValueOnce(0.25)
+      .mockReturnValueOnce(0.6)
 
     // 50 * 0.5 (factor) = 25
     // random(25, 75) -> [random[0.32] * (75 - 25) + 25] = 41

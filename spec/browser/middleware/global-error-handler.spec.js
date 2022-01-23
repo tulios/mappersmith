@@ -27,7 +27,7 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
   describe('when the error handler returns false', () => {
     it('allows the promise to follow the error flow ("catch")', (done) => {
       const originalResponse = { error: true }
-      const errorHandler = jasmine.createSpy('errorHandler')
+      const errorHandler = jest.fn()
       setErrorHandler(errorHandler)
 
       middleware
@@ -46,7 +46,7 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
   describe('when the error handler returns true', () => {
     it('skips the promise error flow ("catch")', (done) => {
       const originalResponse = { error: true }
-      const errorHandler = jasmine.createSpy('errorHandler').and.callFake((response) => {
+      const errorHandler = jest.fn((response) => {
         expect(response).toEqual(originalResponse)
         done()
         return true
