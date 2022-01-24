@@ -1,4 +1,3 @@
-import url from 'url'
 import http from 'http'
 import https from 'https'
 
@@ -38,9 +37,25 @@ HTTP.prototype = Gateway.extends({
 
   performRequest(method) {
     const headers = {}
-    // FIXME: Deprecated API
-    // eslint-disable-next-line n/no-deprecated-api
-    const defaults = url.parse(this.request.url())
+    // Custom object based on the legacy url.parse:
+    // https://nodejs.org/api/url.html#legacy-urlobject
+    // Dropped properties:
+    // - `auth` (added later)
+    // - `slashes` (not required)
+    const url = new URL(this.request.url())
+    const defaults = {
+      hash: url.hash === '' ? null : url.hash,
+      host: url.host,
+      hostname: url.hostname,
+      href: url.href,
+      path: url.search ? url.pathname + url.search : url.pathname,
+      pathname: url.pathname,
+      port: url.port === '' ? null : url.port,
+      protocol: url.protocol,
+      query: url.search && url.search.length > 0 ? url.search.slice(1) : null,
+      search: url.search === '' ? null : url.search,
+    }
+
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const body = this.prepareBody(method, headers)
     const timeout = this.request.timeout()
