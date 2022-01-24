@@ -1350,8 +1350,20 @@ yarn test
 
 ## Compile and release
 
+### Compile project only
+
+Useful for testing a branch against local projects. Run the build step of the release script and yarn link:
+
 ```sh
-NODE_ENV=production yarn build
+yarn build:project
+cd lib
+yarn link
+```
+
+### Release
+
+```sh
+yarn release
 ```
 
 ## Linting
