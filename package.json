@@ -22,11 +22,12 @@
     "test:types:watch": "yarn test:types --watch",
     "test:unit": "concurrently --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn integration-server\"",
     "test": "yarn test:types && yarn prettier --check . && yarn lint && yarn test:unit",
-    "build:node": "rm -rf lib/* && yarn babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.ts'",
+    "build:node": "rm -rf lib/* && yarn babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js'",
     "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
     "build:types": "rm -rf typings/generated && yarn tsc --project tsconfig.build.json",
     "build": "yarn build:types && yarn build:node && yarn build:browser",
     "release": "./scripts/release.sh",
+    "build:project": "./scripts/build-project.sh",
     "lint": "yarn eslint \"{src,spec,typings}/**/*.[j|t]s\""
   },
   "repository": {
