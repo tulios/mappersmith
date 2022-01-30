@@ -1,4 +1,4 @@
-import type { Primitive, Hash } from './types'
+import type { Primitive, NestedParam, Hash, NestedParamArray } from './types'
 
 let _process: NodeJS.Process,
   getNanoSeconds: (() => number) | undefined,
@@ -33,7 +33,7 @@ export const validKeys = (entry: Record<string, unknown>) =>
 
 export const buildRecursive = (
   key: string,
-  value: Primitive[] | Primitive | Record<string, unknown>,
+  value: Primitive | NestedParam | NestedParamArray,
   suffix = ''
 ): string => {
   if (Array.isArray(value)) {
@@ -44,18 +44,19 @@ export const buildRecursive = (
     return `${encodeURIComponent(key + suffix)}=${encodeURIComponent(value)}`
   }
 
-  return validKeys(value)
-    .map((k) =>
-      buildRecursive(
-        key,
-        value[k] as Primitive[] | Primitive | Record<string, unknown>,
-        suffix + '[' + k + ']'
-      )
-    )
+  return Object.keys(value)
+    .map((nestedKey) => {
+      const nestedValue = value[nestedKey]
+      if (isNeitherNullNorUndefined(nestedValue)) {
+        return buildRecursive(key, nestedValue, suffix + '[' + nestedKey + ']')
+      }
+      return null
+    })
+    .filter(isNeitherNullNorUndefined)
     .join('&')
 }
 
-export const toQueryString = (entry: Primitive | undefined | null | Record<string, any>) => {
+export const toQueryString = (entry: undefined | null | Primitive | NestedParam) => {
   if (!isPlainObject(entry)) {
     return entry
   }
@@ -68,7 +69,7 @@ export const toQueryString = (entry: Primitive | undefined | null | Record<strin
       }
       return null
     })
-    .filter(<T>(value: T | null): value is T => value !== null)
+    .filter(isNeitherNullNorUndefined)
     .join('&')
     .replace(R20, '+')
 }
