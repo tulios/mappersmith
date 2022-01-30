@@ -119,11 +119,11 @@ export class Request {
     const aliasedParams = Object.keys(params).reduce((aliased, key) => {
       const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
       const value = params[key]
-      if (value != null && typeof value !== 'object') {
+      if (value != null) {
         aliased[aliasedKey] = value
       }
       return aliased
-    }, {} as Record<string, Primitive>)
+    }, {} as Record<string, object | Primitive | Primitive[]>)
 
     const queryString = toQueryString(aliasedParams)
     if (typeof queryString === 'string' && queryString.length !== 0) {

@@ -28,12 +28,12 @@ const R20 = /%20/g
 const isNeitherNullNorUndefined = <T>(x: T | undefined | null): x is T =>
   x !== null && x !== undefined
 
-export const validKeys = (entry: Record<string, object | Primitive | undefined | null>) =>
+export const validKeys = (entry: Record<string, unknown>) =>
   Object.keys(entry).filter((key) => isNeitherNullNorUndefined(entry[key]))
 
 export const buildRecursive = (
   key: string,
-  value: Primitive | Primitive[] | Record<string, Primitive>,
+  value: Primitive[] | Primitive | Record<string, unknown>,
   suffix = ''
 ): string => {
   if (Array.isArray(value)) {
@@ -45,19 +45,30 @@ export const buildRecursive = (
   }
 
   return validKeys(value)
-    .map((k) => buildRecursive(key, value[k], suffix + '[' + k + ']'))
+    .map((k) =>
+      buildRecursive(
+        key,
+        value[k] as Primitive[] | Primitive | Record<string, unknown>,
+        suffix + '[' + k + ']'
+      )
+    )
     .join('&')
 }
 
-export const toQueryString = (
-  entry: Primitive | undefined | null | Record<string, object | Primitive | undefined | null>
-) => {
+export const toQueryString = (entry: Primitive | undefined | null | Record<string, any>) => {
   if (!isPlainObject(entry)) {
     return entry
   }
 
-  return validKeys(entry)
-    .map((key) => buildRecursive(key, entry[key] as Primitive))
+  return Object.keys(entry)
+    .map((key) => {
+      const value = entry[key]
+      if (isNeitherNullNorUndefined(value)) {
+        return buildRecursive(key, value)
+      }
+      return null
+    })
+    .filter(<T>(value: T | null): value is T => value !== null)
     .join('&')
     .replace(R20, '+')
 }

@@ -23,7 +23,7 @@ export interface RequestParams {
   readonly host?: string
   readonly params?: Params
   readonly timeout?: number
-  [param: string]: object | Primitive | undefined | null
+  [param: string]: object | Primitive | Primitive[] | undefined | null
 }
 
 export type ParameterEncoderFn = (arg: Primitive) => string
