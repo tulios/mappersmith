@@ -1,7 +1,7 @@
-import type { Primitive, Hash } from './types';
-export declare const validKeys: (entry: Record<string, object | Primitive | undefined | null>) => string[];
-export declare const buildRecursive: (key: string, value: Primitive | Primitive[] | Record<string, Primitive>, suffix?: string) => string;
-export declare const toQueryString: (entry: Primitive | undefined | null | Record<string, object | Primitive | undefined | null>) => Primitive | null | undefined;
+import type { Primitive, NestedParam, Hash, NestedParamArray } from './types';
+export declare const validKeys: (entry: Record<string, unknown>) => string[];
+export declare const buildRecursive: (key: string, value: Primitive | NestedParam | NestedParamArray, suffix?: string) => string;
+export declare const toQueryString: (entry: undefined | null | Primitive | NestedParam) => Primitive | null | undefined;
 /**
  * Gives time in milliseconds, but with sub-millisecond precision for Browser
  * and Nodejs
