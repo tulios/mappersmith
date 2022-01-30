@@ -262,6 +262,16 @@ describe('Request', () => {
       )
     })
 
+    it('encodes object query string params', () => {
+      const methodDescriptor = new MethodDescriptor({
+        ...methodDescriptorArgs,
+        params: { user: { email: 'email+test@example.com' } },
+        path: 'api/example.json',
+      })
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json?user%5Bemail%5D=email%2Btest%40example.com')
+    })
+
     it('interpolates paths with dynamic segments', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
