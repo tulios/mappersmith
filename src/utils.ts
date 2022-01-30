@@ -1,4 +1,4 @@
-import type { Primitive, Hash } from './types'
+import type { Primitive, NestedParam, Hash, NestedParamArray } from './types'
 
 let _process: NodeJS.Process,
   getNanoSeconds: (() => number) | undefined,
@@ -28,12 +28,12 @@ const R20 = /%20/g
 const isNeitherNullNorUndefined = <T>(x: T | undefined | null): x is T =>
   x !== null && x !== undefined
 
-export const validKeys = (entry: Record<string, object | Primitive | undefined | null>) =>
+export const validKeys = (entry: Record<string, unknown>) =>
   Object.keys(entry).filter((key) => isNeitherNullNorUndefined(entry[key]))
 
 export const buildRecursive = (
   key: string,
-  value: Primitive | Primitive[] | Record<string, Primitive>,
+  value: Primitive | NestedParam | NestedParamArray,
   suffix = ''
 ): string => {
   if (Array.isArray(value)) {
@@ -44,20 +44,32 @@ export const buildRecursive = (
     return `${encodeURIComponent(key + suffix)}=${encodeURIComponent(value)}`
   }
 
-  return validKeys(value)
-    .map((k) => buildRecursive(key, value[k], suffix + '[' + k + ']'))
+  return Object.keys(value)
+    .map((nestedKey) => {
+      const nestedValue = value[nestedKey]
+      if (isNeitherNullNorUndefined(nestedValue)) {
+        return buildRecursive(key, nestedValue, suffix + '[' + nestedKey + ']')
+      }
+      return null
+    })
+    .filter(isNeitherNullNorUndefined)
     .join('&')
 }
 
-export const toQueryString = (
-  entry: Primitive | undefined | null | Record<string, object | Primitive | undefined | null>
-) => {
+export const toQueryString = (entry: undefined | null | Primitive | NestedParam) => {
   if (!isPlainObject(entry)) {
     return entry
   }
 
-  return validKeys(entry)
-    .map((key) => buildRecursive(key, entry[key] as Primitive))
+  return Object.keys(entry)
+    .map((key) => {
+      const value = entry[key]
+      if (isNeitherNullNorUndefined(value)) {
+        return buildRecursive(key, value)
+      }
+      return null
+    })
+    .filter(isNeitherNullNorUndefined)
     .join('&')
     .replace(R20, '+')
 }

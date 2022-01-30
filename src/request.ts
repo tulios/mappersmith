@@ -1,10 +1,15 @@
 import { MethodDescriptor } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
-import type { Headers, Primitive, RequestParams } from './types'
+import type { Headers, NestedParam, NestedParamArray, Primitive, RequestParams } from './types'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
+
+/**
+ * Removes the object type without removing Record types in the union
+ */
+type ExcludeObject<T> = T extends object ? (object extends T ? never : T) : T
 
 /**
  * @typedef Request
@@ -119,11 +124,16 @@ export class Request {
     const aliasedParams = Object.keys(params).reduce((aliased, key) => {
       const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
       const value = params[key]
-      if (value != null && typeof value !== 'object') {
-        aliased[aliasedKey] = value
+      if (value != null) {
+        /**
+         * Here we use `ExcludeObject` to surgically remove the `object` type from `value`.
+         * We need it as `object` is too broad to be useful, whereas `value` is also typed
+         * as NestedParam, which is the correct shape for param objects.
+         */
+        aliased[aliasedKey] = value as ExcludeObject<typeof value>
       }
       return aliased
-    }, {} as Record<string, Primitive>)
+    }, {} as Record<string, Primitive | NestedParam | NestedParamArray>)
 
     const queryString = toQueryString(aliasedParams)
     if (typeof queryString === 'string' && queryString.length !== 0) {
