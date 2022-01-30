@@ -262,7 +262,7 @@ describe('Request', () => {
       )
     })
 
-    it('encodes object query string params', () => {
+    it('encodes objects in the param[key]=value format', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
         params: { user: { email: 'email+test@example.com' } },

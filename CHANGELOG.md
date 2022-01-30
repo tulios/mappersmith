@@ -7,6 +7,7 @@ Added:
   - `mappersmith/test`: Add `responseFactory` and `requestFactory` helpers to `mappersmith/test` #265
   - `mappersmith/test`: Fix bug in mockRequest/mockClient where body params did not match independent of order #268
   - `mappersmith/test`: If `body` is not provided to a mock, it will match on any body. #229 #152
+- `mappersmith`: Fix unintended new query string behaviour introduced in 2.36 #281
 
 ## 2.36.3
 

@@ -17,7 +17,7 @@ export interface Params {
 }
 
 export interface NestedParam {
-  // We need the NestedParamArray here for circulatiry
+  // We need the NestedParamArray here for circularity
   // eslint-disable-next-line no-use-before-define
   [param: string]: Primitive | undefined | null | NestedParam | NestedParamArray
 }
