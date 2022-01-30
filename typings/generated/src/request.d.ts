@@ -1,5 +1,5 @@
 import { MethodDescriptor } from './method-descriptor';
-import type { Primitive, RequestParams } from './types';
+import type { NestedParam, NestedParamArray, Primitive, RequestParams } from './types';
 /**
  * @typedef Request
  * @param {MethodDescriptor} methodDescriptor
@@ -51,9 +51,9 @@ export declare class Request {
      * Utility method to get a header value by name
      */
     header(name: string): Primitive;
-    body(): object | Primitive | null | undefined;
-    auth(): object | Primitive | null | undefined;
-    timeout(): object | Primitive | null | undefined;
+    body(): object | Primitive | NestedParam | NestedParamArray | null | undefined;
+    auth(): object | Primitive | NestedParam | NestedParamArray | null | undefined;
+    timeout(): object | Primitive | NestedParam | NestedParamArray | null | undefined;
     /**
      * Enhances current request returning a new Request
      * @param {RequestParams} extras
