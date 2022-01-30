@@ -11,6 +11,11 @@ interface Auth {
 export interface Params {
     readonly [key: string]: object | Primitive | undefined | null;
 }
+export interface NestedParam {
+    [param: string]: Primitive | undefined | null | NestedParam | NestedParamArray;
+}
+export interface NestedParamArray extends Array<Primitive | NestedParam | NestedParamArray> {
+}
 export interface RequestParams {
     readonly auth?: Auth;
     readonly body?: object | string;
@@ -18,7 +23,7 @@ export interface RequestParams {
     readonly host?: string;
     readonly params?: Params;
     readonly timeout?: number;
-    [param: string]: object | Primitive | undefined | null;
+    [param: string]: object | Primitive | undefined | null | NestedParam | NestedParamArray;
 }
 export declare type ParameterEncoderFn = (arg: Primitive) => string;
 export {};

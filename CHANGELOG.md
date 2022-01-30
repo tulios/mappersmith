@@ -1,12 +1,16 @@
 # Changelog
 
-## Unreleased
+## 2.37.0
+
+Fixed:
+  - `mappersmith/test`: Fix bug in mockRequest/mockClient where body params did not match independent of order #268
 
 Added:
   - `mappersmith`: Make Response accept a generic type that specifies the form of the data returned #265
   - `mappersmith/test`: Add `responseFactory` and `requestFactory` helpers to `mappersmith/test` #265
-  - `mappersmith/test`: Fix bug in mockRequest/mockClient where body params did not match independent of order #268
   - `mappersmith/test`: If `body` is not provided to a mock, it will match on any body. #229 #152
+
+## 2.36.4
   - `mappersmith`: Fix unintended new query string behaviour introduced in 2.36 #281
 
 ## 2.36.3
