@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+Fixed:
+  - `mappersmith`: Fix unintended new query string behaviour introduced in 2.36 #281
+
 ## 2.36.3
 
 Fixed:
