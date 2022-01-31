@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.37.1
+
+Fixed:
+  - (internal) Fixed bad release folder of 2.37.0
+
 ## 2.37.0
 
 Fixed:
@@ -9,6 +14,11 @@ Added:
   - `mappersmith`: Make Response accept a generic type that specifies the form of the data returned #265
   - `mappersmith/test`: Add `responseFactory` and `requestFactory` helpers to `mappersmith/test` #265
   - `mappersmith/test`: If `body` is not provided to a mock, it will match on any body. #229 #152
+
+## 2.36.5
+
+Fixed:
+  - (internal) Fixed bad release folder of 2.36.4
 
 ## 2.36.4
   - `mappersmith`: Fix unintended new query string behaviour introduced in 2.36 #281
