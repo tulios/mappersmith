@@ -1,3 +1,4 @@
+import { Request } from '../request'
 import { Response } from '../response'
 
 export interface HTTPRequestParams {
@@ -56,4 +57,9 @@ export interface GatewayConfiguration {
   XHR: Partial<XhrGateway>
   enableHTTP408OnTimeouts: boolean
   emulateHTTP: boolean
+}
+
+export interface GatewayConstructor {
+  new (request: Request, gatewayConfigs: Partial<GatewayConfiguration>): Gateway
+  readonly prototype: Gateway
 }

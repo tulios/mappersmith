@@ -1,6 +1,6 @@
-import { ClientBuilder, GatewayConstructor } from './client-builder'
+import { ClientBuilder } from './client-builder'
 import { Manifest, GlobalConfigs } from './manifest'
-import { Gateway, GatewayConfiguration } from './gateway/types'
+import { Gateway, GatewayConfiguration, GatewayConstructor } from './gateway/types'
 import Request from './request'
 import { getManifest, getManifestWithResourceConf } from '../spec/ts-helper'
 
