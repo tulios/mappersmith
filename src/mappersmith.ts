@@ -125,7 +125,6 @@ export const setContext = (context: Context) => {
   configs.context = assign(configs.context, context)
 }
 
-// export default function forge<Resources>(options: ManifestOptions<Resources>): Client<Resources>
 export default function forge<Resources extends ResourceTypeConstraint>(
   manifest: ManifestOptions<Resources>
 ): Client<Resources> {

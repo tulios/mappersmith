@@ -5,11 +5,14 @@ export interface Hash {
 }
 
 export interface Headers {
+  // readonly [key: string]: Primitive | Primitive[] | undefined
   readonly [key: string]: Primitive
 }
 
-interface Auth {
-  readonly [key: string]: Primitive
+export interface Auth {
+  username?: string
+  password?: string
+  readonly [key: string]: Primitive | undefined
 }
 
 export interface Params {
