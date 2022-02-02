@@ -185,7 +185,7 @@ export class Request {
     const headerAttr = this.methodDescriptor.headersAttr
     const headers = (this.requestParams[headerAttr] || {}) as Headers
     const mergedHeaders = { ...this.methodDescriptor.headers, ...headers } as Headers
-    return lowerCaseObjectKeys(mergedHeaders)
+    return lowerCaseObjectKeys(mergedHeaders) as Headers
   }
 
   /**

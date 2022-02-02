@@ -5,7 +5,6 @@ export interface Hash {
 }
 
 export interface Headers {
-  // readonly [key: string]: Primitive | Primitive[] | undefined
   readonly [key: string]: Primitive
 }
 

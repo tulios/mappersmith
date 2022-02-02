@@ -52,11 +52,6 @@ export abstract class Gateway {
     }
   }
 
-  // Gateway.extends = (methods) => assign({}, Gateway.prototype, methods)
-  // public static extends(methods: unknown) {
-  //   return assign({}, Gateway.prototype, methods)
-  // }
-
   options() {
     return this.configs
   }
