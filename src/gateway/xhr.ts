@@ -1,15 +1,15 @@
-import Gateway from '../gateway'
+import Gateway, { GatewayInterface, Method } from '../gateway'
 import Response from '../response'
+import { Headers } from '../types'
 import { assign, parseResponseHeaders, btoa } from '../utils'
 import { createTimeoutError } from './timeout-error'
 
 const toBase64 = window.btoa || btoa
 
-function XHR() {
-  Gateway.apply(this, arguments)
-}
+export class XHR extends Gateway implements GatewayInterface {
+  private canceled = false
+  private timer?: ReturnType<typeof setTimeout>
 
-XHR.prototype = Gateway.extends({
   get() {
     const xmlHttpRequest = this.createXHR()
     xmlHttpRequest.open('GET', this.request.url(), true)
@@ -17,7 +17,7 @@ XHR.prototype = Gateway.extends({
     this.configureTimeout(xmlHttpRequest)
     this.configureBinary(xmlHttpRequest)
     xmlHttpRequest.send()
-  },
+  }
 
   head() {
     const xmlHttpRequest = this.createXHR()
@@ -26,33 +26,33 @@ XHR.prototype = Gateway.extends({
     this.configureTimeout(xmlHttpRequest)
     this.configureBinary(xmlHttpRequest)
     xmlHttpRequest.send()
-  },
+  }
 
   post() {
     this.performRequest('post')
-  },
+  }
 
   put() {
     this.performRequest('put')
-  },
+  }
 
   patch() {
     this.performRequest('patch')
-  },
+  }
 
   delete() {
     this.performRequest('delete')
-  },
+  }
 
-  configureBinary(xmlHttpRequest) {
+  configureBinary(xmlHttpRequest: XMLHttpRequest) {
     if (this.request.isBinary()) {
       xmlHttpRequest.responseType = 'blob'
     }
-  },
+  }
 
-  configureTimeout(xmlHttpRequest) {
+  configureTimeout(xmlHttpRequest: XMLHttpRequest) {
     this.canceled = false
-    this.timer = null
+    this.timer = undefined
 
     const timeout = this.request.timeout()
 
@@ -60,7 +60,7 @@ XHR.prototype = Gateway.extends({
       xmlHttpRequest.timeout = timeout
       xmlHttpRequest.addEventListener('timeout', () => {
         this.canceled = true
-        clearTimeout(this.timer)
+        this.timer && clearTimeout(this.timer)
         const error = createTimeoutError(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
       })
@@ -72,15 +72,15 @@ XHR.prototype = Gateway.extends({
         this.dispatchClientError(error.message, error)
       }, timeout + 1)
     }
-  },
+  }
 
-  configureCallbacks(xmlHttpRequest) {
+  configureCallbacks(xmlHttpRequest: XMLHttpRequest) {
     xmlHttpRequest.addEventListener('load', () => {
       if (this.canceled) {
         return
       }
 
-      clearTimeout(this.timer)
+      this.timer && clearTimeout(this.timer)
       this.dispatchResponse(this.createResponse(xmlHttpRequest))
     })
 
@@ -89,8 +89,11 @@ XHR.prototype = Gateway.extends({
         return
       }
 
-      clearTimeout(this.timer)
-      const guessedErrorCause = e ? e.message || e.name : xmlHttpRequest.responseText
+      this.timer && clearTimeout(this.timer)
+      const guessedErrorCause = e
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (e as any).message || (e as any).name
+        : xmlHttpRequest.responseText
 
       const errorMessage = 'Network error'
       const enhancedMessage = guessedErrorCause ? `: ${guessedErrorCause}` : ''
@@ -106,51 +109,46 @@ XHR.prototype = Gateway.extends({
     if (xhrOptions.configure) {
       xhrOptions.configure(xmlHttpRequest)
     }
-  },
+  }
 
-  performRequest(method) {
+  performRequest(method: Method) {
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const xmlHttpRequest = this.createXHR()
     xmlHttpRequest.open(requestMethod.toUpperCase(), this.request.url(), true)
 
-    const customHeaders = {}
-    const body = this.prepareBody(method, customHeaders)
+    const customHeaders: Headers = {}
+    const body = this.prepareBody(method, customHeaders) as XMLHttpRequestBodyInit
     this.setHeaders(xmlHttpRequest, customHeaders)
     this.configureTimeout(xmlHttpRequest)
     this.configureBinary(xmlHttpRequest)
 
-    const args = []
-    body && args.push(body)
+    xmlHttpRequest.send(body)
+  }
 
-    xmlHttpRequest.send.apply(xmlHttpRequest, args)
-  },
-
-  createResponse(xmlHttpRequest) {
+  createResponse(xmlHttpRequest: XMLHttpRequest) {
     const status = xmlHttpRequest.status
     const data = this.request.isBinary() ? xmlHttpRequest.response : xmlHttpRequest.responseText
     const responseHeaders = parseResponseHeaders(xmlHttpRequest.getAllResponseHeaders())
     return new Response(this.request, status, data, responseHeaders)
-  },
+  }
 
-  setHeaders(xmlHttpRequest, customHeaders) {
+  setHeaders(xmlHttpRequest: XMLHttpRequest, customHeaders: Headers) {
     const auth = this.request.auth()
-    if (auth) {
-      const username = auth.username || ''
-      const password = auth.password || ''
-      customHeaders['authorization'] = `Basic ${toBase64(`${username}:${password}`)}`
-    }
-
-    const headers = assign(customHeaders, this.request.headers())
-    Object.keys(headers).forEach((headerName) => {
-      xmlHttpRequest.setRequestHeader(headerName, headers[headerName])
+    const headers = assign(customHeaders, {
+      ...this.request.headers(),
+      ...(auth ? { authorization: `Basic ${toBase64(`${auth.username}:${auth.password}`)}` } : {}),
     })
-  },
+
+    Object.keys(headers).forEach((headerName) => {
+      xmlHttpRequest.setRequestHeader(headerName, `${headers[headerName]}`)
+    })
+  }
 
   createXHR() {
     const xmlHttpRequest = new XMLHttpRequest()
     this.configureCallbacks(xmlHttpRequest)
     return xmlHttpRequest
-  },
-})
+  }
+}
 
 export default XHR
