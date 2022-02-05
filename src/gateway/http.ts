@@ -3,11 +3,11 @@ import * as http from 'http'
 import * as https from 'https'
 
 import { assign } from '../utils'
-import Gateway, { GatewayInterface, Method } from '../gateway'
+import { Gateway, GatewayInterface, Method } from '../gateway'
 import type { HTTPGatewayConfiguration, HTTPRequestParams } from '../gateway/types'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
-import { Primitive } from 'mappersmith/test'
+import { Primitive } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Chunk = any

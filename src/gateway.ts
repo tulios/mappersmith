@@ -4,7 +4,7 @@ import { Request } from './request'
 import { Response } from './response'
 import { isTimeoutError } from './gateway/timeout-error'
 import { GatewayConfiguration } from './gateway/types'
-import { Primitive } from 'mappersmith/test'
+import { Primitive } from './types'
 
 const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 

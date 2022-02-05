@@ -24,6 +24,8 @@ declare module 'mappersmith/test' {
     assertObjectAsync(): Promise<MockAssert>
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  export function lookupResponseAsync(req: any): Promise<any>
   export function clear(): void
   export function install(): void
   export function uninstall(): void

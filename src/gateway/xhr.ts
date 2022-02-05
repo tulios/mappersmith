@@ -1,4 +1,4 @@
-import Gateway, { GatewayInterface, Method } from '../gateway'
+import { Gateway, GatewayInterface, Method } from '../gateway'
 import Response from '../response'
 import { Headers } from '../types'
 import { assign, parseResponseHeaders, btoa } from '../utils'

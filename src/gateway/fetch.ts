@@ -1,4 +1,4 @@
-import Gateway, { GatewayInterface, Method } from '../gateway'
+import { Gateway, GatewayInterface, Method } from '../gateway'
 import Response from '../response'
 import { configs } from '../mappersmith'
 // Fetch can be used in nodejs, so it should always use the btoa util
