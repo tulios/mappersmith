@@ -3,7 +3,7 @@ import * as http from 'http'
 import * as https from 'https'
 
 import { assign } from '../utils'
-import { Gateway, GatewayInterface, Method } from '../gateway'
+import { Gateway, Method } from '../gateway'
 import type { HTTPGatewayConfiguration, HTTPRequestParams } from '../gateway/types'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
@@ -12,7 +12,7 @@ import { Primitive } from '../types'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Chunk = any
 
-export class HTTP extends Gateway implements GatewayInterface {
+export class HTTP extends Gateway {
   private canceled = false
 
   get() {

@@ -1,4 +1,4 @@
-import { Gateway, GatewayInterface, Method } from '../gateway'
+import { Gateway, Method } from '../gateway'
 import Response from '../response'
 import { Headers } from '../types'
 import { assign, parseResponseHeaders, btoa } from '../utils'
@@ -6,7 +6,7 @@ import { createTimeoutError } from './timeout-error'
 
 const toBase64 = window.btoa || btoa
 
-export class XHR extends Gateway implements GatewayInterface {
+export class XHR extends Gateway {
   private canceled = false
   private timer?: ReturnType<typeof setTimeout>
 

@@ -9,31 +9,6 @@ import { Primitive } from './types'
 const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 
 export type Method = 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete'
-export abstract class GatewayInterface {
-  public get() {
-    throw new Error('Abstract interface - Not implemented')
-  }
-
-  public head() {
-    throw new Error('Abstract interface - Not implemented')
-  }
-
-  public post() {
-    throw new Error('Abstract interface - Not implemented')
-  }
-
-  public put() {
-    throw new Error('Abstract interface - Not implemented')
-  }
-
-  public patch() {
-    throw new Error('Abstract interface - Not implemented')
-  }
-
-  public delete() {
-    throw new Error('Abstract interface - Not implemented')
-  }
-}
 
 export abstract class Gateway {
   public request: Request
@@ -50,6 +25,30 @@ export abstract class Gateway {
     this.failCallback = function () {
       return undefined
     }
+  }
+
+  public get() {
+    throw new Error('Not implemented')
+  }
+
+  public head() {
+    throw new Error('Not implemented')
+  }
+
+  public post() {
+    throw new Error('Not implemented')
+  }
+
+  public put() {
+    throw new Error('Not implemented')
+  }
+
+  public patch() {
+    throw new Error('Not implemented')
+  }
+
+  public delete() {
+    throw new Error('Not implemented')
   }
 
   options() {

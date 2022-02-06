@@ -1,8 +1,8 @@
-import { Gateway, GatewayInterface } from '../gateway'
+import { Gateway } from '../gateway'
 // @ts-expect-error Ignore the fact this file is not typed:
 import { lookupResponseAsync } from '../test'
 
-export class Mock extends Gateway implements GatewayInterface {
+export class Mock extends Gateway {
   get() {
     this.callMock()
   }

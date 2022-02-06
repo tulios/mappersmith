@@ -1,4 +1,4 @@
-import { Gateway, GatewayInterface, Method } from '../gateway'
+import { Gateway, Method } from '../gateway'
 import Response from '../response'
 import { configs } from '../mappersmith'
 // Fetch can be used in nodejs, so it should always use the btoa util
@@ -11,7 +11,7 @@ import { createTimeoutError } from './timeout-error'
  * use browser specific code, with a proper "fetch" implementation it can also be
  * used with node.js
  */
-export class Fetch extends Gateway implements GatewayInterface {
+export class Fetch extends Gateway {
   get() {
     this.performRequest('get')
   }
