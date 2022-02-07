@@ -5,7 +5,6 @@ type User = {
   id: string
 }
 type GraphQLResponse<T> = Response<{
-  // eslint-disable-next-line camelcase
   errors?: { message: string; error_type: string; description: string }[]
   data: T
 }>
