@@ -1,4 +1,3 @@
-import { Response } from '../response';
 export interface HTTPRequestParams {
     [key: string]: any;
 }
@@ -13,41 +12,17 @@ export interface HTTPGatewayConfiguration {
     onResponseEnd?: ((requestParams: HTTPRequestParams) => void) | null;
     useSocketConnectionTimeout?: boolean;
 }
-export interface Gateway {
-    call(): Promise<Response>;
-    dispatchClientError(message: string, error: Error): void;
-    dispatchResponse(response: Response): void;
-    extends(methods: {
-        [fn: string]: Function;
-    }): void;
-    options(): object;
-    prepareBody(method: string, headers: Headers): string;
-    shouldEmulateHTTP(): boolean;
-}
-export interface NetworkGateway {
-    delete?(): void;
-    get(): void;
-    head(): void;
-    patch(): void;
-    post(): void;
-    put(): void;
-}
-export interface XhrGateway extends Gateway, NetworkGateway {
-    readonly withCredentials: boolean;
+interface XHRGatewayConfiguration {
+    withCredentials?: boolean;
     configure?: ((xmlHttpRequest: XMLHttpRequest) => void) | null;
-    configureBinary(xmlHttpRequest: XMLHttpRequest): void;
-    configureCallbacks(xmlHttpRequest: XMLHttpRequest): void;
-    configureTimeout(xmlHttpRequest: XMLHttpRequest): void;
-    createResponse(xmlHttpRequest: XMLHttpRequest): void;
-    createXHR(): XMLHttpRequest;
-    performRequest(method: string): void;
-    setHeaders(xmlHttpRequest: XMLHttpRequest, headers: Headers): void;
 }
+declare type FetchGatewayConfiguration = Partial<RequestInit>;
 export interface GatewayConfiguration {
-    Fetch: object;
+    Fetch: FetchGatewayConfiguration;
     HTTP: HTTPGatewayConfiguration;
-    Mock?: object;
-    XHR: Partial<XhrGateway>;
+    Mock?: Record<string, unknown>;
+    XHR: XHRGatewayConfiguration;
     enableHTTP408OnTimeouts: boolean;
     emulateHTTP: boolean;
 }
+export {};
