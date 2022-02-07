@@ -10,7 +10,7 @@ const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 
 export type Method = 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete'
 
-export abstract class Gateway {
+export class Gateway {
   public request: Request
   public configs: GatewayConfiguration
   public successCallback: (res: Response) => void
@@ -59,7 +59,8 @@ export abstract class Gateway {
     return this.options().emulateHTTP && REGEXP_EMULATE_HTTP.test(this.request.method())
   }
 
-  call() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  call(): Promise<any> {
     const timeStart = performanceNow()
     if (!defaultConfigs.Promise) {
       throw new Error('[Mappersmith] Promise not configured (configs.Promise)')

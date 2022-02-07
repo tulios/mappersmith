@@ -8,7 +8,7 @@ import {
 import { Response } from './response'
 import { Request } from './request'
 import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
-import type { GatewayConstructor } from './gateway/types'
+import { Gateway } from './gateway'
 import type { Params } from './types'
 
 export type AsyncFunction = (params?: Params) => Promise<Response>
@@ -42,12 +42,12 @@ const isFactoryConfigured = <T>(factory: () => T | null): factory is () => T => 
 export class ClientBuilder<Resources extends ResourceTypeConstraint> {
   public Promise: PromiseConstructor
   public manifest: Manifest<Resources>
-  public GatewayClassFactory: () => GatewayConstructor
+  public GatewayClassFactory: () => typeof Gateway
   public maxMiddlewareStackExecutionAllowed: number
 
   constructor(
     manifestDefinition: ManifestOptions<Resources>,
-    GatewayClassFactory: () => GatewayConstructor | null,
+    GatewayClassFactory: () => typeof Gateway | null,
     configs: GlobalConfigs
   ) {
     if (!manifestDefinition) {

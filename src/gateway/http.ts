@@ -4,7 +4,7 @@ import * as https from 'https'
 
 import { assign } from '../utils'
 import { Gateway, Method } from '../gateway'
-import type { HTTPGatewayConfiguration, HTTPRequestParams } from '../gateway/types'
+import type { HTTPGatewayConfiguration, HTTPRequestParams } from './types'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
 import { Primitive } from '../types'
@@ -134,7 +134,7 @@ export class HTTP extends Gateway {
 
   onResponse(
     httpResponse: http.IncomingMessage,
-    httpOptions: HTTPGatewayConfiguration,
+    httpOptions: Partial<HTTPGatewayConfiguration>,
     requestParams: HTTPRequestParams
   ) {
     const rawData: Chunk[] = []

@@ -102,6 +102,7 @@ export class XHR extends Gateway {
     })
 
     const xhrOptions = this.options().XHR
+
     if (xhrOptions.withCredentials) {
       xmlHttpRequest.withCredentials = true
     }

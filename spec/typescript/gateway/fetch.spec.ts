@@ -1,5 +1,4 @@
-import FetchGateway from 'mappersmith/gateway/fetch'
-import { configs } from 'mappersmith'
+import { configs, FetchGateway } from 'mappersmith'
 
 configs.gateway = FetchGateway
 
