@@ -1,13 +1,14 @@
-import { Request } from './request'
-import { Response } from './response'
-import { MethodDescriptor } from './method-descriptor'
-import { requestFactory, responseFactory } from './test'
+import { Request } from '../request'
+import { Response } from '../response'
+import { MethodDescriptor } from '../method-descriptor'
+import { requestFactory } from './request-factory'
+import { responseFactory } from './response-factory'
 
 describe('mappersmith/test', () => {
   const method = 'GET'
   const host = 'http://example.org'
   const path = '/path'
-  let methodDescriptor
+  let methodDescriptor: MethodDescriptor
 
   beforeEach(() => {
     methodDescriptor = new MethodDescriptor({ method, host, path })
@@ -54,7 +55,7 @@ describe('mappersmith/test', () => {
   })
 
   describe('#responseFactory', () => {
-    let request
+    let request: Request
 
     beforeEach(() => {
       methodDescriptor = new MethodDescriptor({ method, host, path })
