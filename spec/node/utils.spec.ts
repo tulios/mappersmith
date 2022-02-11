@@ -10,8 +10,9 @@ describe('#performanceNow', () => {
   })
 
   it('two subsequent calls returns an increasing number', () => {
-    // eslint-disable-next-line no-self-compare
-    expect(performanceNow() < performanceNow()).toEqual(true)
+    const t1 = performanceNow()
+    const t2 = performanceNow()
+    expect(t1 < t2).toEqual(true)
   })
 
   it('has less than 10 microseconds overhead', () => {

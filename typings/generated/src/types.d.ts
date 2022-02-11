@@ -5,8 +5,10 @@ export interface Hash {
 export interface Headers {
     readonly [key: string]: Primitive;
 }
-interface Auth {
-    readonly [key: string]: Primitive;
+export interface Auth {
+    username?: string;
+    password?: string;
+    readonly [key: string]: Primitive | undefined;
 }
 export interface Params {
     readonly [key: string]: object | Primitive | undefined | null;
@@ -26,4 +28,3 @@ export interface RequestParams {
     [param: string]: object | Primitive | undefined | null | NestedParam | NestedParamArray;
 }
 export declare type ParameterEncoderFn = (arg: Primitive) => string;
-export {};

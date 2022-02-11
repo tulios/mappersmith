@@ -1,5 +1,9 @@
 import { MethodDescriptor } from './method-descriptor';
-import type { NestedParam, NestedParamArray, Primitive, RequestParams } from './types';
+import type { Auth, Headers, NestedParam, NestedParamArray, Primitive, RequestParams } from './types';
+/**
+ * Removes the object type without removing Record types in the union
+ */
+export declare type ExcludeObject<T> = T extends object ? (object extends T ? never : T) : T;
 /**
  * @typedef Request
  * @param {MethodDescriptor} methodDescriptor
@@ -46,14 +50,14 @@ export declare class Request {
      * Returns an object with the headers. Header names are converted to
      * lowercase
      */
-    headers(): import("./types").Hash;
+    headers(): Headers;
     /**
      * Utility method to get a header value by name
      */
     header(name: string): Primitive;
     body(): object | Primitive | NestedParam | NestedParamArray | null | undefined;
-    auth(): object | Primitive | NestedParam | NestedParamArray | null | undefined;
-    timeout(): object | Primitive | NestedParam | NestedParamArray | null | undefined;
+    auth(): Auth;
+    timeout(): number;
     /**
      * Enhances current request returning a new Request
      * @param {RequestParams} extras

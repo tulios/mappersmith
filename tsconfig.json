@@ -8,7 +8,8 @@
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "resolveJsonModule": true
   },
   "include": ["typings/**/*", "spec/**/*", "src/**/*"],
   "exclude": ["node_modules"]

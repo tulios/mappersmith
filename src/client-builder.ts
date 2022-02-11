@@ -8,7 +8,7 @@ import {
 import { Response } from './response'
 import { Request } from './request'
 import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
-import type { Gateway, GatewayConfiguration } from './gateway/types'
+import { Gateway } from './gateway'
 import type { Params } from './types'
 
 export type AsyncFunction = (params?: Params) => Promise<Response>
@@ -27,9 +27,11 @@ interface RequestPhaseFailureContext {
   abortExecution: boolean
 }
 
-export interface GatewayConstructor {
-  new (request: Request, gatewayConfigs: Partial<GatewayConfiguration>): Gateway
-  readonly prototype: Gateway
+const isFactoryConfigured = <T>(factory: () => T | null): factory is () => T => {
+  if (!factory || !factory()) {
+    return false
+  }
+  return true
 }
 
 /**
@@ -40,19 +42,19 @@ export interface GatewayConstructor {
 export class ClientBuilder<Resources extends ResourceTypeConstraint> {
   public Promise: PromiseConstructor
   public manifest: Manifest<Resources>
-  public GatewayClassFactory: () => GatewayConstructor
+  public GatewayClassFactory: () => typeof Gateway
   public maxMiddlewareStackExecutionAllowed: number
 
   constructor(
     manifestDefinition: ManifestOptions<Resources>,
-    GatewayClassFactory: () => GatewayConstructor,
+    GatewayClassFactory: () => typeof Gateway | null,
     configs: GlobalConfigs
   ) {
     if (!manifestDefinition) {
       throw new Error(`[Mappersmith] invalid manifest (${manifestDefinition})`)
     }
 
-    if (!GatewayClassFactory || !GatewayClassFactory()) {
+    if (!isFactoryConfigured(GatewayClassFactory)) {
       throw new Error('[Mappersmith] gateway class not configured (configs.gateway)')
     }
 

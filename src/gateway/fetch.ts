@@ -1,17 +1,9 @@
-import Gateway from '../gateway'
+import { Gateway, Method } from '../gateway'
 import Response from '../response'
 import { configs } from '../mappersmith'
 // Fetch can be used in nodejs, so it should always use the btoa util
 import { assign, btoa } from '../utils'
 import { createTimeoutError } from './timeout-error'
-
-const fetch = configs.fetch
-
-if (!fetch) {
-  throw new Error(
-    `[Mappersmith] global fetch does not exist, please assign "configs.fetch" to a valid implementation`
-  )
-}
 
 /**
  * Gateway which uses the "fetch" implementation configured in "configs.fetch".
@@ -19,38 +11,42 @@ if (!fetch) {
  * use browser specific code, with a proper "fetch" implementation it can also be
  * used with node.js
  */
-function Fetch() {
-  Gateway.apply(this, arguments)
-}
-
-Fetch.prototype = Gateway.extends({
+export class Fetch extends Gateway {
   get() {
     this.performRequest('get')
-  },
+  }
 
   head() {
     this.performRequest('head')
-  },
+  }
 
   post() {
     this.performRequest('post')
-  },
+  }
 
   put() {
     this.performRequest('put')
-  },
+  }
 
   patch() {
     this.performRequest('patch')
-  },
+  }
 
   delete() {
     this.performRequest('delete')
-  },
+  }
 
-  performRequest(method) {
-    const customHeaders = {}
-    const body = this.prepareBody(method, customHeaders)
+  performRequest(method: Method) {
+    const fetch = configs.fetch
+
+    if (!fetch) {
+      throw new Error(
+        `[Mappersmith] global fetch does not exist, please assign "configs.fetch" to a valid implementation`
+      )
+    }
+
+    const customHeaders: Record<string, string> = {}
+    const body = this.prepareBody(method, customHeaders) as BodyInit
     const auth = this.request.auth()
 
     if (auth) {
@@ -61,10 +57,10 @@ Fetch.prototype = Gateway.extends({
 
     const headers = assign(customHeaders, this.request.headers())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
-    const init = assign({ method: requestMethod, headers, body }, this.options().Fetch)
+    const init: RequestInit = assign({ method: requestMethod, headers, body }, this.options().Fetch)
     const timeout = this.request.timeout()
 
-    let timer = null
+    let timer: ReturnType<typeof setTimeout> | null = null
     let canceled = false
 
     if (timeout) {
@@ -81,12 +77,14 @@ Fetch.prototype = Gateway.extends({
           return
         }
 
-        clearTimeout(timer)
+        timer && clearTimeout(timer)
 
-        let responseData
+        let responseData: Promise<ArrayBuffer> | Promise<string> | Promise<Buffer>
         if (this.request.isBinary()) {
-          if (typeof fetchResponse.buffer === 'function') {
-            responseData = fetchResponse.buffer()
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if (typeof (fetchResponse as any).buffer === 'function') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            responseData = (fetchResponse as any).buffer()
           } else {
             responseData = fetchResponse.arrayBuffer()
           }
@@ -103,20 +101,21 @@ Fetch.prototype = Gateway.extends({
           return
         }
 
-        clearTimeout(timer)
+        timer && clearTimeout(timer)
         this.dispatchClientError(error.message, error)
       })
-  },
+  }
 
-  createResponse(fetchResponse, data) {
+  createResponse(fetchResponse: globalThis.Response, data: string | ArrayBuffer | Buffer) {
     const status = fetchResponse.status
-    const responseHeaders = {}
+    const responseHeaders: Record<string, string> = {}
     fetchResponse.headers.forEach((value, key) => {
       responseHeaders[key] = value
     })
 
-    return new Response(this.request, status, data, responseHeaders)
-  },
-})
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new Response(this.request, status, data as any, responseHeaders)
+  }
+}
 
 export default Fetch

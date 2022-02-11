@@ -1,6 +1,13 @@
 import { MethodDescriptor } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
-import type { Headers, NestedParam, NestedParamArray, Primitive, RequestParams } from './types'
+import type {
+  Auth,
+  Headers,
+  NestedParam,
+  NestedParamArray,
+  Primitive,
+  RequestParams,
+} from './types'
 
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
@@ -9,7 +16,7 @@ const REGEXP_TRAILING_SLASH = /\/$/
 /**
  * Removes the object type without removing Record types in the union
  */
-type ExcludeObject<T> = T extends object ? (object extends T ? never : T) : T
+export type ExcludeObject<T> = T extends object ? (object extends T ? never : T) : T
 
 /**
  * @typedef Request
@@ -178,7 +185,7 @@ export class Request {
     const headerAttr = this.methodDescriptor.headersAttr
     const headers = (this.requestParams[headerAttr] || {}) as Headers
     const mergedHeaders = { ...this.methodDescriptor.headers, ...headers } as Headers
-    return lowerCaseObjectKeys(mergedHeaders)
+    return lowerCaseObjectKeys(mergedHeaders) as Headers
   }
 
   /**
@@ -193,11 +200,11 @@ export class Request {
   }
 
   public auth() {
-    return this.requestParams[this.methodDescriptor.authAttr]
+    return this.requestParams[this.methodDescriptor.authAttr] as Auth
   }
 
   public timeout() {
-    return this.requestParams[this.methodDescriptor.timeoutAttr]
+    return this.requestParams[this.methodDescriptor.timeoutAttr] as number
   }
 
   /**

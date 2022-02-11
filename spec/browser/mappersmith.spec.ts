@@ -1,4 +1,6 @@
-import forge, { setContext, configs } from 'src/index'
+import Gateway from '../../src/gateway'
+import { GlobalConfigs } from '../../src/manifest'
+import forge, { setContext, configs } from '../../src/mappersmith'
 
 describe('mappersmith', () => {
   describe('#setContext', () => {
@@ -15,22 +17,24 @@ describe('mappersmith', () => {
   })
 
   describe('#forge', () => {
-    let originalConfig, manifest, gatewayClass, gatewayInstance
+    const manifest = {
+      host: 'http://example.com',
+      resources: {
+        Test: {
+          method: { path: '/test' },
+        },
+      },
+    }
+    let originalConfig: GlobalConfigs['gateway']
+    let gatewayClass: jest.Mock<Gateway, []>
+    let gatewayInstance: Gateway
 
     beforeEach(() => {
       if (!originalConfig) {
         originalConfig = configs.gateway
       }
 
-      manifest = {
-        resources: {
-          Test: {
-            method: { path: '/test' },
-          },
-        },
-      }
-
-      gatewayInstance = { call: jest.fn(() => Promise.resolve('response')) }
+      gatewayInstance = { call: jest.fn(() => Promise.resolve('response')) } as unknown as Gateway
       gatewayClass = jest.fn(() => gatewayInstance)
     })
 
@@ -61,7 +65,7 @@ describe('mappersmith', () => {
 
         const newGatewayInstance = { call: jest.fn(() => Promise.resolve('response')) }
         const newGatewayClass = jest.fn(() => newGatewayInstance)
-        configs.gateway = newGatewayClass
+        configs.gateway = newGatewayClass as unknown as typeof Gateway
 
         await client.Test.method()
         expect(newGatewayClass).toHaveBeenCalled()

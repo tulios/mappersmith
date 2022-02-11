@@ -8,21 +8,21 @@
 /// <reference path="./middleware/retry.d.ts" />
 /// <reference path="./middleware/retry-v2.d.ts" />
 /// <reference path="./middleware/timeout.d.ts" />
-/// <reference path="./gateway/fetch.d.ts" />
 /// <reference path="./test.d.ts" />
 
 declare module 'mappersmith' {
   export type Request = import('./generated/src/request').Request
   export type Headers = import('./generated/src/types').Headers
   export type Parameters = import('./generated/src/types').Params
-  export type Gateway = import('./generated/src/gateway/types').Gateway
-  type NetworkGateway = import('./generated/src/gateway/types').NetworkGateway
-  export type XhrGateway = import('./generated/src/gateway/types').XhrGateway
+  export class Gateway extends (await import('./generated/src/gateway')).Gateway {}
+  export class XhrGateway extends (await import('./generated/src/gateway/xhr')).XHR {}
+  export class HTTPGateway extends (await import('./generated/src/gateway/http')).HTTP {}
+  export class FetchGateway extends (await import('./generated/src/gateway/fetch')).Fetch {}
+  export class MockGateway extends (await import('./generated/src/gateway/mock')).Mock {}
   export type HTTPRequestParams = import('./generated/src/gateway/types').HTTPRequestParams
   export type HTTPGatewayConfiguration =
     import('./generated/src/gateway/types').HTTPGatewayConfiguration
   export type GatewayConfiguration = import('./generated/src/gateway/types').GatewayConfiguration
-  type ParameterEncoderFn = import('./generated/src/types').ParameterEncoderFn
   export type ParsedJSON = import('./generated/src/response').ParsedJSON
   export class Response<DataType extends ParsedJSON = ParsedJSON> extends (
     await import('./generated/src/response')
@@ -54,19 +54,6 @@ declare module 'mappersmith' {
   export type AsyncFunctions<HashType> =
     import('./generated/src/client-builder').AsyncFunctions<HashType>
   export type Client<Resources> = import('./generated/src/client-builder').Client<Resources>
-
-  export type FetchGateway = Gateway
-
-  export interface HTTPGateway extends Gateway, NetworkGateway {
-    createResponse(response: Response, rawData: string): Response
-    onError(error: Error): void
-    onResponse(response: Response, options: object, params: object): void
-    performRequest(method: string): void
-  }
-
-  export interface MockGateway extends Gateway, NetworkGateway {
-    callMock(): Promise<Response>
-  }
 
   export const configs: GlobalConfigs
 

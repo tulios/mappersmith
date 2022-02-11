@@ -1,43 +1,46 @@
-import url from 'url'
-import http from 'http'
-import https from 'https'
+import * as url from 'url'
+import * as http from 'http'
+import * as https from 'https'
 
 import { assign } from '../utils'
-import Gateway from '../gateway'
+import { Gateway, Method } from '../gateway'
+import type { HTTPGatewayConfiguration, HTTPRequestParams } from './types'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
+import { Primitive } from '../types'
 
-function HTTP() {
-  Gateway.apply(this, arguments)
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Chunk = any
 
-HTTP.prototype = Gateway.extends({
+export class HTTP extends Gateway {
+  private canceled = false
+
   get() {
     this.performRequest('get')
-  },
+  }
 
   head() {
     this.performRequest('head')
-  },
+  }
 
   post() {
     this.performRequest('post')
-  },
+  }
 
   put() {
     this.performRequest('put')
-  },
+  }
 
   patch() {
     this.performRequest('patch')
-  },
+  }
 
   delete() {
     this.performRequest('delete')
-  },
+  }
 
-  performRequest(method) {
-    const headers = {}
+  performRequest(method: Method) {
+    const headers: Record<string, Primitive> = {}
     // FIXME: Deprecated API
     // eslint-disable-next-line n/no-deprecated-api
     const defaults = url.parse(this.request.url())
@@ -47,13 +50,18 @@ HTTP.prototype = Gateway.extends({
 
     this.canceled = false
 
-    if (body && typeof body.length === 'number') {
+    if (
+      body &&
+      typeof body !== 'boolean' &&
+      typeof body !== 'number' &&
+      typeof body.length === 'number'
+    ) {
       headers['content-length'] = Buffer.byteLength(body)
     }
 
     const handler = defaults.protocol === 'https:' ? https : http
 
-    const requestParams = assign(defaults, {
+    const requestParams: HTTPRequestParams = assign(defaults, {
       method: requestMethod,
       headers: assign(headers, this.request.headers()),
     })
@@ -122,10 +130,14 @@ HTTP.prototype = Gateway.extends({
     }
 
     httpRequest.end()
-  },
+  }
 
-  onResponse(httpResponse, httpOptions, requestParams) {
-    const rawData = []
+  onResponse(
+    httpResponse: http.IncomingMessage,
+    httpOptions: Partial<HTTPGatewayConfiguration>,
+    requestParams: HTTPRequestParams
+  ) {
+    const rawData: Chunk[] = []
 
     if (!this.request.isBinary()) {
       httpResponse.setEncoding('utf8')
@@ -152,24 +164,27 @@ HTTP.prototype = Gateway.extends({
         httpOptions.onResponseEnd(requestParams)
       }
     })
-  },
+  }
 
-  onError(e) {
+  onError(e: Error) {
     if (this.canceled) {
       return
     }
 
     this.dispatchClientError(e.message, e)
-  },
+  }
 
-  createResponse(httpResponse, rawData) {
+  createResponse(httpResponse: http.IncomingMessage, rawData: Chunk) {
+    const responseData = this.request.isBinary() ? Buffer.concat(rawData) : rawData.join('')
+
     return new Response(
       this.request,
-      httpResponse.statusCode,
-      this.request.isBinary() ? Buffer.concat(rawData) : rawData.join(''),
-      httpResponse.headers
+      httpResponse.statusCode as number,
+      responseData,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      httpResponse.headers as any
     )
-  },
-})
+  }
+}
 
 export default HTTP

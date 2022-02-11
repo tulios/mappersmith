@@ -1,13 +1,14 @@
 import { MethodDescriptor, MethodDescriptorParams } from './method-descriptor';
 import type { ParameterEncoderFn } from './types';
-import type { Gateway, GatewayConfiguration } from './gateway/types';
+import type { GatewayConfiguration } from './gateway/types';
+import type { Gateway } from './gateway';
 import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware';
 export interface GlobalConfigs {
     context: Context;
     middleware: Middleware[];
     Promise: PromiseConstructor | null;
     fetch: typeof fetch | null;
-    gateway: Gateway | null;
+    gateway: typeof Gateway | null;
     gatewayConfigs: GatewayConfiguration;
     maxMiddlewareStackExecutionAllowed: number;
 }

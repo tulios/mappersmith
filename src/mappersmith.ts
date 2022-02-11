@@ -1,14 +1,17 @@
-/* global VERSION */
-import ClientBuilder from './client-builder'
+import ClientBuilder, { Client } from './client-builder'
 import { assign } from './utils'
+import * as Package from '../package.json'
+import { GlobalConfigs, ManifestOptions, ResourceTypeConstraint } from './manifest'
+import { Context } from './middleware'
+
 /**
  * Can be used to test for `instanceof Response`
  */
 export { Response } from './response'
 
-export const version = VERSION
+export const version = Package.version
 
-export const configs = {
+export const configs: GlobalConfigs = {
   context: {},
   middleware: [],
   Promise: typeof Promise === 'function' ? Promise : null,
@@ -115,17 +118,16 @@ export const configs = {
  * @deprecated Shouldn't be used, not safe for concurrent use.
  * @param {Object} context
  */
-export const setContext = (context) => {
+export const setContext = (context: Context) => {
   console.warn(
     'The use of setContext is deprecated - you need to find another way to pass data between your middlewares.'
   )
   configs.context = assign(configs.context, context)
 }
 
-/**
- * @param {Object} manifest
- */
-export default function forge(manifest) {
+export default function forge<Resources extends ResourceTypeConstraint>(
+  manifest: ManifestOptions<Resources>
+): Client<Resources> {
   const GatewayClassFactory = () => configs.gateway
   return new ClientBuilder(manifest, GatewayClassFactory, configs).build()
 }
