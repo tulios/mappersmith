@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "rootDir": "src",
+    "noEmit": false,
+    "incremental": false,
+    "outDir": "./lib",
+    "declaration": true,
+    "emitDeclarationOnly": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/**/*.spec.*"]
+}

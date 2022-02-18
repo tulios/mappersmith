@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import GlobalErrorHandler, { setErrorHandler } from 'mappersmith/middleware/global-error-handler'
+import forge from '../../../src/mappersmith'
+import GlobalErrorHandler, { setErrorHandler } from '../../../src/middleware/global-error-handler'
 
 setErrorHandler((response) => {
   console.log('global error handler')

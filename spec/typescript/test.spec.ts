@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import { install, uninstall, clear, mockClient, mockRequest, m } from 'mappersmith/test'
+import forge from '../../src/mappersmith'
+import { install, uninstall, clear, mockClient, mockRequest, m } from '../../src/test'
 
 install()
 uninstall()

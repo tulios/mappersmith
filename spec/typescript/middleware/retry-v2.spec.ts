@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import Retry, { RetryMiddlewareOptions } from 'mappersmith/middleware/retry/v2'
+import forge from '../../../src/mappersmith'
+import Retry, { RetryMiddlewareOptions } from '../../../src/middleware/retry/v2'
 
 const retryConfigs: RetryMiddlewareOptions = {
   headerRetryCount: 'X-Mappersmith-Retry-Count',

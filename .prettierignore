@@ -3,4 +3,4 @@ README.md
 lib
 dist
 coverage
-typings/generated
+src/version.json

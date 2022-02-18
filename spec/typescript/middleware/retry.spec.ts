@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import Retry from 'mappersmith/middleware/retry'
+import forge from '../../../src/mappersmith'
+import Retry from '../../../src/middleware/retry/v1'
 
 forge({
   middleware: [Retry],

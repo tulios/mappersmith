@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import Log from 'mappersmith/middleware/log'
+import forge from '../../../src/mappersmith'
+import Log from '../../../src/middleware/log'
 
 forge({
   middleware: [Log],

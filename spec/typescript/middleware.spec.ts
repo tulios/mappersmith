@@ -1,5 +1,6 @@
-import forge, { Middleware, MiddlewareParams } from 'mappersmith'
-import { responseFactory } from 'mappersmith/test'
+import forge from '../../src/mappersmith'
+import { Middleware, MiddlewareParams } from '../../src/middleware'
+import { responseFactory } from '../../src/test'
 
 const MyMiddleware: Middleware = () => ({
   prepareRequest(next) {

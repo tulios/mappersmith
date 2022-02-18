@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import TimeoutMiddleware from 'mappersmith/middleware/timeout'
+import forge from '../../../src/mappersmith'
+import TimeoutMiddleware from '../../../src/middleware/timeout'
 
 const Timeout = TimeoutMiddleware(500)
 
