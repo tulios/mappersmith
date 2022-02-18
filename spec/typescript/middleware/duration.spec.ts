@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import Duration from 'mappersmith/middleware/duration'
+import forge from '../../../src/mappersmith'
+import Duration from '../../../src/middleware/duration'
 
 forge({
   middleware: [Duration],

@@ -1,4 +1,4 @@
-import forge from 'mappersmith'
+import forge from '../../src/mappersmith'
 
 const github = forge({
   clientId: 'github',

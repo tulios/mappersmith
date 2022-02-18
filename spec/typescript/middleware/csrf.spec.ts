@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import CSRF from 'mappersmith/middleware/csrf'
+import forge from '../../../src/mappersmith'
+import CSRF from '../../../src/middleware/csrf'
 
 forge({
   middleware: [CSRF('csrfToken', 'x-csrf-token')],

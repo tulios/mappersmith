@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import BasicAuthMiddleware from 'mappersmith/middleware/basic-auth'
+import forge from '../../../src/mappersmith'
+import BasicAuthMiddleware from '../../../src/middleware/basic-auth'
 
 const BasicAuth = BasicAuthMiddleware({ username: 'bob', password: 'bob' })
 

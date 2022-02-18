@@ -6,6 +6,6 @@ export declare class Mock extends Gateway {
     put(): void;
     patch(): void;
     delete(): void;
-    callMock(): any;
+    callMock(): Promise<void>;
 }
 export default Mock;

@@ -1,4 +1,4 @@
-import forge, { Response } from 'mappersmith'
+import forge, { Response } from '../../src/mappersmith'
 
 type User = {
   name: string

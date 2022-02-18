@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "noEmit": true,
     "incremental": true,
     "strict": true,
@@ -11,6 +12,6 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true
   },
-  "include": ["typings/**/*", "spec/**/*", "src/**/*"],
+  "include": ["spec/**/*", "src/**/*"],
   "exclude": ["node_modules"]
 }

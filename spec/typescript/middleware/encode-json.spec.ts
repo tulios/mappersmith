@@ -1,5 +1,5 @@
-import forge from 'mappersmith'
-import EncodeJson from 'mappersmith/middleware/encode-json'
+import forge from '../../../src/mappersmith'
+import EncodeJson from '../../../src/middleware/encode-json'
 
 forge({
   middleware: [EncodeJson],

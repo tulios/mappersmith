@@ -24,10 +24,12 @@
     "test": "yarn test:types && yarn prettier --check . && yarn lint && yarn test:unit",
     "build:node": "rm -rf lib/* && yarn babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js'",
     "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
-    "build:types": "rm -rf typings/generated && yarn tsc --project tsconfig.build.json",
-    "build": "yarn build:types && yarn build:node && yarn build:browser",
+    "build:typings": "rm -rf typings && yarn tsc --project tsconfig.typings.json && yarn copy:dts",
+    "build": "yarn copy:version:src && yarn build:typings && yarn build:node && yarn build:browser",
     "release": "./scripts/release.sh",
     "build:project": "./scripts/build-project.sh",
+    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" typings",
+    "copy:version:src": "echo {\\\"version\\\":\\\"${npm_package_version}\\\"} > src/version.json",
     "lint": "yarn eslint \"{src,spec,typings}/**/*.[j|t]s\""
   },
   "repository": {
@@ -80,6 +82,7 @@
     "browser-resolve": "^2.0.0",
     "concurrently": "^7.0.0",
     "cookie-parser": "^1.4.5",
+    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
