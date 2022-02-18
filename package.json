@@ -9,7 +9,7 @@
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
   "main": "index.js",
-  "types": "typings/index.d.ts",
+  "types": "index.d.ts",
   "scripts": {
     "integration-server": "node spec/integration/server.js",
     "test:browser": "yarn jest --config jestSetup/configs/config.web.json",
@@ -22,15 +22,16 @@
     "test:types:watch": "yarn test:types --watch",
     "test:unit": "concurrently --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn integration-server\"",
     "test": "yarn test:types && yarn prettier --check . && yarn lint && yarn test:unit",
-    "build:node": "rm -rf lib/* && yarn babel src -d lib --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js'",
-    "build:browser": "rm -rf dist/* && yarn webpack --config webpack.conf.js",
-    "build:typings": "rm -rf typings && yarn tsc --project tsconfig.typings.json && yarn copy:dts",
-    "build": "yarn copy:version:src && yarn build:typings && yarn build:node && yarn build:browser",
+    "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
+    "build:browser": "yarn webpack --config webpack.conf.js",
+    "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
+    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser",
+    "build:clean": "rm -rf lib/ dist/ && yarn build",
     "release": "./scripts/release.sh",
     "build:project": "./scripts/build-project.sh",
-    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" typings",
+    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",
     "copy:version:src": "echo {\\\"version\\\":\\\"${npm_package_version}\\\"} > src/version.json",
-    "lint": "yarn eslint \"{src,spec,typings}/**/*.[j|t]s\""
+    "lint": "yarn eslint \"{src,spec}/**/*.[j|t]s\""
   },
   "repository": {
     "type": "git",
