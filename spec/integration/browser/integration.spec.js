@@ -1,4 +1,5 @@
-import '@babel/polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import 'whatwg-fetch'
 import md5 from 'js-md5'
 
