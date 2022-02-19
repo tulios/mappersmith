@@ -1,4 +1,5 @@
-import '@babel/polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import md5 from 'js-md5'
 import integrationTestsForGateway from 'spec/integration/shared-examples'
 
