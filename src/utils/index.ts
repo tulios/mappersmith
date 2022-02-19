@@ -1,4 +1,4 @@
-import type { Primitive, NestedParam, Hash, NestedParamArray } from './types'
+import type { Primitive, NestedParam, Hash, NestedParamArray } from '../types'
 
 let _process: NodeJS.Process,
   getNanoSeconds: (() => number) | undefined,
@@ -141,7 +141,7 @@ export const assign =
   }
 
 const toString = Object.prototype.toString
-export const isPlainObject = (value: unknown): value is object => {
+export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return (
     toString.call(value) === '[object Object]' &&
     Object.getPrototypeOf(value) === Object.getPrototypeOf({})

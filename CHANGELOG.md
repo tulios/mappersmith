@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+Added:
+  - `mappersmith/test`: `mockClient` responses are now clones of the fixture instead of references to them #158
+
 ## 2.37.1
 
 Fixed:
