@@ -4,7 +4,7 @@ import {
   lowerCaseObjectKeys,
   isPlainObject,
   btoa,
-} from './utils'
+} from './index'
 
 describe('utils', () => {
   describe('#toQueryString', () => {

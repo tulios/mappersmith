@@ -211,6 +211,17 @@ describe('Test lib / mock resources', () => {
       })
   })
 
+  it('returns a clone of the mocked response', async () => {
+    const response = ['foo', 'bar']
+    mockClient(client).resource('User').method('all').response(response)
+
+    const userOnFirstCall = await client.User.all().then((response) => response.data().shift())
+    const userOnSecondCall = await client.User.all().then((response) => response.data().shift())
+
+    expect(userOnSecondCall).toEqual(userOnFirstCall)
+    expect(response).toEqual(['foo', 'bar'])
+  })
+
   it('accepts a matcher function as a body', (done) => {
     mockClient(client)
       .resource('Blog')

@@ -1,6 +1,7 @@
 import MockAssert from './mock-assert'
 import Response from '../response'
 import { isPlainObject } from '../utils'
+import { clone } from '../utils/clone'
 import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
 
 /**
@@ -67,7 +68,9 @@ MockRequest.prototype = {
 
     this.calls.push(request)
 
-    return new Response(request, status, this.responseData, this.responseHeaders)
+    const responseData = clone(this.responseData)
+    const responseHeaders = clone(this.responseHeaders)
+    return new Response(request, status, responseData, responseHeaders)
   },
 
   /**
