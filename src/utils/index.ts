@@ -148,6 +148,10 @@ export const isPlainObject = (value: unknown): value is Record<string, unknown> 
   )
 }
 
+export const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 /**
  * borrowed from: {@link https://github.com/davidchambers/Base64.js}
  */

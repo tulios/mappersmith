@@ -58,6 +58,22 @@ describe('utils', () => {
       })
     })
 
+    describe('for class instance object', () => {
+      it('returns a clone of the original entry', () => {
+        class Character {
+          public name: string
+          constructor({ name }: { name: string }) {
+            this.name = name
+          }
+        }
+        const original = new Character({ name: 'Piglet' })
+        const copy = clone(original)
+        copy.name = 'Tiggr'
+        expect(original).toEqual(new Character({ name: 'Piglet' }))
+        expect(copy).toEqual(new Character({ name: 'Tiggr' }))
+      })
+    })
+
     describe('for array with mixed entries', () => {
       it('returns a clone of the original entry', () => {
         const original = [{ a: 1, b: [{ c: 1 }, { c: 2 }, { c: 3 }], c: { d: 1 } }]
