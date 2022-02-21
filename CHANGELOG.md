@@ -4,6 +4,8 @@
 
 Added:
   - `mappersmith/test`: `mockClient` responses are now clones of the fixture instead of references to them #158
+  - `mappersmith/*`: Move typings into src folder next to each file it describes #291
+  - `mappersmith`: Convert Gateway to typescript #287
 
 ## 2.37.1
 
