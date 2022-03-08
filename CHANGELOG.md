@@ -1,11 +1,12 @@
 # Changelog
 
-## Unreleased
+## 2.38.0
 
 Added:
   - `mappersmith/test`: `mockClient` responses are now clones of the fixture instead of references to them #158
   - `mappersmith/*`: Move typings into src folder next to each file it describes #291
   - `mappersmith`: Convert Gateway to typescript #287
+  - `mappersmith`: Add the possibility to update the default encoding function for query params #296
 
 ## 2.37.1
 
@@ -19,7 +20,6 @@ Fixed:
 
 Added:
   - `mappersmith`: Make Response accept a generic type that specifies the form of the data returned #265
-  - `mappersmith`: Add the possibility to update the default encoding function for query params #296
   - `mappersmith/test`: Add `responseFactory` and `requestFactory` helpers to `mappersmith/test` #265
   - `mappersmith/test`: If `body` is not provided to a mock, it will match on any body. #229 #152
 
