@@ -30,6 +30,24 @@ describe('utils', () => {
         expect(toQueryString(params)).toEqual('a=some+big+string')
       })
 
+      it('encodes with the default function if no fn parameter is passed', () => {
+        expect(toQueryString({ a: 'mock:code:123-456' })).toEqual('a=mock%3Acode%3A123-456')
+      })
+
+      it('encodes string properties with a custom function if passed', () => {
+        expect(
+          toQueryString({ a: 'mock:code:123-456' }, (arg) => encodeURI(arg.toString()))
+        ).toEqual('a=mock:code:123-456')
+      })
+
+      it('encodes array properties with a custom function if passed', () => {
+        expect(
+          toQueryString({ a: ['mock:code:123-456', 'mock:code:789-012'] }, (arg) =>
+            encodeURI(arg.toString().replace(/(\[|\])/g, ''))
+          )
+        ).toEqual('a=mock:code:123-456&a=mock:code:789-012')
+      })
+
       describe('in blank', () => {
         it('returns an empty string', () => {
           expect(toQueryString({})).toEqual('')

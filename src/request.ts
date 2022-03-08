@@ -142,7 +142,7 @@ export class Request {
       return aliased
     }, {} as Record<string, Primitive | NestedParam | NestedParamArray>)
 
-    const queryString = toQueryString(aliasedParams)
+    const queryString = toQueryString(aliasedParams, this.methodDescriptor.parameterEncoder)
     if (typeof queryString === 'string' && queryString.length !== 0) {
       const hasQuery = path.includes('?')
       path += `${hasQuery ? '&' : '?'}${queryString}`

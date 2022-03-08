@@ -34,21 +34,22 @@ export const validKeys = (entry: Record<string, unknown>) =>
 export const buildRecursive = (
   key: string,
   value: Primitive | NestedParam | NestedParamArray,
-  suffix = ''
+  suffix = '',
+  encoderFn = encodeURIComponent
 ): string => {
   if (Array.isArray(value)) {
-    return value.map((v) => buildRecursive(key, v, suffix + '[]')).join('&')
+    return value.map((v) => buildRecursive(key, v, suffix + '[]', encoderFn)).join('&')
   }
 
   if (typeof value !== 'object') {
-    return `${encodeURIComponent(key + suffix)}=${encodeURIComponent(value)}`
+    return `${encoderFn(key + suffix)}=${encoderFn(value)}`
   }
 
   return Object.keys(value)
     .map((nestedKey) => {
       const nestedValue = value[nestedKey]
       if (isNeitherNullNorUndefined(nestedValue)) {
-        return buildRecursive(key, nestedValue, suffix + '[' + nestedKey + ']')
+        return buildRecursive(key, nestedValue, suffix + '[' + nestedKey + ']', encoderFn)
       }
       return null
     })
@@ -56,7 +57,10 @@ export const buildRecursive = (
     .join('&')
 }
 
-export const toQueryString = (entry: undefined | null | Primitive | NestedParam) => {
+export const toQueryString = (
+  entry: undefined | null | Primitive | NestedParam,
+  encoderFn = encodeURIComponent
+) => {
   if (!isPlainObject(entry)) {
     return entry
   }
@@ -65,7 +69,7 @@ export const toQueryString = (entry: undefined | null | Primitive | NestedParam)
     .map((key) => {
       const value = entry[key]
       if (isNeitherNullNorUndefined(value)) {
-        return buildRecursive(key, value)
+        return buildRecursive(key, value, '', encoderFn)
       }
       return null
     })

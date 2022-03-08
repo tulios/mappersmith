@@ -218,6 +218,17 @@ describe('Request', () => {
       expect(path).toEqual('/api/example.json?email=email%2Btest%40example.com')
     })
 
+    it('encodes query string params with custom encoding function if passed', () => {
+      const methodDescriptor = new MethodDescriptor({
+        ...methodDescriptorArgs,
+        params: { code: 'my:code-123' },
+        parameterEncoder: (arg) => encodeURI(arg.toString()),
+        path: 'api/example.json',
+      })
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json?code=my:code-123')
+    })
+
     it('appends the query string with a leading & if the path has a hard-coded query string', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
@@ -260,6 +271,17 @@ describe('Request', () => {
       expect(path).toEqual(
         '/api/example.json?userTransactionsIds%5B%5D=2&userTransactionsIds%5B%5D=3'
       )
+    })
+
+    it('encodes arrays with custom encoding function if passed', () => {
+      const methodDescriptor = new MethodDescriptor({
+        ...methodDescriptorArgs,
+        params: { userTransactionsIds: [2, 3] },
+        parameterEncoder: (arg) => arg.toString().replace(/(\[|\])/g, ''),
+        path: '/api/example.json',
+      })
+      const path = new Request(methodDescriptor).path()
+      expect(path).toEqual('/api/example.json?userTransactionsIds=2&userTransactionsIds=3')
     })
 
     it('encodes objects in the param[key]=value format', () => {
