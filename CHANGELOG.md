@@ -1,5 +1,10 @@
 # Changelog
 
+## UNRELEASED
+
+Fixed:
+  - `mappersmith`: Preserve `rawData` as empty string instead of converting it to null #297
+
 ## 2.38.0
 
 Added:

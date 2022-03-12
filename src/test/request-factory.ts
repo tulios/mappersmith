@@ -2,7 +2,7 @@ import { Request } from '../request'
 import { RequestParams } from '../types'
 import { MethodDescriptor } from '../method-descriptor'
 
-interface RequestFactoryArgs extends RequestParams {
+export interface RequestFactoryArgs extends RequestParams {
   method?: string
   path?: string
 }

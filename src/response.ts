@@ -32,7 +32,7 @@ export class Response<DataType extends ParsedJSON = ParsedJSON> {
   constructor(
     originalRequest: Request,
     responseStatus: number,
-    responseData?: string,
+    responseData?: string | null,
     responseHeaders?: Headers,
     errors?: Array<Error | string>
   ) {
@@ -45,7 +45,7 @@ export class Response<DataType extends ParsedJSON = ParsedJSON> {
     }
 
     this.responseStatus = responseStatus
-    this.responseData = responseData !== undefined ? responseData : null
+    this.responseData = responseData ?? null
     this.responseHeaders = responseHeaders || {}
     this.errors = errors || []
     this.timeElapsed = null
@@ -153,7 +153,7 @@ export class Response<DataType extends ParsedJSON = ParsedJSON> {
     const enhancedResponse = new Response<DataType>(
       this.request(),
       extras.status || this.status(),
-      extras.rawData || this.rawData() || undefined,
+      extras.rawData || this.rawData(),
       mergedHeaders,
       extras.error ? [...this.errors, extras.error] : [...this.errors]
     )
