@@ -152,6 +152,53 @@ describe('Test lib / mock request', () => {
       })
   })
 
+  it('works with buffer request body', (done) => {
+    const buffer = Buffer.from('xxx')
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      body: buffer,
+      response: {
+        body: 'just text!',
+      },
+    })
+
+    client.Blog.post({ body: buffer })
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('works with buffer response body', (done) => {
+    const buffer = Buffer.from('xxx')
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      response: {
+        body: buffer,
+      },
+    })
+
+    client.Blog.post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual(buffer)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done.fail(`test failed with promise error: ${error}`)
+      })
+  })
+
   it('accepts a matcher function as a body', (done) => {
     mockRequest({
       method: 'post',
