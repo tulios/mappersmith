@@ -1,7 +1,7 @@
-import { isObject } from './index'
+import { isPlainObject, isObject } from './index'
 
 export const clone = <T>(obj: T): T => {
-  if (isObject(obj)) {
+  if (isPlainObject(obj)) {
     return cloneObject(obj)
   } else if (Array.isArray(obj)) {
     return cloneArray(obj)
