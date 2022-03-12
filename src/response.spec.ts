@@ -243,5 +243,12 @@ describe('Response', () => {
 
       expect(enhancedResponse.timeElapsed).toEqual(123)
     })
+
+    it('preserves empty strings in rawData', () => {
+      const response = new Response(request, responseStatus, '', responseHeaders, errors)
+      const enhancedResponse = response.enhance({})
+
+      expect(enhancedResponse.rawData()).toEqual('')
+    })
   })
 })

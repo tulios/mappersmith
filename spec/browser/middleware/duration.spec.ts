@@ -46,7 +46,7 @@ describe('Middleware / DurationMiddleware', () => {
     expect(finalResponse?.header('x-duration')).toEqual((endedAt as number) - (startedAt as number))
   })
 
-  fit('reproduce', async () => {
+  it('returns the response data intact for empty string', async () => {
     const request = requestFactory({ host: 'example.com', path: '/', method: 'get' })
     const finalRequest = await middleware.prepareRequest?.(
       () => Promise.resolve(request),
