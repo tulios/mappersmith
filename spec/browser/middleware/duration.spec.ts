@@ -10,9 +10,6 @@ describe('Middleware / DurationMiddleware', () => {
     resourceMethod: 'bar',
     resourceName: 'Foo',
   }
-  // const newResponse = (request, responseStatus = 200, responseData = {}, responseHeaders = {}) => {
-  //   return new Response(request, responseStatus, responseData, responseHeaders)
-  // }
 
   beforeEach(() => {
     middleware = DurationMiddleware(params)
