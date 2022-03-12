@@ -1,11 +1,13 @@
 import { Response } from '../response'
+import { Request } from '../request'
 import { requestFactory } from './request-factory'
 import type { Headers } from '../types'
 
-interface ResponseFactoryArgs {
+export interface ResponseFactoryArgs {
   method?: string
   host?: string
   path?: string
+  request?: Request
   status?: number
   data?: string | Record<string, unknown>
   headers?: Headers
@@ -20,13 +22,12 @@ export const responseFactory = ({
   method = 'GET',
   host = 'http://example.org',
   path = '/path',
+  request = requestFactory({ method, host, path }),
   status = 200,
   data = {},
   headers = {},
   errors = [],
 }: ResponseFactoryArgs = {}) => {
-  const request = requestFactory({ method, host, path })
-
   let responseData
   let contentType
   if (typeof data === 'string') {

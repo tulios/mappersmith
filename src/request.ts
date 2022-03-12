@@ -191,8 +191,14 @@ export class Request {
   /**
    * Utility method to get a header value by name
    */
-  public header(name: string) {
-    return this.headers()[name.toLowerCase()]
+  public header<T extends string | number | boolean>(name: string): T | undefined {
+    const key = name.toLowerCase()
+
+    if (key in this.headers()) {
+      return this.headers()[key] as T
+    }
+
+    return undefined
   }
 
   public body() {

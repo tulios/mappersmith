@@ -1,7 +1,8 @@
 import { Client } from '../client-builder'
 import { Request } from '../request'
 import { Headers, Params } from '../types'
-import { Response, ParsedJSON } from '../response'
+export { requestFactory, RequestFactoryArgs } from './request-factory'
+export { responseFactory, ResponseFactoryArgs } from './response-factory'
 
 export interface MockAssert {
   calls(): Request[]
@@ -64,37 +65,5 @@ export interface MockRequestArgs {
 }
 
 export function mockRequest(args: MockRequestArgs): MockAssert
-
-export interface ResponseFactoryArgs<T> {
-  method?: string
-  host?: string
-  path?: string
-  status?: number
-  data?: T | string
-  headers?: Record<string, string | number | boolean>
-  errors?: Array<Error | string>
-}
-export function responseFactory<T extends ParsedJSON>(args?: ResponseFactoryArgs<T>): Response<T>
-
-type Primitive = string | number | boolean
-
-interface Auth {
-  readonly [key: string]: Primitive
-}
-
-export interface RequestFactoryArgs {
-  // MethodDescriptorParams
-  method?: string
-  host?: string
-  path?: string
-  // RequestParams
-  auth?: Auth
-  body?: object | string
-  headers?: Headers
-  params?: Params
-  timeout?: number
-  [param: string]: object | Primitive | undefined | null
-}
-export function requestFactory(args?: RequestFactoryArgs): Request
 
 export const m: TestMatchFunctions
