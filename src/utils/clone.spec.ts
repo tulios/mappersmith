@@ -59,7 +59,7 @@ describe('utils', () => {
     })
 
     describe('for class instance object', () => {
-      it('returns a clone of the original entry', () => {
+      it('does not return a clone of the original entry', () => {
         class Character {
           public name: string
           constructor({ name }: { name: string }) {
@@ -69,8 +69,16 @@ describe('utils', () => {
         const original = new Character({ name: 'Piglet' })
         const copy = clone(original)
         copy.name = 'Tiggr'
-        expect(original).toEqual(new Character({ name: 'Piglet' }))
-        expect(copy).toEqual(new Character({ name: 'Tiggr' }))
+        expect(original).toEqual(new Character({ name: 'Tiggr' }))
+      })
+    })
+
+    describe('for Buffer instance object (and similar)', () => {
+      it('does not return a clone of the original entry', () => {
+        const original = Buffer.from('piglet')
+        const copy = clone(original)
+        copy.fill('x')
+        expect(original).toEqual(Buffer.from('xxxxxx'))
       })
     })
 
