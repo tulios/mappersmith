@@ -5,6 +5,7 @@
 Fixed:
   - `mappersmith`: Preserve `rawData` as empty string instead of converting it to null #297
   - `mappersmith/test`: Allow `Buffer` (and similar) as valid response data for `mockRequest` #299
+  - `mappersmith`: Ensure references to `regeneratorRuntime` is not part of compiled bundle #303
 
 ## 2.38.0
 
