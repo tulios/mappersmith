@@ -8,6 +8,8 @@ export interface Headers {
   readonly [key: string]: Primitive
 }
 
+export type Body = Record<string, unknown> | string
+
 export interface Auth {
   username?: string
   password?: string
@@ -30,7 +32,7 @@ export interface NestedParamArray extends Array<Primitive | NestedParam | Nested
 
 export interface RequestParams {
   readonly auth?: Auth
-  readonly body?: object | string
+  readonly body?: Body
   readonly headers?: Headers
   readonly host?: string
   readonly params?: Params

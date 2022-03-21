@@ -1,7 +1,9 @@
+import { Middleware } from './index'
+
 /**
  * Sets a request header with the value of a cookie from document.cookie, if it exists
  */
-export default (cookieName = 'csrfToken', headerName = 'x-csrf-token') =>
+export default (cookieName = 'csrfToken', headerName = 'x-csrf-token'): Middleware =>
   function CsrfMiddleware() {
     const REGEXP_COOKIE_NAME = new RegExp(cookieName + '[^;]+')
     const getCookie = () => {
@@ -12,20 +14,17 @@ export default (cookieName = 'csrfToken', headerName = 'x-csrf-token') =>
     }
 
     return {
-      prepareRequest(next) {
-        return next().then((request) => {
-          if (typeof document === 'undefined') {
-            return request
-          }
-
-          const csrf = getCookie()
-
-          return !csrf
-            ? request
-            : request.enhance({
-                headers: { [headerName]: csrf },
-              })
-        })
+      async prepareRequest(next) {
+        const request = await next()
+        if (typeof document === 'undefined') {
+          return request
+        }
+        const csrf = getCookie()
+        return !csrf
+          ? request
+          : request.enhance({
+              headers: { [headerName]: csrf },
+            })
       },
     }
   }

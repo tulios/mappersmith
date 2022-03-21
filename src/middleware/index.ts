@@ -1,11 +1,6 @@
 import { Request } from '../request'
 import { Response } from '../response'
 
-export interface Authorization {
-  readonly password: string
-  readonly username: string
-}
-
 export type Context = object
 
 export type RequestGetter = () => Promise<Request>
@@ -38,4 +33,6 @@ export interface MiddlewareParams {
   readonly mockRequest?: boolean
 }
 
-export type Middleware = (params: MiddlewareParams) => Partial<MiddlewareDescriptor>
+export type Middleware<T extends Record<string, unknown> = Record<string, unknown>> = (
+  params: MiddlewareParams
+) => Partial<MiddlewareDescriptor> & Partial<T>

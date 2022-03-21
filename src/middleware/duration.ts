@@ -1,4 +1,4 @@
-import { Middleware } from '../middleware'
+import { Middleware } from './index'
 
 /**
  * Adds started_at, ended_at and duration headers to the response
