@@ -1,6 +1,6 @@
-import TimeoutMiddleware from '../../../src/middleware/timeout'
-import { requestFactory } from '../../../src/test'
-import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from '../../../src/middleware'
+import TimeoutMiddleware from './timeout'
+import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
+import { requestFactory } from '../test'
 
 const abort: AbortFn = () => ({})
 

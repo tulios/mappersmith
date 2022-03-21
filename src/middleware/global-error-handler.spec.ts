@@ -1,8 +1,6 @@
-import GlobalErrorHandlerMiddleware, {
-  setErrorHandler,
-} from '../../../src/middleware/global-error-handler'
-import { responseFactory } from '../../../src/test'
-import type { MiddlewareDescriptor, MiddlewareParams } from '../../../src/middleware'
+import GlobalErrorHandlerMiddleware, { setErrorHandler } from './global-error-handler'
+import type { MiddlewareDescriptor, MiddlewareParams } from './index'
+import { responseFactory } from '../test'
 
 describe('Middleware / GlobalErrorHandlerMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>

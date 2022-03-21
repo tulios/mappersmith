@@ -1,7 +1,7 @@
-import EncodeJsonMiddleware, { CONTENT_TYPE_JSON } from '../../../src/middleware/encode-json'
-import { requestFactory } from '../../../src/test'
-import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from '../../../src/middleware'
-import { Headers } from 'types'
+import EncodeJsonMiddleware, { CONTENT_TYPE_JSON } from './encode-json'
+import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
+import type { Headers } from '../types'
+import { requestFactory } from '../test'
 
 const abort: AbortFn = () => ({})
 

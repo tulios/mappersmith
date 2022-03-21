@@ -1,6 +1,6 @@
-import DurationMiddleware from '../../../src/middleware/duration'
-import { requestFactory, responseFactory } from '../../../src/test'
-import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from '../../../src/middleware'
+import DurationMiddleware from './duration'
+import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
+import { requestFactory, responseFactory } from '../test'
 
 const abort: AbortFn = () => ({})
 

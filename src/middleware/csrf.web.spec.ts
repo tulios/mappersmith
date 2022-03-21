@@ -1,6 +1,6 @@
-import CsrfMiddleware from '../../../src/middleware/csrf'
-import { requestFactory } from '../../../src/test'
-import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from '../../../src/middleware'
+import CsrfMiddleware from './csrf'
+import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
+import { requestFactory } from '../test'
 
 const abort: AbortFn = () => ({})
 
