@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+Refactored:
+  - `mappersmith`: Migrated `middleware` to typescript #306
+
 ## 2.38.1
 
 Fixed:
