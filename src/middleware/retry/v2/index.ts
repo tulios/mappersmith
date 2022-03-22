@@ -15,7 +15,7 @@ export interface RetryMiddlewareOptions {
   validateRetry(response: Response): boolean
 }
 
-export const defaultRetryConfigs = {
+export const defaultRetryConfigs: RetryMiddlewareOptions = {
   headerRetryCount: 'X-Mappersmith-Retry-Count',
   headerRetryTime: 'X-Mappersmith-Retry-Time',
   maxRetryTimeInSecs: 5,
@@ -25,6 +25,11 @@ export const defaultRetryConfigs = {
   retries: 5, // max retries
   validateRetry: (response: Response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
 }
+
+type RetryMiddleware = Middleware<{
+  enableRetry: boolean
+  inboundRequest: Request
+}>
 
 /**
  * This middleware will automatically retry GET requests up to the configured amount of
@@ -48,11 +53,7 @@ export const defaultRetryConfigs = {
  *   @param {Number} retryConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} retryConfigs.retries (default: 5) - max retries
  */
-interface RetryMiddleware extends Record<string, unknown> {
-  enableRetry: boolean
-  inboundRequest: Request
-}
-export default (customConfigs: Partial<RetryMiddlewareOptions> = {}): Middleware<RetryMiddleware> =>
+export default (customConfigs: Partial<RetryMiddlewareOptions> = {}): RetryMiddleware =>
   function RetryMiddleware() {
     return {
       request(request) {

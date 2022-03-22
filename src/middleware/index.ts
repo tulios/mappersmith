@@ -33,6 +33,15 @@ export interface MiddlewareParams {
   readonly mockRequest?: boolean
 }
 
-export type Middleware<T extends Record<string, unknown> = Record<string, unknown>> = (
+// eslint-disable-next-line @typescript-eslint/ban-types
+type DefaultPrivateProps = {}
+
+/**
+ * Mappersmith middleware, used to describe a factory function that given MiddlewareParams
+ * returns a middleware object (partial of MiddlewareDescriptor).
+ *
+ * If the middleware needs to save local state you can use PrivateProps to allow it.
+ */
+export type Middleware<PrivateProps extends Record<string, unknown> = DefaultPrivateProps> = (
   params: MiddlewareParams
-) => Partial<MiddlewareDescriptor> & Partial<T>
+) => Partial<MiddlewareDescriptor & PrivateProps>
