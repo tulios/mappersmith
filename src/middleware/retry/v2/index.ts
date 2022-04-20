@@ -1,8 +1,21 @@
+import { Middleware, ResponseGetter } from '../../index'
 import { configs } from '../../../index'
 import { assign } from '../../../utils'
-import Response from '../../../response'
+import { Response } from '../../../response'
+import { Request } from '../../../request'
 
-export const defaultRetryConfigs = {
+export interface RetryMiddlewareOptions {
+  readonly headerRetryCount: string
+  readonly headerRetryTime: string
+  readonly maxRetryTimeInSecs: number
+  readonly initialRetryTimeInSecs: number
+  readonly factor: number
+  readonly multiplier: number
+  readonly retries: number
+  validateRetry(response: Response): boolean
+}
+
+export const defaultRetryConfigs: RetryMiddlewareOptions = {
   headerRetryCount: 'X-Mappersmith-Retry-Count',
   headerRetryTime: 'X-Mappersmith-Retry-Time',
   maxRetryTimeInSecs: 5,
@@ -10,8 +23,13 @@ export const defaultRetryConfigs = {
   factor: 0.2, // randomization factor
   multiplier: 2, // exponential factor
   retries: 5, // max retries
-  validateRetry: (response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
+  validateRetry: (response: Response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
 }
+
+type RetryMiddleware = Middleware<{
+  enableRetry: boolean
+  inboundRequest: Request
+}>
 
 /**
  * This middleware will automatically retry GET requests up to the configured amount of
@@ -35,7 +53,7 @@ export const defaultRetryConfigs = {
  *   @param {Number} retryConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} retryConfigs.retries (default: 5) - max retries
  */
-export default (customConfigs = {}) =>
+export default (customConfigs: Partial<RetryMiddlewareOptions> = {}): RetryMiddleware =>
   function RetryMiddleware() {
     return {
       request(request) {
@@ -46,8 +64,17 @@ export default (customConfigs = {}) =>
 
       response(next) {
         const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
+        const inboundRequest = this.inboundRequest
 
         if (!this.enableRetry) {
+          return next()
+        }
+
+        if (!configs.Promise) {
+          return next()
+        }
+
+        if (!inboundRequest) {
           return next()
         }
 
@@ -57,15 +84,22 @@ export default (customConfigs = {}) =>
             resolve,
             reject,
             next,
-            this.inboundRequest
+            inboundRequest
           )(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
         })
       },
     }
   }
 
-const retriableRequest = (resolve, reject, next, request) => {
-  const retry = (retryTime, retryCount, retryConfigs) => {
+type RetryFn = (retryTime: number, retryCount: number, retryConfigs: RetryMiddlewareOptions) => void
+type RetriableRequestFn = (
+  resolve: (value: Response | PromiseLike<Response>) => void,
+  reject: (reason?: unknown) => void,
+  next: ResponseGetter,
+  response: Request
+) => RetryFn
+const retriableRequest: RetriableRequestFn = (resolve, reject, next, request) => {
+  const retry: RetryFn = (retryTime, retryCount, retryConfigs) => {
     const nextRetryTime = calculateExponentialRetryTime(retryTime, retryConfigs)
     const shouldRetry = retryCount < retryConfigs.retries
     const scheduleRequest = () => {
@@ -88,7 +122,13 @@ const retriableRequest = (resolve, reject, next, request) => {
               )
             )
           } catch (e) {
-            const errorMessage = response instanceof Error ? response.message : e.message
+            let errorMessage = ''
+            if (response instanceof Error) {
+              errorMessage = response.message
+            }
+            if (typeof e === 'object' && e !== null && 'message' in e) {
+              errorMessage = (e as Record<'message', string>).message
+            }
             reject(new Response(request, 400, errorMessage, {}, [response]))
           }
         }
@@ -108,7 +148,13 @@ const retriableRequest = (resolve, reject, next, request) => {
               )
             )
           } catch (e) {
-            const errorMessage = response instanceof Error ? response.message : e.message
+            let errorMessage = ''
+            if (response instanceof Error) {
+              errorMessage = response.message
+            }
+            if (typeof e === 'object' && e !== null && 'message' in e) {
+              errorMessage = (e as Record<'message', string>).message
+            }
             reject(new Response(request, 400, errorMessage, {}, [response]))
           }
         }
@@ -125,22 +171,31 @@ const retriableRequest = (resolve, reject, next, request) => {
  *
  * @return {Number}
  */
-export const calculateExponentialRetryTime = (retryTime, retryConfigs) =>
+export const calculateExponentialRetryTime = (
+  retryTime: number,
+  retryConfigs: RetryMiddlewareOptions
+) =>
   Math.min(
     randomFromRetryTime(retryTime, retryConfigs.factor) * retryConfigs.multiplier,
     retryConfigs.maxRetryTimeInSecs * 1000
   )
 
-const randomFromRetryTime = (retryTime, factor) => {
+const randomFromRetryTime = (retryTime: number, factor: number) => {
   const delta = factor * retryTime
   return random(retryTime - delta, retryTime + delta)
 }
 
-const random = (min, max) => {
+const random = (min: number, max: number) => {
   return Math.random() * (max - min) + min
 }
 
-const enhancedResponse = (response, headerRetryCount, retryCount, headerRetryTime, retryTime) =>
+const enhancedResponse = (
+  response: Response,
+  headerRetryCount: string,
+  retryCount: number,
+  headerRetryTime: string,
+  retryTime: number
+) =>
   response.enhance({
     headers: {
       [headerRetryCount]: retryCount,

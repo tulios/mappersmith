@@ -6,7 +6,7 @@
   "rootDir": "../../",
   "testEnvironment": "node",
   "timers": "fake",
-  "testMatch": ["**/?(*.)+(spec).[jt]s?(x)"],
+  "testMatch": ["**/?(*.)+(spec).[jt]s?(x)", "!**/?(*.)+(web).(spec).[jt]s?(x)"],
   "roots": ["<rootDir>/src/", "<rootDir>/spec/node/"],
   "modulePaths": ["<rootDir>"],
   "setupFiles": ["<rootDir>/jestSetup/index.js"]

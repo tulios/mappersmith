@@ -1,8 +1,11 @@
+import { Response } from '../response'
+import { Middleware } from './index'
 import { configs } from '../index'
 
-let handler = null
+export type ErrorHandlerMiddlewareCallback = (response: Response) => boolean
+let handler: ErrorHandlerMiddlewareCallback | null = null
 
-export const setErrorHandler = (errorHandler) => {
+export const setErrorHandler = (errorHandler: ErrorHandlerMiddlewareCallback) => {
   handler = errorHandler
 }
 
@@ -10,8 +13,12 @@ export const setErrorHandler = (errorHandler) => {
  * Provides a catch-all function for all requests. If the catch-all
  * function returns `true` it prevents the original promise to continue.
  */
-const GlobalErrorHandlerMiddleware = () => ({
+const GlobalErrorHandlerMiddleware: Middleware = () => ({
   response(next) {
+    if (!configs.Promise) {
+      return next()
+    }
+
     return new configs.Promise((resolve, reject) => {
       next()
         .then((response) => resolve(response))

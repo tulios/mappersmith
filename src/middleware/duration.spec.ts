@@ -1,6 +1,8 @@
-import DurationMiddleware from '../../../src/middleware/duration'
-import { requestFactory, responseFactory } from '../../../src/test'
-import type { MiddlewareDescriptor, MiddlewareParams } from '../../../src/middleware'
+import DurationMiddleware from './duration'
+import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
+import { requestFactory, responseFactory } from '../test'
+
+const abort: AbortFn = () => ({})
 
 describe('Middleware / DurationMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>
@@ -21,10 +23,7 @@ describe('Middleware / DurationMiddleware', () => {
 
   it('adds started_at, ended_at and duration response headers', async () => {
     const request = requestFactory({ host: 'example.com', path: '/', method: 'get' })
-    const finalRequest = await middleware.prepareRequest?.(
-      () => Promise.resolve(request),
-      () => ({})
-    )
+    const finalRequest = await middleware.prepareRequest?.(() => Promise.resolve(request), abort)
     if (!finalRequest) {
       throw new Error('DurationMiddleware aborted unexpectedly')
     }
@@ -45,10 +44,7 @@ describe('Middleware / DurationMiddleware', () => {
 
   it('returns the response data intact for empty string', async () => {
     const request = requestFactory({ host: 'example.com', path: '/', method: 'get' })
-    const finalRequest = await middleware.prepareRequest?.(
-      () => Promise.resolve(request),
-      () => ({})
-    )
+    const finalRequest = await middleware.prepareRequest?.(() => Promise.resolve(request), abort)
     if (!finalRequest) {
       throw new Error('DurationMiddleware aborted unexpectedly')
     }

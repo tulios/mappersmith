@@ -1,7 +1,7 @@
 import type { GlobalConfigs, ManifestOptions, ResourceTypeConstraint } from './manifest'
 export type { GlobalConfigs, ManifestOptions, ResourceTypeConstraint }
 export type { Request } from './request'
-export type { Headers, Params as Parameters } from './types'
+export type { Headers, Params as Parameters, Auth as Authorization } from './types'
 export type { Gateway } from './gateway'
 export type { XHR as XhrGateway } from './gateway/xhr'
 export type { HTTP as HTTPGateway } from './gateway/http'
@@ -15,7 +15,6 @@ export type {
 export { Response, ParsedJSON } from './response'
 export type {
   AbortFn,
-  Authorization,
   Context,
   Middleware,
   MiddlewareDescriptor,

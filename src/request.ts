@@ -2,6 +2,7 @@ import { MethodDescriptor } from './method-descriptor'
 import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
 import type {
   Auth,
+  Body,
   Headers,
   NestedParam,
   NestedParamArray,
@@ -202,7 +203,7 @@ export class Request {
   }
 
   public body() {
-    return this.requestParams[this.methodDescriptor.bodyAttr]
+    return this.requestParams[this.methodDescriptor.bodyAttr] as Body
   }
 
   public auth() {
