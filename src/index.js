@@ -14,6 +14,9 @@ if (typeof XMLHttpRequest !== 'undefined') {
 } else if (typeof _process !== 'undefined') {
   // For node use HTTP adapter
   defaultGateway = require('./gateway/http').default
+} else if (typeof self !== 'undefined') {
+  // For service workers use fetch adapter
+  defaultGateway = require('./gateway/fetch').default
 }
 
 lib.configs.gateway = defaultGateway
