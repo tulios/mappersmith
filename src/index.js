@@ -2,10 +2,12 @@
 const lib = require('./mappersmith')
 let _process, defaultGateway
 
-// Prevents webpack to load the nodejs processs polyfill
+// Prevents webpack to load the nodejs process polyfill
 try {
   // eslint-disable-next-line no-eval
-  _process = eval('typeof process === "object" ? process : undefined')
+  _process = eval(
+    'typeof __TEST_SERVICE_WORKER__ === "undefined" && typeof process === "object" ? process : undefined'
+  )
 } catch (e) {} // eslint-disable-line no-empty
 
 if (typeof XMLHttpRequest !== 'undefined') {

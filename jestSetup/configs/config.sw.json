@@ -7,7 +7,7 @@
   "testEnvironment": "node",
   "timers": "fake",
   "testMatch": ["**/?(*.)+(spec).[jt]s?(x)", "!**/?(*.)+(web).(spec).[jt]s?(x)"],
-  "roots": ["<rootDir>/src/", "<rootDir>/spec/serviceWorker/"],
+  "roots": ["<rootDir>/src/", "<rootDir>/spec/service-worker/"],
   "modulePaths": ["<rootDir>"],
-  "setupFiles": ["<rootDir>/jestSetup/index.js"]
+  "setupFiles": ["<rootDir>/jestSetup/index.js", "<rootDir>/jestSetup/service-worker.js"]
 }
