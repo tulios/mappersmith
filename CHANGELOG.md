@@ -5,6 +5,10 @@
 Refactored:
   - `mappersmith`: Migrated `middleware` to typescript #306
 
+Added:
+  - `mappersmith`: Added service workers support with default gateway `fetch`
+  - `mappersmith/test`: Added tests for service workers
+
 ## 2.38.1
 
 Fixed:
