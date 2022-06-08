@@ -1,0 +1,13 @@
+{
+  "preset": "ts-jest",
+  "transform": {
+    "\\.[jt]s$": "babel-jest"
+  },
+  "rootDir": "../../",
+  "testEnvironment": "node",
+  "timers": "fake",
+  "testMatch": ["**/?(*.)+(spec).[jt]s?(x)", "!**/?(*.)+(web).(spec).[jt]s?(x)"],
+  "roots": ["<rootDir>/src/", "<rootDir>/spec/serviceWorker/"],
+  "modulePaths": ["<rootDir>"],
+  "setupFiles": ["<rootDir>/jestSetup/index.js"]
+}

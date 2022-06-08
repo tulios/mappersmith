@@ -18,6 +18,8 @@
     "test:node": "yarn jest --config jestSetup/configs/config.node.json",
     "test:node:integration": "cross-env NODE_ENV=test cross-env NODE_PATH=. cross-env JASMINE_CONFIG_PATH=spec/integration/node/support/jasmine.json ts-node node_modules/jasmine/bin/jasmine",
     "test:node:watch": "yarn jest --config jestSetup/configs/config.node.json --watchAll",
+    "test:serviceWorker": "yarn jest --config jestSetup/configs/config.sw.json",
+    "test:serviceWorker:watch": "yarn jest --config jestSetup/configs/config.sw.json --watchAll",
     "test:types": "yarn tsc --noEmit",
     "test:types:watch": "yarn test:types --watch",
     "test:unit": "concurrently --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn integration-server\"",
