@@ -6,3 +6,4 @@ lib/
 coverage/
 # build info for incremental ts builds:
 tsconfig.tsbuildinfo
+.idea/

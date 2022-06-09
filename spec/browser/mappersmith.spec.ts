@@ -1,6 +1,6 @@
 import Gateway from '../../src/gateway'
 import { GlobalConfigs } from '../../src/manifest'
-import forge, { setContext, configs } from '../../src/mappersmith'
+import forge, { setContext, configs } from '../../src'
 
 describe('mappersmith', () => {
   describe('#setContext', () => {
