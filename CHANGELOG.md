@@ -1,12 +1,12 @@
 # Changelog
 
-## Unreleased
-
-Refactored:
-  - `mappersmith`: Migrated `middleware` to typescript #306
+## 2.39.0
 
 Added:
   - `mappersmith`: Added service workers support with default gateway `fetch` #311
+
+Refactored:
+  - `mappersmith`: Migrated `middleware` to typescript #306
 
 ## 2.38.1
 
