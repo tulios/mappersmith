@@ -1,9 +1,9 @@
 # Changelog
 
-## UNRELEASED
+## 2.39.1
 
 Fixed:
-  - `mappersmith`: Typo in basic auth import no longer causes build errors (#313)
+  - `mappersmith`: Typo in basic auth import no longer causes build errors #313
 
 ## 2.39.0
 
