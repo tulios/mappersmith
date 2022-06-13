@@ -1,5 +1,5 @@
-import { Request } from '../request'
-import { Response } from '../response'
+import type { Request } from '../request'
+import type { Response } from '../response'
 
 export type Context = object
 

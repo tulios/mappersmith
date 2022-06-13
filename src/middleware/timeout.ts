@@ -1,4 +1,4 @@
-import { Middleware } from './index'
+import type { Middleware } from './index'
 
 export type Milliseconds = number
 

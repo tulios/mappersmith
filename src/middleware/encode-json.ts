@@ -1,4 +1,4 @@
-import { Middleware } from './index'
+import type { Middleware } from './index'
 
 const mediaType = 'application/json'
 const charset = 'charset=utf-8'
