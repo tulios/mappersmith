@@ -1,6 +1,6 @@
 import { Response } from '../response'
-import { Request } from '../request'
-import { Middleware } from './index'
+import type { Request } from '../request'
+import type { Middleware } from './index'
 
 export const defaultSuccessLogger = (message: string) => {
   const logger = console.info ? console.info : console.log

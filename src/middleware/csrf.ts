@@ -1,4 +1,4 @@
-import { Middleware } from './index'
+import type { Middleware } from './index'
 
 /**
  * Sets a request header with the value of a cookie from document.cookie, if it exists

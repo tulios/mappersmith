@@ -1,5 +1,5 @@
-import { Auth } from 'types'
-import { Middleware } from './index'
+import type { Auth } from '../types'
+import type { Middleware } from './index'
 import { assign } from '../utils'
 
 /**

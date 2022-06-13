@@ -1,8 +1,8 @@
-import { Middleware, ResponseGetter } from '../../index'
+import type { Middleware, ResponseGetter } from '../../index'
 import { configs } from '../../../index'
 import { assign } from '../../../utils'
 import { Response } from '../../../response'
-import { Request } from '../../../request'
+import type { Request } from '../../../request'
 
 export interface RetryMiddlewareOptions {
   readonly headerRetryCount: string
