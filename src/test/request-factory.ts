@@ -1,10 +1,11 @@
-import { Request } from '../request'
+import { Request, RequestContext } from '../request'
 import { RequestParams } from '../types'
 import { MethodDescriptor } from '../method-descriptor'
 
 export interface RequestFactoryArgs extends RequestParams {
   method?: string
   path?: string
+  context?: RequestContext
 }
 
 /**
@@ -20,15 +21,20 @@ export const requestFactory = ({
   headers,
   params,
   timeout,
+  context,
   ...rest
 }: RequestFactoryArgs = {}) => {
   const methodDescriptor = new MethodDescriptor({ method, host, path })
-  return new Request(methodDescriptor, {
-    auth,
-    body,
-    headers,
-    params,
-    timeout,
-    ...rest,
-  })
+  return new Request(
+    methodDescriptor,
+    {
+      auth,
+      body,
+      headers,
+      params,
+      timeout,
+      ...rest,
+    },
+    context
+  )
 }

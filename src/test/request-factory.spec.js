@@ -40,14 +40,16 @@ describe('mappersmith/test', () => {
         host: 'http://example.org',
         path: '/users/{group}',
       }
+      const context = { foo: 'bar' }
 
       const request = requestFactory({
         ...methodDescriptorParams,
         ...requestParams,
+        context,
       })
 
       expect(request).toEqual(
-        new Request(new MethodDescriptor(methodDescriptorParams), requestParams)
+        new Request(new MethodDescriptor(methodDescriptorParams), requestParams, { foo: 'bar' })
       )
     })
   })

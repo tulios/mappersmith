@@ -29,6 +29,7 @@ describe('Request', () => {
   it('requestParams is optional', async () => {
     const request = new Request(methodDescriptor)
     expect(request).toEqual({
+      requestContext: {},
       methodDescriptor,
       requestParams: {},
     })
@@ -38,6 +39,7 @@ describe('Request', () => {
     const request = new Request(methodDescriptor, requestParams)
 
     expect(request).toEqual({
+      requestContext: {},
       methodDescriptor,
       requestParams,
     })

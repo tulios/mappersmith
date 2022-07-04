@@ -5,6 +5,9 @@
 Fixed:
   - `mappersmith/test`: Properly merge headers when one of the sides is a mock matcher #316
 
+Added:
+  - `mappersmith`: Add support for passing transient contexts between middleware #320
+
 ## 2.39.1
 
 Fixed:
