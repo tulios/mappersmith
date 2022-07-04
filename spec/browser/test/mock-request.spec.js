@@ -377,6 +377,41 @@ describe('Test lib / mock request', () => {
     expect(response.status()).toEqual(200)
   })
 
+  it('allows for header matchers to override default headers', async () => {
+    mockClient(client)
+      .resource('Feed')
+      .method('add')
+      .with({
+        body: m.anything(),
+        headers: m.anything(),
+      })
+      .status(200)
+      .assertObject()
+
+    const manifest = getManifest()
+
+    const clientWithoutHeaders = forge({
+      ...manifest,
+      resources: {
+        ...manifest.resources,
+        Feed: {
+          add: {
+            ...manifest.resources.Feed.add,
+            // We remove the headers so requests in this client won't include them,
+            // but that shouldn't matter because the mock has `headers: m.anything()`
+            headers: {},
+          },
+        },
+      },
+    })
+
+    const response = await clientWithoutHeaders.Feed.add({
+      headers: { 'x-any-other-header': false },
+    })
+
+    expect(response.status()).toEqual(200)
+  })
+
   describe('unused mocks', () => {
     it('returns count of all unused mockClients', async () => {
       mockClient(client).resource('Blog').method('post')

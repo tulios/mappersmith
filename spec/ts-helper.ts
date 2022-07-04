@@ -13,6 +13,9 @@ const resources = {
     post: { method: 'post', path: '/blogs' },
     addComment: { method: 'put', path: '/blogs/{id}/comment' },
   },
+  Feed: {
+    add: { method: 'post', path: '/feed', headers: { 'x-feed-entry': true } },
+  },
 }
 
 export const getManifest = (
