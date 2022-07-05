@@ -26,10 +26,11 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
       middleware
         .response?.(
           () => Promise.resolve(originalResponse),
-          () => Promise.resolve(originalResponse)
+          () => Promise.resolve(originalResponse),
+          () => originalResponse.request()
         )
         .then((response) => {
-          expect(response).toEqual(response)
+          expect(response).toEqual(originalResponse)
           done()
         })
     })
@@ -44,7 +45,8 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
       middleware
         .response?.(
           () => Promise.reject(originalResponse),
-          () => Promise.resolve(originalResponse)
+          () => Promise.resolve(originalResponse),
+          () => originalResponse.request()
         )
         .then((response) => {
           done.fail(`Expected this promise to fail: ${response}`)
@@ -71,7 +73,8 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
       middleware
         .response?.(
           () => Promise.reject(originalResponse),
-          () => Promise.resolve(originalResponse)
+          () => Promise.resolve(originalResponse),
+          () => originalResponse.request()
         )
         .then((response) => {
           done.fail(`Expected this promise to fail: ${response}`)

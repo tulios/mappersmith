@@ -176,7 +176,8 @@ export class ClientBuilder<Resources extends ResourceTypeConstraint> {
           const chainResponsePhase =
             (previousValue: ResponseGetter, currentValue: MiddlewareDescriptor) => () => {
               // Deliberately putting this on two separate lines - to get typescript to not return "any"
-              const nextValue = currentValue.response(previousValue, renew)
+              const getFinalRequest = () => finalRequest
+              const nextValue = currentValue.response(previousValue, renew, getFinalRequest)
               return nextValue
             }
           const callGateway = () => new GatewayClass(finalRequest, gatewayConfigs).call()

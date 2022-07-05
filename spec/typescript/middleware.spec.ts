@@ -142,7 +142,11 @@ export const test = async () => {
   if (myMiddleware.response) {
     const originalResponse = responseFactory({ data: { a: 1 } })
     const originalData = originalResponse.data()
-    const response = await myMiddleware.response(async () => originalResponse, renewFn)
+    const response = await myMiddleware.response(
+      async () => originalResponse,
+      renewFn,
+      () => originalResponse.request()
+    )
     const data = response.data()
     // Right now these are different types
     console.log({ originalData, data })
