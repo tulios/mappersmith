@@ -100,7 +100,11 @@ describe('ClientBuilder middleware', () => {
 
     await createClient().User.byId({ id: 1 })
     expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
-    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+    expect(responsePhase).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function),
+      expect.any(Function)
+    )
   })
 
   it('calls request and response phase with a different "this" configured', async () => {
@@ -280,7 +284,11 @@ describe('ClientBuilder middleware', () => {
 
     await createClient().User.byId({ id: 1 })
     expect(prepareRequestPhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
-    expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
+    expect(responsePhase).toHaveBeenCalledWith(
+      expect.any(Function),
+      expect.any(Function),
+      expect.any(Function)
+    )
   })
 
   describe('#prepareRequest', () => {
