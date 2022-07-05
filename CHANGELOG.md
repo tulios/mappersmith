@@ -1,5 +1,10 @@
 # Changelog
 
+## UNRELEASED
+
+Fixed:
+  - `mappersmith/test`: Properly merge headers when one of the sides is a mock matcher #316
+
 ## 2.39.1
 
 Fixed:
