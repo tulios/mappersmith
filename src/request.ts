@@ -14,6 +14,8 @@ const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
 
+export type RequestContext = Record<string, unknown>
+
 /**
  * Removes the object type without removing Record types in the union
  */
@@ -23,14 +25,21 @@ export type ExcludeObject<T> = T extends object ? (object extends T ? never : T)
  * @typedef Request
  * @param {MethodDescriptor} methodDescriptor
  * @param {RequestParams} requestParams, defaults to an empty object ({})
+ * @param {RequestContext} request context store, defaults to an empty object ({})
  */
 export class Request {
   public methodDescriptor: MethodDescriptor
   public requestParams: RequestParams
+  private requestContext: RequestContext
 
-  constructor(methodDescriptor: MethodDescriptor, requestParams: RequestParams = {}) {
+  constructor(
+    methodDescriptor: MethodDescriptor,
+    requestParams: RequestParams = {},
+    requestContext: RequestContext = {}
+  ) {
     this.methodDescriptor = methodDescriptor
     this.requestParams = requestParams
+    this.requestContext = requestContext
   }
 
   private isParam(key: string) {
@@ -52,6 +61,14 @@ export class Request {
       }
       return obj
     }, {} as RequestParams)
+  }
+
+  /**
+   * Returns the request context; a key value object.
+   * Useful to pass information from upstream middleware to a downstream one.
+   */
+  public context<T extends RequestContext = RequestContext>() {
+    return this.requestContext as T
   }
 
   /**
@@ -228,8 +245,9 @@ export class Request {
    *   @param {String} extras.host - it will replace the current timeout
    *   @param {RequestParams} extras.params - it will be merged with current params
    *   @param {Number} extras.timeout - it will replace the current timeout
+   * @param {Object} requestContext - Use to pass information between different middleware.
    */
-  public enhance(extras: RequestParams) {
+  public enhance(extras: RequestParams, requestContext?: RequestContext) {
     const authKey = this.methodDescriptor.authAttr
     const bodyKey = this.methodDescriptor.bodyAttr
     const headerKey = this.methodDescriptor.headersAttr
@@ -249,7 +267,9 @@ export class Request {
     extras.host && (requestParams[hostKey] = extras.host)
     extras.timeout && (requestParams[timeoutKey] = extras.timeout)
 
-    return new Request(this.methodDescriptor, requestParams)
+    const nextContext = { ...this.requestContext, ...requestContext }
+
+    return new Request(this.methodDescriptor, requestParams, nextContext)
   }
 
   /**

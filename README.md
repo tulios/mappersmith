@@ -421,16 +421,42 @@ The behavior between your client and the API can be customized with middleware. 
 
 The `prepareRequest` method receives a function which returns a `Promise` resolving the [Request](https://github.com/tulios/mappersmith/blob/master/src/request.js). This function must return a `Promise` resolving the request. The method `enhance` can be used to generate a new request based on the previous one.
 
-The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to generate a new response based on the previous one.
-
 ```javascript
 const MyMiddleware = () => ({
   prepareRequest(next) {
     return next().then(request => request.enhance({
       headers: { 'x-special-request': '->' }
     }))
-  },
+  }
+})
+```
 
+If you have multiple middleware it is possible to pass information from an earlier ran middleware to a later one via the request context:
+
+```javascript
+const MyMiddlewareOne = () => ({
+  async prepareRequest(next) {
+    const request = await next().then(request => request.enhance({}, { message: 'hello from mw1' }))
+  }
+})
+
+const MyMiddlewareTwo = () => ({
+  async prepareRequest(next) {
+    const request = await next()
+    const { message } = request.getContext()
+    // Logs: "hello from mw1"
+    console.log(message)
+    return request
+  }
+})
+```
+
+The above example assumes you synthesized your middleware in this order when calling `forge`: `middleware: [MyMiddlewareOne, MyMiddlewareTwo]`
+
+The `response` method receives a function which returns a `Promise` resolving the [Response](https://github.com/tulios/mappersmith/blob/master/src/response.js). This function must return a `Promise` resolving the Response. The method `enhance` can be used to generate a new response based on the previous one.
+
+```javascript
+const MyMiddleware = () => ({
   response(next) {
     return next().then((response) => response.enhance({
       headers: { 'x-special-response': '<-' }

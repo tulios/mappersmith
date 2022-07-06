@@ -1,6 +1,6 @@
 import type { GlobalConfigs, ManifestOptions, ResourceTypeConstraint } from './manifest'
 export type { GlobalConfigs, ManifestOptions, ResourceTypeConstraint }
-export type { Request } from './request'
+export type { Request, RequestContext } from './request'
 export type { Headers, Params as Parameters, Auth as Authorization } from './types'
 export type { Gateway } from './gateway'
 export type { XHR as XhrGateway } from './gateway/xhr'
