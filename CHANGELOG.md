@@ -3,6 +3,7 @@
 ## UNRELEASED
 
 Fixed:
+  - `mappersmith`: Allow path to be empty string in manifest #327
   - `mappersmith`: `Response.errors` should only be allowed to contain `Error` or `string` #325
 
 ## 2.40.0

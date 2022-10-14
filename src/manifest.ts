@@ -114,13 +114,11 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
 
   public createMethodDescriptor(resourceName: string, methodName: string) {
     const definition = this.resources[resourceName][methodName]
-
-    if (!definition || !definition.path) {
+    if (!definition || typeof definition.path === 'undefined') {
       throw new Error(
         `[Mappersmith] path is undefined for resource "${resourceName}" method "${methodName}"`
       )
     }
-
     return new MethodDescriptor(
       assign(
         {

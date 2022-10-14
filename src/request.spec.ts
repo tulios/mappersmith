@@ -484,6 +484,27 @@ describe('Request', () => {
       const path = new Request(methodDesc).path()
       expect(path).toEqual('/api/example.json')
     })
+
+    describe('with empty path', () => {
+      it('allows empty path', () => {
+        const methodDesc = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          path: '',
+          params: {},
+        })
+        const path = new Request(methodDesc).path()
+        expect(path).toEqual('')
+      })
+      it('allows empty path fn', () => {
+        const methodDesc = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          path: () => '',
+          params: {},
+        })
+        const path = new Request(methodDesc).path()
+        expect(path).toEqual('')
+      })
+    })
   })
 
   describe('#pathTemplate', () => {

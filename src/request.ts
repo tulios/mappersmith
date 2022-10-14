@@ -115,7 +115,7 @@ export class Request {
       path = this.methodDescriptor.path
     }
 
-    if (path[0] !== '/') {
+    if (path.length > 0 && path[0] !== '/') {
       path = `/${path}`
     }
 
