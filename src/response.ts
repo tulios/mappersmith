@@ -27,7 +27,7 @@ export class Response<DataType extends ParsedJSON = ParsedJSON> {
   public readonly responseData: string | null
   public readonly responseHeaders: Headers
   // eslint-disable-next-line no-use-before-define
-  public readonly errors: Array<Response | Error | string>
+  public readonly errors: Array<Error | string>
   public timeElapsed: number | null
 
   constructor(
@@ -35,7 +35,7 @@ export class Response<DataType extends ParsedJSON = ParsedJSON> {
     responseStatus: number,
     responseData?: string | null,
     responseHeaders?: Headers,
-    errors?: Array<Response | Error | string>
+    errors?: Array<Error | string>
   ) {
     const auth = originalRequest.requestParams && originalRequest.requestParams.auth
     if (auth) {

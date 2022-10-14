@@ -129,7 +129,7 @@ const retriableRequest: RetriableRequestFn = (resolve, reject, next, request) =>
             if (typeof e === 'object' && e !== null && 'message' in e) {
               errorMessage = (e as Record<'message', string>).message
             }
-            reject(new Response(request, 400, errorMessage, {}, [response]))
+            reject(new Response(request, 400, errorMessage, {}, [new Error(errorMessage)]))
           }
         }
       })
