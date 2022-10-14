@@ -486,23 +486,42 @@ describe('Request', () => {
     })
 
     describe('with empty path', () => {
-      it('allows empty path', () => {
+      it('omits appending a slash', () => {
         const methodDesc = new MethodDescriptor({
           ...methodDescriptorArgs,
+          host: 'http://original-host.com/api/v2',
           path: '',
           params: {},
         })
         const path = new Request(methodDesc).path()
         expect(path).toEqual('')
-      })
-      it('allows empty path fn', () => {
-        const methodDesc = new MethodDescriptor({
+
+        const methodDesc2 = new MethodDescriptor({
           ...methodDescriptorArgs,
           path: () => '',
           params: {},
         })
+        const path2 = new Request(methodDesc2).path()
+        expect(path2).toEqual('')
+      })
+
+      it('does not omit slash if there are query params', () => {
+        const methodDesc = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          host: 'http://original-host.com/api/v2',
+          path: '',
+          params: {},
+        })
         const path = new Request(methodDesc).path()
         expect(path).toEqual('')
+
+        const methodDesc2 = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          path: () => '',
+          params: {},
+        })
+        const path2 = new Request(methodDesc2).path()
+        expect(path2).toEqual('')
       })
     })
   })
@@ -571,6 +590,46 @@ describe('Request', () => {
       expect(request.url()).toEqual(
         'http://original-host.com/path?param=request-value&method-desc-param=method-desc-value&request-param=request-value'
       )
+    })
+
+    describe('with empty path', () => {
+      it('allows empty path without appending a slash', () => {
+        const methodDesc = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          path: '',
+          params: {},
+        })
+        const url = new Request(methodDesc).url()
+        expect(url).toEqual('http://original-host.com')
+
+        const methodDesc2 = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          host: 'http://original-host.com/api/v2',
+          path: () => '',
+          params: {},
+        })
+        const url2 = new Request(methodDesc2).url()
+        expect(url2).toEqual('http://original-host.com/api/v2')
+      })
+
+      it('does not omit slash if there are query params', () => {
+        const methodDesc = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          path: '',
+          params: { param: 'bob' },
+        })
+        const url = new Request(methodDesc).url()
+        expect(url).toEqual('http://original-host.com/?param=bob')
+
+        const methodDesc2 = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          host: 'http://original-host.com/api/v2',
+          path: () => '',
+          params: { param: 'bob' },
+        })
+        const url2 = new Request(methodDesc2).url()
+        expect(url2).toEqual('http://original-host.com/api/v2/?param=bob')
+      })
     })
   })
 

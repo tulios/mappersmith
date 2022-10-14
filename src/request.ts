@@ -115,10 +115,6 @@ export class Request {
       path = this.methodDescriptor.path
     }
 
-    if (path.length > 0 && path[0] !== '/') {
-      path = `/${path}`
-    }
-
     // RegExp with 'g'-flag is stateful, therefore defining it locally
     const regexp = new RegExp(REGEXP_DYNAMIC_SEGMENT, 'g')
 
@@ -164,6 +160,11 @@ export class Request {
     if (typeof queryString === 'string' && queryString.length !== 0) {
       const hasQuery = path.includes('?')
       path += `${hasQuery ? '&' : '?'}${queryString}`
+    }
+
+    // https://www.rfc-editor.org/rfc/rfc1738#section-3.3
+    if (path[0] !== '/' && path.length > 0) {
+      path = `/${path}`
     }
 
     return path
