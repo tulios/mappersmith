@@ -1,5 +1,10 @@
 # Changelog
 
+## UNRELEASED
+
+Fixed:
+  - `mappersmith`: `Response.errors` should only be allowed to contain `Error` or `string` #325
+
 ## 2.40.0
 
 Fixed:
