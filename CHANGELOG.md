@@ -6,6 +6,9 @@ Fixed:
   - `mappersmith`: Allow path to be empty string in manifest #327
   - `mappersmith`: `Response.errors` should only be allowed to contain `Error` or `string` #325
 
+Added:
+  - `mappersmith`: Accept `path` as a resource method param
+
 ## 2.40.0
 
 Fixed:

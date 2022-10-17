@@ -329,8 +329,8 @@ describe('Request', () => {
     it('interpolates paths with multiple occurrence of same dynamic segment', () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
-        params: { id: 1, path: 'test', title: 'value' },
-        path: '/api/{path?}/{path}/{id}.json',
+        params: { id: 1, folder: 'test', title: 'value' },
+        path: '/api/{folder?}/{folder}/{id}.json',
       })
       const path = new Request(methodDescriptor).path()
       expect(path).toEqual('/api/test/test/1.json?title=value')
@@ -850,6 +850,13 @@ describe('Request', () => {
       expect(enhancedRequest.timeout()).toEqual(2000)
     })
 
+    it('creates a new request based on the current request replacing the path', () => {
+      const request = new Request({ ...methodDescriptor, params: {} })
+      const enhancedRequest = request.enhance({ path: '/new-path' })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.path()).toEqual('/new-path')
+    })
+
     it('does not remove the previously assigned "body"', () => {
       const request = new Request(methodDescriptor, { body: 'test' })
       const enhancedRequest = request.enhance({})
@@ -876,6 +883,12 @@ describe('Request', () => {
       const request = new Request(methodDescriptor, { host: 'http://example.org' })
       const enhancedRequest = request.enhance({})
       expect(enhancedRequest.host()).toEqual('http://example.org')
+    })
+
+    it('does not remove the previously assigned "path"', () => {
+      const request = new Request({ ...methodDescriptor, params: {} }, { path: '/the-api' })
+      const enhancedRequest = request.enhance({})
+      expect(enhancedRequest.path()).toEqual('/the-api')
     })
 
     describe('for requests with a different "headers" key', () => {
@@ -944,6 +957,24 @@ describe('Request', () => {
         const enhancedRequest = request.enhance({ host: 'http://old-api.com' })
         expect(enhancedRequest).not.toEqual(request)
         expect(enhancedRequest.host()).toEqual('http://old-api.com')
+      })
+    })
+
+    describe('for requests with a different "path" key', () => {
+      it('creates a new request based on the current request replacing the custom "path"', () => {
+        const methodDescriptor = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          pathAttr: '__path',
+        })
+        const request = new Request(methodDescriptor, { __path: '/new-api' })
+        expect(request.path()).toEqual(
+          '/new-api?param=method-desc-value&method-desc-param=method-desc-value'
+        )
+        const enhancedRequest = request.enhance({ path: '/old-api' })
+        expect(enhancedRequest).not.toEqual(request)
+        expect(enhancedRequest.path()).toEqual(
+          '/old-api?param=method-desc-value&method-desc-param=method-desc-value'
+        )
       })
     })
   })

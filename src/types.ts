@@ -35,6 +35,7 @@ export interface RequestParams {
   readonly body?: Body
   readonly headers?: Headers
   readonly host?: string
+  readonly path?: string
   readonly params?: Params
   readonly timeout?: number
   [param: string]: object | Primitive | undefined | null | NestedParam | NestedParamArray

@@ -18,6 +18,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     - [Basic Auth](#basic-auth)
     - [Timeout](#timeout)
     - [Alternative host](#alternative-host)
+    - [Alternative path](#alternative-path)
     - [Binary data](#binary-data)
   - [Promises](#promises)
   - [Response object](#response-object)
@@ -369,6 +370,32 @@ const client = forge({
 ```
 
 Whenever using host overrides, be diligent about how you pass parameters to your resource methods. If you spread unverified attributes, you might open your server to SSR attacks.
+
+### <a name="alternative-path"></a> Alternative path
+
+In case you need to overwrite the path for a specific call, you can do so through the param `path`:
+
+```javascript
+// ...
+{
+  all: { path: '/users' }
+}
+// ...
+
+client.User.all({ path: '/people' })
+```
+
+If `path` is not possible as a special parameter for your API, you can configure it through the param `pathAttr`:
+
+```javascript
+// ...
+{
+  all: { path: '/users', pathAttr: '__path' }
+}
+// ...
+
+client.User.all({ __path: '/people' })
+```
 
 ### <a name="binary-data"></a> Binary data
 
