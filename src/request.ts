@@ -108,9 +108,15 @@ export class Request {
     const params = this.params()
 
     let path
-
     if (typeof this.methodDescriptor.path === 'function') {
       path = this.methodDescriptor.path(params)
+      if (typeof path !== 'string') {
+        throw new Error(
+          `[Mappersmith] method descriptor function did not return a string, params=${JSON.stringify(
+            params
+          )}`
+        )
+      }
     } else {
       path = this.methodDescriptor.path
     }

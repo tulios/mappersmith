@@ -592,6 +592,29 @@ describe('Request', () => {
       )
     })
 
+    describe('with path as function', () => {
+      it('throws on non paths that evaluate to non-strings', () => {
+        const methodDesc = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          path: () => ({} as unknown as string),
+        })
+        const req = new Request(methodDesc)
+        expect(() => req.url()).toThrowError(
+          '[Mappersmith] method descriptor function did not return a string, params={"param":"method-desc-value","method-desc-param":"method-desc-value"}'
+        )
+
+        const methodDesc2 = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          host: 'http://original-host.com/api/v2',
+          path: () => null as unknown as string,
+        })
+        const req2 = new Request(methodDesc2)
+        expect(() => req2.url()).toThrowError(
+          '[Mappersmith] method descriptor function did not return a string, params={"param":"method-desc-value","method-desc-param":"method-desc-value"}'
+        )
+      })
+    })
+
     describe('with empty path', () => {
       it('allows empty path without appending a slash', () => {
         const methodDesc = new MethodDescriptor({
