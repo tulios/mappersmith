@@ -146,13 +146,28 @@ describe('ClientBuilder', () => {
     })
   })
 
-  describe('when a resource path is not defined', () => {
-    it('raises error', () => {
+  describe('resource path', () => {
+    it('raises error on undefined', () => {
       const manifest = { host: 'host', resources: { User: { all: {} } } }
-      // @ts-expect-error Must override TS warning about path missing:
-      expect(() => new ClientBuilder(manifest, gatewayClass, configs).build()).toThrowError(
-        '[Mappersmith] path is undefined for resource "User" method "all"'
-      )
+      expect(() =>
+        new ClientBuilder(
+          // @ts-expect-error Must override TS warning about path missing:
+          manifest,
+          gatewayClass as unknown as typeof GatewayClassFactory,
+          configs
+        ).build()
+      ).toThrowError('[Mappersmith] path is undefined for resource "User" method "all"')
+    })
+
+    it('does not raise error for empty string', () => {
+      const manifest = { host: 'host', resources: { User: { all: { path: '' } } } }
+      expect(() =>
+        new ClientBuilder(
+          manifest,
+          gatewayClass as unknown as typeof GatewayClassFactory,
+          configs
+        ).build()
+      ).not.toThrowError()
     })
   })
 })

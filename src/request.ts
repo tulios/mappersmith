@@ -108,15 +108,17 @@ export class Request {
     const params = this.params()
 
     let path
-
     if (typeof this.methodDescriptor.path === 'function') {
       path = this.methodDescriptor.path(params)
+      if (typeof path !== 'string') {
+        throw new Error(
+          `[Mappersmith] method descriptor function did not return a string, params=${JSON.stringify(
+            params
+          )}`
+        )
+      }
     } else {
       path = this.methodDescriptor.path
-    }
-
-    if (path[0] !== '/') {
-      path = `/${path}`
     }
 
     // RegExp with 'g'-flag is stateful, therefore defining it locally
@@ -164,6 +166,11 @@ export class Request {
     if (typeof queryString === 'string' && queryString.length !== 0) {
       const hasQuery = path.includes('?')
       path += `${hasQuery ? '&' : '?'}${queryString}`
+    }
+
+    // https://www.rfc-editor.org/rfc/rfc1738#section-3.3
+    if (path[0] !== '/' && path.length > 0) {
+      path = `/${path}`
     }
 
     return path
