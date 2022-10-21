@@ -16,6 +16,7 @@ export interface MethodDescriptorParams {
   middlewares?: Array<Middleware>
   params?: Params
   path: string | ((args: RequestParams) => string)
+  pathAttr?: string
   queryParamAlias?: Record<string, string>
   timeoutAttr?: string
 }
@@ -37,6 +38,7 @@ export interface MethodDescriptorParams {
  *   @param {Middleware[]} params.middlewares - alias for middleware
  *   @param {RequestParams} params.params
  *   @param {String|Function} params.path
+ *   @param {String} params.pathAttr. Default: 'path'
  *   @param {Object} params.queryParamAlias
  *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
@@ -54,6 +56,7 @@ export class MethodDescriptor {
   public readonly middleware: Middleware[]
   public readonly params?: RequestParams
   public readonly path: string | ((args: RequestParams) => string)
+  public readonly pathAttr: string
   public readonly queryParamAlias: Record<string, string>
   public readonly timeoutAttr: string
 
@@ -72,6 +75,7 @@ export class MethodDescriptor {
     this.bodyAttr = params.bodyAttr || 'body'
     this.headersAttr = params.headersAttr || 'headers'
     this.hostAttr = params.hostAttr || 'host'
+    this.pathAttr = params.pathAttr || 'path'
     this.timeoutAttr = params.timeoutAttr || 'timeout'
 
     const resourceMiddleware = params.middleware || params.middlewares || []

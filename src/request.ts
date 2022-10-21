@@ -48,7 +48,8 @@ export class Request {
       key !== this.methodDescriptor.bodyAttr &&
       key !== this.methodDescriptor.authAttr &&
       key !== this.methodDescriptor.timeoutAttr &&
-      key !== this.methodDescriptor.hostAttr
+      key !== this.methodDescriptor.hostAttr &&
+      key !== this.methodDescriptor.pathAttr
     )
   }
 
@@ -105,11 +106,13 @@ export class Request {
    *    '[Mappersmith] required parameter missing (name), "/some/{name}" cannot be resolved'
    */
   public path() {
+    const { pathAttr: mdPathAttr, path: mdPath } = this.methodDescriptor
+    const originalPath = (this.requestParams[mdPathAttr] as RequestParams['path']) || mdPath || ''
     const params = this.params()
 
-    let path
-    if (typeof this.methodDescriptor.path === 'function') {
-      path = this.methodDescriptor.path(params)
+    let path: string
+    if (typeof originalPath === 'function') {
+      path = originalPath(params)
       if (typeof path !== 'string') {
         throw new Error(
           `[Mappersmith] method descriptor function did not return a string, params=${JSON.stringify(
@@ -118,7 +121,7 @@ export class Request {
         )
       }
     } else {
-      path = this.methodDescriptor.path
+      path = originalPath
     }
 
     // RegExp with 'g'-flag is stateful, therefore defining it locally
@@ -260,6 +263,7 @@ export class Request {
     const headerKey = this.methodDescriptor.headersAttr
     const hostKey = this.methodDescriptor.hostAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
+    const pathKey = this.methodDescriptor.pathAttr
 
     // Note: The result of merging an instance of RequestParams with instance of Params
     // is simply a RequestParams with even more [param: string]'s on it.
@@ -273,6 +277,7 @@ export class Request {
     extras.body && (requestParams[bodyKey] = extras.body)
     extras.host && (requestParams[hostKey] = extras.host)
     extras.timeout && (requestParams[timeoutKey] = extras.timeout)
+    extras.path && (requestParams[pathKey] = extras.path)
 
     const nextContext = { ...this.requestContext, ...requestContext }
 
