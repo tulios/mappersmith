@@ -1,22 +1,20 @@
-import forge from '../../src/mappersmith'
+import forge, { Response } from '../../src/mappersmith'
 import { Middleware, MiddlewareParams, RenewFn } from '../../src/middleware'
 import { responseFactory } from '../../src/test'
 
 const MyMiddleware: Middleware = () => ({
-  prepareRequest(next) {
-    return next().then((response) =>
-      response.enhance({
-        headers: { 'x-special-request': '->' },
-      })
-    )
+  async prepareRequest(next) {
+    const response = await next()
+    return response.enhance({
+      headers: { 'x-special-request': '->' },
+    })
   },
 
-  response(next) {
-    return next().then((response) =>
-      response.enhance({
-        headers: { 'x-special-response': '<-' },
-      })
-    )
+  async response(next) {
+    const response = await next()
+    return response.enhance({
+      headers: { 'x-special-response': '<-' },
+    })
   },
 })
 
@@ -31,38 +29,39 @@ const MyMiddlewareWithOptions: Middleware = ({
 }
 
 const MyMiddlewareWithSecondArgument: Middleware = () => ({
-  prepareRequest(next, abort) {
-    return next().then((request) =>
-      request.header('x-special') ? request : abort(new Error('"x-special" must be set!'))
-    )
+  async prepareRequest(next, abort) {
+    const request = await next()
+    return request.header('x-special') ? request : abort(new Error('"x-special" must be set!'))
   },
-  response(next, renew) {
-    return next().catch((response) => {
-      if (response.status() === 401) {
+  async response(next, renew) {
+    try {
+      return await next()
+    } catch (response) {
+      if (response instanceof Response && response.status() === 401) {
         return renew()
       }
-
-      return next()
-    })
+      return await next()
+    }
   },
 })
 
 const MyMiddlewareWithPrivateProperties: Middleware<{ foo: string }> = () => ({
-  prepareRequest(next, abort) {
-    return next().then((request) => {
-      // OK:
-      this.foo = 'bar'
-      // Also OK:
-      this['foo'] = 'baz'
-      // @ts-expect-error Not OK, not declared as PrivateProps:
-      this.bar = 'bar'
-      // @ts-expect-error Also not OK:
-      this['bar'] = 'baz'
-      return request.header('x-special') ? request : abort(new Error('"x-special" must be set!'))
-    })
+  async prepareRequest(next, abort) {
+    const request = await next()
+    // OK:
+    this.foo = 'bar'
+    // Also OK:
+    this['foo'] = 'baz'
+    // @ts-expect-error Not OK, not declared as PrivateProps:
+    this.bar = 'bar'
+    // @ts-expect-error Also not OK:
+    this['bar'] = 'baz'
+    return request.header('x-special') ? request : abort(new Error('"x-special" must be set!'))
   },
-  response(next, renew) {
-    return next().catch((response) => {
+  async response(next, renew) {
+    try {
+      return await next()
+    } catch (response) {
       const { foo } = this
 
       if (foo === undefined) {
@@ -71,38 +70,37 @@ const MyMiddlewareWithPrivateProperties: Middleware<{ foo: string }> = () => ({
 
       console.log(foo)
 
-      if (response.status() === 401) {
+      if (response instanceof Response && response.status() === 401) {
         return renew()
       }
-
-      return next()
-    })
+      return await next()
+    }
   },
 })
 
 const MyMiddlewareWithPrivateProperties2: Middleware = () => ({
-  prepareRequest(next, abort) {
-    return next().then((request) => {
-      // @ts-expect-error Not OK, not declared as PrivateProps:
-      this.foo = 'bar'
-      // @ts-expect-error Also not OK:
-      this['foo'] = 'baz'
-      return request.header('x-special') ? request : abort(new Error('"x-special" must be set!'))
-    })
+  async prepareRequest(next, abort) {
+    const request = await next()
+    // @ts-expect-error Not OK, not declared as PrivateProps:
+    this.foo = 'bar'
+    // @ts-expect-error Also not OK:
+    this['foo'] = 'baz'
+    return request.header('x-special') ? request : abort(new Error('"x-special" must be set!'))
   },
-  response(next, renew) {
-    return next().catch((response) => {
+  async response(next, renew) {
+    try {
+      return await next()
+    } catch (response) {
       // @ts-expect-error Not OK, doesn't exist:
       const { foo } = this
 
       console.log(foo)
 
-      if (response.status() === 401) {
+      if (response instanceof Response && response.status() === 401) {
         return renew()
       }
-
-      return next()
-    })
+      return await next()
+    }
   },
 })
 
