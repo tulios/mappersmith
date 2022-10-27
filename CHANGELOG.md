@@ -1,5 +1,10 @@
 # Changelog
 
+## UNRELEASED
+
+Added:
+  - `mappersmith`: A forged client now optionally accepts request context as its second argument #330
+
 ## 2.41.0
 
 Fixed:
