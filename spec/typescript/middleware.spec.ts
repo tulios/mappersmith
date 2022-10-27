@@ -45,6 +45,22 @@ const MyMiddlewareWithSecondArgument: Middleware = () => ({
   },
 })
 
+const MyMiddlewareReadingFinalRequest: Middleware = () => ({
+  async prepareRequest(next) {
+    const request = await next()
+    return request.enhance({}, { myFavoritePet: 'turtle' })
+  },
+  async response(next, _renew, finalRequest) {
+    const context = finalRequest().context<{ myFavoritePet: string }>()
+
+    if (context.myFavoritePet === 'turtle') {
+      console.log("Really? That's my favorite pet too!")
+    }
+
+    return await next()
+  },
+})
+
 const MyMiddlewareWithPrivateProperties: Middleware<{ foo: string }> = () => ({
   async prepareRequest(next, abort) {
     const request = await next()
@@ -113,6 +129,7 @@ const github = forge({
     MyMiddlewareWithSecondArgument,
     MyMiddlewareWithPrivateProperties,
     MyMiddlewareWithPrivateProperties2,
+    MyMiddlewareReadingFinalRequest,
   ],
   resources: {
     Status: {
