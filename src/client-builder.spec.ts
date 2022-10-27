@@ -170,4 +170,22 @@ describe('ClientBuilder', () => {
       ).not.toThrowError()
     })
   })
+
+  describe('request context', () => {
+    it('allows specifying the context of a request', async () => {
+      const manifest = getManifest()
+      const clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, configs)
+      const client = clientBuilder.build()
+      gatewayInstance.call.mockReturnValue(Promise.resolve('value'))
+      const response = await client.User.byId({ id: 1 }, { myContext: 'banana' })
+      expect(response).toEqual('value')
+      expect(gatewayClass).toHaveBeenCalledWith(expect.any(Request), configs.gatewayConfigs)
+      expect(gatewayInstance.call).toHaveBeenCalled()
+
+      const request: Request = gatewayClass.mock.calls[0][0]
+      expect(request).toBeInstanceOf(Request)
+      // For consumption within Middleware:
+      expect(request.context()).toEqual({ myContext: 'banana' })
+    })
+  })
 })

@@ -24,3 +24,11 @@ const github = forge({
 github.Status.lastMessage({ randomParam: 10, another: { foo: 'hi' } }).then((response) => {
   console.log(`status: ${response.data()}`)
 })
+
+github.Status.lastMessage(
+  { randomParam: 10, another: { foo: 'hi' } },
+  { myContext: 'something ' }
+).then((response) => {
+  const context = response.originalRequest.context<{ myContext: string }>()
+  console.log({ myContext: context.myContext })
+})

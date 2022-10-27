@@ -978,4 +978,44 @@ describe('Request', () => {
       })
     })
   })
+
+  describe('#context', () => {
+    const requestContext = {
+      myProp: 'myValue',
+    }
+
+    it('returns the specified context', async () => {
+      const request = new Request(methodDescriptor, requestParams, requestContext)
+      expect(request.context()).toEqual({
+        myProp: 'myValue',
+      })
+    })
+
+    describe('when enhancing a request', () => {
+      it('extends the specified context', async () => {
+        const extendedContext = {
+          myProp2: 'myValue2',
+        }
+        const request = new Request(methodDescriptor, requestParams, requestContext)
+        const enhanced = request.enhance({}, extendedContext)
+        expect(enhanced.context()).toEqual({
+          myProp: 'myValue',
+          myProp2: 'myValue2',
+        })
+      })
+
+      it('overrides any previously set values', async () => {
+        const extendedContext = {
+          myProp: 'myOverrideValue',
+          myProp2: 'myValue2',
+        }
+        const request = new Request(methodDescriptor, requestParams, requestContext)
+        const enhanced = request.enhance({}, extendedContext)
+        expect(enhanced.context()).toEqual({
+          myProp: 'myOverrideValue',
+          myProp2: 'myValue2',
+        })
+      })
+    })
+  })
 })

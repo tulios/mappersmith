@@ -6,12 +6,12 @@ import {
   ResourceTypeConstraint,
 } from './manifest'
 import { Response } from './response'
-import { Request } from './request'
+import { Request, RequestContext } from './request'
 import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
 import { Gateway } from './gateway'
 import type { Params } from './types'
 
-export type AsyncFunction = (params?: Params) => Promise<Response>
+export type AsyncFunction = (params?: Params, context?: RequestContext) => Promise<Response>
 
 export type AsyncFunctions<HashType> = {
   [Key in keyof HashType]: AsyncFunction
@@ -83,8 +83,8 @@ export class ClientBuilder<Resources extends ResourceTypeConstraint> {
     const initialResourceValue: Partial<Resource> = {}
 
     const resource = methods.reduce((resource, method) => {
-      const resourceMethod = (requestParams: Params) => {
-        const request = new Request(method.descriptor, requestParams)
+      const resourceMethod = (requestParams?: Params, context?: RequestContext) => {
+        const request = new Request(method.descriptor, requestParams, context)
         // `resourceName` can be `PropertyKey`, making this `string | number | Symbol`, therefore the string conversion
         // to stop type bleeding.
         return this.invokeMiddlewares(String(resourceName), method.name, request)
