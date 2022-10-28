@@ -103,7 +103,7 @@ describe('ClientBuilder middleware', () => {
     expect(responsePhase).toHaveBeenCalledWith(
       expect.any(Function),
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Request)
     )
   })
 
@@ -287,7 +287,7 @@ describe('ClientBuilder middleware', () => {
     expect(responsePhase).toHaveBeenCalledWith(
       expect.any(Function),
       expect.any(Function),
-      expect.any(Function)
+      expect.any(Request)
     )
   })
 

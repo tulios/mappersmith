@@ -50,8 +50,8 @@ const MyMiddlewareReadingFinalRequest: Middleware = () => ({
     const request = await next()
     return request.enhance({}, { myFavoritePet: 'turtle' })
   },
-  async response(next, _renew, finalRequest) {
-    const context = finalRequest().context<{ myFavoritePet: string }>()
+  async response(next, _renew, request) {
+    const context = request.context<{ myFavoritePet: string }>()
 
     if (context.myFavoritePet === 'turtle') {
       console.log("Really? That's my favorite pet too!")
@@ -160,7 +160,7 @@ export const test = async () => {
     const response = await myMiddleware.response(
       async () => originalResponse,
       renewFn,
-      () => originalResponse.request()
+      originalResponse.request()
     )
     const data = response.data()
     // Right now these are different types

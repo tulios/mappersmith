@@ -49,11 +49,11 @@ export interface MiddlewareDescriptor {
      */
     renew: RenewFn,
     /**
-     * Function that returns the final request object (after the whole middleware chain has prepared and all `prepareRequest` been executed).
+     * The final request object (after the whole middleware chain has prepared and all `prepareRequest` been executed).
      *
-     * Useful for example when you want to get access to the request object without invoking `next`
+     * Useful for example when you want to get access to the request without invoking `next`
      */
-    getFinalRequest: () => Request
+    request: Request
   ): Promise<Response>
 }
 

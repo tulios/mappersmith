@@ -27,7 +27,7 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
         .response?.(
           () => Promise.resolve(originalResponse),
           () => Promise.resolve(originalResponse),
-          () => originalResponse.request()
+          originalResponse.request()
         )
         .then((response) => {
           expect(response).toEqual(originalResponse)
@@ -46,7 +46,7 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
         .response?.(
           () => Promise.reject(originalResponse),
           () => Promise.resolve(originalResponse),
-          () => originalResponse.request()
+          originalResponse.request()
         )
         .then((response) => {
           done.fail(`Expected this promise to fail: ${response}`)
@@ -74,7 +74,7 @@ describe('Middleware / GlobalErrorHandlerMiddleware', () => {
         .response?.(
           () => Promise.reject(originalResponse),
           () => Promise.resolve(originalResponse),
-          () => originalResponse.request()
+          originalResponse.request()
         )
         .then((response) => {
           done.fail(`Expected this promise to fail: ${response}`)

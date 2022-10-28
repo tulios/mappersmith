@@ -106,8 +106,8 @@ describe('middleware', () => {
           const request = await next()
           return request.enhance({}, params)
         },
-        response: async (next, _renew, getFinalRequest) => {
-          const context = getFinalRequest().context()
+        response: async (next, _renew, request) => {
+          const context = request.context()
           spy(params)
           spy(context)
           const response = await next()
@@ -135,6 +135,29 @@ describe('middleware', () => {
       expect(spy).toHaveBeenNthCalledWith(4, { foo: 'mw1', ctx: 'mw3' })
       // mw1 applied
       expect(spy).toHaveBeenNthCalledWith(5, { foo: 'mw1' })
+      expect(spy).toHaveBeenNthCalledWith(6, { foo: 'mw1', ctx: 'mw3' })
+    })
+
+    it('invokes resource specific middleware first', async () => {
+      const spy = jest.fn()
+      const mw1 = createMiddleware(spy, { foo: 'mw1' })
+      const mw2 = createMiddleware(spy, { ctx: 'mw2' })
+      const mw3 = createMiddleware(spy, { ctx: 'mw3' })
+      const client = forge({
+        clientId: 'testMw',
+        middleware: [mw1, mw3],
+        host,
+        resources: { Resource: { post: { method: 'post', path, middleware: [mw2] } } },
+      })
+      await client.Resource.post()
+      // mw3 applied
+      expect(spy).toHaveBeenNthCalledWith(1, { ctx: 'mw3' })
+      expect(spy).toHaveBeenNthCalledWith(2, { foo: 'mw1', ctx: 'mw3' })
+      // mw1 applied
+      expect(spy).toHaveBeenNthCalledWith(3, { foo: 'mw1' })
+      expect(spy).toHaveBeenNthCalledWith(4, { foo: 'mw1', ctx: 'mw3' })
+      // mw2 applied
+      expect(spy).toHaveBeenNthCalledWith(5, { ctx: 'mw2' })
       expect(spy).toHaveBeenNthCalledWith(6, { foo: 'mw1', ctx: 'mw3' })
     })
   })
