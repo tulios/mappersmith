@@ -15,8 +15,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [
+            14.x,
+            16.x,
+            # Deal with unhandled promise rejection in integration test:
+            # ERROR [karma-server]: Error: error:0308010C:digital envelope routines::unsupported
+            # , 18.x
+          ]
 
     steps:
       - uses: actions/checkout@v2
