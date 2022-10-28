@@ -1,11 +1,5 @@
 # Changelog
 
-## UNRELEASED
-
-Added:
-  - `mappersmith`: A forged client now optionally accepts request context as its second argument #330
-  - `mappersmith`: Add support for accessing the final request object in middleware response phase #321
-
 ## 2.41.0
 
 Fixed:
@@ -14,6 +8,8 @@ Fixed:
 
 Added:
   - `mappersmith`: Accept `path` as a resource method param #328
+  - `mappersmith`: A forged client now optionally accepts request context as its second argument #330
+  - `mappersmith`: Add support for accessing the final request object in middleware response phase #321
 
 ## 2.40.0
 
