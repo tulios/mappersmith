@@ -29,6 +29,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
         - [mockRequest](#creating-middleware-optional-arguments-mock-request)
         - [Abort](#creating-middleware-optional-arguments-abort)
         - [Renew](#creating-middleware-optional-arguments-renew)
+        - [request](#creating-middleware-optional-arguments-request)
     - [Configuring middleware](#configuring-middleware)
       - [Resource level middleware](#resource-middleware)
       - [Client level middleware](#client-middleware)
@@ -603,6 +604,23 @@ configs.maxMiddlewareStackExecutionAllowed = 3
 ```
 
 If an infinite loop is detected, mappersmith will throw an error.
+
+##### <a name="creating-middleware-optional-arguments-request"></a> request
+
+The `response` phase can optionally receive an argument called "request". This argument is the final request (after the whole middleware chain has prepared and all `prepareRequest` been executed). This is useful in some scenarios, for example when you want to get access to the `request` without invoking `next`:
+
+```javascript
+const CircuitBreakerMiddleware = () => {
+  return () => ({
+    response(next, renew, request) {
+      // Creating the breaker required some information available only on `request`:
+      const breaker = createBreaker({ ..., timeout: request.timeout })
+      // Note: `next` is still wrapped:
+      return breaker.invoke(createExecutor(next))
+    }
+  })
+}
+```
 
 ### <a name="configuring-middleware"></a> Configuring middleware
 

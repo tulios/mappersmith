@@ -18,11 +18,43 @@ export interface MiddlewareDescriptor {
    */
   request?(request: Request): Promise<Request> | Request
   /**
-   * @since 2.27.0
-   * Replaced the request method
+   * Allows a middleware to tap into the prepare request phase
    */
-  prepareRequest(next: RequestGetter, abort: AbortFn): Promise<Request | void>
-  response(next: ResponseGetter, renew: RenewFn): Promise<Response>
+  prepareRequest(
+    /**
+     * This function must return a `Promise` resolving the `Request`.
+     *
+     * The method `enhance` can be used to generate a new request based on the previous one.
+     */
+    next: RequestGetter,
+    /**
+     * Function that can be used to abort the middleware execution early on and throw a custom error to the user.
+     */
+    abort: AbortFn
+  ): Promise<Request | void>
+  /**
+   * Allows a middleware to tap into the response phase
+   */
+  response(
+    /**
+     * This function must return a `Promise` resolving the `Response`.
+     *
+     * The method `enhance` can be used to generate a new response based on the previous one.
+     */
+    next: ResponseGetter,
+    /**
+     * Function that is used to rerun the middleware stack.
+     *
+     * Useful for example when automatically refreshing an expired access token.
+     */
+    renew: RenewFn,
+    /**
+     * The final request object (after the whole middleware chain has prepared and all `prepareRequest` been executed).
+     *
+     * Useful for example when you want to get access to the request without invoking `next`
+     */
+    request: Request
+  ): Promise<Response>
 }
 
 export interface MiddlewareParams {

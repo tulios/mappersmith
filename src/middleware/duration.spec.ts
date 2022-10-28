@@ -32,7 +32,8 @@ describe('Middleware / DurationMiddleware', () => {
 
     const finalResponse = await middleware.response?.(
       () => Promise.resolve(response),
-      () => Promise.resolve(response)
+      () => Promise.resolve(response),
+      finalRequest
     )
     const startedAt = finalResponse?.header('x-started-at')
     const endedAt = finalResponse?.header('x-ended-at')
@@ -53,7 +54,8 @@ describe('Middleware / DurationMiddleware', () => {
 
     const finalResponse = await middleware.response?.(
       () => Promise.resolve(response),
-      () => Promise.resolve(response)
+      () => Promise.resolve(response),
+      finalRequest
     )
     const data = finalResponse?.data()
     expect(data).toEqual('')

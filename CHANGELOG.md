@@ -4,6 +4,7 @@
 
 Added:
   - `mappersmith`: A forged client now optionally accepts request context as its second argument #330
+  - `mappersmith`: Add support for accessing the final request object in middleware response phase #321
 
 ## 2.41.0
 
