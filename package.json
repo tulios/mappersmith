@@ -1,67 +1,32 @@
 {
   "name": "mappersmith",
-  "version": "2.41.0-beta.1",
-  "description": "It is a lightweight rest client for node.js and the browser",
-  "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
-  "contributors": [
-    "Daniel Alves <alves.lopes.dan@gmail.com>",
-    "Roberto Soares <roberto.tech@gmail.com>",
-    "Mathias Klippinge <mathias.klippinge@gmail.com>"
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "integration-server": "node spec/integration/server.js",
-    "test:browser": "yarn jest --config jestSetup/configs/config.web.json",
-    "test:browser:integration": "cross-env NODE_ENV=test yarn karma start spec/integration/browser/karma.conf.js",
-    "test:browser:watch": "yarn jest --config jestSetup/configs/config.web.json --watchAll",
-    "test:node": "yarn jest --config jestSetup/configs/config.node.json",
-    "test:node:integration": "cross-env NODE_ENV=test cross-env NODE_PATH=. cross-env JASMINE_CONFIG_PATH=spec/integration/node/support/jasmine.json ts-node node_modules/jasmine/bin/jasmine",
-    "test:node:watch": "yarn jest --config jestSetup/configs/config.node.json --watchAll",
-    "test:service-worker": "yarn jest --config jestSetup/configs/config.sw.json",
-    "test:service-worker:watch": "yarn jest --config jestSetup/configs/config.sw.json --watchAll",
-    "test:types": "yarn tsc --noEmit",
-    "test:types:watch": "yarn test:types --watch",
-    "test:unit": "concurrently --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn integration-server\"",
-    "test": "yarn test:types && yarn prettier --check . && yarn lint && yarn test:unit",
-    "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
-    "build:browser": "yarn webpack --config webpack.conf.js",
-    "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
-    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser",
-    "build:clean": "rm -rf lib/ dist/ && yarn build",
-    "release": "./scripts/release.sh",
-    "build:project": "./scripts/build-project.sh",
-    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",
-    "copy:version:src": "echo {\\\"version\\\":\\\"${npm_package_version}\\\"} > src/version.json",
-    "lint": "yarn eslint \"{src,spec}/**/*.[j|t]s\""
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/tulios/mappersmith.git"
   },
-  "keywords": [
-    "rest",
-    "client",
-    "rest-client",
-    "isomorphic",
-    "browser",
-    "server",
-    "data-mapper",
-    "mappersmith"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/tulios/mappersmith/issues"
-  },
-  "homepage": "https://github.com/tulios/mappersmith",
-  "browser": {
-    "./lib/gateway/http.js": false,
-    "./src/gateway/http.js": false,
-    "./gateway/http.js": false
-  },
-  "volta": {
-    "node": "14.18.2",
-    "yarn": "1.22.11"
+  "scripts": {
+    "build": "yarn copy:version:src && yarn build:code && yarn build:typings && yarn copy:dts",
+    "build:clean": "rm -rf dist/ && yarn build && echo 'Done!'",
+    "build:code": "echo 'Building source...' && yarn babel packages -d dist/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts','**/dist','**/spec'",
+    "build:project": "./scripts/build-project.sh",
+    "build:typings": "echo 'Building type definitions...' && yarn tsc --project tsconfig.typings.json",
+    "copy:dts": "echo 'Copying type definitions...' && yarn copy:dts:core && yarn copy:dts:test",
+    "copy:dts:core": "copyfiles -u 1 \"packages/core/src/*.d.ts\" dist",
+    "copy:dts:test": "copyfiles -u 1 \"packages/test/src/*.d.ts\" dist",
+    "lint": "yarn eslint \"packages/**/{src,spec}/**/*.[j|t]s\"",
+    "release": "./scripts/release.sh",
+    "test": "yarn test:types && yarn prettier --check . && yarn lint && yarn test:all",
+    "test:all": "concurrently -c \"auto\" --success first --names \"test,server\" --kill-others \"node scripts/ci.js\" \"yarn workspace @mappersmith/core run integration-server\"",
+    "test:browser:integration": "cross-env NODE_ENV=test yarn karma start karma.conf.js",
+    "test:browser": "yarn jest --config jestSetup/configs/config.web.json",
+    "test:node:integration": "cross-env NODE_ENV=test yarn ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
+    "test:node": "yarn jest --config jestSetup/configs/config.node.json",
+    "test:service-worker": "yarn jest --config jestSetup/configs/config.sw.json",
+    "test:types": "yarn tsc --build"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -80,12 +45,9 @@
     "babel-jest": "^27.0.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-minify-replace": "^0.5.0",
-    "body-parser": "^1.19.0",
     "browser-resolve": "^2.0.0",
     "concurrently": "^7.0.0",
-    "cookie-parser": "^1.4.5",
     "copyfiles": "^2.4.1",
-    "core-js": "^3.21.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
@@ -94,30 +56,20 @@
     "eslint-plugin-n": "^14.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
-    "express": "^4.17.1",
-    "faux-jax-tulios": "^5.0.9",
-    "jasmine": "^4.0.0",
-    "jasmine-core": "^4.0.0",
     "jest": "^27.0.0",
-    "js-md5": "^0.7.3",
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^4.0.1",
     "karma-sourcemap-loader": "^0.3.8",
     "karma-spec-reporter": "^0.0.33",
     "karma-webpack": "<5.0.0",
-    "mockdate": "^3.0.5",
-    "multer": "^1.4.3",
-    "node-fetch": "^2.6.7",
     "prettier": "^2.5.0",
     "puppeteer": "^13.1.1",
-    "regenerator-runtime": "^0.13.9",
     "ts-jest": "^27.0.0",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "<5.0.0",
-    "webpack-cli": "^4.8.0",
-    "whatwg-fetch": "^3.6.2"
+    "webpack-cli": "^4.8.0"
   }
 }

@@ -1,0 +1,33 @@
+{
+  "name": "@mappersmith/test",
+  "version": "3.0.0-alpha.0",
+  "description": "Testing library for mappersmith",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tulios/mappersmith.git"
+  },
+  "keywords": [
+    "test",
+    "rest",
+    "client",
+    "rest-client",
+    "isomorphic",
+    "browser",
+    "server",
+    "data-mapper",
+    "mappersmith"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tulios/mappersmith/issues"
+  },
+  "homepage": "https://github.com/tulios/mappersmith/packages/test",
+  "dependencies": {
+    "@mappersmith/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  }
+}

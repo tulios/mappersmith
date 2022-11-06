@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "Core",
+      "path": "packages/core"
+    },
+    {
+      "name": "Test",
+      "path": "packages/test"
+    }
+  ],
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+  },
+  "settings": {
+    "jest.disabledWorkspaceFolders": ["root"]
+  }
+}

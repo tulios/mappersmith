@@ -1,0 +1,5 @@
+export { Fetch as FetchGateway } from './fetch'
+export { HTTP as HTTPGateway } from './http'
+export { XHR as XHRGateway } from './xhr'
+export { isTimeoutError, createTimeoutError } from './timeout-error'
+export type { HTTPRequestParams, HTTPGatewayConfiguration, GatewayConfiguration } from './types'

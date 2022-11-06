@@ -2,8 +2,12 @@
 node_modules/
 npm-debug.log
 yarn-error.log
-lib/
 coverage/
 # build info for incremental ts builds:
 tsconfig.tsbuildinfo
 .idea/
+/.yarn/*
+!/.yarn/plugins
+!/.yarn/releases
+dist/
+.vscode/

@@ -8,10 +8,10 @@ environment:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - yarn install --loglevel=warn
+  - yarn install
 
 test_script:
   - yarn run test
 
 # Disable automatic builds
-build: off
+build: false

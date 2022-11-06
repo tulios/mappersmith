@@ -6,9 +6,9 @@
   "rootDir": "../../",
   "testEnvironment": "jsdom",
   "timers": "fake",
-  "resolver": "<rootDir>/jestSetup/configs/resolver.js",
+
   "testMatch": ["**/?(*.)+(spec).[jt]s?(x)", "**/?(*.)+(web).(spec).[jt]s?(x)"],
-  "roots": ["<rootDir>/src/", "<rootDir>/spec/browser/"],
+  "roots": ["<rootDir>/packages/core/src", "<rootDir>/packages/core/spec/browser/"],
   "modulePaths": ["<rootDir>"],
-  "setupFiles": ["<rootDir>/jestSetup/index.js", "<rootDir>/jestSetup/web.js"]
+  "setupFiles": ["<rootDir>/jestSetup/index.ts", "<rootDir>/jestSetup/web.js"]
 }
