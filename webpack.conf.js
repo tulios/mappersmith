@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
 const webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
@@ -7,9 +8,14 @@ const env = process.env.NODE_ENV || 'development'
 const version = packageJson.version
 const link = packageJson.homepage
 
-let plugins = [new webpack.DefinePlugin({ VERSION: JSON.stringify(version) })]
+let plugins = [
+  new webpack.DefinePlugin({ VERSION: JSON.stringify(version) }),
+  new webpack.ProvidePlugin({
+    process: 'process/browser',
+  }),
+]
 
-const devTool = env === 'test' ? 'inline-source-map' : 'source-map'
+const devtool = env === 'test' ? 'inline-source-map' : 'source-map'
 
 if (env === 'production') {
   plugins = plugins.concat([
@@ -28,7 +34,7 @@ module.exports = {
     extensions: ['.ts', '.js'],
     modules: [path.join(__dirname, '/node_modules'), __dirname],
   },
-  entry: './src/index.js',
+  entry: './packages/core/src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist/'),
     filename: 'mappersmith.js',
@@ -50,14 +56,24 @@ module.exports = {
       }),
     ],
   },
-  plugins: plugins,
-  devtool: devTool,
+  plugins,
+  devtool,
   module: {
     rules: [
       {
         test: /\.[j|t]s$/,
         exclude: /node_modules/,
         use: 'babel-loader',
+        // use: {
+        //   loader: 'babel-loader',
+        //   options: {
+        //     presets: ['@babel/preset-env', '@babel/preset-typescript'],
+        //     plugins: [
+        //       '@babel/plugin-proposal-class-properties',
+        //       '@babel/proposal-object-rest-spread',
+        //     ],
+        //   },
+        // },
       },
     ],
   },

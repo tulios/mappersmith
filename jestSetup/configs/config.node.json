@@ -6,8 +6,12 @@
   "rootDir": "../../",
   "testEnvironment": "node",
   "timers": "fake",
-  "testMatch": ["**/?(*.)+(spec).[jt]s?(x)", "!**/?(*.)+(web).(spec).[jt]s?(x)"],
-  "roots": ["<rootDir>/src/", "<rootDir>/spec/node/"],
+  "testMatch": ["**/?(*.)+(spec).[jt]s", "!**/?(*.)+(web).(spec).[jt]s"],
+  "roots": [
+    "<rootDir>/packages/core/src",
+    "<rootDir>/packages/core/spec/node/",
+    "<rootDir>/packages/test/src"
+  ],
   "modulePaths": ["<rootDir>"],
-  "setupFiles": ["<rootDir>/jestSetup/index.js"]
+  "setupFiles": ["<rootDir>/jestSetup/index.ts"]
 }

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist/test",
+    "declaration": true,
+    "composite": true,
+    "allowJs": true
+  },
+  "include": ["src/**/*"]
+}

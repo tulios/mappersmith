@@ -1427,8 +1427,12 @@ Useful for testing a branch against local projects. Run the build step of the re
 
 ```sh
 yarn build:project
-cd lib
-yarn link
+```
+
+In remote project:
+
+```sh
+yarn link path/to/mappersmith/packages/core
 ```
 
 ### Release

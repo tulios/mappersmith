@@ -2,4 +2,4 @@
 set -euv
 
 sh -c ./scripts/build-project.sh
-sh -c "cd lib; npm publish"
+sh -c "cd dist/core; npm publish"

@@ -10,4 +10,12 @@ module.exports = {
     jasmine: true,
     jest: true,
   },
+  overrides: [
+    {
+      files: ['karma.conf.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
+  ],
 }

@@ -1,0 +1,509 @@
+import forge from '../../../src/index'
+import { getManifest } from '../../ts-helper'
+import {
+  MockAssert,
+  install as installMock,
+  uninstall as uninstallMock,
+  mockRequest,
+  mockClient,
+  unusedMocks,
+  m,
+} from '@mappersmith/test'
+
+describe('Test lib / mock request', () => {
+  let client
+
+  beforeEach(() => {
+    installMock()
+    client = forge(getManifest())
+  })
+
+  afterEach(() => {
+    uninstallMock()
+  })
+
+  it('returns a MockAssert object', () => {
+    const mock = mockRequest({
+      method: 'get',
+      url: 'http://example.org/users?sort=desc',
+      response: {
+        body: { ok3: true },
+      },
+    })
+
+    expect(mock instanceof MockAssert).toEqual(true)
+  })
+
+  it('defaults status 200 and automatically includes "application/json" for object responses', (done) => {
+    mockRequest({
+      method: 'get',
+      url: 'http://example.org/users?sort=desc',
+      response: {
+        body: { ok3: true },
+      },
+    })
+
+    client.User.all({ sort: 'desc' })
+      .then((response) => {
+        expect(response.request().method()).toEqual('get')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual({ ok3: true })
+        expect(response.headers()).toEqual(
+          expect.objectContaining({
+            'content-type': 'application/json',
+          })
+        )
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('accepts custom status, headers, and params', (done) => {
+    mockRequest({
+      url: 'http://example.org/users/16',
+      response: {
+        status: 201,
+        headers: { 'x-test-response': 'mock' },
+        body: { ok4: true },
+      },
+    })
+
+    client.User.byId({ id: 16 })
+      .then((response) => {
+        expect(response.status()).toEqual(201)
+        expect(response.headers()).toEqual(expect.objectContaining({ 'x-test-response': 'mock' }))
+        expect(response.data()).toEqual({ ok4: true })
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('triggers the catch block on http errors', (done) => {
+    mockRequest({
+      method: 'get',
+      url: 'http://example.org/users/15',
+      response: {
+        status: 503,
+        body: { error: true },
+      },
+    })
+
+    client.User.byId({ id: 15 })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`Expected this request to fail: ${error}`)
+      })
+      .catch((response) => {
+        expect(response.status()).toEqual(503)
+        expect(response.data()).toEqual({ error: true })
+        done()
+      })
+  })
+
+  it('works with different http methods', (done) => {
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      body: 'param1=A&param2=B',
+      response: {
+        body: { created: true },
+      },
+    })
+
+    client.Blog.post({ body: { param1: 'A', param2: 'B' } })
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual({ created: true })
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('works with text responses', (done) => {
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      response: {
+        body: 'just text!',
+      },
+    })
+
+    client.Blog.post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('works with buffer request body', (done) => {
+    const buffer = Buffer.from('xxx')
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      body: buffer,
+      response: {
+        body: 'just text!',
+      },
+    })
+
+    client.Blog.post({ body: buffer })
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('works with buffer response body', (done) => {
+    const buffer = Buffer.from('xxx')
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      response: {
+        body: buffer,
+      },
+    })
+
+    client.Blog.post()
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual(buffer)
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('accepts a matcher function as a body', (done) => {
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      body: (body) => body === 'ok',
+      response: {
+        body: 'just text!',
+      },
+    })
+
+    client.Blog.post({ body: 'ok' })
+      .then((response) => {
+        expect(response.request().method()).toEqual('post')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+
+    client.Blog.post({ body: 'false' })
+      .then((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`Expected this request to fail: ${error}`)
+      })
+      .catch(() => {
+        done()
+      })
+  })
+
+  it('matches the body params independent of order', (done) => {
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      body: { param1: 'value1', param2: 'value2', param3: { A: 1, B: 2 } },
+      response: {
+        body: 'just text!',
+      },
+    })
+
+    client.Blog.post({ body: { param1: 'value1', param2: 'value2', param3: { A: 1, B: 2 } } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+
+    client.Blog.post({ body: { param2: 'value2', param1: 'value1', param3: { B: 2, A: 1 } } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('accepts a matcher function as an url', (done) => {
+    mockRequest({
+      method: 'get',
+      url: m.stringMatching(/abc123def/),
+      response: {
+        body: 'just text!',
+      },
+    })
+
+    client.User.byId({ id: 'abc123def' })
+      .then((response) => {
+        expect(response.request().method()).toEqual('get')
+        expect(response.status()).toEqual(200)
+        expect(response.data()).toEqual('just text!')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('mockRequest by default matches on any body', (done) => {
+    mockRequest({
+      method: 'post',
+      url: 'http://example.org/blogs',
+      response: {
+        status: 201,
+        body: 'Anything, really',
+      },
+    })
+
+    client.Blog.post({ body: { title: 'Oompa', metadata: { date: '2022-01-22' } } })
+      .then((response) => {
+        expect(response.status()).toEqual(201)
+        expect(response.data()).toEqual('Anything, really')
+        done()
+      })
+      .catch((response) => {
+        const error = response.rawData ? response.rawData() : response
+        done(`test failed with promise error: ${error}`)
+      })
+  })
+
+  it('mockClient by default matches on any body', async () => {
+    const dynamicResponseData = { [new Date().getTime()]: 'hello' }
+    mockClient(client).resource('Blog').method('post').response(dynamicResponseData).assertObject()
+
+    const dynamicRequestBody = { date: new Date().getTime() }
+    const response = await client.Blog.post({ body: dynamicRequestBody })
+
+    expect(response.data()).toEqual(dynamicResponseData)
+  })
+
+  it('allows for response to be a function of request body', async () => {
+    mockClient(client)
+      .resource('Blog')
+      .method('post')
+      .with({
+        body: m.anything(),
+      })
+      .response((request) => request.body())
+      .assertObject()
+
+    const response = await client.Blog.post({ body: { true: false } })
+
+    expect(response.data()).toEqual({ true: false })
+  })
+
+  it('allows for response to be a function of request params', async () => {
+    mockClient(client)
+      .resource('User')
+      .method('byId')
+      .with({
+        id: m.anything(),
+      })
+      .response((request) => request.params())
+      .assertObject()
+
+    const response = await client.User.byId({ id: 123 })
+
+    expect(response.data()).toHaveProperty('id', 123)
+  })
+
+  it('allows for the status code to be a function of request body', async () => {
+    mockClient(client)
+      .resource('Blog')
+      .method('post')
+      .with({
+        body: m.anything(),
+      })
+      .status((request) => (request.body().created ? 201 : 200))
+      .assertObject()
+
+    const response = await client.Blog.post({ body: { created: true } })
+
+    expect(response.status()).toEqual(201)
+  })
+
+  it('allows for status code to be a function of request params', async () => {
+    mockClient(client)
+      .resource('User')
+      .method('byId')
+      .with({
+        id: m.anything(),
+      })
+      .status((request) => (request.params().id === 123 ? 200 : 404))
+      .assertObject()
+
+    const response = await client.User.byId({ id: 123 })
+
+    expect(response.status()).toEqual(200)
+  })
+
+  it('allows for header matchers to override default headers', async () => {
+    mockClient(client)
+      .resource('Feed')
+      .method('add')
+      .with({
+        body: m.anything(),
+        headers: m.anything(),
+      })
+      .status(200)
+      .assertObject()
+
+    const manifest = getManifest()
+
+    const clientWithoutHeaders = forge({
+      ...manifest,
+      resources: {
+        ...manifest.resources,
+        Feed: {
+          add: {
+            ...manifest.resources.Feed.add,
+            // We remove the headers so requests in this client won't include them,
+            // but that shouldn't matter because the mock has `headers: m.anything()`
+            headers: {},
+          },
+        },
+      },
+    })
+
+    const response = await clientWithoutHeaders.Feed.add({
+      headers: { 'x-any-other-header': false },
+    })
+
+    expect(response.status()).toEqual(200)
+  })
+
+  describe('unused mocks', () => {
+    it('returns count of all unused mockClients', async () => {
+      mockClient(client).resource('Blog').method('post')
+      mockClient(client).resource('Blog').method('post')
+      expect(unusedMocks()).toEqual(2)
+    })
+
+    it('returns count of unused mockClients when mock is being used', async () => {
+      mockClient(client).resource('Blog').method('post')
+      mockClient(client)
+        .resource('Blog')
+        .method('post')
+        .with({
+          body: m.anything(),
+        })
+        .response((request) => request.body())
+        .assertObject()
+
+      expect(unusedMocks()).toEqual(2)
+      await client.Blog.post({ body: { true: false } })
+      expect(unusedMocks()).toEqual(1)
+    })
+
+    it('returns count of all unused mockRequest', async () => {
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+
+      expect(unusedMocks()).toEqual(2)
+    })
+
+    it('returns count of unused mockRequest when mock is being used', async () => {
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+
+      expect(unusedMocks()).toEqual(2)
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+    })
+
+    it('should return same count if same method is being mocked twice and called twice', async () => {
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+    })
+
+    it('should return count 0 when all mocks are used', async () => {
+      expect(unusedMocks()).toEqual(0)
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=desc',
+        response: { body: { ok3: true } },
+      })
+      mockRequest({
+        method: 'get',
+        url: 'http://example.org/users?sort=asc',
+        response: { body: { ok3: true } },
+      })
+
+      expect(unusedMocks()).toEqual(2)
+      await client.User.all({ sort: 'desc' })
+      expect(unusedMocks()).toEqual(1)
+
+      await client.User.all({ sort: 'asc' })
+      expect(unusedMocks()).toEqual(0)
+    })
+  })
+})
