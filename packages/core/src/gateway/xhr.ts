@@ -1,10 +1,8 @@
 import { Gateway, Method } from '../gateway'
 import Response from '../response'
 import { Headers } from '../types'
-import { assign, parseResponseHeaders, btoa } from '../utils'
+import { assign, parseResponseHeaders, btoa as toBase64 } from '../utils'
 import { createTimeoutError } from './timeout-error'
-
-const toBase64 = window.btoa || btoa
 
 export class XHR extends Gateway {
   private canceled = false
