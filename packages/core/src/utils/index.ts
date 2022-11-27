@@ -123,6 +123,10 @@ export const parseResponseHeaders = (headerStr: string) => {
 }
 
 export const lowerCaseObjectKeys = (obj: Hash) => {
+  if (!isPlainObject(obj)) {
+    return obj
+  }
+
   return Object.keys(obj).reduce((target, key) => {
     target[key.toLowerCase()] = obj[key]
     return target

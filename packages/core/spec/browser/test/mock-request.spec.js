@@ -376,6 +376,24 @@ describe('Test lib / mock request', () => {
     expect(response.status()).toEqual(200)
   })
 
+  it('matches header keys case insensitively', async () => {
+    const headers = { giftId: '123abc' }
+
+    const resourceMock = mockRequest({
+      method: 'get',
+      url: 'http://example.org/users/16',
+      headers,
+      response: {
+        status: 200,
+        body: 'You have successfully adopted a Wood Turtle!',
+      },
+    })
+    const response = await client.User.byId({ id: 16, headers })
+
+    expect(response.data()).toEqual('You have successfully adopted a Wood Turtle!')
+    expect(resourceMock.callsCount()).toEqual(1)
+  })
+
   it('allows for header matchers to override default headers', async () => {
     mockClient(client)
       .resource('Feed')

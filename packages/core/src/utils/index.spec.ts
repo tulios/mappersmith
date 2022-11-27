@@ -124,6 +124,13 @@ describe('utils', () => {
   })
 
   describe('#lowerCaseObjectKeys', () => {
+    it('returns the original entry if it is not an object', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(lowerCaseObjectKeys('a string' as any)).toEqual('a string')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(lowerCaseObjectKeys(123 as any)).toEqual(123)
+    })
+
     it('returns a new object with all keys in lowercase', () => {
       const obj = { ABC: 1, DeF: 2, ghI: 3 }
       expect(lowerCaseObjectKeys(obj)).toEqual({ abc: 1, def: 2, ghi: 3 })
