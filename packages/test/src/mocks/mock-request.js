@@ -1,5 +1,5 @@
 import MockAssert from './mock-assert'
-import { Response, isPlainObject, clone } from '@mappersmith/core'
+import { Response, isPlainObject, clone, lowerCaseObjectKeys } from '@mappersmith/core'
 import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
 
 /**
@@ -23,7 +23,7 @@ function MockRequest(id, props) {
   this.body = this.bodyFunction ? props.body : toSortedQueryString(props.body)
   this.headersFunction = typeof props.headers === 'function'
   this.headers = props.headersFunction ? props.headers : toSortedQueryString(props.headers)
-  this.headersObject = props.headers
+  this.headersObject = lowerCaseObjectKeys(props.headers)
   this.responseHeaders = props.response.headers || {}
   this.setResponseData(props.response.body)
   this.responseHandler = props.response.handler
