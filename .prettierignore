@@ -7,4 +7,3 @@ packages/core/src/version.json
 .github
 .prettierrc
 package.json
-appveyor.yml
