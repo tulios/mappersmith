@@ -9,7 +9,6 @@ describe('Middleware / EncodeJson', () => {
   let middleware: Partial<MiddlewareDescriptor>
   const params: MiddlewareParams = {
     clientId: 'testClient',
-    context: {},
     resourceMethod: 'bar',
     resourceName: 'Foo',
   }

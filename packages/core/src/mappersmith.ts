@@ -1,8 +1,6 @@
 import ClientBuilder, { Client } from './client-builder'
-import { assign } from './utils'
 import * as Version from './version.json'
 import type { GlobalConfigs, ManifestOptions, ResourceTypeConstraint } from './manifest'
-import type { Context } from './middleware'
 
 export { Response } from './response'
 // New exports since v3:
@@ -17,7 +15,6 @@ export { Gateway } from './gateway'
 export const version = Version.version
 
 export const configs: GlobalConfigs = {
-  context: {},
   middleware: [],
   fetch: typeof fetch === 'function' ? fetch : null,
 
@@ -116,17 +113,6 @@ export const configs: GlobalConfigs = {
       credentials: 'omit',
     },
   },
-}
-
-/**
- * @deprecated Shouldn't be used, not safe for concurrent use.
- * @param {Object} context
- */
-export const setContext = (context: Context) => {
-  console.warn(
-    'The use of setContext is deprecated - you need to find another way to pass data between your middlewares.'
-  )
-  configs.context = assign(configs.context, context)
 }
 
 export default function forge<Resources extends ResourceTypeConstraint>(

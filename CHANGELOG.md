@@ -6,6 +6,9 @@ Fixed:
 
 - `@mappersmith/test`: Ensure case sensitive header keys are matched properly
 
+Removed:
+- `@mappersmith/core`: Remove deprecated `setContext` and injection of `context` in middleware params.
+
 Changed:
 
 - `@mappersmith/core`: No longer accepts `Promise` configuration, instead relying on native Promise implementation to be available.

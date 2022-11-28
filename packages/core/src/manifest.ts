@@ -3,10 +3,9 @@ import { assign } from './utils'
 import type { ParameterEncoderFn } from './types'
 import type { GatewayConfiguration } from './gateway/types'
 import type { Gateway } from './gateway'
-import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware'
+import { Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware'
 
 export interface GlobalConfigs {
-  context: Context
   middleware: Middleware[]
   fetch: typeof fetch | null
   gateway: typeof Gateway | null
@@ -66,12 +65,11 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
   public clientId: string | null
   public gatewayConfigs: GatewayConfiguration
   public resources: Resources
-  public context: Context
   public middleware: Middleware[]
 
   constructor(
     options: ManifestOptions<Resources>,
-    { gatewayConfigs, middleware = [], context = {} }: GlobalConfigs
+    { gatewayConfigs, middleware = [] }: GlobalConfigs
   ) {
     this.host = options.host
     this.allowResourceHostOverride = options.allowResourceHostOverride || false
@@ -84,7 +82,6 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
     this.clientId = options.clientId || null
     this.gatewayConfigs = assign({}, gatewayConfigs, options.gatewayConfigs)
     this.resources = options.resources || ({} as Resources)
-    this.context = context
 
     // TODO: deprecate obj.middlewares in favor of obj.middleware
     const clientMiddleware = options.middleware || options.middlewares || []
@@ -140,7 +137,6 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
    *   @param {String|Null} args.clientId
    *   @param {String} args.resourceName
    *   @param {String} args.resourceMethod
-   *   @param {Object} args.context
    *   @param {Boolean} args.mockRequest
    *
    * @return {Array<Object>}
@@ -163,7 +159,6 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
 
       const middlewareParams = assign(args, {
         clientId: this.clientId,
-        context: assign({}, this.context),
       })
 
       return assign(defaultDescriptor, middlewareFactory(middlewareParams))

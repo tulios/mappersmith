@@ -1,4 +1,4 @@
-import forge, { setContext, configs } from '../../src/mappersmith'
+import forge, { configs } from '../../src/mappersmith'
 import Request from '../../src/request'
 import Response from '../../src/response'
 import {
@@ -41,7 +41,7 @@ describe('ClientBuilder middleware', () => {
     resetCountPrepareRequestMiddleware()
   })
 
-  it('receives an object with "resourceName", "resourceMethod" and empty "context"', async () => {
+  it('receives an object with "resourceName", "resourceMethod"', async () => {
     const middleware = jest.fn()
     manifest.middleware = [middleware]
 
@@ -50,7 +50,6 @@ describe('ClientBuilder middleware', () => {
       expect.objectContaining({
         resourceName: 'User',
         resourceMethod: 'byId',
-        context: {},
         clientId: null,
       })
     )
@@ -63,27 +62,6 @@ describe('ClientBuilder middleware', () => {
 
     await client.User.byId({ id: 1 })
     expect(middleware).toBeCalledWith(expect.objectContaining({ clientId: 'someClient' }))
-  })
-
-  it('receives current context', async () => {
-    const middleware = jest.fn()
-    manifest.middleware = [middleware]
-
-    const client = createClient()
-
-    setContext({ foo: 'bar' })
-    await client.User.byId({ id: 1 })
-
-    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
-
-    const client2 = createClient()
-    await client2.User.byId({ id: 1 })
-    expect(middleware).lastCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
-    expect(middleware).toHaveBeenCalledTimes(2)
-
-    setContext({ foo: 'baz' })
-    await client.User.byId({ id: 1 })
-    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'baz' } }))
   })
 
   it('calls request and response phase', async () => {

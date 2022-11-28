@@ -1,6 +1,5 @@
 import type { Request } from '../request'
 import type { Response } from '../response'
-export type Context = object
 export type RequestGetter = () => Promise<Request>
 export type ResponseGetter = () => Promise<Response>
 export type AbortFn = (error: Error) => void
@@ -52,7 +51,6 @@ export interface MiddlewareDescriptor {
 }
 export interface MiddlewareParams {
   readonly clientId: string | null
-  readonly context: Context
   readonly resourceMethod: string
   readonly resourceName: string
   readonly mockRequest?: boolean

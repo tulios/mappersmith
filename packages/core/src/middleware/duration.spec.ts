@@ -8,7 +8,6 @@ describe('Middleware / DurationMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>
   const params: MiddlewareParams = {
     clientId: 'testClient',
-    context: {},
     resourceMethod: 'bar',
     resourceName: 'Foo',
   }
