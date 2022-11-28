@@ -65,7 +65,8 @@ export function respondWith(responseObj, assertsCallback) {
 }
 
 export const headerMiddleware = ({ resourceName, resourceMethod }) => ({
-  request(request) {
+  async prepareRequest(next) {
+    const request = await next()
     return request.enhance({
       headers: {
         'x-middleware-phase': 'request',
@@ -111,7 +112,8 @@ export const headerMiddlewareV2 = ({ resourceName, resourceMethod }) => ({
 })
 
 export const asyncHeaderMiddleware = ({ resourceName, resourceMethod }) => ({
-  async request(request) {
+  async prepareRequest(next) {
+    const request = await next()
     return request.enhance({
       headers: {
         'x-middleware-phase': 'request',
@@ -153,10 +155,6 @@ export const resetCountMiddleware = () => {
 }
 
 export const countMiddleware = () => ({
-  request(request) {
-    return request
-  },
-
   response(next) {
     return next().then((response) => {
       countMiddlewareStack.push(response.data())
