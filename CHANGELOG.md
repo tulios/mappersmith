@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.0.0
+
+Fixed:
+- `@mappersmith/test`: Ensure case sensitive header keys are matched properly
+
+Changed:
+- `@mappersmith/core`: Stop using `window.btoa` and use internal implementation instead.
+- `@mappersmith/*`: The project no longer produces a web artefact.
+- `mappersmith`: Rename package to `@mappersmith/core`
+- `mappersmith/test`: Rename package to `@mappersmith/test`
+
 ## 2.41.0
 
 Fixed:
