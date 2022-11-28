@@ -534,14 +534,15 @@ const AccessTokenMiddleware = () => {
   let accessToken = null
 
   return () => ({
-    request(request) {
-      return Promise
-        .resolve(accessToken)
+    prepareRequest(next) {
+      return Promise.resolve(accessToken)
         .then((token) => token || fetchAccessToken())
         .then((token) => {
           accessToken = token
-          return request.enhance({
-            headers: { 'Authorization': `Token ${token}` }
+          return next().then((request) => {
+            return request.enhance({
+              headers: { Authorization: `Token ${token}` },
+            })
           })
         })
     },
@@ -839,7 +840,8 @@ Example:
 
 ```javascript
 const MyMiddleware = () => ({
-  request(request) {
+  async prepareRequest(next) {
+    const request = await next()
     return request.enhance({
       headers: { 'x-special-request': '->' }
     })
@@ -857,7 +859,8 @@ The request phase can be asynchronous, just return a promise resolving a request
 
 ```javascript
 const MyMiddleware = () => ({
-  request(request) {
+  async prepareRequest(next) {
+    const request = await next()
     return Promise.resolve(
       request.enhance({
         headers: { 'x-special-token': 'abc123' }
