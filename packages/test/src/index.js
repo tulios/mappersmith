@@ -94,7 +94,7 @@ export const unusedMocks = () => {
  */
 export const lookupResponseAsync = (request) => {
   const mocksPendingMiddlewareExecution = store.filter((mock) => mock.pendingMiddlewareExecution)
-  return configs.Promise.all(
+  return Promise.all(
     mocksPendingMiddlewareExecution.map((mock) => mock.executeMiddlewareStack())
   ).then(() => lookupResponse(request))
 }

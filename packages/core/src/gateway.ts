@@ -1,4 +1,4 @@
-import { Request, Response, configs as defaultConfigs } from './mappersmith'
+import { Request, Response } from './mappersmith'
 import { isTimeoutError } from './gateway/timeout-error'
 import { isPlainObject, performanceNow, toQueryString } from './utils'
 import type { Primitive, GatewayConfiguration } from '@mappersmith/core'
@@ -59,10 +59,7 @@ export class Gateway {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   call(): Promise<any> {
     const timeStart = performanceNow()
-    if (!defaultConfigs.Promise) {
-      throw new Error('[Mappersmith] Promise not configured (configs.Promise)')
-    }
-    return new defaultConfigs.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.successCallback = (response) => {
         response.timeElapsed = performanceNow() - timeStart
         resolve(response)

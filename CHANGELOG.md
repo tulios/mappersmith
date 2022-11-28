@@ -8,6 +8,7 @@ Fixed:
 
 Changed:
 
+- `@mappersmith/core`: No longer accepts `Promise` configuration, instead relying on native Promise implementation to be available.
 - `@mappersmith/core`: Stop using `window.btoa` and use internal implementation instead.
 - `@mappersmith/*`: The project no longer produces a web artefact.
 - `mappersmith`: Rename package to `@mappersmith/core`

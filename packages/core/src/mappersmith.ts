@@ -19,7 +19,6 @@ export const version = Version.version
 export const configs: GlobalConfigs = {
   context: {},
   middleware: [],
-  Promise: typeof Promise === 'function' ? Promise : null,
   fetch: typeof fetch === 'function' ? fetch : null,
 
   /**

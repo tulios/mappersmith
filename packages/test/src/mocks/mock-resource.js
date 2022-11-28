@@ -1,4 +1,4 @@
-import { Request, configs } from '@mappersmith/core'
+import { Request } from '@mappersmith/core'
 import MockRequest from './mock-request'
 
 const VALUE_NOT_MATCHED = '<MAPPERSMITH_VALUE_NOT_MATCHED>'
@@ -220,10 +220,10 @@ MockResource.prototype = {
     const abort = (error) => {
       throw error
     }
-    const getInitialRequest = () => configs.Promise.resolve(initialRequest)
+    const getInitialRequest = () => Promise.resolve(initialRequest)
     const prepareRequest = middleware.reduce(
       (next, middleware) => () =>
-        configs.Promise.resolve().then(() => middleware.prepareRequest(next, abort)),
+        Promise.resolve().then(() => middleware.prepareRequest(next, abort)),
       getInitialRequest
     )
 

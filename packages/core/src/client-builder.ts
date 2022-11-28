@@ -40,7 +40,6 @@ const isFactoryConfigured = <T>(factory: () => T | null): factory is () => T => 
  * @param {Function} GatewayClassFactory - factory function that returns a gateway class
  */
 export class ClientBuilder<Resources extends ResourceTypeConstraint> {
-  public Promise: PromiseConstructor
   public manifest: Manifest<Resources>
   public GatewayClassFactory: () => typeof Gateway
   public maxMiddlewareStackExecutionAllowed: number
@@ -58,11 +57,6 @@ export class ClientBuilder<Resources extends ResourceTypeConstraint> {
       throw new Error('[Mappersmith] gateway class not configured (configs.gateway)')
     }
 
-    if (!configs.Promise) {
-      throw new Error('[Mappersmith] Promise not configured (configs.Promise)')
-    }
-
-    this.Promise = configs.Promise
     this.manifest = new Manifest(manifestDefinition, configs)
     this.GatewayClassFactory = GatewayClassFactory
     this.maxMiddlewareStackExecutionAllowed = configs.maxMiddlewareStackExecutionAllowed
@@ -111,14 +105,14 @@ export class ClientBuilder<Resources extends ResourceTypeConstraint> {
       abortExecution: false,
     }
 
-    const getInitialRequest = () => this.Promise.resolve(initialRequest)
+    const getInitialRequest = () => Promise.resolve(initialRequest)
     const chainRequestPhase = (next: RequestGetter, middleware: MiddlewareDescriptor) => () => {
       const abort = (error: Error) => {
         requestPhaseFailureContext.abortExecution = true
         throw error
       }
 
-      return this.Promise.resolve()
+      return Promise.resolve()
         .then(() => middleware.prepareRequest(next, abort))
         .then((request: unknown) => {
           if (request instanceof Request) {
@@ -184,7 +178,7 @@ export class ClientBuilder<Resources extends ResourceTypeConstraint> {
           return execute()
         })
 
-    return new this.Promise<Response>((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
       executeMiddlewareStack()
         .then((response) => resolve(response))
         .catch(reject)
