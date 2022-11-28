@@ -458,7 +458,7 @@ describe('Test lib / mock resources', () => {
     })
   })
 
-  describe('when client is using middlewares', () => {
+  describe('when client is using middleware', () => {
     let params
 
     beforeEach(() => {
@@ -473,7 +473,7 @@ describe('Test lib / mock resources', () => {
       }
     })
 
-    it('executes the middlewares to modify the request and response', (done) => {
+    it('executes the middleware to modify the request and response', (done) => {
       mockClient(client)
         .resource('Blog')
         .method('post')
@@ -495,7 +495,7 @@ describe('Test lib / mock resources', () => {
         })
     })
 
-    it('executes async middlewares', (done) => {
+    it('executes async middleware', (done) => {
       client = forge(getManifest([EncodeJsonMiddleware(), headerMiddlewareV2]))
 
       mockClient(client)
@@ -536,7 +536,7 @@ describe('Test lib / mock resources', () => {
       }
     })
 
-    it('executes the middlewares to modify the request and response', async () => {
+    it('executes the middleware to modify the request and response', async () => {
       await mockClient(client)
         .resource('Blog')
         .method('post')

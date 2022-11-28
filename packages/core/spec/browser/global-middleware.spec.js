@@ -62,7 +62,7 @@ describe('when global middleware is present', () => {
       client = forge(manifest)
     })
 
-    it('invokes middlewares in correct order', async () => {
+    it('invokes middleware in correct order', async () => {
       await client.User.byId({ id: 1 })
 
       expect(globalMiddleware).toHaveBeenCalled()
