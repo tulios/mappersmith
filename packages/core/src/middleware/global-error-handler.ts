@@ -1,6 +1,5 @@
 import type { Response } from '../response'
 import type { Middleware } from './index'
-import { configs } from '../mappersmith'
 
 export type ErrorHandlerMiddlewareCallback = (response: Response) => boolean
 let handler: ErrorHandlerMiddlewareCallback | null = null
@@ -17,11 +16,7 @@ export const GlobalErrorHandlerMiddleware = (): Middleware =>
   function GlobalErrorHandlerMiddleware() {
     return {
       response(next) {
-        if (!configs.Promise) {
-          return next()
-        }
-
-        return new configs.Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           next()
             .then((response) => resolve(response))
             .catch((response) => {

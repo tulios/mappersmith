@@ -18,7 +18,6 @@ describe('ClientBuilder', () => {
     configs = {
       context: {},
       middleware: [],
-      Promise,
       fetch,
       maxMiddlewareStackExecutionAllowed: 2,
       gateway: null,
@@ -130,18 +129,6 @@ describe('ClientBuilder', () => {
       // @ts-expect-error Must override TS warning:
       expect(() => new ClientBuilder(manifest, null)).toThrowError(
         '[Mappersmith] gateway class not configured (configs.gateway)'
-      )
-    })
-  })
-
-  describe('when Promise is not defined', () => {
-    it('raises error', () => {
-      const manifest = getManifest()
-      const badConfig = { ...configs }
-      // @ts-expect-error Must override TS warning:
-      delete badConfig['Promise']
-      expect(() => new ClientBuilder(manifest, GatewayClassFactory, badConfig)).toThrowError(
-        '[Mappersmith] Promise not configured (configs.Promise)'
       )
     })
   })

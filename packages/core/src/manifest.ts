@@ -8,7 +8,6 @@ import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './m
 export interface GlobalConfigs {
   context: Context
   middleware: Middleware[]
-  Promise: PromiseConstructor | null
   fetch: typeof fetch | null
   gateway: typeof Gateway | null
   gatewayConfigs: GatewayConfiguration
