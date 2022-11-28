@@ -16,6 +16,8 @@ Removed:
 Changed:
 
 - `@mappersmith/core`: No longer accepts `Promise` configuration, instead relying on native Promise implementation to be available.
+- `@mappersmith/core`: `Request.prototype.body` now respects `content-type` header and returns a JSON parsed result if the `content-type` is in the `+json` family. If you want the raw body without transformation, use `Request.prototype.rawBody` instead.
+- `@mappersmith/core`: No longer accepts `Promise` configuration, instead relying on native Promise implementation to be available.
 - `@mappersmith/core`: Stop using `window.btoa` and use internal implementation instead.
 - `@mappersmith/*`: The project no longer produces a web artefact.
 - `mappersmith`: Rename package to `@mappersmith/core`
@@ -148,13 +150,9 @@ Refactored:
 ## 2.35.0
 
 Fixed:
-<<<<<<< HEAD
 
 - Respect `allowResourceHostOverride` configuration in middlewares #240
-- # A successful middleware should no longer overwriting a previous middleware's `error` #230
-  - Respect `allowResourceHostOverride` configuration in middleware #240
-  - A successful middleware should no longer overwriting a previous middleware's `error` #230
-    > > > > > > > 07c80e5 (Remove middlewares alias in favor of middleware (#352))
+- A successful middleware should no longer overwriting a previous middleware's `error` #230
 
 Added:
 
@@ -461,23 +459,13 @@ Deprecated:
 
 ## 2.0.1
 
-<<<<<<< HEAD
-
 - bugfix: Send `resourceName` and `resourceMethod` when running the test lib
 - Add flag (`mockRequest`) when executing the middlewares from the test lib
 
 ## 2.0.0
 
-- Expose `resourceName` and `resourceMethod` to middlewares
-- # Features from 2.0.0-rc1 to 2.0.0-rc7
-  - bugfix: Send `resourceName` and `resourceMethod` when running the test lib
-  - Add flag (`mockRequest`) when executing the middleware from the test lib
-
-## 2.0.0
-
 - Expose `resourceName` and `resourceMethod` to middleware
 - Features from 2.0.0-rc1 to 2.0.0-rc7
-  > > > > > > > 07c80e5 (Remove middlewares alias in favor of middleware (#352))
 
 ## 2.0.0-rc7
 
@@ -488,11 +476,8 @@ Deprecated:
 
 ## 2.0.0-rc6
 
-<<<<<<< HEAD
-
-- # bugfix: `MockClient` should use the same middlewares configured in the client #37
-  - bugfix: `MockClient` should use the same middleware configured in the client #37
-    > > > > > > > 07c80e5 (Remove middlewares alias in favor of middleware (#352))
+- bugfix: `MockClient` should use the same middlewares configured in the client #37
+- bugfix: `MockClient` should use the same middleware configured in the client #37
 
 ## 2.0.0-rc5
 

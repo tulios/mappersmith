@@ -20,7 +20,7 @@ export const EncodeJsonMiddleware = (): Middleware =>
       async prepareRequest(next) {
         const request = await next()
         try {
-          const body = request.body()
+          const body = request.rawBody()
           const contentType = request.header('content-type')
 
           if (body) {

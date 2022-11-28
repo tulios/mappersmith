@@ -94,7 +94,7 @@ export class Gateway {
   }
 
   prepareBody(method: string, headers: Record<string, Primitive>) {
-    let body = this.request.body()
+    let body = this.request.rawBody()
 
     if (this.shouldEmulateHTTP()) {
       body = body || {}

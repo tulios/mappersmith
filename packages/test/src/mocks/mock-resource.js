@@ -116,7 +116,7 @@ MockResource.prototype = {
       this.mockRequest = new MockRequest(this.id, {
         method: finalRequest.method(),
         url: this.generateUrlMatcher(finalRequest),
-        body: finalRequest.body(),
+        body: finalRequest.rawBody(),
         headers: finalRequest.headers(),
         response: {
           status: responseStatus,
@@ -160,7 +160,7 @@ MockResource.prototype = {
       if (this.mockRequest) {
         const urlMatcher = this.generateUrlMatcher(finalRequest)
         this.mockRequest.url = urlMatcher
-        this.mockRequest.body = finalRequest.body()
+        this.mockRequest.body = finalRequest.rawBody()
         this.pendingMiddlewareExecution = false
       }
     })

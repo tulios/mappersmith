@@ -161,7 +161,7 @@ export const m = {
 
 const requestToLog = (request) =>
   `"${request.method().toUpperCase()} ${request.url()}" (body: "${toQueryString(
-    request.body()
+    request.rawBody()
   )}"; headers: "${toQueryString(request.headers())}")`
 const mockToLog = (requestMock) =>
   `"${requestMock.method.toUpperCase()} ${requestMock.url}" (body: "${

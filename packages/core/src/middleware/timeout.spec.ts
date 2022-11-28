@@ -4,7 +4,7 @@ import { requestFactory } from '@mappersmith/test'
 
 const abort: AbortFn = () => ({})
 
-describe('Middleware / Timeout', () => {
+describe('TimeoutMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>
   const params: MiddlewareParams = {
     clientId: 'testClient',
