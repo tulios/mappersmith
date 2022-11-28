@@ -780,8 +780,6 @@ const client = forge({
 
 This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default on requests with response statuses >= 500 will be retried.
 
-##### v2
-
 It's possible to configure the header names and parameters used in the calculation by providing a configuration object when creating the middleware.
 
 If no configuration is passed when creating the middleware then the defaults will be used.
@@ -803,37 +801,6 @@ const retryConfigs = {
 const client = forge({
   middleware: [ Retry(retryConfigs) ],
   /* ... */
-})
-```
-
-##### v1 (deprecated)
-
-The v1 retry middleware is now deprecated as it relies on global configuration which can cause issues if you need to have multiple different configurations.
-
-```javascript
-import Retry from 'mappersmith/middleware/retry'
-
-const client = forge({
-  middleware: [ Retry ],
-  /* ... */
-})
-```
-
-It's possible to configure the header names and parameters used in the calculation by calling the deprecated setRetryConfigs method.
-
-```javascript
-import { setRetryConfigs } from 'mappersmith/middleware/retry'
-
-// Using the default values as an example
-setRetryConfigs({
-  headerRetryCount: 'X-Mappersmith-Retry-Count',
-  headerRetryTime: 'X-Mappersmith-Retry-Time',
-  maxRetryTimeInSecs: 5,
-  initialRetryTimeInSecs: 0.1,
-  factor: 0.2, // randomization factor
-  multiplier: 2, // exponential factor
-  retries: 5, // max retries
-  validateRetry: (response) => response.responseStatus >= 500 // a function that returns true if the request should be retried
 })
 ```
 

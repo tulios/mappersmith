@@ -13,7 +13,6 @@ export interface MethodDescriptorParams {
   hostAttr?: string
   method?: string
   middleware?: Array<Middleware>
-  middlewares?: Array<Middleware>
   params?: Params
   path: string | ((args: RequestParams) => string)
   pathAttr?: string
@@ -35,7 +34,6 @@ export interface MethodDescriptorParams {
  *   @param {String} params.hostAttr - host attribute name. Default: 'host'
  *   @param {String} params.method
  *   @param {Middleware[]} params.middleware
- *   @param {Middleware[]} params.middlewares - alias for middleware
  *   @param {RequestParams} params.params
  *   @param {String|Function} params.path
  *   @param {String} params.pathAttr. Default: 'path'
@@ -78,7 +76,7 @@ export class MethodDescriptor {
     this.pathAttr = params.pathAttr || 'path'
     this.timeoutAttr = params.timeoutAttr || 'timeout'
 
-    const resourceMiddleware = params.middleware || params.middlewares || []
+    const resourceMiddleware = params.middleware || []
     this.middleware = resourceMiddleware
   }
 }

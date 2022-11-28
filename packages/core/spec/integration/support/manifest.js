@@ -1,7 +1,7 @@
 import { LogMiddleware } from '../../../src/middleware/log'
 import { CsrfMiddleware } from '../../../src/middleware/csrf'
 
-export default function createManifest(host = null, middlewares = []) {
+export default function createManifest(host = null, middleware = []) {
   return {
     host,
     resources: {
@@ -35,6 +35,6 @@ export default function createManifest(host = null, middlewares = []) {
         test: { method: 'get', path: '/api/csrf/test' },
       },
     },
-    middlewares: [LogMiddleware(), CsrfMiddleware('csrfToken', 'x-csrf-token')].concat(middlewares),
+    middleware: [LogMiddleware(), CsrfMiddleware('csrfToken', 'x-csrf-token')].concat(middleware),
   }
 }
