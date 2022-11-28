@@ -26,14 +26,5 @@ export type {
   ResponseGetter,
 } from './middleware'
 export type { AsyncFunction, AsyncFunctions, Client } from './client-builder'
-/**
- * @deprecated, use ManifestOptions instead
- */
-export type Options<Resources extends ResourceTypeConstraint> = ManifestOptions<Resources>
-
-/**
- * @deprecated, use GlobalConfigs instead
- */
-export type Configuration = GlobalConfigs
 
 export { default, version, configs } from './mappersmith'

@@ -8,6 +8,7 @@ Fixed:
 
 Removed:
 
+- `@mappersmith/core`: Remove deprecated types `Options` & `Configuration`
 - `@mappersmith/core`: Remove deprecated `request` from `MiddlewareDescriptor`; use `prepareRequest` instead.
 - `@mappersmith/core`: Remove deprecated `setContext` and injection of `context` in middleware params.
 - `@mappersmith/core`: Remove `middlewares` alias; use `middleware` instead.
