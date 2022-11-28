@@ -18,7 +18,6 @@ export type {
 export { Response, ParsedJSON } from './response'
 export type {
   AbortFn,
-  Context,
   Middleware,
   MiddlewareDescriptor,
   MiddlewareParams,
@@ -37,4 +36,4 @@ export type Options<Resources extends ResourceTypeConstraint> = ManifestOptions<
  */
 export type Configuration = GlobalConfigs
 
-export { default, version, configs, setContext } from './mappersmith'
+export { default, version, configs } from './mappersmith'

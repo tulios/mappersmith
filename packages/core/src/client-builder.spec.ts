@@ -16,7 +16,6 @@ describe('ClientBuilder', () => {
     gatewayClass = jest.fn(() => gatewayInstance as unknown as Gateway)
     GatewayClassFactory = () => gatewayClass
     configs = {
-      context: {},
       middleware: [],
       fetch,
       maxMiddlewareStackExecutionAllowed: 2,
@@ -66,7 +65,6 @@ describe('ClientBuilder', () => {
     const manifest = getManifestWithResourceConf()
 
     const configs = {
-      context: {},
       middleware: [],
       Promise,
       fetch,
