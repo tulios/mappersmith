@@ -7,10 +7,6 @@ export type RenewFn = () => Promise<Response>
 export interface MiddlewareDescriptor {
   __name?: string
   /**
-   * @deprecated: Use prepareRequest
-   */
-  request?(request: Request): Promise<Request> | Request
-  /**
    * Allows a middleware to tap into the prepare request phase
    */
   prepareRequest(

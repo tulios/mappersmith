@@ -6,6 +6,7 @@ Fixed:
 - `@mappersmith/test`: Ensure case sensitive header keys are matched properly
 
 Removed:
+- `@mappersmith/core`: Remove deprecated `request` from `MiddlewareDescriptor`; use `prepareRequest` instead.
 - `@mappersmith/core`: Remove deprecated `setContext` and injection of `context` in middleware params.
 - `@mappersmith/core`: Remove `middlewares` alias; use `middleware` instead.
 

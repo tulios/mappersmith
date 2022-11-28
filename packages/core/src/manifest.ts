@@ -148,7 +148,7 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
          * Replaced the request method
          */
         prepareRequest(next) {
-          return this.request ? next().then((req) => this.request?.(req)) : next()
+          return next()
         },
       }
 

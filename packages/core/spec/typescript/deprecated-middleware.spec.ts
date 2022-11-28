@@ -2,7 +2,8 @@ import forge from '../../src/mappersmith'
 import { Middleware } from '../../src/middleware'
 
 const MyMiddleware: Middleware = () => ({
-  request(request) {
+  async prepareRequest(next) {
+    const request = await next()
     return request.enhance({
       headers: { 'x-special-request': '->' },
     })

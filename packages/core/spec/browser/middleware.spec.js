@@ -64,18 +64,18 @@ describe('ClientBuilder middleware', () => {
     expect(middleware).toBeCalledWith(expect.objectContaining({ clientId: 'someClient' }))
   })
 
-  it('calls request and response phase', async () => {
-    const requestPhase = jest.fn(() => createRequest())
+  it('calls prepareRequest and response phase', async () => {
+    const requestPhase = jest.fn(() => Promise.resolve(createRequest()))
     const responsePhase = jest.fn(() => Promise.resolve())
 
     const middleware = () => ({
-      request: requestPhase,
+      prepareRequest: requestPhase,
       response: responsePhase,
     })
     manifest.middleware = [middleware]
 
     await createClient().User.byId({ id: 1 })
-    expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
+    expect(requestPhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
     expect(responsePhase).toHaveBeenCalledWith(
       expect.any(Function),
       expect.any(Function),
@@ -87,9 +87,9 @@ describe('ClientBuilder middleware', () => {
     const requestPhase = jest.fn()
     const responsePhase = jest.fn()
 
-    const myRequestFn = (request) => {
-      requestPhase(request)
-      return request
+    const myRequestFn = (next) => {
+      requestPhase(next)
+      return next()
     }
 
     const myResponseFn = (next, renew) => {
@@ -98,14 +98,14 @@ describe('ClientBuilder middleware', () => {
     }
 
     const middleware = () => ({
-      request: myRequestFn,
+      prepareRequest: myRequestFn,
       response: myResponseFn,
     })
 
     manifest.middleware = [middleware]
 
     await createClient().User.byId({ id: 1 })
-    expect(requestPhase).toHaveBeenCalledWith(expect.any(Request))
+    expect(requestPhase).toHaveBeenCalledWith(expect.any(Function))
     expect(responsePhase).toHaveBeenCalledWith(expect.any(Function), expect.any(Function))
   })
 
@@ -138,7 +138,8 @@ describe('ClientBuilder middleware', () => {
     let m2ResponseCalled = false
 
     const m1 = () => ({
-      request: (request) => {
+      async prepareRequest(next) {
+        const request = await next()
         m1RequestCalled = true
         return request
       },
@@ -161,12 +162,14 @@ describe('ClientBuilder middleware', () => {
 
   it('accepts async request phase', async () => {
     const m1 = () => ({
-      request: (request) =>
-        Promise.resolve(
+      async prepareRequest(next) {
+        const request = await next()
+        return Promise.resolve(
           request.enhance({
             headers: { token: 'abc' },
           })
-        ),
+        )
+      },
     })
 
     manifest.middleware = [m1]
@@ -178,7 +181,10 @@ describe('ClientBuilder middleware', () => {
   it('can renew the request from the response phase', async () => {
     let token = 'not-renewed'
     const m1 = () => ({
-      request: (request) => request.enhance({ headers: { Token: token } }),
+      async prepareRequest(next) {
+        const request = await next()
+        return request.enhance({ headers: { Token: token } })
+      },
     })
 
     const m2 = () => ({
@@ -220,7 +226,7 @@ describe('ClientBuilder middleware', () => {
   describe('when a middleware throws an error in the request phase', () => {
     it('rethrows the error with the middleware name', async () => {
       const m1 = () => ({
-        request: () => {
+        prepareRequest() {
           throw new Error('Random error!')
         },
       })
@@ -236,7 +242,7 @@ describe('ClientBuilder middleware', () => {
 
   describe('when a middleware pass a non-request object to the next phase', () => {
     it('throws an error with the middleware name and type', async () => {
-      const m1 = () => ({ request: () => true })
+      const m1 = () => ({ prepareRequest: () => true })
       const m2 = () => ({ request: (request) => request.enhance() })
 
       manifest.middleware = [m1, m2]
@@ -356,7 +362,7 @@ describe('ClientBuilder middleware', () => {
 
     it('can capture errors from other middleware', async () => {
       const buggy = () => ({
-        request: () => {
+        prepareRequest: () => {
           throw new Error('from buggy')
         },
       })
