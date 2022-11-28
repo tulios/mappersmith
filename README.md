@@ -1394,10 +1394,6 @@ console.log(mock.calls())
 
 ## <a name="development"></a> Development
 
-### Volta
-
-This project uses [Volta](https://docs.volta.sh/guide/getting-started) to manage the node/npm and yarn versions used via package.json.
-
 ### Running unit tests:
 
 ```sh
