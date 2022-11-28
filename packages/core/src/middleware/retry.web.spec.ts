@@ -100,7 +100,7 @@ function retryMiddlewareExamples(
   })
 }
 
-describe('Middleware / RetryMiddleware', () => {
+describe('RetryMiddleware', () => {
   const retries = 3
   const headerRetryCount = 'X-Mappersmith-Retry-Count'
   const headerRetryTime = 'X-Mappersmith-Retry-Time'

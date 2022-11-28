@@ -13,6 +13,7 @@ import type {
 const REGEXP_DYNAMIC_SEGMENT = /{([^}?]+)\??}/
 const REGEXP_OPTIONAL_DYNAMIC_SEGMENT = /\/?{([^}?]+)\?}/g
 const REGEXP_TRAILING_SLASH = /\/$/
+const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
 
 export type RequestContext = Record<string, unknown>
 
@@ -234,8 +235,25 @@ export class Request {
     return undefined
   }
 
-  public body() {
+  /**
+   * Returns the original request body
+   */
+  public rawBody() {
     return this.requestParams[this.methodDescriptor.bodyAttr] as Body
+  }
+
+  /**
+   * Returns the request body
+   */
+  public body() {
+    const rawBody = this.rawBody()
+    const contentType = this.header<string>('content-type')
+    if (contentType && typeof rawBody === 'string' && REGEXP_CONTENT_TYPE_JSON.test(contentType)) {
+      try {
+        return JSON.parse(rawBody)
+      } catch (e) {} // eslint-disable-line no-empty
+    }
+    return rawBody
   }
 
   public auth() {

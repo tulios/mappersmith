@@ -90,8 +90,8 @@ MockRequest.prototype = {
       }
 
       return this.bodyFunction
-        ? this.body(request.body())
-        : this.body === toSortedQueryString(request.body())
+        ? this.body(request.rawBody())
+        : this.body === toSortedQueryString(request.rawBody())
     }
 
     const urlMatch = this.urlFunction

@@ -5,7 +5,7 @@ import { requestFactory } from '@mappersmith/test'
 
 const abort: AbortFn = () => ({})
 
-describe('Middleware / EncodeJson', () => {
+describe('EncodeJsonMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>
   const params: MiddlewareParams = {
     clientId: 'testClient',
@@ -23,10 +23,12 @@ describe('Middleware / EncodeJson', () => {
     expect(EncodeJsonMiddleware.name).toEqual('EncodeJsonMiddleware')
   })
 
-  it('stringify the body and add "content-type" application/json', async () => {
+  it('stringifies the body and adds "content-type" application/json', async () => {
     const request = requestFactory({ host: 'example.com', path: '/', method: 'get', body })
+
     const newRequest = await middleware.prepareRequest?.(() => Promise.resolve(request), abort)
-    expect(newRequest?.body()).toEqual(JSON.stringify(body))
+    expect(newRequest?.requestParams['body']).toEqual(JSON.stringify(body))
+    expect(newRequest?.body()).toEqual(body)
     expect(newRequest?.headers()['content-type']).toEqual(CONTENT_TYPE_JSON)
   })
 
@@ -103,7 +105,8 @@ describe('Middleware / EncodeJson', () => {
             () => Promise.resolve(request),
             abort
           )
-          expect(newRequest?.body()).toEqual(body)
+          expect(newRequest?.requestParams['body']).toEqual(body)
+          expect(newRequest?.body()).toEqual({ foo: 'bar' })
           expect(newRequest?.headers()).toEqual(headers)
         })
       })
@@ -125,7 +128,8 @@ describe('Middleware / EncodeJson', () => {
             () => Promise.resolve(request),
             abort
           )
-          expect(newRequest?.body()).toEqual(JSON.stringify(body))
+          expect(newRequest?.requestParams['body']).toEqual(JSON.stringify(body))
+          expect(newRequest?.body()).toEqual(body)
           expect(newRequest?.headers()).toEqual(headers)
         })
       })

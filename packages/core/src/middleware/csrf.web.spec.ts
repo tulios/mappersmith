@@ -4,7 +4,7 @@ import { requestFactory } from '@mappersmith/test'
 
 const abort: AbortFn = () => ({})
 
-describe('Middleware / CSRF', () => {
+describe('CsrfMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>
   const params: MiddlewareParams = {
     clientId: 'testClient',

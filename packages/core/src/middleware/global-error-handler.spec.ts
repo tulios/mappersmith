@@ -2,7 +2,7 @@ import { GlobalErrorHandlerMiddleware, setErrorHandler } from './global-error-ha
 import type { MiddlewareDescriptor, MiddlewareParams } from './index'
 import { responseFactory } from '@mappersmith/test'
 
-describe('Middleware / GlobalErrorHandlerMiddleware', () => {
+describe('GlobalErrorHandlerMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>
   const params: MiddlewareParams = {
     clientId: 'testClient',

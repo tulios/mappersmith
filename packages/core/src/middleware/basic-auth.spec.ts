@@ -5,7 +5,7 @@ import type { Auth } from '../types'
 
 const abort: AbortFn = () => ({})
 
-describe('Middleware / BasicAuth', () => {
+describe('BasicAuthMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>
   const params: MiddlewareParams = {
     clientId: 'testClient',
