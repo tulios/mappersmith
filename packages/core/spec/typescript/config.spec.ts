@@ -1,4 +1,4 @@
-import { configs, setContext } from '../../src/mappersmith'
+import { configs } from '../../src/mappersmith'
 import { Middleware } from '../../src/middleware'
 
 const MyMiddleware: Middleware = () => ({
@@ -18,8 +18,6 @@ const MyMiddleware: Middleware = () => ({
     )
   },
 })
-
-setContext({ some: 'data' })
 
 configs.maxMiddlewareStackExecutionAllowed = 2
 configs.middleware = [MyMiddleware]

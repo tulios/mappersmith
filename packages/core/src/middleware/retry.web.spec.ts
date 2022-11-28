@@ -106,7 +106,6 @@ describe('Middleware / RetryMiddleware', () => {
   const headerRetryTime = 'X-Mappersmith-Retry-Time'
   const middleware = RetryMiddleware({ retries, headerRetryCount, headerRetryTime })({
     clientId: 'test',
-    context: {},
     resourceMethod: 'test',
     resourceName: 'test',
   })

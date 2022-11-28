@@ -21,10 +21,9 @@ const MyMiddleware: Middleware = () => ({
 const MyMiddlewareWithOptions: Middleware = ({
   resourceName,
   resourceMethod,
-  context,
   clientId,
 }: MiddlewareParams) => {
-  console.log({ resourceName, resourceMethod, context, clientId })
+  console.log({ resourceName, resourceMethod, clientId })
   return {}
 }
 
@@ -148,7 +147,6 @@ const myMiddleware = MyMiddleware({
   clientId: 'github',
   resourceName: 'Status',
   resourceMethod: 'current',
-  context: {},
 })
 
 const renewFn: RenewFn = async () => responseFactory()

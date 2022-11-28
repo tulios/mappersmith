@@ -1,21 +1,8 @@
 import Gateway from '../../src/gateway'
 import { GlobalConfigs } from '../../src/manifest'
-import forge, { setContext, configs } from '../../src'
+import forge, { configs } from '../../src'
 
 describe('mappersmith', () => {
-  describe('#setContext', () => {
-    it('changes configs context', () => {
-      configs.context = {}
-      setContext({ foo: 'bar' })
-      setContext({ bar: 'baz' })
-
-      expect(configs.context).toEqual({
-        foo: 'bar',
-        bar: 'baz',
-      })
-    })
-  })
-
   describe('#forge', () => {
     const manifest = {
       host: 'http://example.com',

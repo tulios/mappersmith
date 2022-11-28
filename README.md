@@ -23,7 +23,6 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
   - [Response object](#response-object)
   - [Middleware](#middleware)
     - [Creating middleware](#creating-middleware)
-      - [Context (deprecated)](#context)
       - [Optional arguments](#creating-middleware-optional-arguments)
         - [mockRequest](#creating-middleware-optional-arguments-mock-request)
         - [Abort](#creating-middleware-optional-arguments-abort)
@@ -475,18 +474,12 @@ const MyMiddleware = () => ({
 })
 ```
 
-#### <a name="context"></a> Context (deprecated)
-
-⚠️ `setContext` is not safe for concurrent use, and shouldn't be used!
-
-Why is it not safe? Basically, the setContext function mutates a global state (see [here](https://github.com/tulios/mappersmith/blob/2.34.0/src/mappersmith.js#L114)), hence it is the last call to setContext that decides its global value. Which leads to a race condition when handling concurrent requests.
-
 #### <a name="creating-middleware-optional-arguments"></a> Optional arguments
 
-It can, optionally, receive `resourceName`, `resourceMethod`, [#context](`context`), `clientId` and `mockRequest`. Example:
+It can, optionally, receive `resourceName`, `resourceMethod`, `clientId` and `mockRequest`. Example:
 
 ```javascript
-const MyMiddleware = ({ resourceName, resourceMethod, context, clientId, mockRequest }) => ({
+const MyMiddleware = ({ resourceName, resourceMethod, clientId, mockRequest }) => ({
   /* ... */
 })
 
@@ -494,7 +487,6 @@ client.User.all()
 // resourceName: 'User'
 // resourceMethod: 'all'
 // clientId: 'myClient'
-// context: {}
 // mockRequest: false
 ```
 
