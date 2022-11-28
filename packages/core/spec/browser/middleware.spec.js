@@ -354,7 +354,7 @@ describe('ClientBuilder middleware', () => {
       )
     })
 
-    it('can capture errors from other middlewares', async () => {
+    it('can capture errors from other middleware', async () => {
       const buggy = () => ({
         request: () => {
           throw new Error('from buggy')
@@ -376,7 +376,7 @@ describe('ClientBuilder middleware', () => {
       )
     })
 
-    it('supports old middlewares with async request phases', async () => {
+    it('supports old middleware with async request phases', async () => {
       const asyncRequest = () => ({
         request: (request) => Promise.resolve(request),
       })
@@ -400,7 +400,7 @@ describe('ClientBuilder middleware', () => {
       client = forge(manifest)
     })
 
-    it('invokes middlewares in correct order', async () => {
+    it('invokes middleware in correct order', async () => {
       await client.User.byId({ id: 1 })
 
       expect(clientMiddleware).toHaveBeenCalled()

@@ -32,10 +32,6 @@ export interface ManifestOptions<Resources extends ResourceTypeConstraint> {
   gatewayConfigs?: Partial<GatewayConfiguration>
   resources?: Resources
   middleware?: Middleware[]
-  /**
-   * @deprecated - use `middleware` instead
-   */
-  middlewares?: Middleware[]
   ignoreGlobalMiddleware?: boolean
 }
 
@@ -50,7 +46,7 @@ type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'r
  *   @param {Object} obj.gatewayConfigs - default: base values from mappersmith
  *   @param {Object} obj.ignoreGlobalMiddleware - default: false
  *   @param {Object} obj.resources - default: {}
- *   @param {Array}  obj.middleware or obj.middlewares - default: []
+ *   @param {Array}  obj.middleware - default: []
  * @param {Object} globalConfigs
  */
 export class Manifest<Resources extends ResourceTypeConstraint> {
@@ -83,8 +79,7 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
     this.gatewayConfigs = assign({}, gatewayConfigs, options.gatewayConfigs)
     this.resources = options.resources || ({} as Resources)
 
-    // TODO: deprecate obj.middlewares in favor of obj.middleware
-    const clientMiddleware = options.middleware || options.middlewares || []
+    const clientMiddleware = options.middleware || []
 
     if (options.ignoreGlobalMiddleware) {
       this.middleware = clientMiddleware
@@ -166,9 +161,9 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
 
     const { resourceName: name, resourceMethod: method } = args
     const resourceMiddleware = this.createMethodDescriptor(name, method).middleware
-    const middlewares = [...resourceMiddleware, ...this.middleware]
+    const middleware = [...resourceMiddleware, ...this.middleware]
 
-    return middlewares.map(createInstance)
+    return middleware.map(createInstance)
   }
 }
 

@@ -8,7 +8,7 @@ const FormData = require('form-data')
 // 2) Forge your client with your API manifest
 const client = forge({
   host: 'https://host.url',
-  middlewares: [BasicAuthMiddleware({ username: 'meowmeow', password: 'beenz' })],
+  middleware: [BasicAuthMiddleware({ username: 'meowmeow', password: 'beenz' })],
   resources: {
     File: {
       upload: { method: 'post', path: '/api/files' },

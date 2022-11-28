@@ -7,6 +7,7 @@ Fixed:
 
 Removed:
 - `@mappersmith/core`: Remove deprecated `setContext` and injection of `context` in middleware params.
+- `@mappersmith/core`: Remove `middlewares` alias; use `middleware` instead.
 
 Changed:
 - `@mappersmith/core`: No longer accepts `Promise` configuration, instead relying on native  Promise implementation to be available.
@@ -116,7 +117,7 @@ Refactored:
 ## 2.35.0
 
 Fixed:
-  - Respect `allowResourceHostOverride` configuration in middlewares #240
+  - Respect `allowResourceHostOverride` configuration in middleware #240
   - A successful middleware should no longer overwriting a previous middleware's `error` #230
 
 Added:
@@ -423,11 +424,11 @@ Deprecated:
 ## 2.0.1
 
   - bugfix: Send `resourceName` and `resourceMethod` when running the test lib
-  - Add flag (`mockRequest`) when executing the middlewares from the test lib
+  - Add flag (`mockRequest`) when executing the middleware from the test lib
 
 ## 2.0.0
 
-  - Expose `resourceName` and `resourceMethod` to middlewares
+  - Expose `resourceName` and `resourceMethod` to middleware
   - Features from 2.0.0-rc1 to 2.0.0-rc7
 
 ## 2.0.0-rc7
@@ -439,7 +440,7 @@ Deprecated:
 
 ## 2.0.0-rc6
 
-  - bugfix: `MockClient` should use the same middlewares configured in the client #37
+  - bugfix: `MockClient` should use the same middleware configured in the client #37
 
 ## 2.0.0-rc5
 
