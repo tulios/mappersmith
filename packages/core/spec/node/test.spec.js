@@ -1,5 +1,5 @@
 import forge from '../../src'
-import { install, uninstall, mockClient, m } from '@mappersmith/test'
+import { install, uninstall, mockClient, m } from '../../../test/src/index'
 
 const github = forge({
   clientId: 'fictional',

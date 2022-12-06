@@ -1,4 +1,4 @@
-import { responseFactory } from '@mappersmith/test'
+import { responseFactory } from '../../../test/src/index'
 import { MiddlewareDescriptor, ResponseGetter } from '../mappersmith'
 import { RetryMiddleware, calculateExponentialRetryTime } from './retry'
 

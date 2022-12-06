@@ -1,6 +1,6 @@
 import { BasicAuthMiddleware } from './basic-auth'
 import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
-import { requestFactory } from '@mappersmith/test'
+import { requestFactory } from '../../../test/src/index'
 import type { Auth } from '../types'
 
 const abort: AbortFn = () => ({})

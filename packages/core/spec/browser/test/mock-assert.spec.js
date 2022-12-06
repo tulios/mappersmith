@@ -1,7 +1,11 @@
 import forge from '../../../src/index'
 import { getManifest } from '../../ts-helper'
 
-import { install as installMock, uninstall as uninstallMock, mockClient } from '@mappersmith/test'
+import {
+  install as installMock,
+  uninstall as uninstallMock,
+  mockClient,
+} from '../../../../test/src/index'
 
 describe('Test lib / mock assert', () => {
   let client, mock

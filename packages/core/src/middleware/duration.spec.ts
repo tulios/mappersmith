@@ -1,6 +1,6 @@
 import { DurationMiddleware } from './duration'
 import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
-import { requestFactory, responseFactory } from '@mappersmith/test'
+import { requestFactory, responseFactory } from '../../../test/src/index'
 
 const abort: AbortFn = () => ({})
 

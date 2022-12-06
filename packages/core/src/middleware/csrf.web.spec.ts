@@ -1,6 +1,6 @@
 import { CsrfMiddleware } from './csrf'
 import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
-import { requestFactory } from '@mappersmith/test'
+import { requestFactory } from '../../../test/src/index'
 
 const abort: AbortFn = () => ({})
 

@@ -1,4 +1,4 @@
-import { isSubset } from '@mappersmith/test'
+import { isSubset } from '../../../../test/src/index'
 
 describe('Test lib / mock utils', () => {
   describe('#isSubset', () => {

@@ -1,0 +1,5 @@
+core:
+- packages/core/**/*
+
+test:
+- packages/test/**/*

@@ -1,6 +1,6 @@
 import forge from '../index'
 import { Middleware } from './index'
-import { install, uninstall, mockRequest, m } from '@mappersmith/test'
+import { install, uninstall, mockRequest, m } from '../../../test/src/index'
 
 describe('middleware', () => {
   beforeAll(install)
