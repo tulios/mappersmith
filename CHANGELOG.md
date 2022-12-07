@@ -1,9 +1,9 @@
 # Changelog
 
-## UNRELEASED
+## 2.42.0
 
 Fixed:
-  - `mappersmith`: `EncodeJSON` middleware now properly serializes `+json` family of content-types
+  - `mappersmith`: `EncodeJSON` middleware now properly serializes `+json` family of content-types #362
 
 ## 2.41.0
 
