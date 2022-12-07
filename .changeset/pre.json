@@ -1,0 +1,9 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@mappersmith/core": "3.0.0",
+    "@mappersmith/test": "3.0.0"
+  },
+  "changesets": []
+}
