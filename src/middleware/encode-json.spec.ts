@@ -132,6 +132,28 @@ describe('Middleware / EncodeJson', () => {
       })
     })
 
+    describe('when content-type is the application/+json family', () => {
+      it.each([
+        ['application/json;charset=utf-8'],
+        ['application/ld+json;charset=utf-8'],
+        ['application/problem+json;charset=utf-8'],
+        ['application/vnd.spring-boot.actuator.v3+json;charset=utf-8'],
+        ['application/vnd.cars.api.service.specification.v2+json'],
+      ])('returns the parsed object given content type %s', async (contentType) => {
+        const headers: Headers = { 'content-type': contentType }
+        const request = requestFactory({
+          host: 'example.com',
+          path: '/',
+          method: 'post',
+          body,
+          headers,
+        })
+        const newRequest = await middleware.prepareRequest?.(() => Promise.resolve(request), abort)
+        expect(newRequest?.body()).toEqual(JSON.stringify(body))
+        expect(newRequest?.headers()).toEqual(headers)
+      })
+    })
+
     describe('when the content-type is application/json but with a different charset', () => {
       let headers: Headers, body: string
 
