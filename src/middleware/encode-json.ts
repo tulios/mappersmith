@@ -1,11 +1,9 @@
+import { REGEXP_CONTENT_TYPE_JSON } from '../response'
 import type { Middleware } from './index'
 
-const mediaType = 'application/json'
-const charset = 'charset=utf-8'
-export const CONTENT_TYPE_JSON = `${mediaType};${charset}`
+export const CONTENT_TYPE_JSON = 'application/json;charset=utf-8'
 
-const isJson = (contentType: string) =>
-  contentType === mediaType || contentType.startsWith(`${mediaType};`)
+const isJson = (contentType: string) => REGEXP_CONTENT_TYPE_JSON.test(contentType)
 const alreadyEncoded = (body: unknown) => typeof body === 'string'
 
 /**

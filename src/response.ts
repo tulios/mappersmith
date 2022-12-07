@@ -2,7 +2,7 @@ import { lowerCaseObjectKeys } from './utils'
 import { Request } from './request'
 import type { Headers } from './types'
 
-const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
+export const REGEXP_CONTENT_TYPE_JSON = /^application\/(json|.*\+json)/
 
 export interface ResponseParams {
   readonly status?: number
