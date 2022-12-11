@@ -156,7 +156,7 @@ importers:
 
   packages/test:
     specifiers:
-      '@mappersmith/core': workspace:^2.42.0
+      '@mappersmith/core': workspace:^3.0.0-alpha.0
       typescript: '*'
     dependencies:
       '@mappersmith/core': link:../core
