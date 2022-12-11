@@ -1,6 +1,6 @@
 {
   "name": "@mappersmith/core",
-  "version": "3.0.0-alpha.0",
+  "version": "2.42.0",
   "description": "It is a lightweight rest client for node.js and the browser",
   "main": "src/index.js",
   "types": "src/index.d.ts",
