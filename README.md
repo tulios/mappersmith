@@ -53,12 +53,6 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
 npm install mappersmith --save
 ```
 
-or
-
-```sh
-yarn add mappersmith
-```
-
 #### Browser
 
 Download the tag/latest version from the dist folder.
@@ -68,14 +62,14 @@ Download the tag/latest version from the dist folder.
 Install the dependencies
 
 ```sh
-yarn
+pnpm install
 ```
 
 Build
 
 ```sh
-yarn build
-yarn release # for minified version
+pnpm build:clean
+pnpm release
 ```
 
 ## <a name="usage"></a> Usage
@@ -1341,44 +1335,38 @@ console.log(mock.calls())
 ### Running unit tests:
 
 ```sh
-yarn test:browser
-yarn test:node
+pnpm test:browser
+pnpm test:node
 ```
 
 ### Running integration tests:
 
 ```sh
-yarn integration-server &
-yarn test:browser:integration
-yarn test:node:integration
+pnpm integration-server &
+pnpm test:browser:integration
+pnpm test:node:integration
 ```
 
 ### Running all tests
 
 ```sh
-yarn test
+pnpm test
 ```
 
 ## Compile and release
 
 ### Compile project only
 
-Useful for testing a branch against local projects. Run the build step of the release script and yarn link:
+Useful for testing a branch against local projects.
 
 ```sh
-yarn build:project
-```
-
-In remote project:
-
-```sh
-yarn link path/to/mappersmith/packages/core
+pnpm build:project
 ```
 
 ### Release
 
 ```sh
-yarn release
+pnpm release
 ```
 
 ## Linting

@@ -1,4 +1,4 @@
-import { m } from '@mappersmith/test'
+import { m } from '../../../../test/src/index'
 
 describe('Test lib / match functions', () => {
   describe('#stringMatching', () => {

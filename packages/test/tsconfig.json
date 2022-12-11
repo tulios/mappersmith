@@ -3,8 +3,7 @@
   "compilerOptions": {
     "outDir": "dist/test",
     "declaration": true,
-    "composite": true,
-    "allowJs": true
+    "composite": true
   },
   "include": ["src/**/*"]
 }

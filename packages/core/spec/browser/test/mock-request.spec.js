@@ -8,7 +8,7 @@ import {
   mockClient,
   unusedMocks,
   m,
-} from '@mappersmith/test'
+} from '../../../../test/src/index'
 
 describe('Test lib / mock request', () => {
   let client

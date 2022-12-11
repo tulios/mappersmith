@@ -1,7 +1,7 @@
-import { Request, Response } from './mappersmith'
+import { GatewayConfiguration, Request, Response } from './mappersmith'
 import { isTimeoutError } from './gateway/timeout-error'
 import { isPlainObject, performanceNow, toQueryString } from './utils'
-import type { Primitive, GatewayConfiguration } from '@mappersmith/core'
+import { Primitive } from './types'
 
 const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 

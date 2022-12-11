@@ -1,7 +1,7 @@
 import { EncodeJsonMiddleware, CONTENT_TYPE_JSON } from './encode-json'
 import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
 import type { Headers } from '../types'
-import { requestFactory } from '@mappersmith/test'
+import { requestFactory } from '../../../test/src/index'
 
 const abort: AbortFn = () => ({})
 

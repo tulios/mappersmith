@@ -1,6 +1,6 @@
 import { GlobalErrorHandlerMiddleware, setErrorHandler } from './global-error-handler'
 import type { MiddlewareDescriptor, MiddlewareParams } from './index'
-import { responseFactory } from '@mappersmith/test'
+import { responseFactory } from '../../../test/src/index'
 
 describe('GlobalErrorHandlerMiddleware', () => {
   let middleware: Partial<MiddlewareDescriptor>

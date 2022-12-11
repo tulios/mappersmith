@@ -1,0 +1,12 @@
+name: CI
+
+on:
+  push:
+    branches: [master,v3,v3-pnpm]
+  pull_request:
+    branches: [master]
+
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/test.yml
+

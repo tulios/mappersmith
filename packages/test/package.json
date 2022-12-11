@@ -17,6 +17,6 @@
     "@mappersmith/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^4.4.3"
+    "typescript": "*"
   }
 }

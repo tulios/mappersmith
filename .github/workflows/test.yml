@@ -1,0 +1,50 @@
+on: [workflow_call]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [
+            14.x,
+            16.x,
+            # Deal with unhandled promise rejection in integration test:
+            # ERROR [karma-server]: Error: error:0308010C:digital envelope routines::unsupported
+            # , 18.x
+          ]
+        system-platform: [
+          ubuntu-latest,
+          windows-latest
+        ]
+
+    runs-on: ${{ matrix.system-platform }}
+    steps:
+      # https://github.com/actions/setup-node#usage
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # https://github.com/pnpm/action-setup
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.18.0
+
+      - name: Setup cache for pnpm
+        uses: ./.github/actions/pnpm-cache
+
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
+
+      - name: Test Linux (test:ci, prettier, lint, typings)
+        run: pnpm test
+        if: startsWith(runner.os, 'Linux')
+
+      - name: Test Windows (test:ci)
+        run: pnpm test:ci
+        if: startsWith(runner.os, 'Windows')
+
+      - name: Build
+        run: pnpm build

@@ -10,11 +10,11 @@ function exec(command, cwd) {
 
 exec(
   'concurrently -c "auto" --names "browser:unit,node:unit,service-worker:unit,browser:integration,node:integration" \
-    "yarn test:browser" \
-    "yarn test:node" \
-    "yarn test:service-worker" \
-    "cross-env SINGLE_RUN=true yarn test:browser:integration" \
-    "cross-env SINGLE_RUN=true yarn test:node:integration" \
+    "pnpm run test:browser" \
+    "pnpm run test:node" \
+    "pnpm run test:service-worker" \
+    "cross-env SINGLE_RUN=true pnpm run test:browser:integration" \
+    "cross-env SINGLE_RUN=true pnpm run test:node:integration" \
   ',
   rootDir
 )

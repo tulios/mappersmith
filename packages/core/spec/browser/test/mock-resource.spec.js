@@ -7,7 +7,7 @@ import {
   install as installMock,
   uninstall as uninstallMock,
   mockClient,
-} from '@mappersmith/test'
+} from '../../../../test/src/index'
 
 describe('Test lib / mock resources', () => {
   let client

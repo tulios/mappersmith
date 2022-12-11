@@ -1,0 +1,34 @@
+name: 'Setup PNPM Cache'
+description: 'Platform agnostic action to configure PNPM + cache'
+
+runs:
+  using: composite
+  steps:
+    # https://github.com/actions/cache/blob/main/examples.md#node---npm
+    - name: Get pnpm cache directory (linux)
+      if: startsWith(runner.os, 'Linux')
+      id: pnpm-cache-dir-linux
+      run: echo "dir=$(pnpm config get cache)" >> $GITHUB_OUTPUT
+      shell: sh
+
+    - name: Get pnpm cache directory (windows)
+      if: startsWith(runner.os, 'Windows')
+      id: pnpm-cache-dir-windows
+      run: echo "dir=$(pnpm config get cache)" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+      shell: pwsh
+
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Linux')
+      with:
+        path: ${{ steps.pnpm-cache-dir-linux.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - uses: actions/cache@v3
+      if: startsWith(runner.os, 'Windows')
+      with:
+        path: ${{ steps.pnpm-cache-dir-windows.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-node-

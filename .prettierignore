@@ -3,7 +3,7 @@ README.md
 dist
 coverage
 packages/core/src/version.json
-.yarn
+pnpm-lock.yaml
 .github
 .prettierrc
 package.json

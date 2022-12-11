@@ -15,6 +15,7 @@ Removed:
 
 Changed:
 
+- `@mappersmith/*`: Use `pnpm` instead of `yarn`
 - `@mappersmith/core`: No longer accepts `Promise` configuration, instead relying on native Promise implementation to be available.
 - `@mappersmith/core`: `Request.prototype.body` now respects `content-type` header and returns a JSON parsed result if the `content-type` is in the `+json` family. If you want the raw body without transformation, use `Request.prototype.rawBody` instead.
 - `@mappersmith/core`: No longer accepts `Promise` configuration, instead relying on native Promise implementation to be available.

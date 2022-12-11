@@ -1,7 +1,7 @@
 import { configs } from '../../src/mappersmith'
 import { Gateway } from '../../src/gateway'
 import { GatewayConfiguration } from '../../src/gateway/types'
-import { requestFactory, responseFactory } from '@mappersmith/test'
+import { requestFactory, responseFactory } from '../../../test/src/index'
 
 describe('Gateway', () => {
   let originalConfigs: GatewayConfiguration
