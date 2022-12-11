@@ -5,5 +5,7 @@
     "@mappersmith/core": "3.0.0",
     "@mappersmith/test": "3.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "purple-bears-appear"
+  ]
 }
