@@ -1,6 +1,6 @@
 {
   "name": "@mappersmith/test",
-  "version": "2.42.0",
+  "version": "3.0.0-alpha.0",
   "description": "Testing library for mappersmith",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/tulios/mappersmith/packages/test",
   "dependencies": {
-    "@mappersmith/core": "workspace:^2.42.0"
+    "@mappersmith/core": "workspace:^3.0.0-alpha.0"
   },
   "devDependencies": {
     "typescript": "*"
