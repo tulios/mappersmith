@@ -20,8 +20,16 @@ jobs:
         with:
           node-version: 16
 
+      # https://github.com/pnpm/action-setup
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.18.0
+
+      - name: Setup cache for pnpm
+        uses: ./.github/actions/pnpm-cache
+
       - name: Install Dependencies
-        run: yarn
+        run: pnpm install --frozen-lockfile
 
       - name: Create Release Pull Request
         uses: changesets/action@v1
