@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/tulios/mappersmith/packages/test",
   "dependencies": {
-    "@mappersmith/core": "workspace:*"
+    "@mappersmith/core": "workspace:^2.42.0"
   },
   "devDependencies": {
     "typescript": "*"
