@@ -6,4 +6,5 @@ packages/core/src/version.json
 pnpm-lock.yaml
 .github
 .prettierrc
+.changeset
 package.json
