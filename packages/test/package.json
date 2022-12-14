@@ -1,5 +1,6 @@
 {
   "name": "@mappersmith/test",
+  "private": false,
   "version": "3.0.0-alpha.0",
   "description": "Testing library for mappersmith",
   "main": "src/index.js",

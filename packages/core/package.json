@@ -1,17 +1,19 @@
 {
   "name": "@mappersmith/core",
+  "private": false,
   "version": "3.0.0-alpha.0",
   "description": "It is a lightweight rest client for node.js and the browser",
   "main": "src/index.js",
   "types": "src/index.d.ts",
-  "scripts": {
-    "integration-server": "node spec/integration/server.js",
-    "copy:version:src": "./scripts/version.sh"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/tulios/mappersmith.git"
   },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tulios/mappersmith/issues"
+  },
+  "homepage": "https://github.com/tulios/mappersmith",
   "keywords": [
     "rest",
     "client",
@@ -22,11 +24,6 @@
     "data-mapper",
     "mappersmith"
   ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/tulios/mappersmith/issues"
-  },
-  "homepage": "https://github.com/tulios/mappersmith",
   "browser": {
     "./gateway/http.js": false,
     "./lib/gateway/http.js": false,
