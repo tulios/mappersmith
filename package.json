@@ -55,9 +55,9 @@
   },
   "homepage": "https://github.com/tulios/mappersmith",
   "browser": {
+    "./gateway/http.js": false,
     "./lib/gateway/http.js": false,
-    "./src/gateway/http.js": false,
-    "./gateway/http.js": false
+    "./src/gateway/http.js": false
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -116,5 +116,6 @@
     "webpack": "<5.0.0",
     "webpack-cli": "^4.8.0",
     "whatwg-fetch": "^3.6.2"
-  }
+  },
+  "packageManager": "yarn@3.6.3"
 }
