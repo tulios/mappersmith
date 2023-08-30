@@ -4,14 +4,14 @@ image: Visual Studio 2019
 version: '{build}'
 
 environment:
-  nodejs_version: '14'
+  nodejs_version: '16'
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - yarn install --loglevel=warn
+  - yarn install --immutable --immutable-cache
 
 test_script:
   - yarn run test
 
 # Disable automatic builds
-build: off
+build: false
