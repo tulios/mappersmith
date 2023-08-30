@@ -31,12 +31,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      # https://github.com/actions/cache/blob/main/examples.md#node---yarn-2
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -44,6 +44,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable --immutable-cache
       - run: yarn test
       - run: yarn build
