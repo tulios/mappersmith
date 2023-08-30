@@ -12,7 +12,7 @@
   "types": "index.d.ts",
   "scripts": {
     "integration-server": "node spec/integration/server.js",
-    "test:browser": "yarn jest --config jestSetup/configs/config.web.json",
+    "test:browser": "jest --config jestSetup/configs/config.web.json",
     "test:browser:integration": "cross-env NODE_ENV=test yarn karma start spec/integration/browser/karma.conf.js",
     "test:browser:watch": "yarn jest --config jestSetup/configs/config.web.json --watchAll",
     "test:node": "yarn jest --config jestSetup/configs/config.node.json",
@@ -60,7 +60,7 @@
     "./gateway/http.js": false
   },
   "volta": {
-    "node": "14.18.2",
+    "node": "16.20.2",
     "yarn": "1.22.11"
   },
   "devDependencies": {
@@ -73,7 +73,7 @@
     "@babel/register": "<7.12.0",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.1.1",
     "@types/jest": "^27.0.0",
-    "@types/node": "^17.0.10",
+    "@types/node": "^20.5.7",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "babel-core": "^7.0.0-bridge.0",
