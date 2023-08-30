@@ -1394,9 +1394,9 @@ console.log(mock.calls())
 
 ## <a name="development"></a> Development
 
-### Volta
+### Node version
 
-This project uses [Volta](https://docs.volta.sh/guide/getting-started) to manage the node/npm and yarn versions used via package.json.
+This project uses [ASDF](https://asdf-vm.com/) to manage the node version used via `.tool-versions`.
 
 ### Running unit tests:
 
