@@ -1,0 +1,46 @@
+name: 'Test'
+description: 'Test'
+
+inputs:
+  node-version:
+    description: 'Node.js version'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/setup-environment
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Lint
+      run: yarn lint
+      shell: bash
+      # Skip this step on Windows:
+      if: ${{ runner.os != 'Windows' }}
+
+    - name: Browser tests
+      run: yarn test:browser
+      shell: bash
+
+    - name: Node tests
+      run: yarn test:node
+      shell: bash
+
+    - name: Service Worker tests
+      run: yarn test:service-worker
+      shell: bash
+
+    - name: Browser integration tests
+      run: yarn test:browser:integration:ci
+      shell: bash
+
+    - name: Node integration tests
+      run: yarn test:node:integration:ci
+      shell: bash
+
+    - name: Build
+      run: yarn build
+      shell: bash
+      # Skip this step on Windows:
+      if: ${{ runner.os != 'Windows' }}

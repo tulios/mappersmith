@@ -1,7 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-
+const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
 const packageJson = require('./package.json')
 const env = process.env.NODE_ENV || 'development'
 const version = packageJson.version
@@ -27,7 +27,13 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
     modules: [path.join(__dirname, '/node_modules'), __dirname],
+    plugins: [PnpWebpackPlugin],
   },
+  resolveLoader: {
+    plugins: [
+      PnpWebpackPlugin.moduleLoader(module),
+    ],
+  },  
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist/'),

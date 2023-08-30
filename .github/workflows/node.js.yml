@@ -11,39 +11,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         node-version: [
-            14.x,
-            16.x,
+            16,
             # Deal with unhandled promise rejection in integration test:
             # ERROR [karma-server]: Error: error:0308010C:digital envelope routines::unsupported
-            # , 18.x
+            # , 18
           ]
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/test
         with:
           node-version: ${{ matrix.node-version }}
-
-      # https://github.com/actions/cache/blob/main/examples.md#node---yarn-2
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - run: yarn install --immutable --immutable-cache
-      - run: yarn test
-      - run: yarn build

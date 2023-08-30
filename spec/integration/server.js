@@ -36,6 +36,10 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.get('/ping', function (req, res) {
+  res.send('pong')
+})
+
 app.get('/api/books.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiBooks' })
   res.send(responses.apiBooks)
