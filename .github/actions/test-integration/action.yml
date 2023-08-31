@@ -1,5 +1,5 @@
-name: 'Test'
-description: 'Test'
+name: 'Integration Test'
+description: 'Runs the integration tests'
 
 inputs:
   node-version:
@@ -13,14 +13,10 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
 
-    - name: Browser tests
-      run: yarn test:browser
+    - name: Browser integration tests
+      run: yarn test:browser:integration
       shell: bash
 
-    - name: Node tests
-      run: yarn test:node
-      shell: bash
-
-    - name: Service Worker tests
-      run: yarn test:service-worker
+    - name: Node integration tests
+      run: yarn test:node:integration
       shell: bash

@@ -4,20 +4,11 @@ description: 'Setup Environment'
 inputs:
   node-version:
     description: 'Node.js version'
-    required: true
+    default: '16'
 
 runs:
   using: composite
   steps:
-    - name: Alibaba
-      run: |
-        echo "Alibaba"
-        echo ${{ inputs.node-version }}
-        echo inputs.node-version
-        echo ${{ runner.os }}
-        echo runner.os
-      shell: bash
-
     - name: Use Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v3
       with:
