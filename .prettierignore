@@ -4,3 +4,5 @@ lib
 dist
 coverage
 src/version.json
+.pnp.cjs
+.pnp.loader.mjs

@@ -1,0 +1,26 @@
+name: 'Test'
+description: 'Test'
+
+inputs:
+  node-version:
+    description: 'Node.js version'
+    default: '16'
+
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/setup-environment
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Browser tests
+      run: yarn test:browser
+      shell: bash
+
+    - name: Node tests
+      run: yarn test:node
+      shell: bash
+
+    - name: Service Worker tests
+      run: yarn test:service-worker
+      shell: bash

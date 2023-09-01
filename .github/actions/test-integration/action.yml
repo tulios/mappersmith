@@ -1,0 +1,22 @@
+name: 'Integration Test'
+description: 'Runs the integration tests'
+
+inputs:
+  node-version:
+    description: 'Node.js version'
+    default: '16'
+
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/setup-environment
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Browser integration tests
+      run: yarn test:browser:integration
+      shell: bash
+
+    - name: Node integration tests
+      run: yarn test:node:integration
+      shell: bash
