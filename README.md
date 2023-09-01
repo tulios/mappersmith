@@ -1419,22 +1419,38 @@ yarn test:node:integration
 yarn test
 ```
 
-## Compile and release
+## Package and release
 
-### Compile project only
+### Package project only
 
-Useful for testing a branch against local projects. Run the build step of the release script and yarn link:
+Useful for testing a branch against local projects. Run the build step, and yarn link to the `lib/` folder:
 
 ```sh
 yarn build:project
-cd lib
-yarn link
+touch lib/yarn.lock
+```
+
+In remote project:
+```sh
+yarn link ../mappersmith/lib
 ```
 
 ### Release
 
+First, update package version and generate an updated `CHANGELOG.md`:
+
 ```sh
-yarn release
+yarn changeset version
+```
+
+Second, build the `lib/` folder which will be published to npm:
+```sh
+yarn build:project
+```
+
+Finally, publish to npm:
+```sh
+yarn changeset publish
 ```
 
 ## Linting
