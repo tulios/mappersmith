@@ -1,16 +1,25 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Custom",
+
   "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+
     "baseUrl": "./src",
     "noEmit": true,
     "incremental": true,
-    "strict": true,
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    "typeRoots": ["./typings", "./node_modules/@types"],
+    "types": ["jest", "node", "uglifyjs-webpack-plugin", "pnp-webpack-plugin"]
   },
   "include": ["spec/**/*", "src/**/*"],
   "exclude": ["node_modules"]

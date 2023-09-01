@@ -5,10 +5,12 @@
   },
   "rootDir": "../../",
   "testEnvironment": "jsdom",
-  "timers": "fake",
+  "fakeTimers": {
+    "enableGlobally": true
+  },
   "resolver": "<rootDir>/jestSetup/configs/resolver.js",
   "testMatch": ["**/?(*.)+(spec).[jt]s?(x)", "**/?(*.)+(web).(spec).[jt]s?(x)"],
   "roots": ["<rootDir>/src/", "<rootDir>/spec/browser/"],
   "modulePaths": ["<rootDir>"],
-  "setupFiles": ["<rootDir>/jestSetup/index.js", "<rootDir>/jestSetup/web.js"]
+  "setupFiles": ["<rootDir>/jestSetup/index.ts", "<rootDir>/jestSetup/web.ts"]
 }
