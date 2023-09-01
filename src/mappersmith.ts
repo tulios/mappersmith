@@ -1,6 +1,5 @@
 import ClientBuilder, { Client } from './client-builder'
 import { assign } from './utils'
-import * as Version from './version.json'
 import { GlobalConfigs, ManifestOptions, ResourceTypeConstraint } from './manifest'
 import { Context } from './middleware'
 
@@ -9,7 +8,7 @@ import { Context } from './middleware'
  */
 export { Response } from './response'
 
-export const version = Version.version
+export { version } from './version'
 
 export const configs: GlobalConfigs = {
   context: {},

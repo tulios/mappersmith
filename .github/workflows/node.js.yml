@@ -38,7 +38,7 @@ jobs:
             16,
             # Deal with unhandled promise rejection in integration test:
             # ERROR [karma-server]: Error: error:0308010C:digital envelope routines::unsupported
-            # , 18
+            18,
           ]
     runs-on: ${{ matrix.os }}
     steps:
