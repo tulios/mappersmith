@@ -596,7 +596,7 @@ describe('Request', () => {
       it('throws on non paths that evaluate to non-strings', () => {
         const methodDesc = new MethodDescriptor({
           ...methodDescriptorArgs,
-          path: () => ({} as unknown as string),
+          path: () => ({}) as unknown as string,
         })
         const req = new Request(methodDesc)
         expect(() => req.url()).toThrowError(

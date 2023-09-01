@@ -34,7 +34,7 @@ export function install(): void
 export function uninstall(): void
 export function mockClient<
   ResourcesType,
-  ResourceName extends keyof ResourcesType = keyof ResourcesType
+  ResourceName extends keyof ResourcesType = keyof ResourcesType,
 >(client: Client<ResourcesType>): MockClient<ResourcesType, ResourceName>
 
 export type MockRequestUrlFunction = (requestUrl: string, params: object) => string

@@ -151,19 +151,22 @@ export class Request {
       )
     }
 
-    const aliasedParams = Object.keys(params).reduce((aliased, key) => {
-      const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
-      const value = params[key]
-      if (value != null) {
-        /**
-         * Here we use `ExcludeObject` to surgically remove the `object` type from `value`.
-         * We need it as `object` is too broad to be useful, whereas `value` is also typed
-         * as NestedParam, which is the correct shape for param objects.
-         */
-        aliased[aliasedKey] = value as ExcludeObject<typeof value>
-      }
-      return aliased
-    }, {} as Record<string, Primitive | NestedParam | NestedParamArray>)
+    const aliasedParams = Object.keys(params).reduce(
+      (aliased, key) => {
+        const aliasedKey = this.methodDescriptor.queryParamAlias[key] || key
+        const value = params[key]
+        if (value != null) {
+          /**
+           * Here we use `ExcludeObject` to surgically remove the `object` type from `value`.
+           * We need it as `object` is too broad to be useful, whereas `value` is also typed
+           * as NestedParam, which is the correct shape for param objects.
+           */
+          aliased[aliasedKey] = value as ExcludeObject<typeof value>
+        }
+        return aliased
+      },
+      {} as Record<string, Primitive | NestedParam | NestedParamArray>
+    )
 
     const queryString = toQueryString(aliasedParams, this.methodDescriptor.parameterEncoder)
     if (typeof queryString === 'string' && queryString.length !== 0) {

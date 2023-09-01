@@ -5,9 +5,11 @@
   },
   "rootDir": "../../",
   "testEnvironment": "node",
-  "timers": "fake",
+  "fakeTimers": {
+    "enableGlobally": true
+  },
   "testMatch": ["**/?(*.)+(spec).[jt]s?(x)", "!**/?(*.)+(web).(spec).[jt]s?(x)"],
   "roots": ["<rootDir>/src/", "<rootDir>/spec/node/"],
   "modulePaths": ["<rootDir>"],
-  "setupFiles": ["<rootDir>/jestSetup/index.js"]
+  "setupFiles": ["<rootDir>/jestSetup/index.ts"]
 }

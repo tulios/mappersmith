@@ -1,7 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import webpackConfig from '../../../webpack.conf'
+import productionWebpackConfig from '../../../webpack.conf'
 import { executablePath } from 'puppeteer'
 import * as karma from 'karma'
+import path from 'path'
+import webpack from 'webpack'
+
+const webpackConfig: webpack.Configuration = {
+  ...productionWebpackConfig,
+  output: {
+    path: path.resolve(__dirname, '../../../tmp/'),
+  },
+}
 
 const conf = (config: karma.Config) => {
   process.env['CHROME_BIN'] = executablePath()
@@ -31,7 +40,9 @@ const conf = (config: karma.Config) => {
     },
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(configuration as any).webpack = webpackConfig
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(configuration as any).webpackMiddleware = {
     stats: 'errors-only',
   }
