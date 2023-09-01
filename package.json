@@ -10,6 +10,9 @@
   ],
   "main": "index.js",
   "types": "index.d.ts",
+  "publishConfig": {
+    "directory": "lib"
+  },
   "scripts": {
     "integration-server": "node spec/integration/server.js",
     "test:browser": "jest --config jestSetup/configs/config.web.json",
@@ -32,7 +35,6 @@
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
     "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser",
     "build:clean": "rm -rf lib/ dist/ && yarn build",
-    "release": "./scripts/release.sh",
     "build:project": "./scripts/build-project.sh",
     "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",
     "copy:version:src": "echo \\{\\\"version\\\":\\\"$npm_package_version\\\"\\} > src/version.json",
