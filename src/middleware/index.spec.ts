@@ -1,6 +1,6 @@
 import forge from '../index'
 import { Middleware } from 'middleware'
-import { install, uninstall, mockRequest, m } from '../test'
+import { install, uninstall, mockRequest, m } from '../test/index'
 
 describe('middleware', () => {
   beforeAll(install)

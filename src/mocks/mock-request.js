@@ -1,6 +1,6 @@
 import MockAssert from './mock-assert'
 import Response from '../response'
-import { isPlainObject } from '../utils'
+import { isPlainObject } from '../utils/index'
 import { clone } from '../utils/clone'
 import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
 

@@ -1,6 +1,6 @@
 import type { Auth } from '../types'
 import type { Middleware } from './index'
-import { assign } from '../utils'
+import { assign } from '../utils/index'
 
 /**
  * Automatically configure your requests with basic auth

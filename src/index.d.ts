@@ -22,7 +22,7 @@ export type {
   RenewFn,
   RequestGetter,
   ResponseGetter,
-} from './middleware'
+} from './middleware/index'
 export type { AsyncFunction, AsyncFunctions, Client } from './client-builder'
 /**
  * @deprecated, use ManifestOptions instead

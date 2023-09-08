@@ -1,5 +1,5 @@
 import { MethodDescriptor } from './method-descriptor'
-import { toQueryString, lowerCaseObjectKeys, assign } from './utils'
+import { toQueryString, lowerCaseObjectKeys, assign } from './utils/index'
 import type {
   Auth,
   Body,

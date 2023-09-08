@@ -1,7 +1,7 @@
 import { Gateway, Method } from '../gateway'
 import Response from '../response'
 import { Headers } from '../types'
-import { assign, parseResponseHeaders, btoa } from '../utils'
+import { assign, parseResponseHeaders, btoa } from '../utils/index'
 import { createTimeoutError } from './timeout-error'
 
 const toBase64 = window.btoa || btoa

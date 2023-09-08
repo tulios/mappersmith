@@ -1,7 +1,7 @@
 import ClientBuilder, { Client } from './client-builder'
-import { assign } from './utils'
+import { assign } from './utils/index'
 import { GlobalConfigs, ManifestOptions, ResourceTypeConstraint } from './manifest'
-import { Context } from './middleware'
+import { Context } from './middleware/index'
 
 /**
  * Can be used to test for `instanceof Response`

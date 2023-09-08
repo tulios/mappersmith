@@ -8,8 +8,15 @@
     "Roberto Soares <roberto.tech@gmail.com>",
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/mappersmith.legacy-esm.js",
+  "exports": {
+    ".": {
+      "types": "./dist/mappersmith.d.ts",
+      "import": "./dist/mappersmith.mjs",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "publishConfig": {
     "directory": "lib"
   },
@@ -33,7 +40,7 @@
     "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
     "build:browser": "yarn webpack --config webpack.conf.ts",
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
-    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser",
+    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser && yarn tsup",
     "build:clean": "rm -rf lib/ dist/ && yarn build",
     "build:project": "./scripts/build-project.sh",
     "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",
@@ -120,6 +127,7 @@
     "regenerator-runtime": "^0.14.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
+    "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "wait-on": "^7.0.1",

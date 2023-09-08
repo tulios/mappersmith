@@ -1,4 +1,4 @@
-import { performanceNow, toQueryString, isPlainObject } from './utils'
+import { performanceNow, toQueryString, isPlainObject } from './utils/index'
 import { configs as defaultConfigs } from './mappersmith'
 import { Request } from './request'
 import { Response } from './response'

@@ -1,4 +1,4 @@
-import { isPlainObject, validKeys, buildRecursive } from '../utils'
+import { isPlainObject, validKeys, buildRecursive } from '../utils/index'
 
 export function toSortedQueryString(entry) {
   if (!isPlainObject(entry)) {

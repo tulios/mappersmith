@@ -7,7 +7,7 @@ import {
 } from './manifest'
 import { Response } from './response'
 import { Request, RequestContext } from './request'
-import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
+import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware/index'
 import { Gateway } from './gateway'
 import type { Params } from './types'
 

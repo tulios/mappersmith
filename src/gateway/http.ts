@@ -2,7 +2,7 @@ import * as url from 'url'
 import * as http from 'http'
 import * as https from 'https'
 
-import { assign } from '../utils'
+import { assign } from '../utils/index'
 import { Gateway, Method } from '../gateway'
 import type { HTTPGatewayConfiguration, HTTPRequestParams } from './types'
 import Response from '../response'
