@@ -66,4 +66,4 @@ export interface MockRequestArgs {
 
 export function mockRequest(args: MockRequestArgs): MockAssert
 
-export const m: TestMatchFunctions
+export declare const m: TestMatchFunctions

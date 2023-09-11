@@ -9,12 +9,78 @@
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
   "main": "./dist/cjs/index.js",
+  "types": "./dist/index.d.d.mts",
   "module": "./dist/mappersmith.legacy-esm.js",
   "exports": {
     ".": {
-      "types": "./dist/mappersmith.d.ts",
-      "import": "./dist/mappersmith.mjs",
+      "types": "./dist/index.d.d.mts",
+      "import": "./dist/index.d.mjs",
       "require": "./dist/cjs/index.js"
+    },
+    "./test": {
+      "types": "./dist/test/index.d.mts",
+      "import": "./dist/test/index.mjs",
+      "require": "./dist/cjs/test/index.js"
+    },
+    "./gateway/fetch": {
+      "types": "./dist/gateway/fetch.d.mts",
+      "import": "./dist/gateway/fetch.mjs",
+      "require": "./dist/cjs/gateway/fetch.js"
+    },
+    "./gateway/http": {
+      "types": "./dist/gateway/http.d.mts",
+      "import": "./dist/gateway/http.mjs",
+      "require": "./dist/cjs/gateway/http.js"
+    },
+    "./gateway/xhr": {
+      "types": "./dist/gateway/xhr.d.mts",
+      "import": "./dist/gateway/xhr.mjs",
+      "require": "./dist/cjs/gateway/xhr.js"
+    },
+    "./gateway/mock": {
+      "types": "./dist/gateway/mock.d.mts",
+      "import": "./dist/gateway/mock.mjs",
+      "require": "./dist/cjs/gateway/mock.js"
+    },
+    "./gateway/timeout-error": {
+      "types": "./dist/gateway/timeout-error.d.mts",
+      "import": "./dist/gateway/timeout-error.mjs",
+      "require": "./dist/cjs/gateway/timeout-error.js"
+    },
+    "./middleware/basic-auth": {
+      "types": "./dist/middleware/basic-auth.d.mts",
+      "import": "./dist/middleware/basic-auth.mjs",
+      "require": "./dist/cjs/middleware/basic-auth.js"
+    },
+    "./middleware/csrf": {
+      "types": "./dist/middleware/csrf.d.mts",
+      "import": "./dist/middleware/csrf.mjs",
+      "require": "./dist/cjs/middleware/csrf.js"
+    },
+    "./middleware/duration": {
+      "types": "./dist/middleware/duration.d.mts",
+      "import": "./dist/middleware/duration.mjs",
+      "require": "./dist/cjs/middleware/duration.js"
+    },
+    "./middleware/encode-json": {
+      "types": "./dist/middleware/encode-json.d.mts",
+      "import": "./dist/middleware/encode-json.mjs",
+      "require": "./dist/cjs/middleware/encode-json.js"
+    },
+    "./middleware/global-error-handler": {
+      "types": "./dist/middleware/global-error-handler.d.mts",
+      "import": "./dist/middleware/global-error-handler.mjs",
+      "require": "./dist/cjs/middleware/global-error-handler.js"
+    },
+    "./middleware/log": {
+      "types": "./dist/middleware/log.d.mts",
+      "import": "./dist/middleware/log.mjs",
+      "require": "./dist/cjs/middleware/log.js"
+    },
+    "./middleware/timeout": {
+      "types": "./dist/middleware/timeout.d.mts",
+      "import": "./dist/middleware/timeout.mjs",
+      "require": "./dist/cjs/middleware/timeout.js"
     }
   },
   "publishConfig": {

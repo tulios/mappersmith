@@ -1,5 +1,5 @@
 import forge from '../index'
-import { Middleware } from 'middleware'
+import type { Middleware } from './index'
 import { install, uninstall, mockRequest, m } from '../test/index'
 
 describe('middleware', () => {
