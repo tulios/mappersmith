@@ -52,8 +52,8 @@ export default defineConfig((options) => {
       clean: true,
       // sourcemap: true,
     },
-    // // ESM, Webpack 4 support. Target ES2018 syntax to compile away optional chaining and spreads
-    // // (this is consumed by "module" in package.json)
+    // ESM, Webpack 4 support. Target ES2018 syntax to compile away optional chaining and spreads
+    // (this is consumed by "module" in package.json)
     // {
     //   ...commonOptions,
     //   entry: {
@@ -67,18 +67,18 @@ export default defineConfig((options) => {
     //   format: ['esm'],
     //   sourcemap: true,
     // },
-    // // ESM for use in browsers. Minified, with `process` compiled away
-    // {
-    //   ...commonOptions,
-    //   ...productionOptions,
-    //   entry: {
-    //     'mappersmith.production.min': 'src/index.js',
-    //   },
-    //   platform: 'browser',
-    //   format: ['esm'],
-    //   outDir: './dist/esm/',
-    //   outExtension: () => ({ js: '.mjs' }),
-    // },
+    // ESM for use in browsers. Minified, with `process` compiled away
+    {
+      ...commonOptions,
+      ...productionOptions,
+      entry: {
+        'mappersmith.production.min': 'src/index.js',
+      },
+      platform: 'browser',
+      format: ['esm'],
+      outDir: './dist/browser/',
+      outExtension: () => ({ js: '.mjs' }),
+    },
     // CJS development
     {
       ...commonOptions,
