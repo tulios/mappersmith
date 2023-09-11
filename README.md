@@ -84,24 +84,27 @@ yarn release # for minified version
 
 To create a client for your API you will need to provide a simple manifest. If your API reside in the same domain as your app you can skip the `host` configuration. Each resource has a name and a list of methods with its definitions, like:
 
-```javascript
-import forge from 'mappersmith'
+```typescript
+import forge, { configs } from "mappersmith"
+import { Fetch } from "mappersmith/gateway/fetch"
+
+configs.gateway = Fetch;
 
 const github = forge({
-  clientId: 'github',
-  host: 'https://status.github.com',
+  clientId: "github",
+  host: "https://www.githubstatus.com",
   resources: {
     Status: {
-      current: { path: '/api/status.json' },
-      messages: { path: '/api/messages.json' },
-      lastMessage: { path: '/api/last-message.json' }
-    }
-  }
-})
+      current: { path: "/api/v2/status.json" },
+      summary: { path: "/api/v2/summary.json" },
+      components: { path: "/api/v2/components.json" },
+    },
+  },
+});
 
-github.Status.lastMessage().then((response) => {
-  console.log(`status: ${response.data()}`)
-})
+github.Status.current().then((response) => {
+  console.log(`summary`, response.data());
+});
 ```
 
 ## <a name="commonjs"></a> Commonjs
@@ -109,7 +112,9 @@ github.Status.lastMessage().then((response) => {
 If you are using _commonjs_, your `require` should look like:
 
 ```javascript
-const forge = require('mappersmith').default
+const forge = require("mappersmith").default;
+const { configs } = require("mappersmith");
+const FetchGateway = require("mappersmith/gateway/fetch").default;
 ```
 
 ## <a name="resource-configuration"></a> Configuring my resources
