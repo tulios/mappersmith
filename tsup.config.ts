@@ -80,13 +80,12 @@ export default defineConfig((options) => {
     //   outExtension: () => ({ js: '.mjs' }),
     // },
     // CJS development
-    // {
-    //   ...commonOptions,
-    //   ...dtsOptions,
-    //   clean: true,
-    //   format: ['cjs'],
-    //   outDir: './dist/cjs/',
-    // },
+    {
+      ...commonOptions,
+      clean: true,
+      format: ['cjs'],
+      outDir: './dist/cjs/',
+    },
     // CJS production
     // (this is consumed by "main" and ["exports" > "." > "require"] in package.json)
     //     {
