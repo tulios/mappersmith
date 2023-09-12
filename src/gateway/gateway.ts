@@ -1,10 +1,10 @@
-import { performanceNow, toQueryString, isPlainObject } from './utils/index'
-import { configs as defaultConfigs } from './mappersmith'
-import { Request } from './request'
-import { Response } from './response'
-import { isTimeoutError } from './gateway/timeout-error'
-import { GatewayConfiguration } from './gateway/types'
-import { Primitive } from './types'
+import { performanceNow, toQueryString, isPlainObject } from '../utils/index'
+import { configs as defaultConfigs } from '../mappersmith'
+import { Request } from '../request'
+import { Response } from '../response'
+import { isTimeoutError } from './timeout-error'
+import type { GatewayConfiguration } from './types'
+import type { Primitive } from '../types'
 
 const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 

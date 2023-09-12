@@ -3,11 +3,11 @@ import * as http from 'http'
 import * as https from 'https'
 
 import { assign } from '../utils/index'
-import { Gateway, Method } from '../gateway'
+import { Gateway, Method } from './index'
 import type { HTTPGatewayConfiguration, HTTPRequestParams } from './types'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
-import { Primitive } from '../types'
+import type { Primitive } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Chunk = any

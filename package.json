@@ -8,11 +8,11 @@
     "Roberto Soares <roberto.tech@gmail.com>",
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
-  "main": "./dist/cjs/index.d.js",
+  "main": "./dist/cjs/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.d.mjs",
-      "require": "./dist/cjs/index.d.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/cjs/index.js"
     },
     "./test": {
       "import": "./dist/test/index.mjs",

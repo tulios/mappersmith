@@ -1,10 +1,15 @@
-import { Gateway, Method } from '../gateway'
+import { Gateway, Method } from './index'
 import Response from '../response'
-import { Headers } from '../types'
+import type { Headers } from '../types'
 import { assign, parseResponseHeaders, btoa } from '../utils/index'
 import { createTimeoutError } from './timeout-error'
 
-const toBase64 = window.btoa || btoa
+let toBase64: (data: string) => string
+try {
+  toBase64 = window.btoa
+} catch {
+  toBase64 = btoa
+}
 
 export class XHR extends Gateway {
   private canceled = false

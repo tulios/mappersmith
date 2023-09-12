@@ -2,7 +2,7 @@ import { MethodDescriptor, MethodDescriptorParams } from './method-descriptor'
 import { assign } from './utils/index'
 import type { ParameterEncoderFn } from './types'
 import type { GatewayConfiguration } from './gateway/types'
-import type { Gateway } from './gateway'
+import type { Gateway } from './gateway/index'
 import { Context, Middleware, MiddlewareDescriptor, MiddlewareParams } from './middleware/index'
 
 export interface GlobalConfigs {

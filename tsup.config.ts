@@ -3,13 +3,7 @@ import { defineConfig, Options } from 'tsup'
 // Inspired by https://github.com/immerjs/immer/pull/1032/files
 export default defineConfig((options) => {
   const commonOptions: Partial<Options> = {
-    entry: [
-      'src/**/*.[jt]s',
-      '!./src/**/*.d.ts',
-      '!./src/**/*.spec.[jt]s',
-      '!src/index.js', // <-- NOPE! USE THE BELOW OVERRIDE INSTEAD:
-      'src/index.d.ts',
-    ],
+    entry: ['src/**/*.[jt]s', '!./src/**/*.d.ts', '!./src/**/*.spec.[jt]s'],
     platform: 'node',
     target: 'node16',
     // `splitting` should be false, it ensures we are not getting any `chunk-*` files in the output.
@@ -50,7 +44,7 @@ export default defineConfig((options) => {
       ...commonOptions,
       ...productionOptions,
       entry: {
-        'mappersmith.production.min': 'src/index.js',
+        'mappersmith.production.min': 'src/index.ts',
       },
       platform: 'browser',
       format: ['esm'],

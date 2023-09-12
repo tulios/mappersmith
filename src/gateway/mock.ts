@@ -1,4 +1,4 @@
-import { Gateway } from '../gateway'
+import { Gateway } from './index'
 import { lookupResponseAsync } from '../test/index'
 
 export class Mock extends Gateway {
