@@ -9,13 +9,17 @@
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
   "main": "./dist/cjs/index.d.js",
-  "types": "./dist/index.d.d.mts",
   "module": "./dist/mappersmith.legacy-esm.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.d.mts",
-      "import": "./dist/index.d.mjs",
-      "require": "./dist/cjs/index.d.js"
+      "import": {
+        "default": "./dist/index.d.mjs",
+        "types": "./dist/index.d.d.mts"
+      },
+      "require": {
+        "default": "./dist/cjs/index.d.js",
+        "types": "./dist/cjs/index.d.ts"
+      }
     },
     "./test": {
       "types": "./dist/test/index.d.mts",
@@ -23,9 +27,14 @@
       "require": "./dist/cjs/test/index.js"
     },
     "./gateway/fetch": {
-      "types": "./dist/gateway/fetch.d.mts",
-      "import": "./dist/gateway/fetch.mjs",
-      "require": "./dist/cjs/gateway/fetch.js"
+      "import": {
+        "default": "./dist/gateway/fetch.mjs",
+        "types": "./dist/gateway/fetch.d.mts"
+      },
+      "require": {
+        "default": "./dist/cjs/gateway/fetch.js",
+        "types": "./dist/cjs/gateway/fetch.d.ts"
+      }
     },
     "./gateway/http": {
       "types": "./dist/gateway/http.d.mts",
@@ -106,7 +115,7 @@
     "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
     "build:browser": "yarn webpack --config webpack.conf.ts",
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
-    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser && yarn tsup",
+    "build": "yarn copy:version:src && yarn build:node && yarn build:browser && yarn tsup && yarn build:typings",
     "build:clean": "rm -rf lib/ dist/ && yarn build",
     "build:project": "./scripts/build-project.sh",
     "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",

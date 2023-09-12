@@ -42,8 +42,8 @@ export default defineConfig((options) => {
   }
 
   return [
-    // // ESM, standard bundler dev, embedded `process` references.
-    // // (this is consumed by ["exports" > "." > "import"] and ["exports > "." > "types"] in package.json)
+    // ESM, standard bundler dev, embedded `process` references.
+    // (this is consumed by ["exports" > "." > "import"] and ["exports > "." > "types"] in package.json)
     {
       ...commonOptions,
       ...dtsOptions,

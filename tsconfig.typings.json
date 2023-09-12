@@ -4,7 +4,7 @@
     "rootDir": "src",
     "noEmit": false,
     "incremental": false,
-    "outDir": "./lib",
+    "outDir": "./dist/cjs",
     "declaration": true,
     "emitDeclarationOnly": true
   },
