@@ -9,7 +9,6 @@
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
   "main": "./dist/cjs/index.d.js",
-  "module": "./dist/mappersmith.legacy-esm.js",
   "exports": {
     ".": {
       "import": "./dist/index.d.mjs",
@@ -80,9 +79,13 @@
       "require": "./dist/cjs/middleware/timeout.js"
     }
   },
-  "publishConfig": {
-    "directory": "lib"
-  },
+  "files": [
+    "dist",
+    "examples/basic.cjs",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "integration-server": "node spec/integration/server.js",
     "test:browser": "jest --config jestSetup/configs/config.web.json",
