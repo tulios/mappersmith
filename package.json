@@ -103,7 +103,7 @@
     "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
     "build:browser": "yarn webpack --config webpack.conf.ts",
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
-    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser && yarn tsup",
+    "build": "yarn copy:version:src && yarn tsup && yarn build:typings",
     "build:clean": "rm -rf lib/ dist/ && yarn build",
     "build:project": "./scripts/build-project.sh",
     "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/cjs",
