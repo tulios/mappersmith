@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "2.42.0",
+  "version": "2.43.0-beta.0",
   "description": "It is a lightweight rest client for node.js and the browser",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
@@ -12,82 +12,70 @@
   "module": "./dist/mappersmith.legacy-esm.js",
   "exports": {
     ".": {
-      "import": {
-        "default": "./dist/index.d.mjs",
-        "types": "./dist/index.d.d.mts"
-      },
-      "require": {
-        "default": "./dist/cjs/index.d.js",
-        "types": "./dist/cjs/index.d.ts"
-      }
+      "import": "./dist/index.d.mjs",
+      "require": "./dist/cjs/index.d.js"
     },
     "./test": {
-      "types": "./dist/test/index.d.mts",
       "import": "./dist/test/index.mjs",
       "require": "./dist/cjs/test/index.js"
     },
     "./gateway/fetch": {
-      "import": {
-        "default": "./dist/gateway/fetch.mjs",
-        "types": "./dist/gateway/fetch.d.mts"
-      },
-      "require": {
-        "default": "./dist/cjs/gateway/fetch.js",
-        "types": "./dist/cjs/gateway/fetch.d.ts"
-      }
+      "import": "./dist/gateway/fetch.mjs",
+      "require": "./dist/cjs/gateway/fetch.js"
     },
     "./gateway/http": {
-      "types": "./dist/gateway/http.d.mts",
       "import": "./dist/gateway/http.mjs",
       "require": "./dist/cjs/gateway/http.js"
     },
     "./gateway/xhr": {
-      "types": "./dist/gateway/xhr.d.mts",
       "import": "./dist/gateway/xhr.mjs",
       "require": "./dist/cjs/gateway/xhr.js"
     },
     "./gateway/mock": {
-      "types": "./dist/gateway/mock.d.mts",
       "import": "./dist/gateway/mock.mjs",
       "require": "./dist/cjs/gateway/mock.js"
     },
     "./gateway/timeout-error": {
-      "types": "./dist/gateway/timeout-error.d.mts",
       "import": "./dist/gateway/timeout-error.mjs",
       "require": "./dist/cjs/gateway/timeout-error.js"
     },
     "./middleware/basic-auth": {
-      "types": "./dist/middleware/basic-auth.d.mts",
       "import": "./dist/middleware/basic-auth.mjs",
       "require": "./dist/cjs/middleware/basic-auth.js"
     },
     "./middleware/csrf": {
-      "types": "./dist/middleware/csrf.d.mts",
       "import": "./dist/middleware/csrf.mjs",
       "require": "./dist/cjs/middleware/csrf.js"
     },
     "./middleware/duration": {
-      "types": "./dist/middleware/duration.d.mts",
       "import": "./dist/middleware/duration.mjs",
       "require": "./dist/cjs/middleware/duration.js"
     },
     "./middleware/encode-json": {
-      "types": "./dist/middleware/encode-json.d.mts",
       "import": "./dist/middleware/encode-json.mjs",
       "require": "./dist/cjs/middleware/encode-json.js"
     },
     "./middleware/global-error-handler": {
-      "types": "./dist/middleware/global-error-handler.d.mts",
       "import": "./dist/middleware/global-error-handler.mjs",
       "require": "./dist/cjs/middleware/global-error-handler.js"
     },
     "./middleware/log": {
-      "types": "./dist/middleware/log.d.mts",
       "import": "./dist/middleware/log.mjs",
       "require": "./dist/cjs/middleware/log.js"
     },
+    "./middleware/retry": {
+      "import": "./dist/middleware/retry/index.mjs",
+      "require": "./dist/cjs/middleware/retry/index.js"
+    },
+    "./middleware/retry/v1": {
+      "import": "./dist/middleware/retry/v1/index.mjs",
+      "require": "./dist/cjs/middleware/retry/v1/index.js"
+    },
+    "./middleware/retry/v2": {
+      "import": "./dist/middleware/retry/v2/index.mjs",
+      "require": "./dist/cjs/middleware/retry/v2/index.js"
+    },
     "./middleware/timeout": {
-      "types": "./dist/middleware/timeout.d.mts",
       "import": "./dist/middleware/timeout.mjs",
       "require": "./dist/cjs/middleware/timeout.js"
     }
@@ -115,7 +103,7 @@
     "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
     "build:browser": "yarn webpack --config webpack.conf.ts",
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
-    "build": "yarn copy:version:src && yarn build:node && yarn build:browser && yarn tsup && yarn build:typings",
+    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser && yarn tsup",
     "build:clean": "rm -rf lib/ dist/ && yarn build",
     "build:project": "./scripts/build-project.sh",
     "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",
