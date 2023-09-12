@@ -8,8 +8,10 @@ export default defineConfig((options) => {
     target: 'node16',
     // `splitting` should be false, it ensures we are not getting any `chunk-*` files in the output.
     splitting: false,
-    // `bundle` should be true, it ensures we are not getting the entire bundle in EVERY file of the output.
+    // `bundle` should be false, it ensures we are not getting the entire bundle in EVERY file of the output.
     bundle: false,
+    // `bundle` should be true, we want to be able to point users back to the original source.
+    sourcemap: true,
     clean: true,
     ...options,
   }
@@ -35,14 +37,16 @@ export default defineConfig((options) => {
       ...commonOptions,
       ...dtsOptions,
       format: ['esm'],
-      // dts: true,
       clean: true,
-      // sourcemap: true,
     },
     // ESM for use in browsers. Minified, with `process` compiled away
     {
       ...commonOptions,
       ...productionOptions,
+      // `splitting` should be true (revert to the default)
+      splitting: false,
+      // `bundle` should be true, so we get everything in one file.
+      bundle: true,
       entry: {
         'mappersmith.production.min': 'src/index.ts',
       },
