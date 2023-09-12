@@ -106,7 +106,7 @@
     "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser && yarn tsup",
     "build:clean": "rm -rf lib/ dist/ && yarn build",
     "build:project": "./scripts/build-project.sh",
-    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",
+    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/cjs",
     "copy:version:src": "echo export const version = \\'$npm_package_version\\' > src/version.ts",
     "lint": "yarn eslint \"{src,spec}/**/*.[j|t]s\""
   },
