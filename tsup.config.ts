@@ -1,5 +1,4 @@
 import { defineConfig, Options } from 'tsup'
-// import fs from 'fs'
 
 // Inspired by https://github.com/immerjs/immer/pull/1032/files
 export default defineConfig((options) => {
@@ -13,22 +12,21 @@ export default defineConfig((options) => {
     ],
     platform: 'node',
     target: 'node16',
+    // `splitting` should be false, it ensures we are not getting any `chunk-*` files in the output.
     splitting: false,
+    // `bundle` should be true, it ensures we are not getting the entire bundle in EVERY file of the output.
+    bundle: false,
     clean: true,
     ...options,
   }
   const productionOptions = {
     minify: true,
-    esbuildOptions(options) {
-      options.mangleProps = /_$/
-    },
     define: {
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
   }
   const dtsOptions = {
     dts: {
-      // only: true,
       compilerOptions: {
         resolveJsonModule: false,
         outDir: './dist',

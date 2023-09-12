@@ -108,7 +108,7 @@
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
     "build": "yarn copy:version:src && yarn tsup && yarn build:typings",
     "build:clean": "rm -rf lib/ dist/ && yarn build",
-    "build:project": "./scripts/build-project.sh",
+    "build:project": "NODE_ENV=production yarn build:clean",
     "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/cjs",
     "copy:version:src": "echo export const version = \\'$npm_package_version\\' > src/version.ts",
     "lint": "yarn eslint \"{src,spec}/**/*.[j|t]s\""
