@@ -10,7 +10,7 @@ export default defineConfig((options) => {
     splitting: false,
     // `bundle` should be false, it ensures we are not getting the entire bundle in EVERY file of the output.
     bundle: false,
-    // `bundle` should be true, we want to be able to point users back to the original source.
+    // `sourcemap` should be true, we want to be able to point users back to the original source.
     sourcemap: true,
     clean: true,
     ...options,
@@ -21,30 +21,28 @@ export default defineConfig((options) => {
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
   }
-  const dtsOptions = {
-    dts: {
-      compilerOptions: {
-        resolveJsonModule: false,
-        outDir: './dist',
-      },
-    },
-  }
 
   return [
     // ESM, standard bundler dev, embedded `process` references.
     // (this is consumed by ["exports" > "." > "import"] and ["exports > "." > "types"] in package.json)
     {
       ...commonOptions,
-      ...dtsOptions,
       format: ['esm'],
       clean: true,
+      outDir: './dist/esm/',
+      dts: {
+        compilerOptions: {
+          resolveJsonModule: false,
+          outDir: './dist',
+        },
+      },
     },
     // ESM for use in browsers. Minified, with `process` compiled away
     {
       ...commonOptions,
       ...productionOptions,
       // `splitting` should be true (revert to the default)
-      splitting: false,
+      splitting: true,
       // `bundle` should be true, so we get everything in one file.
       bundle: true,
       entry: {
@@ -55,12 +53,12 @@ export default defineConfig((options) => {
       outDir: './dist/browser/',
       outExtension: () => ({ js: '.mjs' }),
     },
-    // CJS development
+    // CJS
     {
       ...commonOptions,
       clean: true,
       format: ['cjs'],
-      outDir: './dist/cjs/',
+      outDir: './dist/',
     },
   ]
 })
