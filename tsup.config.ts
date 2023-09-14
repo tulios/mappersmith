@@ -51,7 +51,6 @@ export default defineConfig((options) => {
       platform: 'browser',
       format: ['esm'],
       outDir: './dist/browser/',
-      outExtension: () => ({ js: '.mjs' }),
     },
     // CJS
     {
