@@ -9,7 +9,7 @@
 
     "baseUrl": "./src",
     "noEmit": true,
-    "incremental": true,
+    "allowJs": true,
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,

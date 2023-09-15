@@ -3,7 +3,7 @@ import type { Middleware } from './index'
 /**
  * Sets a request header with the value of a cookie from document.cookie, if it exists
  */
-export default (cookieName = 'csrfToken', headerName = 'x-csrf-token'): Middleware =>
+export const CsrfMiddleware = (cookieName = 'csrfToken', headerName = 'x-csrf-token'): Middleware =>
   function CsrfMiddleware() {
     const REGEXP_COOKIE_NAME = new RegExp(cookieName + '[^;]+')
     const getCookie = () => {
@@ -28,3 +28,4 @@ export default (cookieName = 'csrfToken', headerName = 'x-csrf-token'): Middlewa
       },
     }
   }
+export default CsrfMiddleware

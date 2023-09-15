@@ -1,6 +1,6 @@
 import type { Auth } from '../types'
 import type { Middleware } from './index'
-import { assign } from '../utils'
+import { assign } from '../utils/index'
 
 /**
  * Automatically configure your requests with basic auth
@@ -15,7 +15,7 @@ import { assign } from '../utils'
  * client.User.all()
  * // => header: "Authorization: Basic Ym9iOmJvYg=="
  */
-export default (authConfig: Auth): Middleware =>
+export const BasicAuthMiddleware = (authConfig: Auth): Middleware =>
   function BasicAuthMiddleware() {
     return {
       async prepareRequest(next) {
@@ -27,3 +27,4 @@ export default (authConfig: Auth): Middleware =>
       },
     }
   }
+export default BasicAuthMiddleware

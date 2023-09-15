@@ -1,6 +1,6 @@
 import { configs } from '../../src/mappersmith'
-import { Gateway } from '../../src/gateway'
-import { GatewayConfiguration } from '../../src/gateway/types'
+import type { GatewayConfiguration } from '../../src/gateway/types'
+import { Gateway } from '../../src/gateway/gateway'
 import { requestFactory } from '../../src/test/request-factory'
 import { responseFactory } from '../../src/test/response-factory'
 

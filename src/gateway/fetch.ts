@@ -1,9 +1,10 @@
-import { Gateway, Method } from '../gateway'
+import { Gateway } from './gateway'
 import Response from '../response'
 import { configs } from '../mappersmith'
 // Fetch can be used in nodejs, so it should always use the btoa util
-import { assign, btoa } from '../utils'
+import { assign, btoa } from '../utils/index'
 import { createTimeoutError } from './timeout-error'
+import type { Method } from './types'
 
 /**
  * Gateway which uses the "fetch" implementation configured in "configs.fetch".

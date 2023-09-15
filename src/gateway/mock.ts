@@ -1,5 +1,5 @@
-import { Gateway } from '../gateway'
-import { lookupResponseAsync } from '../test'
+import { Gateway } from './gateway'
+import { lookupResponseAsync } from '../test/index'
 
 export class Mock extends Gateway {
   get() {

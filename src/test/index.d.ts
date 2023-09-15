@@ -1,6 +1,6 @@
-import { Client } from '../client-builder'
+import type { Client } from '../client-builder'
 import { Request } from '../request'
-import { Headers, Params } from '../types'
+import type { Headers, Params } from '../types'
 export { requestFactory, RequestFactoryArgs } from './request-factory'
 export { responseFactory, ResponseFactoryArgs } from './response-factory'
 
@@ -66,4 +66,4 @@ export interface MockRequestArgs {
 
 export function mockRequest(args: MockRequestArgs): MockAssert
 
-export const m: TestMatchFunctions
+export declare const m: TestMatchFunctions

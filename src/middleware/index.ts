@@ -77,3 +77,12 @@ type DefaultPrivateProps = {}
 export type Middleware<PrivateProps extends Record<string, unknown> = DefaultPrivateProps> = (
   params: MiddlewareParams
 ) => Partial<MiddlewareDescriptor & PrivateProps>
+
+export { BasicAuthMiddleware } from './basic-auth'
+export { RetryMiddleware } from './retry/v2/index'
+export { CsrfMiddleware } from './csrf'
+export { DurationMiddleware } from './duration'
+export { EncodeJsonMiddleware } from './encode-json'
+export { GlobalErrorHandlerMiddleware } from './global-error-handler'
+export { LogMiddleware } from './log'
+export { TimeoutMiddleware } from './timeout'

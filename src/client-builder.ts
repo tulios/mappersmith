@@ -7,8 +7,8 @@ import {
 } from './manifest'
 import { Response } from './response'
 import { Request, RequestContext } from './request'
-import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware'
-import { Gateway } from './gateway'
+import type { MiddlewareDescriptor, RequestGetter, ResponseGetter } from './middleware/index'
+import { Gateway } from './gateway/index'
 import type { Params } from './types'
 
 export type AsyncFunction = (params?: Params, context?: RequestContext) => Promise<Response>

@@ -14,7 +14,7 @@ export type Milliseconds = number
  * You can still override the default value:
  * client.User.all({ timeout: 100 })
  */
-export default (timeoutValue: Milliseconds): Middleware =>
+export const TimeoutMiddleware = (timeoutValue: Milliseconds): Middleware =>
   function TimeoutMiddleware() {
     return {
       async prepareRequest(next) {
@@ -26,3 +26,5 @@ export default (timeoutValue: Milliseconds): Middleware =>
       },
     }
   }
+
+export default TimeoutMiddleware

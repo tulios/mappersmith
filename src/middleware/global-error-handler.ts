@@ -13,7 +13,7 @@ export const setErrorHandler = (errorHandler: ErrorHandlerMiddlewareCallback) =>
  * Provides a catch-all function for all requests. If the catch-all
  * function returns `true` it prevents the original promise to continue.
  */
-const GlobalErrorHandlerMiddleware: Middleware = () => ({
+export const GlobalErrorHandlerMiddleware: Middleware = () => ({
   response(next) {
     if (!configs.Promise) {
       return next()

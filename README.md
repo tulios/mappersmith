@@ -84,24 +84,27 @@ yarn release # for minified version
 
 To create a client for your API you will need to provide a simple manifest. If your API reside in the same domain as your app you can skip the `host` configuration. Each resource has a name and a list of methods with its definitions, like:
 
-```javascript
-import forge from 'mappersmith'
+```typescript
+import forge, { configs } from "mappersmith"
+import { Fetch } from "mappersmith/gateway/fetch"
+
+configs.gateway = Fetch;
 
 const github = forge({
-  clientId: 'github',
-  host: 'https://status.github.com',
+  clientId: "github",
+  host: "https://www.githubstatus.com",
   resources: {
     Status: {
-      current: { path: '/api/status.json' },
-      messages: { path: '/api/messages.json' },
-      lastMessage: { path: '/api/last-message.json' }
-    }
-  }
-})
+      current: { path: "/api/v2/status.json" },
+      summary: { path: "/api/v2/summary.json" },
+      components: { path: "/api/v2/components.json" },
+    },
+  },
+});
 
-github.Status.lastMessage().then((response) => {
-  console.log(`status: ${response.data()}`)
-})
+github.Status.current().then((response) => {
+  console.log(`summary`, response.data());
+});
 ```
 
 ## <a name="commonjs"></a> Commonjs
@@ -109,7 +112,9 @@ github.Status.lastMessage().then((response) => {
 If you are using _commonjs_, your `require` should look like:
 
 ```javascript
-const forge = require('mappersmith').default
+const forge = require("mappersmith").default;
+const { configs } = require("mappersmith");
+const FetchGateway = require("mappersmith/gateway/fetch").default;
 ```
 
 ## <a name="resource-configuration"></a> Configuring my resources
@@ -668,7 +673,7 @@ Global middleware are configured on a config level, and all new clients will aut
 include the defined middleware, example:
 
 ```javascript
-import forge, { configs } from 'mappersmith'
+import { forge, configs } from 'mappersmith'
 
 configs.middleware = [MyMiddleware]
 // all clients defined from now on will include MyMiddleware
@@ -690,7 +695,7 @@ forge({
 Automatically configure your requests with basic auth
 
 ```javascript
-import BasicAuthMiddleware from 'mappersmith/middleware/basic-auth'
+import { BasicAuthMiddleware } from 'mappersmith/middleware'
 const BasicAuth = BasicAuthMiddleware({ username: 'bob', password: 'bob' })
 
 const client = forge({
@@ -715,10 +720,10 @@ Automatically configure your requests by adding a header with the value of a coo
 The name of the cookie (defaults to "csrfToken") and the header (defaults to "x-csrf-token") can be set as following;
 
 ```javascript
-import CSRF from 'mappersmith/middleware/csrf'
+import { CsrfMiddleware } from 'mappersmith/middleware'
 
 const client = forge({
-  middleware: [ CSRF('csrfToken', 'x-csrf-token') ],
+  middleware: [ CsrfMiddleware('csrfToken', 'x-csrf-token') ],
   /* ... */
 })
 
@@ -730,10 +735,10 @@ client.User.all()
 Automatically adds `X-Started-At`, `X-Ended-At` and `X-Duration` headers to the response.
 
 ```javascript
-import Duration from 'mappersmith/middleware/duration'
+import { DurationMiddleware } from 'mappersmith/middleware'
 
 const client = forge({
-  middleware: [ Duration ],
+  middleware: [ DurationMiddleware ],
   /* ... */
 })
 
@@ -746,10 +751,10 @@ client.User.all({ body: { name: 'bob' } })
 Automatically encode your objects into JSON
 
 ```javascript
-import EncodeJson from 'mappersmith/middleware/encode-json'
+import { EncodeJsonMiddleware } from 'mappersmith/middleware'
 
 const client = forge({
-  middleware: [ EncodeJson ],
+  middleware: [ EncodeJsonMiddleware ],
   /* ... */
 })
 
@@ -763,7 +768,7 @@ client.User.all({ body: { name: 'bob' } })
 Provides a catch-all function for all requests. If the catch-all function returns `true` it prevents the original promise to continue.
 
 ```javascript
-import GlobalErrorHandler, { setErrorHandler } from 'mappersmith/middleware/global-error-handler'
+import { GlobalErrorHandlerMiddleware, setErrorHandler } from 'mappersmith/middleware'
 
 setErrorHandler((response) => {
   console.log('global error handler')
@@ -771,7 +776,7 @@ setErrorHandler((response) => {
 })
 
 const client = forge({
-  middleware: [ GlobalErrorHandler ],
+  middleware: [ GlobalErrorHandlerMiddleware ],
   /* ... */
 })
 
@@ -794,10 +799,10 @@ client.User
 Log all requests and responses. Might be useful in development mode.
 
 ```javascript
-import Log from 'mappersmith/middleware/log'
+import { LogMiddleware } from 'mappersmith/middleware'
 
 const client = forge({
-  middleware: [ Log ],
+  middleware: [ LogMiddleware ],
   /* ... */
 })
 ```
@@ -806,14 +811,12 @@ const client = forge({
 
 This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default on requests with response statuses >= 500 will be retried.
 
-##### v2
-
 It's possible to configure the header names and parameters used in the calculation by providing a configuration object when creating the middleware.
 
 If no configuration is passed when creating the middleware then the defaults will be used.
 
 ```javascript
-import Retry from 'mappersmith/middleware/retry/v2'
+import { RetryMiddleware } from 'mappersmith/middleware'
 
 const retryConfigs = {
   headerRetryCount: 'X-Mappersmith-Retry-Count',
@@ -832,43 +835,12 @@ const client = forge({
 })
 ```
 
-##### v1 (deprecated)
-
-The v1 retry middleware is now deprecated as it relies on global configuration which can cause issues if you need to have multiple different configurations.
-
-```javascript
-import Retry from 'mappersmith/middleware/retry'
-
-const client = forge({
-  middleware: [ Retry ],
-  /* ... */
-})
-```
-
-It's possible to configure the header names and parameters used in the calculation by calling the deprecated setRetryConfigs method.
-
-```javascript
-import { setRetryConfigs } from 'mappersmith/middleware/retry'
-
-// Using the default values as an example
-setRetryConfigs({
-  headerRetryCount: 'X-Mappersmith-Retry-Count',
-  headerRetryTime: 'X-Mappersmith-Retry-Time',
-  maxRetryTimeInSecs: 5,
-  initialRetryTimeInSecs: 0.1,
-  factor: 0.2, // randomization factor
-  multiplier: 2, // exponential factor
-  retries: 5, // max retries
-  validateRetry: (response) => response.responseStatus >= 500 // a function that returns true if the request should be retried
-})
-```
-
 #### <a name="middleware-timeout"></a> Timeout
 
 Automatically configure your requests with a default timeout
 
 ```javascript
-import TimeoutMiddleware from 'mappersmith/middleware/timeout'
+import { TimeoutMiddleware } from 'mappersmith/middleware'
 const Timeout = TimeoutMiddleware(500)
 
 const client = forge({
@@ -963,7 +935,7 @@ It accepts the methods:
 Example using __jasmine__:
 
 ```javascript
-import forge from 'mappersmith'
+import { forge } from 'mappersmith'
 import { install, uninstall, mockClient } from 'mappersmith/test'
 
 describe('Feature', () => {
@@ -1091,7 +1063,7 @@ It returns an assert object
 Example using __jasmine__:
 
 ```javascript
-import forge from 'mappersmith'
+import { forge } from 'mappersmith'
 import { install, uninstall, mockRequest } from 'mappersmith/test'
 
 describe('Feature', () => {
@@ -1304,7 +1276,7 @@ configs.fetch = fetchFunction
 Fetch is not used by default, you can configure it through `configs.gateway`.
 
 ```javascript
-import FetchGateway from 'mappersmith/gateway/fetch'
+import { FetchGateway } from 'mappersmith/gateway'
 import { configs } from 'mappersmith'
 
 configs.gateway = FetchGateway
@@ -1326,7 +1298,7 @@ __Mappersmith__ also supports TypeScript (>=3.5). In the following sections ther
 To create a middleware using TypeScript you just have to add the `Middleware` interface to your middleware object:
 
 ```typescript
-import { Middleware } from 'mappersmith'
+import type { Middleware } from 'mappersmith'
 
 const MyMiddleware: Middleware = () => ({
   prepareRequest(next) {
@@ -1348,7 +1320,7 @@ const MyMiddleware: Middleware = () => ({
 To use the `mockClient` with proper types you need to pass a typeof your client as generic to the `mockClient` function:
 
 ```typescript
-import forge from 'mappersmith'
+import { forge } from 'mappersmith'
 import { mockClient } from 'mappersmith/test'
 
 const github = forge({
@@ -1420,6 +1392,14 @@ yarn test
 ```
 
 ## Package and release
+
+### WIP
+
+Build esm, umd and cjs with a single command:
+
+```sh
+yarn tsup
+```
 
 ### Package project only
 

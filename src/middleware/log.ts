@@ -44,7 +44,7 @@ const log = (request: Request, response?: Response) => {
 /**
  * Log all requests and responses.
  */
-const ConsoleLogMiddleware: Middleware = () => ({
+export const LogMiddleware: Middleware = () => ({
   async prepareRequest(next) {
     const request = await next()
     log(request)
@@ -65,4 +65,4 @@ const ConsoleLogMiddleware: Middleware = () => ({
   },
 })
 
-export default ConsoleLogMiddleware
+export default LogMiddleware

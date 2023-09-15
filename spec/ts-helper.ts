@@ -1,8 +1,8 @@
 /**
  * Migrate stuff from helper.js into this file
  */
-import { Middleware } from '../src/middleware'
-import { GatewayConfiguration } from '../src/gateway/types'
+import type { Middleware } from '../src/middleware'
+import type { GatewayConfiguration } from '../src/gateway/types'
 
 const resources = {
   User: {

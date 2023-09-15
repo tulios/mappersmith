@@ -39,7 +39,7 @@ const config: webpack.Configuration = {
   resolveLoader: {
     plugins: [PnpWebpackPlugin.moduleLoader(module)],
   },
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'dist/'),
     filename: 'mappersmith.js',

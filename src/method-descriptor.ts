@@ -1,5 +1,5 @@
 import type { Headers, RequestParams, ParameterEncoderFn, Params } from './types'
-import type { Middleware } from './middleware'
+import type { Middleware } from './middleware/index'
 
 export interface MethodDescriptorParams {
   allowResourceHostOverride?: boolean

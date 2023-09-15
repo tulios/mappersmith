@@ -1,4 +1,4 @@
-import { lowerCaseObjectKeys } from './utils'
+import { lowerCaseObjectKeys } from './utils/index'
 import { Request } from './request'
 import type { Headers } from './types'
 

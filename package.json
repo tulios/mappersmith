@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "2.42.0",
+  "version": "2.43.0-beta.1",
   "description": "It is a lightweight rest client for node.js and the browser",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
@@ -8,10 +8,86 @@
     "Roberto Soares <roberto.tech@gmail.com>",
     "Mathias Klippinge <mathias.klippinge@gmail.com>"
   ],
-  "main": "index.js",
-  "types": "index.d.ts",
-  "publishConfig": {
-    "directory": "lib"
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./test": {
+      "import": "./dist/esm/test/index.mjs",
+      "require": "./dist/test/index.js"
+    },
+    "./gateway": {
+      "import": "./dist/esm/gateway/index.mjs",
+      "require": "./dist/gateway/index.js"
+    },
+    "./gateway/fetch": {
+      "import": "./dist/esm/gateway/fetch.mjs",
+      "require": "./dist/gateway/fetch.js"
+    },
+    "./gateway/http": {
+      "import": "./dist/esm/gateway/http.mjs",
+      "require": "./dist/gateway/http.js"
+    },
+    "./gateway/xhr": {
+      "import": "./dist/esm/gateway/xhr.mjs",
+      "require": "./dist/gateway/xhr.js"
+    },
+    "./gateway/mock": {
+      "import": "./dist/esm/gateway/mock.mjs",
+      "require": "./dist/gateway/mock.js"
+    },
+    "./gateway/timeout-error": {
+      "import": "./dist/esm/gateway/timeout-error.mjs",
+      "require": "./dist/gateway/timeout-error.js"
+    },
+    "./middleware": {
+      "import": "./dist/esm/middleware/index.mjs",
+      "require": "./dist/middleware/index.js"
+    },
+    "./middleware/basic-auth": {
+      "import": "./dist/esm/middleware/basic-auth.mjs",
+      "require": "./dist/middleware/basic-auth.js"
+    },
+    "./middleware/csrf": {
+      "import": "./dist/esm/middleware/csrf.mjs",
+      "require": "./dist/middleware/csrf.js"
+    },
+    "./middleware/duration": {
+      "import": "./dist/esm/middleware/duration.mjs",
+      "require": "./dist/middleware/duration.js"
+    },
+    "./middleware/encode-json": {
+      "import": "./dist/esm/middleware/encode-json.mjs",
+      "require": "./dist/middleware/encode-json.js"
+    },
+    "./middleware/global-error-handler": {
+      "import": "./dist/esm/middleware/global-error-handler.mjs",
+      "require": "./dist/middleware/global-error-handler.js"
+    },
+    "./middleware/log": {
+      "import": "./dist/esm/middleware/log.mjs",
+      "require": "./dist/middleware/log.js"
+    },
+    "./middleware/retry": {
+      "import": "./dist/esm/middleware/retry/index.mjs",
+      "require": "./dist/middleware/retry/index.js"
+    },
+    "./middleware/retry/v1": {
+      "import": "./dist/esm/middleware/retry/v1/index.mjs",
+      "require": "./dist/middleware/retry/v1/index.js"
+    },
+    "./middleware/retry/v2": {
+      "import": "./dist/esm/middleware/retry/v2/index.mjs",
+      "require": "./dist/middleware/retry/v2/index.js"
+    },
+    "./middleware/timeout": {
+      "import": "./dist/esm/middleware/timeout.mjs",
+      "require": "./dist/middleware/timeout.js"
+    }
   },
   "scripts": {
     "integration-server": "node spec/integration/server.js",
@@ -33,12 +109,13 @@
     "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
     "build:browser": "yarn webpack --config webpack.conf.ts",
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
-    "build": "yarn copy:version:src && yarn build:node && yarn build:typings && yarn build:browser",
-    "build:clean": "rm -rf lib/ dist/ && yarn build",
-    "build:project": "./scripts/build-project.sh",
-    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/",
+    "build": "yarn copy:version:src && yarn tsup && yarn build:typings",
+    "build:clean": "rm -rf dist/ && yarn build",
+    "build:project": "NODE_ENV=production yarn build:clean",
+    "copy:dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/",
     "copy:version:src": "echo export const version = \\'$npm_package_version\\' > src/version.ts",
-    "lint": "yarn eslint \"{src,spec}/**/*.[j|t]s\""
+    "lint": "yarn eslint \"{src,spec}/**/*.[j|t]s\"",
+    "publish:prepare": "./scripts/publish-prepare.sh"
   },
   "repository": {
     "type": "git",
@@ -120,6 +197,7 @@
     "regenerator-runtime": "^0.14.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
+    "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "wait-on": "^7.0.1",

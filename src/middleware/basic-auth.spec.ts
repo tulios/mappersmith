@@ -1,6 +1,6 @@
 import BasicAuthMiddleware from './basic-auth'
 import type { AbortFn, MiddlewareDescriptor, MiddlewareParams } from './index'
-import { requestFactory } from '../test'
+import { requestFactory } from '../test/index'
 import type { Auth } from '../types'
 
 const abort: AbortFn = () => ({})

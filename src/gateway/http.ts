@@ -2,12 +2,12 @@ import * as url from 'url'
 import * as http from 'http'
 import * as https from 'https'
 
-import { assign } from '../utils'
-import { Gateway, Method } from '../gateway'
-import type { HTTPGatewayConfiguration, HTTPRequestParams } from './types'
+import { assign } from '../utils/index'
+import { Gateway } from './gateway'
+import type { Method, HTTPGatewayConfiguration, HTTPRequestParams } from './types'
 import Response from '../response'
 import { createTimeoutError } from './timeout-error'
-import { Primitive } from '../types'
+import type { Primitive } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Chunk = any
