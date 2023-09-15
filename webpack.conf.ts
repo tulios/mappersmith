@@ -1,7 +1,5 @@
 import webpack from 'webpack'
 import path from 'path'
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
-import PnpWebpackPlugin from 'pnp-webpack-plugin'
 import packageJson from './package.json'
 
 const env = process.env['NODE_ENV'] || 'development'
@@ -29,15 +27,11 @@ const config: webpack.Configuration = {
   resolve: {
     extensions: ['.ts', '.js'],
     modules: [path.join(__dirname, '/node_modules'), __dirname],
-    plugins: [PnpWebpackPlugin],
     fallback: {
       url: false,
       http: false,
       https: false,
     },
-  },
-  resolveLoader: {
-    plugins: [PnpWebpackPlugin.moduleLoader(module)],
   },
   entry: './src/index.ts',
   output: {
@@ -50,16 +44,6 @@ const config: webpack.Configuration = {
   target: 'web',
   // Tell Webpack not to provide a Node.js-like environment as we are compiling for the browser.
   node: false,
-  optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        sourceMap: true,
-        uglifyOptions: {
-          warnings: false,
-        },
-      }),
-    ],
-  },
   plugins,
   devtool: devTool,
   module: {
