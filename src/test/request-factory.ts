@@ -1,5 +1,5 @@
 import { Request, RequestContext } from '../request'
-import { RequestParams } from '../types'
+import type { RequestParams } from '../types'
 import { MethodDescriptor } from '../method-descriptor'
 
 export interface RequestFactoryArgs extends RequestParams {
