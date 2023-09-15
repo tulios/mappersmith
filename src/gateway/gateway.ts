@@ -8,8 +8,6 @@ import type { Primitive } from '../types'
 
 const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
 
-export type Method = 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete'
-
 export class Gateway {
   public request: Request
   public configs: GatewayConfiguration

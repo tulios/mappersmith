@@ -1,5 +1,6 @@
-import { Gateway, Method } from './index'
+import { Gateway } from './gateway'
 import Response from '../response'
+import type { Method } from './types'
 import type { Headers } from '../types'
 import { assign, parseResponseHeaders, btoa } from '../utils/index'
 import { createTimeoutError } from './timeout-error'

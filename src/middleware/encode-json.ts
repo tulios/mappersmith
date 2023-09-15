@@ -14,7 +14,7 @@ const alreadyEncoded = (body: unknown) => typeof body === 'string'
  * // => body: {"name":"bob"}
  * // => header: "Content-Type=application/json;charset=utf-8"
  */
-const EncodeJsonMiddleware: Middleware = () => ({
+export const EncodeJsonMiddleware: Middleware = () => ({
   async prepareRequest(next) {
     const request = await next()
     try {

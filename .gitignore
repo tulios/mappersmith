@@ -10,3 +10,4 @@ tsconfig.tsbuildinfo
 .yarn/install-state.gz
 tmp/
 dist/
+.vscode/

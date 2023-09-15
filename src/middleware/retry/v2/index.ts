@@ -26,7 +26,7 @@ export const defaultRetryConfigs: RetryMiddlewareOptions = {
   validateRetry: (response: Response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
 }
 
-type RetryMiddleware = Middleware<{
+type RetryMiddlewareType = Middleware<{
   enableRetry: boolean
   inboundRequest: Request
 }>
@@ -53,7 +53,9 @@ type RetryMiddleware = Middleware<{
  *   @param {Number} retryConfigs.multiplier (default: 2) - exponential factor
  *   @param {Number} retryConfigs.retries (default: 5) - max retries
  */
-export default (customConfigs: Partial<RetryMiddlewareOptions> = {}): RetryMiddleware =>
+export const RetryMiddleware = (
+  customConfigs: Partial<RetryMiddlewareOptions> = {}
+): RetryMiddlewareType =>
   function RetryMiddleware() {
     return {
       request(request) {
@@ -90,6 +92,8 @@ export default (customConfigs: Partial<RetryMiddlewareOptions> = {}): RetryMiddl
       },
     }
   }
+
+export default RetryMiddleware
 
 type RetryFn = (retryTime: number, retryCount: number, retryConfigs: RetryMiddlewareOptions) => void
 type RetriableRequestFn = (

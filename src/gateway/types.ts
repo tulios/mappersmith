@@ -1,3 +1,5 @@
+export type Method = 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete'
+
 export interface HTTPRequestParams {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any

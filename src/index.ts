@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as lib from './mappersmith'
-import XHR from './gateway/xhr'
-import HTTP from './gateway/http'
-import Fetch from './gateway/fetch'
+import { configs } from './mappersmith'
+import { XHR } from './gateway/xhr'
+import { HTTP } from './gateway/http'
+import { Fetch } from './gateway/fetch'
+import type { Gateway } from './gateway/index'
 import type { GlobalConfigs, ManifestOptions, ResourceTypeConstraint } from './manifest'
-const { configs } = lib
 let _process = null
-let defaultGateway = null
+let defaultGateway: typeof Gateway | null = null
 
 // Prevents webpack to load the nodejs process polyfill
 try {
@@ -75,4 +75,5 @@ export type Options<Resources extends ResourceTypeConstraint> = ManifestOptions<
  * @deprecated, use GlobalConfigs instead
  */
 export type Configuration = GlobalConfigs
-export { default, version, configs, setContext } from './mappersmith'
+export { forge as default, forge, version, setContext } from './mappersmith'
+export { configs }

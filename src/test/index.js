@@ -1,6 +1,6 @@
 import MockRequest from '../mocks/mock-request'
 import MockResource from '../mocks/mock-resource'
-import MockGateway from '../gateway/mock'
+import { Mock as MockGateway } from '../gateway/mock'
 import { configs } from '../index'
 import { toQueryString } from '../utils/index'
 export { requestFactory } from './request-factory'

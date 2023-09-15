@@ -20,6 +20,10 @@
       "import": "./dist/esm/test/index.mjs",
       "require": "./dist/test/index.js"
     },
+    "./gateway": {
+      "import": "./dist/esm/gateway/index.mjs",
+      "require": "./dist/gateway/index.js"
+    },
     "./gateway/fetch": {
       "import": "./dist/esm/gateway/fetch.mjs",
       "require": "./dist/gateway/fetch.js"
@@ -39,6 +43,10 @@
     "./gateway/timeout-error": {
       "import": "./dist/esm/gateway/timeout-error.mjs",
       "require": "./dist/gateway/timeout-error.js"
+    },
+    "./middleware": {
+      "import": "./dist/esm/middleware/index.mjs",
+      "require": "./dist/middleware/index.js"
     },
     "./middleware/basic-auth": {
       "import": "./dist/esm/middleware/basic-auth.mjs",

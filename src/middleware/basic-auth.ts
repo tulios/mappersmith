@@ -15,7 +15,7 @@ import { assign } from '../utils/index'
  * client.User.all()
  * // => header: "Authorization: Basic Ym9iOmJvYg=="
  */
-export default (authConfig: Auth): Middleware =>
+export const BasicAuthMiddleware = (authConfig: Auth): Middleware =>
   function BasicAuthMiddleware() {
     return {
       async prepareRequest(next) {
@@ -27,3 +27,4 @@ export default (authConfig: Auth): Middleware =>
       },
     }
   }
+export default BasicAuthMiddleware
