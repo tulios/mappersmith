@@ -106,8 +106,6 @@
     "test:integration": "yarn test:node:integration && yarn test:browser:integration",
     "test:unit": "yarn test:browser && yarn test:node && yarn test:service-worker && yarn test:integration",
     "test": "yarn test:types && yarn prettier --check . && yarn lint && yarn test:unit",
-    "build:node": "yarn babel src -d lib/ --extensions '.js,.ts' --ignore '**/*.spec.ts','**/*.spec.js','**/*.d.ts'",
-    "build:browser": "yarn webpack --config webpack.conf.ts",
     "build:typings": "yarn tsc --project tsconfig.typings.json && yarn copy:dts",
     "build": "yarn copy:version:src && yarn tsup && yarn build:typings",
     "build:clean": "rm -rf dist/ && yarn build",
@@ -142,10 +140,6 @@
     "./src/gateway/http.js": false
   },
   "devDependencies": {
-    "@babel/cli": "^7.22.10",
-    "@babel/core": "^7.22.11",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@babel/preset-env": "^7.22.14",
     "@babel/preset-typescript": "^7.22.11",
     "@babel/register": "^7.22.5",
@@ -157,7 +151,6 @@
     "@types/webpack": "^5.28.2",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
-    "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^29.6.4",
     "babel-loader": "^9.1.3",
     "babel-plugin-minify-replace": "^0.5.0",
@@ -202,7 +195,6 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "wait-on": "^7.0.1",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4",
     "whatwg-fetch": "^3.6.18"
   },
   "packageManager": "yarn@3.6.3"
