@@ -41,10 +41,22 @@ export class HTTP extends Gateway {
 
   performRequest(method: Method) {
     const headers: Record<string, Primitive> = {}
-    const defaults = new url.URL(this.request.url())
+    const parsedUrl = new url.URL(this.request.url())
     // eslint-disable-next-line n/no-deprecated-api
     // const defaults = url.parse(this.request.url())
-    console.log('[HTTP] defaults', defaults)
+    const urlParams = {
+      host: parsedUrl.host,
+      hostname: parsedUrl.hostname,
+      href: parsedUrl.href,
+      pathname: parsedUrl.pathname,
+      port: parsedUrl.port === '' ? null : parsedUrl.port,
+      protocol: parsedUrl.protocol,
+      search: parsedUrl.search === '' ? null : parsedUrl.search,
+      username: parsedUrl.username,
+      password: parsedUrl.password,
+      hash: parsedUrl.hash === '' ? null : parsedUrl.hash,
+    }
+    console.log('[HTTP] defaults', urlParams)
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const body = this.prepareBody(method, headers)
     const timeout = this.request.timeout()
@@ -61,22 +73,25 @@ export class HTTP extends Gateway {
       headers['content-length'] = Buffer.byteLength(body)
     }
 
-    const handler = defaults.protocol === 'https:' ? https : http
+    const handler = urlParams.protocol === 'https:' ? https : http
 
-    const requestParams: HTTPRequestParams = assign(defaults, {
+    const requestParams: HTTPRequestParams = assign(urlParams, {
       method: requestMethod,
       headers: assign(headers, this.request.headers()),
     })
 
     console.log('[HTTP] headers', requestParams['headers'])
+    // Auth can either come from mappersmith designated request header, or be parsed from the URL
     const auth = this.request.auth()
     if (auth) {
       const username = auth.username || ''
       const password = auth.password || ''
-      console.log('[HTTP] auth => ', `${username}:${password}`)
+      console.log('[HTTP] auth 1 => ', `${username}:${password}`)
       requestParams['auth'] = `${username}:${password}`
+    } else if (urlParams.username && urlParams.password) {
+      console.log('[HTTP] auth 2 => ', `${urlParams.username}:${urlParams.password}`)
+      requestParams['auth'] = `${urlParams.username}:${urlParams.password}`
     }
-
     const httpOptions = this.options().HTTP
 
     if (httpOptions.useSocketConnectionTimeout) {
