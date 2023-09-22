@@ -17,7 +17,10 @@ export function createGatewayAsserts(gatewayArgsGenerator) {
 }
 
 export function createGatewaySuccessAssert(Gateway, methodDescriptor, requestParams) {
+  console.log('createGatewaySuccessAssertFactory, requestParams =>', requestParams)
   return (done, assertsCallback) => {
+    console.log('createGatewaySuccessAssert, requestParams =>', requestParams)
+
     const request = new Request(methodDescriptor, requestParams)
     const gateway = new Gateway(request, defaultConfigs.gatewayConfigs)
 

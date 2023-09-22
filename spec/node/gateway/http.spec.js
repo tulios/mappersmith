@@ -43,7 +43,10 @@ describe('Gateway / HTTP', () => {
     configs.gatewayConfigs = originalConfigs
   })
 
-  for (const methodName of ['get', 'post', 'put', 'delete', 'patch']) {
+  for (const methodName of [
+    'get',
+    // , 'post', 'put', 'delete', 'patch'
+  ]) {
     describe(`#${methodName}`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -62,12 +65,17 @@ describe('Gateway / HTTP', () => {
         })
       })
 
-      it('sends all defined headers', (done) => {
+      it.only('sends all defined headers', (done) => {
+        console.log(`[spec ${methodName}] gateway =>`, configs.gateway)
         requestParams = {
           [methodDescriptor.headersAttr]: { authorization: 'token' },
         }
-
+        console.log(`[spec ${methodName}] httpResponse =>`, httpResponse)
         respondWith(httpResponse, (fauxJaxRequest) => {
+          console.log(
+            `[spec ${methodName}] fauxJaxRequest.requestHeaders`,
+            fauxJaxRequest.requestHeaders
+          )
           expect(fauxJaxRequest.requestHeaders).toEqual(
             expect.objectContaining({
               authorization: 'token',

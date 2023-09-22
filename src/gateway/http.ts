@@ -42,6 +42,9 @@ export class HTTP extends Gateway {
   performRequest(method: Method) {
     const headers: Record<string, Primitive> = {}
     const defaults = new url.URL(this.request.url())
+    // eslint-disable-next-line n/no-deprecated-api
+    // const defaults = url.parse(this.request.url())
+    console.log('[HTTP] defaults', defaults)
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
     const body = this.prepareBody(method, headers)
     const timeout = this.request.timeout()
@@ -54,6 +57,7 @@ export class HTTP extends Gateway {
       typeof body !== 'number' &&
       typeof body.length === 'number'
     ) {
+      console.log('[HTTP] setting content-length =>', Buffer.byteLength(body))
       headers['content-length'] = Buffer.byteLength(body)
     }
 
@@ -64,10 +68,12 @@ export class HTTP extends Gateway {
       headers: assign(headers, this.request.headers()),
     })
 
+    console.log('[HTTP] headers', requestParams['headers'])
     const auth = this.request.auth()
     if (auth) {
       const username = auth.username || ''
       const password = auth.password || ''
+      console.log('[HTTP] auth => ', `${username}:${password}`)
       requestParams['auth'] = `${username}:${password}`
     }
 
