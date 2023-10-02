@@ -1,4 +1,4 @@
-import { configs } from '../../src/mappersmith'
+import { configs } from '../../src/configs'
 import type { GatewayConfiguration } from '../../src/gateway/types'
 import { Gateway } from '../../src/gateway/gateway'
 import { requestFactory } from '../../src/test/request-factory'

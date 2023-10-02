@@ -1,5 +1,5 @@
 import { performanceNow, toQueryString, isPlainObject } from '../utils/index'
-import { configs as defaultConfigs } from '../mappersmith'
+import { configs as defaultConfigs } from '../configs/index'
 import { Request } from '../request'
 import { Response } from '../response'
 import { isTimeoutError } from './timeout-error'

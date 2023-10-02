@@ -1,6 +1,6 @@
 import type { Response } from '../response'
 import type { Middleware } from './index'
-import { configs } from '../index'
+import { configs } from '../configs/index'
 
 export type ErrorHandlerMiddlewareCallback = (response: Response) => boolean
 let handler: ErrorHandlerMiddlewareCallback | null = null

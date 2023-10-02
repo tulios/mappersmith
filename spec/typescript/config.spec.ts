@@ -1,4 +1,5 @@
-import { configs, setContext } from '../../src/mappersmith'
+import { setContext } from '../../src/mappersmith'
+import { configs } from '../../src/configs'
 import { Middleware } from '../../src/middleware'
 
 const MyMiddleware: Middleware = () => ({
