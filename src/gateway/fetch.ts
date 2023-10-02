@@ -1,10 +1,10 @@
 import { Gateway } from './gateway'
 import Response from '../response'
-import { configs } from '../mappersmith'
+import { configs } from '../configs/index'
 // Fetch can be used in nodejs, so it should always use the btoa util
 import { assign, btoa } from '../utils/index'
 import { createTimeoutError } from './timeout-error'
-import type { Method } from './types'
+import type { FetchResponse, Method, RequestInit } from './types'
 
 /**
  * Gateway which uses the "fetch" implementation configured in "configs.fetch".
@@ -58,7 +58,11 @@ export class Fetch extends Gateway {
 
     const headers = assign(customHeaders, this.request.headers())
     const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
-    const init: RequestInit = assign({ method: requestMethod, headers, body }, this.options().Fetch)
+    const init: RequestInit = assign(
+      { method: requestMethod, headers, body },
+      this.options().Fetch
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any
     const timeout = this.request.timeout()
 
     let timer: ReturnType<typeof setTimeout> | null = null
@@ -72,7 +76,8 @@ export class Fetch extends Gateway {
       }, timeout)
     }
 
-    fetch(this.request.url(), init)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    fetch(this.request.url(), init as any)
       .then((fetchResponse) => {
         if (canceled) {
           return
@@ -107,7 +112,7 @@ export class Fetch extends Gateway {
       })
   }
 
-  createResponse(fetchResponse: globalThis.Response, data: string | ArrayBuffer | Buffer) {
+  createResponse(fetchResponse: FetchResponse, data: string | ArrayBuffer | Buffer) {
     const status = fetchResponse.status
     const responseHeaders: Record<string, string> = {}
     fetchResponse.headers.forEach((value, key) => {

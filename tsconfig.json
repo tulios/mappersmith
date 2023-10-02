@@ -19,7 +19,9 @@
     "resolveJsonModule": true,
 
     "typeRoots": ["./typings", "./node_modules/@types"],
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+
+    "moduleSuffixes": [".web", ".node", ""]
   },
   "include": ["spec/**/*", "src/**/*"],
   "exclude": ["node_modules"]

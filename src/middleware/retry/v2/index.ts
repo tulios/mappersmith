@@ -1,5 +1,5 @@
 import type { Middleware, ResponseGetter } from '../../index'
-import { configs } from '../../../index'
+import { configs } from '../../../configs/index'
 import { assign } from '../../../utils/index'
 import { Response } from '../../../response'
 import type { Request } from '../../../request'

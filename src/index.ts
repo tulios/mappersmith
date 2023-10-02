@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { configs } from './mappersmith'
+import { configs } from './configs/index'
 import { XHR } from './gateway/xhr'
 import { HTTP } from './gateway/http'
 import { Fetch } from './gateway/fetch'

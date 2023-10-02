@@ -4,6 +4,6 @@ export { HTTP as HTTPGateway } from './http'
 export { Mock as MockGateway } from './mock'
 export { isTimeoutError, createTimeoutError } from './timeout-error'
 export { XHR as XHRGateway } from './xhr'
-export type { HTTPRequestParams, HTTPGatewayConfiguration, GatewayConfiguration } from './types'
+export type { HTTPRequestParams, HTTPGatewayConfiguration, GatewayConfiguration } from './types.web'
 export default Gateway
 export { Gateway }

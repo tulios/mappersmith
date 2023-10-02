@@ -12,6 +12,8 @@ import type { Primitive } from '../types'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Chunk = any
 
+export type IncomingMessage = http.IncomingMessage
+
 export class HTTP extends Gateway {
   private canceled = false
 
@@ -133,7 +135,7 @@ export class HTTP extends Gateway {
   }
 
   onResponse(
-    httpResponse: http.IncomingMessage,
+    httpResponse: IncomingMessage,
     httpOptions: Partial<HTTPGatewayConfiguration>,
     requestParams: HTTPRequestParams
   ) {
@@ -174,7 +176,7 @@ export class HTTP extends Gateway {
     this.dispatchClientError(e.message, e)
   }
 
-  createResponse(httpResponse: http.IncomingMessage, rawData: Chunk) {
+  createResponse(httpResponse: IncomingMessage, rawData: Chunk) {
     const responseData = this.request.isBinary() ? Buffer.concat(rawData) : rawData.join('')
 
     return new Response(
