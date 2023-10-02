@@ -1,14 +1,5 @@
 export type Method = 'get' | 'head' | 'post' | 'put' | 'patch' | 'delete'
 
-/**
- * Hello from WEB
- */
-export type Fetch = typeof fetch
-
-type RequestInit = Parameters<Fetch>[0]
-type FetchResponse = Awaited<ReturnType<Fetch>>
-export { RequestInit, FetchResponse }
-
 export interface HTTPRequestParams {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any

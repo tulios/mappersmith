@@ -1,4 +1,4 @@
-import { configs } from '../configs'
+import { configs } from '../mappersmith'
 import MockRequest from './mock-request'
 import Request from '../request'
 

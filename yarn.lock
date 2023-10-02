@@ -2582,16 +2582,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:^2.6.6":
-  version: 2.6.6
-  resolution: "@types/node-fetch@npm:2.6.6"
-  dependencies:
-    "@types/node": "*"
-    form-data: ^4.0.0
-  checksum: ac66389d9d597ab91f5e5d3724e594965b9f80ae5841ab5da9f0c3bd54ceac084591cfe69b1c413f18bb7efdd97002d05bd7651d58ba0c6c10f804f4fd85e598
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20.5.7":
   version: 20.6.1
   resolution: "@types/node@npm:20.6.1"
@@ -7785,7 +7775,6 @@ __metadata:
     "@types/jest": ^29.5.4
     "@types/karma": ^6.3.4
     "@types/node": ^20.5.7
-    "@types/node-fetch": ^2.6.6
     "@types/webpack": ^5.28.2
     "@typescript-eslint/eslint-plugin": ^6.5.0
     "@typescript-eslint/parser": ^6.5.0

@@ -3,7 +3,7 @@ import { defineConfig, Options } from 'tsup'
 // Inspired by https://github.com/immerjs/immer/pull/1032/files
 export default defineConfig((options) => {
   const commonOptions: Partial<Options> = {
-    entry: ['src/**/*.[jt]s', '!./src/**/*.d.ts', '!./src/**/*.spec.[jt]s', '!./src/**/*.web.ts'],
+    entry: ['src/**/*.[jt]s', '!./src/**/*.d.ts', '!./src/**/*.spec.[jt]s'],
     platform: 'node',
     target: 'node16',
     // `splitting` should be false, it ensures we are not getting any `chunk-*` files in the output.
@@ -34,26 +34,24 @@ export default defineConfig((options) => {
         compilerOptions: {
           resolveJsonModule: false,
           outDir: './dist',
-          // Will only produce "node" typings (will be wrong for "browser")
-          moduleSuffixes: ['.node', ''],
         },
       },
     },
     // ESM for use in browsers. Minified, with `process` compiled away
-    // {
-    //   ...commonOptions,
-    //   ...productionOptions,
-    //   // `splitting` should be true (revert to the default)
-    //   splitting: true,
-    //   // `bundle` should be true, so we get everything in one file.
-    //   bundle: true,
-    //   entry: {
-    //     'mappersmith.production.min': 'src/index.ts',
-    //   },
-    //   platform: 'browser',
-    //   format: ['esm'],
-    //   outDir: './dist/browser/',
-    // },
+    {
+      ...commonOptions,
+      ...productionOptions,
+      // `splitting` should be true (revert to the default)
+      splitting: true,
+      // `bundle` should be true, so we get everything in one file.
+      bundle: true,
+      entry: {
+        'mappersmith.production.min': 'src/index.ts',
+      },
+      platform: 'browser',
+      format: ['esm'],
+      outDir: './dist/browser/',
+    },
     // CJS
     {
       ...commonOptions,

@@ -1,4 +1,4 @@
-import { configs } from '../../../src/configs'
+import { configs } from '../../../src/mappersmith'
 import { Fetch } from '../../../src/gateway/fetch'
 
 configs.gateway = Fetch
