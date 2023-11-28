@@ -1,6 +1,7 @@
 import * as url from 'url'
 import * as http from 'http'
 import * as https from 'https'
+import { Socket } from 'net'
 
 import { assign } from '../utils/index'
 import { Gateway } from './gateway'
@@ -96,21 +97,13 @@ export class HTTP extends Gateway {
         httpOptions.onRequestSocketAssigned(requestParams)
       }
 
-      socket.on('lookup', () => {
-        if (httpOptions.onSocketLookup) {
-          httpOptions.onSocketLookup(requestParams)
-        }
-      })
-      socket.on('connect', () => {
-        if (httpOptions.onSocketConnect) {
-          httpOptions.onSocketConnect(requestParams)
-        }
-      })
-      socket.on('secureConnect', () => {
-        if (httpOptions.onSocketSecureConnect) {
-          httpOptions.onSocketSecureConnect(requestParams)
-        }
-      })
+      if (httpRequest.reusedSocket) {
+        return
+      }
+
+      this.assignSocketListener(socket, 'lookup', httpOptions.onSocketLookup?.bind(null, requestParams))
+      this.assignSocketListener(socket, 'connect', httpOptions.onSocketConnect?.bind(null, requestParams))
+      this.assignSocketListener(socket, 'secureConnect', httpOptions.onSocketSecureConnect?.bind(null, requestParams))
     })
 
     httpRequest.on('error', (e) => this.onError(e))
@@ -130,6 +123,12 @@ export class HTTP extends Gateway {
     }
 
     httpRequest.end()
+  }
+
+  assignSocketListener(socket: Socket, event: 'lookup' | 'connect' | 'secureConnect', listener: (() => void) | null | undefined) {
+    if (typeof listener === 'function') {
+      socket.on(event, () => listener())
+    }
   }
 
   onResponse(
