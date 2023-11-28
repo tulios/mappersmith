@@ -1,3 +1,5 @@
+import { Agent as HttpAgent } from 'http'
+
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import md5 from 'js-md5'
@@ -8,10 +10,13 @@ import forge, { configs } from 'src/index'
 import createManifest from 'spec/integration/support/manifest'
 import { errorMessage, INVALID_ADDRESS } from 'spec/integration/support'
 
+import keepAlive from './support/keep-alive'
+
 describe('integration', () => {
   describe('HTTP', () => {
     const gateway = HTTP
     const params = { host: 'http://localhost:9090' }
+    const keepAliveHelper = keepAlive(params.host, gateway)
 
     integrationTestsForGateway(gateway, params)
 
@@ -51,11 +56,11 @@ describe('integration', () => {
       beforeEach(() => {
         gatewayConfigs = {
           onRequestWillStart: jasmine.createSpy('onRequestWillStart'),
-          onRequestSocketAssigned: jasmine.createSpy('onRequestWillStart'),
-          onSocketLookup: jasmine.createSpy('onRequestWillStart'),
-          onSocketConnect: jasmine.createSpy('onRequestWillStart'),
-          onResponseReadable: jasmine.createSpy('onRequestWillStart'),
-          onResponseEnd: jasmine.createSpy('onRequestWillStart'),
+          onRequestSocketAssigned: jasmine.createSpy('onRequestSocketAssigned'),
+          onSocketLookup: jasmine.createSpy('onSocketLookup'),
+          onSocketConnect: jasmine.createSpy('onSocketConnect'),
+          onResponseReadable: jasmine.createSpy('onResponseReadable'),
+          onResponseEnd: jasmine.createSpy('onResponseEnd'),
         }
 
         configs.gatewayConfigs.HTTP = gatewayConfigs
@@ -70,6 +75,24 @@ describe('integration', () => {
           expect(gatewayConfigs.onSocketConnect).toHaveBeenCalledWith(jasmine.any(Object))
           expect(gatewayConfigs.onResponseReadable).toHaveBeenCalledWith(jasmine.any(Object))
           expect(gatewayConfigs.onResponseEnd).toHaveBeenCalledWith(jasmine.any(Object))
+          done()
+        })
+      })
+
+      it('no keep alive', (done) => {
+        const httpAgent = new HttpAgent({ keepAlive: false })
+        configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
+        keepAliveHelper.callApiTwice().then(() => {
+          keepAliveHelper.verifySockets(httpAgent.sockets)
+          done()
+        })
+      })
+
+      it('keep alive', (done) => {
+        const httpAgent = new HttpAgent({ keepAlive: true })
+        configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
+        keepAliveHelper.callApiTwice().then(() => {
+          keepAliveHelper.verifySockets(httpAgent.freeSockets)
           done()
         })
       })
