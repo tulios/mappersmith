@@ -32,6 +32,7 @@ export function lookupResponseAsync(req: any): Promise<any>
 export function clear(): void
 export function install(): void
 export function uninstall(): void
+export function unusedMocks(): number
 export function mockClient<
   ResourcesType,
   ResourceName extends keyof ResourcesType = keyof ResourcesType,
