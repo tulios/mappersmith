@@ -92,6 +92,8 @@ describe('integration', () => {
             keepAliveHelper.verifySockets(1, httpAgent.sockets)
             keepAliveHelper.verifySockets(0, httpAgent.freeSockets)
             done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
           })
         })
       })
@@ -109,6 +111,8 @@ describe('integration', () => {
             keepAliveHelper.verifySockets(0, httpAgent.sockets)
             keepAliveHelper.verifySockets(1, httpAgent.freeSockets)
             done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
           })
         })
       })
