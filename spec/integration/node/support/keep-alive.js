@@ -1,6 +1,6 @@
 import createManifest from 'spec/integration/support/manifest'
 
-import forge, { configs } from 'src/index'
+import forge from 'src/index'
 
 export default function keepAlive(host, gateway) {
   return {
