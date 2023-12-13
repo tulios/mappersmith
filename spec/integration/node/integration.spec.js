@@ -79,21 +79,37 @@ describe('integration', () => {
         })
       })
 
-      it('no keep alive', (done) => {
-        const httpAgent = new HttpAgent({ keepAlive: false })
-        configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
-        keepAliveHelper.callApiTwice().then(() => {
-          keepAliveHelper.verifySockets(httpAgent.sockets)
-          done()
+      describe('without keep alive', () => {
+        let httpAgent
+
+        beforeEach(() => {
+          httpAgent = new HttpAgent({ keepAlive: false })
+          configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
+        })
+
+        it('does not reuse the socket and only attaches listeners once to the http agent sockets', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            keepAliveHelper.verifySockets(1, httpAgent.sockets)
+            keepAliveHelper.verifySockets(0, httpAgent.freeSockets)
+            done()
+          })
         })
       })
 
-      it('keep alive', (done) => {
-        const httpAgent = new HttpAgent({ keepAlive: true })
-        configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
-        keepAliveHelper.callApiTwice().then(() => {
-          keepAliveHelper.verifySockets(httpAgent.freeSockets)
-          done()
+      describe('with keep alive', () => {
+        let httpAgent
+
+        beforeEach(() => {
+          httpAgent = new HttpAgent({ keepAlive: true })
+          configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
+        })
+
+        it('reuses the socket, and only attaches listeners once to the reused socket', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            keepAliveHelper.verifySockets(0, httpAgent.sockets)
+            keepAliveHelper.verifySockets(1, httpAgent.freeSockets)
+            done()
+          })
         })
       })
     })
