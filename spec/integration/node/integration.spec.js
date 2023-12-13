@@ -96,6 +96,15 @@ describe('integration', () => {
             done.fail(`test failed with promise error: ${errorMessage(response)}`)
           })
         })
+
+        it('calls the `onRequestSocketAssigned` callback on every request', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
+            done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
+        })
       })
 
       describe('with keep alive', () => {
@@ -110,6 +119,15 @@ describe('integration', () => {
           keepAliveHelper.callApiTwice().then(() => {
             keepAliveHelper.verifySockets(0, httpAgent.sockets)
             keepAliveHelper.verifySockets(1, httpAgent.freeSockets)
+            done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
+        })
+
+        it('calls the `onRequestSocketAssigned` callback on every request', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
             done()
           }).catch((response) => {
             done.fail(`test failed with promise error: ${errorMessage(response)}`)
