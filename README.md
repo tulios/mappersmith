@@ -61,10 +61,6 @@ or
 yarn add mappersmith
 ```
 
-#### Browser
-
-Download the tag/latest version from the dist folder.
-
 #### Build from the source
 
 Install the dependencies
