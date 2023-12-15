@@ -1413,20 +1413,34 @@ yarn link ../mappersmith/lib
 
 ### Release
 
-First, update package version and generate an updated `CHANGELOG.md`:
+1. Create a release branch, e.g. `git checkout -b release/2.43.0`
+2. Update package version and generate an updated `CHANGELOG.md`:
 
 ```sh
 yarn changeset version
 ```
 
-Second, build the `lib/` folder which will be published to npm:
+3. Merge the PR.
+4. From `master`: pull the latest changes, and build the `dist/` folder which will be published to npm:
+
 ```sh
-yarn build:project
+yarn publish:prepare
 ```
 
-Finally, publish to npm:
+5. Verify the release works. If you are using `npm pack` to create a local tarball, delete this file after the verification has been done.
+6. Finally, publish the contents of `dist/` folder to npm:
+
 ```sh
-yarn changeset publish
+cd dist/
+rm *.tgz # do not accidentally publish any tarball
+npm publish
+```
+
+7. Tag the release and push the tags.
+
+```sh
+git tag 2.43.0
+git push --tags
 ```
 
 ## Linting
