@@ -96,21 +96,25 @@ export class HTTP extends Gateway {
         httpOptions.onRequestSocketAssigned(requestParams)
       }
 
-      socket.on('lookup', () => {
-        if (httpOptions.onSocketLookup) {
-          httpOptions.onSocketLookup(requestParams)
-        }
-      })
-      socket.on('connect', () => {
-        if (httpOptions.onSocketConnect) {
-          httpOptions.onSocketConnect(requestParams)
-        }
-      })
-      socket.on('secureConnect', () => {
-        if (httpOptions.onSocketSecureConnect) {
-          httpOptions.onSocketSecureConnect(requestParams)
-        }
-      })
+      if (httpRequest.reusedSocket) {
+        return
+      }
+
+      if (httpOptions.onSocketLookup) {
+        socket.on('lookup', () => {
+          httpOptions.onSocketLookup?.(requestParams)
+        })
+      }
+      if (httpOptions.onSocketConnect) {
+        socket.on('connect', () => {
+          httpOptions.onSocketConnect?.(requestParams)
+        })
+      }
+      if (httpOptions.onSocketSecureConnect) {
+        socket.on('secureConnect', () => {
+          httpOptions.onSocketSecureConnect?.(requestParams)
+        })
+      }
     })
 
     httpRequest.on('error', (e) => this.onError(e))

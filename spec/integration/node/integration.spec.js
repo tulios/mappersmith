@@ -1,3 +1,5 @@
+import { Agent as HttpAgent } from 'http'
+
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import md5 from 'js-md5'
@@ -8,10 +10,13 @@ import forge, { configs } from 'src/index'
 import createManifest from 'spec/integration/support/manifest'
 import { errorMessage, INVALID_ADDRESS } from 'spec/integration/support'
 
+import keepAlive from './support/keep-alive'
+
 describe('integration', () => {
   describe('HTTP', () => {
     const gateway = HTTP
     const params = { host: 'http://localhost:9090' }
+    const keepAliveHelper = keepAlive(params.host, gateway)
 
     integrationTestsForGateway(gateway, params)
 
@@ -51,11 +56,11 @@ describe('integration', () => {
       beforeEach(() => {
         gatewayConfigs = {
           onRequestWillStart: jasmine.createSpy('onRequestWillStart'),
-          onRequestSocketAssigned: jasmine.createSpy('onRequestWillStart'),
-          onSocketLookup: jasmine.createSpy('onRequestWillStart'),
-          onSocketConnect: jasmine.createSpy('onRequestWillStart'),
-          onResponseReadable: jasmine.createSpy('onRequestWillStart'),
-          onResponseEnd: jasmine.createSpy('onRequestWillStart'),
+          onRequestSocketAssigned: jasmine.createSpy('onRequestSocketAssigned'),
+          onSocketLookup: jasmine.createSpy('onSocketLookup'),
+          onSocketConnect: jasmine.createSpy('onSocketConnect'),
+          onResponseReadable: jasmine.createSpy('onResponseReadable'),
+          onResponseEnd: jasmine.createSpy('onResponseEnd'),
         }
 
         configs.gatewayConfigs.HTTP = gatewayConfigs
@@ -71,6 +76,62 @@ describe('integration', () => {
           expect(gatewayConfigs.onResponseReadable).toHaveBeenCalledWith(jasmine.any(Object))
           expect(gatewayConfigs.onResponseEnd).toHaveBeenCalledWith(jasmine.any(Object))
           done()
+        })
+      })
+
+      describe('without keep alive', () => {
+        let httpAgent
+
+        beforeEach(() => {
+          httpAgent = new HttpAgent({ keepAlive: false })
+          configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
+        })
+
+        it('does not reuse the socket and only attaches listeners once to the http agent sockets', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            keepAliveHelper.verifySockets(1, httpAgent.sockets)
+            keepAliveHelper.verifySockets(0, httpAgent.freeSockets)
+            done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
+        })
+
+        it('calls the `onRequestSocketAssigned` callback on every request', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
+            done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
+        })
+      })
+
+      describe('with keep alive', () => {
+        let httpAgent
+
+        beforeEach(() => {
+          httpAgent = new HttpAgent({ keepAlive: true })
+          configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
+        })
+
+        it('reuses the socket, and only attaches listeners once to the reused socket', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            keepAliveHelper.verifySockets(0, httpAgent.sockets)
+            keepAliveHelper.verifySockets(1, httpAgent.freeSockets)
+            done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
+        })
+
+        it('calls the `onRequestSocketAssigned` callback on every request', (done) => {
+          keepAliveHelper.callApiTwice().then(() => {
+            expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
+            done()
+          }).catch((response) => {
+            done.fail(`test failed with promise error: ${errorMessage(response)}`)
+          })
         })
       })
     })
