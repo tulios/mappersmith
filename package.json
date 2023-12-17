@@ -192,7 +192,7 @@
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1",
     "webpack": "^5.88.2",
-    "whatwg-fetch": "^3.6.18"
+    "whatwg-fetch": "^3.6.20"
   },
   "packageManager": "yarn@3.6.3"
 }
