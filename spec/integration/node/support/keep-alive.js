@@ -18,6 +18,6 @@ export default function keepAlive(host, gateway) {
     callApiTwice: () => {
       const Client = forge(createManifest(host), gateway)
       return Client.Book.all().then(() => Client.Book.all())
-    }
+    },
   }
 }

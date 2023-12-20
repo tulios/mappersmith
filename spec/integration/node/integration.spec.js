@@ -18,38 +18,6 @@ describe('integration', () => {
     const params = { host: 'http://localhost:9090' }
     const keepAliveHelper = keepAlive(params.host, gateway)
 
-    integrationTestsForGateway(gateway, params)
-
-    describe('with raw binary', () => {
-      it('GET /api/binary.pdf', (done) => {
-        const Client = forge(createManifest(params.host), gateway)
-        Client.Binary.get()
-          .then((response) => {
-            expect(response.status()).toEqual(200)
-            expect(md5(response.data())).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
-            done()
-          })
-          .catch((response) => {
-            done.fail(`test failed with promise error: ${errorMessage(response)}`)
-          })
-      })
-    })
-
-    describe('on network errors', () => {
-      it('returns the original error', (done) => {
-        const Client = forge(createManifest(INVALID_ADDRESS), gateway)
-        Client.PlainText.get()
-          .then((response) => {
-            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
-          })
-          .catch((response) => {
-            expect(response.status()).toEqual(400)
-            expect(response.error()).toMatch(/ENOTFOUND/i)
-            done()
-          })
-      })
-    })
-
     describe('event callbacks', () => {
       let gatewayConfigs = {}
 
@@ -67,7 +35,7 @@ describe('integration', () => {
       })
 
       it('should call the callbacks', (done) => {
-        const Client = forge(createManifest(params.host), gateway)
+        const Client = forge(createManifest(params.host))
         Client.Book.all().then(() => {
           expect(gatewayConfigs.onRequestWillStart).toHaveBeenCalledWith(jasmine.any(Object))
           expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledWith(jasmine.any(Object))
@@ -88,22 +56,28 @@ describe('integration', () => {
         })
 
         it('does not reuse the socket and only attaches listeners once to the http agent sockets', (done) => {
-          keepAliveHelper.callApiTwice().then(() => {
-            keepAliveHelper.verifySockets(1, httpAgent.sockets)
-            keepAliveHelper.verifySockets(0, httpAgent.freeSockets)
-            done()
-          }).catch((response) => {
-            done.fail(`test failed with promise error: ${errorMessage(response)}`)
-          })
+          keepAliveHelper
+            .callApiTwice()
+            .then(() => {
+              keepAliveHelper.verifySockets(1, httpAgent.sockets)
+              keepAliveHelper.verifySockets(0, httpAgent.freeSockets)
+              done()
+            })
+            .catch((response) => {
+              done.fail(`test failed with promise error: ${errorMessage(response)}`)
+            })
         })
 
         it('calls the `onRequestSocketAssigned` callback on every request', (done) => {
-          keepAliveHelper.callApiTwice().then(() => {
-            expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
-            done()
-          }).catch((response) => {
-            done.fail(`test failed with promise error: ${errorMessage(response)}`)
-          })
+          keepAliveHelper
+            .callApiTwice()
+            .then(() => {
+              expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
+              done()
+            })
+            .catch((response) => {
+              done.fail(`test failed with promise error: ${errorMessage(response)}`)
+            })
         })
       })
 
@@ -116,23 +90,78 @@ describe('integration', () => {
         })
 
         it('reuses the socket, and only attaches listeners once to the reused socket', (done) => {
-          keepAliveHelper.callApiTwice().then(() => {
-            keepAliveHelper.verifySockets(0, httpAgent.sockets)
-            keepAliveHelper.verifySockets(1, httpAgent.freeSockets)
-            done()
-          }).catch((response) => {
-            done.fail(`test failed with promise error: ${errorMessage(response)}`)
-          })
+          keepAliveHelper
+            .callApiTwice()
+            .then(() => {
+              keepAliveHelper.verifySockets(0, httpAgent.sockets)
+              keepAliveHelper.verifySockets(1, httpAgent.freeSockets)
+              done()
+            })
+            .catch((response) => {
+              done.fail(`test failed with promise error: ${errorMessage(response)}`)
+            })
         })
 
         it('calls the `onRequestSocketAssigned` callback on every request', (done) => {
-          keepAliveHelper.callApiTwice().then(() => {
-            expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
+          keepAliveHelper
+            .callApiTwice()
+            .then(() => {
+              expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledTimes(2)
+              done()
+            })
+            .catch((response) => {
+              done.fail(`test failed with promise error: ${errorMessage(response)}`)
+            })
+        })
+      })
+    })
+
+    integrationTestsForGateway(gateway, params)
+
+    describe('with raw binary', () => {
+      it('GET /api/binary.pdf', (done) => {
+        console.log('starting test 1')
+        const Client = forge({
+          host: params.host,
+          resources: {
+            Binary: {
+              get: { path: '/api/binary.pdf', binary: true },
+            },
+          },
+        })
+        Client.Binary.get()
+          .then((response) => {
+            expect(response.status()).toEqual(200)
+            expect(md5(response.data())).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
+            console.log('finishing test 1')
             done()
-          }).catch((response) => {
+          })
+          .catch((response) => {
+            console.error('error', response.data())
             done.fail(`test failed with promise error: ${errorMessage(response)}`)
           })
+      })
+    })
+
+    describe('on network errors', () => {
+      it('returns the original error', (done) => {
+        const Client = forge({
+          host: INVALID_ADDRESS,
+          resources: {
+            PlainText: {
+              get: { path: '/api/plain-text' },
+            },
+          },
         })
+        Client.PlainText.get()
+          .then((response) => {
+            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+          })
+          .catch((response) => {
+            expect(response.status()).toEqual(400)
+            expect(response.error()).toMatch(/ENOTFOUND/i)
+            done()
+          })
       })
     })
   })
