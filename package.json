@@ -1,6 +1,6 @@
 {
   "name": "mappersmith",
-  "version": "2.43.0",
+  "version": "2.43.1",
   "description": "It is a lightweight rest client for node.js and the browser",
   "author": "Tulio Ornelas <ornelas.tulio@gmail.com>",
   "contributors": [
@@ -87,6 +87,50 @@
     "./middleware/timeout": {
       "import": "./dist/esm/middleware/timeout.mjs",
       "require": "./dist/middleware/timeout.js"
+    },
+    "./middlewares": {
+      "import": "./dist/esm/middlewares/index.mjs",
+      "require": "./dist/middlewares/index.js"
+    },
+    "./middlewares/basic-auth": {
+      "import": "./dist/esm/middlewares/basic-auth.mjs",
+      "require": "./dist/middlewares/basic-auth.js"
+    },
+    "./middlewares/csrf": {
+      "import": "./dist/esm/middlewares/csrf.mjs",
+      "require": "./dist/middlewares/csrf.js"
+    },
+    "./middlewares/duration": {
+      "import": "./dist/esm/middlewares/duration.mjs",
+      "require": "./dist/middlewares/duration.js"
+    },
+    "./middlewares/encode-json": {
+      "import": "./dist/esm/middlewares/encode-json.mjs",
+      "require": "./dist/middlewares/encode-json.js"
+    },
+    "./middlewares/global-error-handler": {
+      "import": "./dist/esm/middlewares/global-error-handler.mjs",
+      "require": "./dist/middlewares/global-error-handler.js"
+    },
+    "./middlewares/log": {
+      "import": "./dist/esm/middlewares/log.mjs",
+      "require": "./dist/middlewares/log.js"
+    },
+    "./middlewares/retry": {
+      "import": "./dist/esm/middlewares/retry/index.mjs",
+      "require": "./dist/middlewares/retry/index.js"
+    },
+    "./middlewares/retry/v1": {
+      "import": "./dist/esm/middlewares/retry/v1/index.mjs",
+      "require": "./dist/middlewares/retry/v1/index.js"
+    },
+    "./middlewares/retry/v2": {
+      "import": "./dist/esm/middlewares/retry/v2/index.mjs",
+      "require": "./dist/middlewares/retry/v2/index.js"
+    },
+    "./middlewares/timeout": {
+      "import": "./dist/esm/middlewares/timeout.mjs",
+      "require": "./dist/middlewares/timeout.js"
     }
   },
   "scripts": {

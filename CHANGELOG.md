@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.43.1
+
+### Patch Changes
+
+- 0177911: Fixes `middlewares` import path
+
 ## 2.43.0
 
 ### Minor Changes
