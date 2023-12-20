@@ -4,7 +4,7 @@ description: 'Ensure the project lint rules are respected'
 inputs:
   node-version:
     description: 'Node.js version'
-    default: '16'
+    default: '18'
 
 runs:
   using: composite
