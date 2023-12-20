@@ -27,7 +27,7 @@ export default function IntegrationTestsForGateway(gateway, params, extraTests) 
     previousGateway = configs.gateway
     configs.gateway = gateway
 
-    Client = forge(createManifest(params.host), gateway)
+    Client = forge(createManifest(params.host))
   })
 
   afterEach(() => {

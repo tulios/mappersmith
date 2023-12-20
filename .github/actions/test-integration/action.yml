@@ -4,7 +4,7 @@ description: 'Runs the integration tests'
 inputs:
   node-version:
     description: 'Node.js version'
-    default: '16'
+    default: '18'
 
 runs:
   using: composite
