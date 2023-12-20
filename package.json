@@ -148,7 +148,7 @@
     "@types/jest": "^29.5.4",
     "@types/karma": "^6.3.4",
     "@types/node": "^20.5.7",
-    "@types/webpack": "^5.28.2",
+    "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "babel-jest": "^29.6.4",
@@ -191,7 +191,7 @@
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1",
-    "webpack": "^5.88.2",
+    "webpack": "^5.89.0",
     "whatwg-fetch": "^3.6.20"
   },
   "packageManager": "yarn@3.6.3"
