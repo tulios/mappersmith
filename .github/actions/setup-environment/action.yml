@@ -4,7 +4,12 @@ description: 'Setup Environment'
 inputs:
   node-version:
     description: 'Node.js version'
+    required: false
     default: '18'
+  path:
+    description: 'Path to the directory containing the package.json file'
+    required: false
+    default: '.'
 
 runs:
   using: composite
@@ -30,5 +35,7 @@ runs:
           ${{ runner.os }}-yarn-
 
     - name: Install dependencies
-      run: yarn install --immutable --immutable-cache
+      run: |
+        cd ${{ inputs.path }}
+        yarn install --immutable --immutable-cache
       shell: bash
