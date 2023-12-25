@@ -7172,10 +7172,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-md5@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "js-md5@npm:0.7.3"
-  checksum: ad46c334d59a21e5dbc5c210774685dfecd7ccc21a1b525322c7b2a2fbc1f368c2ed2904efa3d6d325d9cf7b3457b2324069eab09c733ea1ce12151889b460d1
+"js-md5@npm:^0.8.3":
+  version: 0.8.3
+  resolution: "js-md5@npm:0.8.3"
+  checksum: 2f74961bb21293cc4e023685985b531748da88c5e57fd4ef96d1d292e0918c09a4b192c425520c0aea6988190e9694c2e38ed34f7907a908614e6b133095f882
   languageName: node
   linkType: hard
 
@@ -7760,7 +7760,7 @@ __metadata:
     jasmine-core: "npm:^5.1.1"
     jest: "npm:^29.6.4"
     jest-environment-jsdom: "npm:^29.6.4"
-    js-md5: "npm:^0.7.3"
+    js-md5: "npm:^0.8.3"
     karma: "npm:^6.4.2"
     karma-chrome-launcher: "npm:^3.2.0"
     karma-jasmine: "npm:^5.1.0"
