@@ -1,0 +1,55 @@
+name: 'Setup Environment'
+description: 'Setup Environment'
+
+inputs:
+  node-version:
+    description: Node version
+    required: false
+    default: '18'
+  bun-version:
+    description: Bun version
+    required: false
+    default: '1.0.18'
+
+runs:
+  using: composite
+  steps:
+    - name: Install node ${{ inputs.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: ${{ inputs.bun-version }}
+
+    - name: Install deps in mappersmith/
+      run: |
+        cd mappersmith
+        yarn install --immutable --immutable-cache
+      shell: bash
+
+    - name: Checkout mappersmith-consumer/
+      uses: actions/checkout@v4
+      with:
+        repository: klippx/mappersmith-consumer
+        path: mappersmith-consumer
+
+    - name: Install deps in mappersmith-consumer/
+      run: |
+        cd mappersmith-consumer
+        yarn install --immutable --immutable-cache
+      shell: bash
+
+    - name: Build mappersmith release candidate
+      run: |
+        cd mappersmith
+        yarn publish:prepare
+      shell: bash
+
+    - name: Link mappersmith release candidate
+      run: |
+        cd mappersmith-consumer
+        yarn link ../mappersmith/dist
+      shell: bash

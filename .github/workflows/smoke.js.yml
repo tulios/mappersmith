@@ -1,0 +1,55 @@
+name: Smoke Test Release
+
+concurrency:
+  cancel-in-progress: true
+  group: 'smoke-test-${{ github.ref_name }}'
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  smoke-test-build:
+    name: Smoke Test Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: mappersmith
+      - uses: ./mappersmith/.github/actions/setup-smoke-test
+      - name: Smoke test tsc compile
+        run: |
+          cd mappersmith-consumer
+          yarn build:all
+        shell: bash
+
+  smoke-test-unit:
+    name: Smoke Test Unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: mappersmith
+      - uses: ./mappersmith/.github/actions/setup-smoke-test
+      - name: Smoke test unit tests
+        run: |
+          cd mappersmith-consumer
+          yarn test:all
+        shell: bash
+
+  smoke-test-integration:
+    name: Smoke Test Integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout mappersmith/
+        uses: actions/checkout@v4
+        with:
+          path: mappersmith
+      - uses: ./mappersmith/.github/actions/setup-smoke-test
+      - name: Smoke test integration tests
+        run: |
+          cd mappersmith-consumer
+          yarn integration:all
+        shell: bash
