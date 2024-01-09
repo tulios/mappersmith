@@ -5014,6 +5014,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"esbuild-plugin-file-path-extensions@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "esbuild-plugin-file-path-extensions@npm:2.0.0"
+  checksum: 1555a90dd8e32c1df9c1f8897a3f40e77c799224785a2f8972c84cc5224ca8263fdef0501fda8f982bf1c9ed2ad31b8217278f5ff09bb3bed81236206605bac5
+  languageName: node
+  linkType: hard
+
 "esbuild@npm:^0.19.2":
   version: 0.19.10
   resolution: "esbuild@npm:0.19.10"
@@ -7895,6 +7902,7 @@ __metadata:
     copyfiles: "npm:^2.4.1"
     core-js: "npm:^3.32.1"
     cross-env: "npm:^7.0.3"
+    esbuild-plugin-file-path-extensions: "npm:^2.0.0"
     eslint: "npm:^8.56.0"
     eslint-config-prettier: "npm:^9.0.0"
     eslint-config-standard: "npm:^17.1.0"
