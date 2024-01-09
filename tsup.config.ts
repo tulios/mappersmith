@@ -1,4 +1,5 @@
 import { defineConfig, Options } from 'tsup'
+import { esbuildPluginFilePathExtensions } from 'esbuild-plugin-file-path-extensions'
 
 // Inspired by https://github.com/immerjs/immer/pull/1032/files
 export default defineConfig((options) => {
@@ -30,6 +31,9 @@ export default defineConfig((options) => {
       format: ['esm'],
       clean: true,
       outDir: './dist/esm/',
+      esbuildPlugins: [esbuildPluginFilePathExtensions({ filter: /^\./ })],
+      // Yes, bundle: true => https://github.com/favware/esbuild-plugin-file-path-extensions?tab=readme-ov-file#usage
+      bundle: true,
       dts: {
         compilerOptions: {
           resolveJsonModule: false,
