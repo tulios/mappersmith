@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.43.2
+
+### Patch Changes
+
+- 0b832ab: Fix ESM build to output correct code as per ESM spec
+
 ## 2.43.1
 
 ### Patch Changes
