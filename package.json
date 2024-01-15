@@ -203,7 +203,7 @@
     "concurrently": "^8.2.1",
     "cookie-parser": "^1.4.5",
     "copyfiles": "^2.4.1",
-    "core-js": "^3.32.1",
+    "core-js": "^3.35.0",
     "cross-env": "^7.0.3",
     "esbuild-plugin-file-path-extensions": "^2.0.0",
     "eslint": "^8.56.0",
