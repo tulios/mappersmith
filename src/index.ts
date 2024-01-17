@@ -65,7 +65,7 @@ export type {
   RequestGetter,
   ResponseGetter,
 } from './middleware/index'
-export type { AsyncFunction, AsyncFunctions, Client } from './client-builder'
+export type { AsyncFunction, AsyncFunctions, Client, ClientBuilder } from './client-builder'
 /**
  * @deprecated, use ManifestOptions instead
  */
