@@ -131,6 +131,10 @@
     "./middlewares/timeout": {
       "import": "./dist/esm/middlewares/timeout.mjs",
       "require": "./dist/middlewares/timeout.js"
+    },
+    "./client-builder": {
+      "import": "./dist/esm/client-builder.mjs",
+      "require": "./dist/client-builder.js"
     }
   },
   "scripts": {
