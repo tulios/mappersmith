@@ -4351,10 +4351,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.32.1":
-  version: 3.34.0
-  resolution: "core-js@npm:3.34.0"
-  checksum: 054474ab6a0a08a2277ca2c1c953e5789c562bbe144f6a43786b0f4167b4a76c671833bd0a112e275e1d99d84fa157e64814ff23aa01532e08e3b46403d7f7f4
+"core-js@npm:^3.35.1":
+  version: 3.35.1
+  resolution: "core-js@npm:3.35.1"
+  checksum: 5d31f22eb05cf66bd1a2088a04b7106faa5d0b91c1ffa5d72c5203e4974c31bd7e11969297f540a806c00c74c23991eaad5639592df8b5dbe4412fff3c075cd5
   languageName: node
   linkType: hard
 
@@ -7909,7 +7909,7 @@ __metadata:
     concurrently: "npm:^8.2.1"
     cookie-parser: "npm:^1.4.5"
     copyfiles: "npm:^2.4.1"
-    core-js: "npm:^3.32.1"
+    core-js: "npm:^3.35.1"
     cross-env: "npm:^7.0.3"
     esbuild-plugin-file-path-extensions: "npm:^2.0.0"
     eslint: "npm:^8.56.0"
