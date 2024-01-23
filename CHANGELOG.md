@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.43.3
+
+### Patch Changes
+
+- 404f7ba: Exporting client-builder
+
 ## 2.43.2
 
 ### Patch Changes
