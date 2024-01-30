@@ -240,7 +240,7 @@
     "tsup": "^8.0.1",
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1",
-    "webpack": "^5.89.0",
+    "webpack": "^5.90.0",
     "whatwg-fetch": "^3.6.20"
   },
   "packageManager": "yarn@4.0.2"
