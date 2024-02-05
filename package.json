@@ -228,7 +228,7 @@
     "karma-jasmine": "^5.1.0",
     "karma-sourcemap-loader": "^0.4.0",
     "karma-spec-reporter": "^0.0.36",
-    "karma-webpack": "^5.0.0",
+    "karma-webpack": "^5.0.1",
     "mockdate": "^3.0.5",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "<3.0.0",
