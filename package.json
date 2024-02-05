@@ -193,7 +193,7 @@
     "@babel/register": "^7.23.7",
     "@changesets/cli": "^2.27.1",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.3.1",
-    "@types/jest": "^29.5.4",
+    "@types/jest": "^29.5.12",
     "@types/karma": "^6.3.4",
     "@types/node": "^20.11.5",
     "@types/webpack": "^5.28.5",
