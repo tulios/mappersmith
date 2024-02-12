@@ -1409,6 +1409,7 @@ yarn link ../mappersmith/dist
 
 ```sh
 yarn changeset version
+yarn copy:version:src
 ```
 
 3. Merge the PR.
