@@ -66,6 +66,8 @@ export type {
   ResponseGetter,
 } from './middleware/index'
 export type { AsyncFunction, AsyncFunctions, Client, ClientBuilder } from './client-builder'
+export type { MethodDescriptor, MethodDescriptorParams } from './method-descriptor'
+
 /**
  * @deprecated, use ManifestOptions instead
  */
