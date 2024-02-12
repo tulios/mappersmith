@@ -7978,7 +7978,7 @@ __metadata:
     regenerator-runtime: "npm:^0.14.0"
     ts-jest: "npm:^29.1.2"
     ts-node: "npm:^10.9.1"
-    tsup: "npm:^8.0.1"
+    tsup: "npm:^8.0.2"
     typescript: "npm:^5.2.2"
     wait-on: "npm:^7.0.1"
     webpack: "npm:^5.90.1"
@@ -10601,9 +10601,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "tsup@npm:8.0.1"
+"tsup@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "tsup@npm:8.0.2"
   dependencies:
     bundle-require: "npm:^4.0.0"
     cac: "npm:^6.7.12"
@@ -10636,7 +10636,7 @@ __metadata:
   bin:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
-  checksum: f5866035ac96c5f421856a3e41ae25afaccae4eba0c9e747626a691be9d017b32b799a533f1e57bf1da6808395452608bb52d16625d2223022448f0d4e42e9ec
+  checksum: dd8c375181a748cdeb86aa3d779d6d755596881f47fe38b7c4b810ff1ef6424d485b23065fda0f6e32d9988bae19cd64e49f6e2f11295d5184485ab7528a37d1
   languageName: node
   linkType: hard
 
