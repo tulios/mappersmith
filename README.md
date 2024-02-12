@@ -1389,26 +1389,17 @@ yarn test
 
 ## Package and release
 
-### WIP
-
-Build esm, umd and cjs with a single command:
-
-```sh
-yarn tsup
-```
-
 ### Package project only
 
-Useful for testing a branch against local projects. Run the build step, and yarn link to the `lib/` folder:
+Useful for testing a branch against local projects. Run the build step, and yarn link to the `dist/` folder:
 
 ```sh
-yarn build:project
-touch lib/yarn.lock
+yarn publish:prepare
 ```
 
 In remote project:
 ```sh
-yarn link ../mappersmith/lib
+yarn link ../mappersmith/dist
 ```
 
 ### Release
