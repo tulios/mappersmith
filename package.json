@@ -237,7 +237,7 @@
     "regenerator-runtime": "^0.14.0",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.1",
-    "tsup": "^8.0.1",
+    "tsup": "^8.0.2",
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1",
     "webpack": "^5.90.0",
