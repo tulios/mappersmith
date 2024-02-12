@@ -16,10 +16,6 @@
       "import": "./dist/esm/index.mjs",
       "require": "./dist/index.js"
     },
-    "./test": {
-      "import": "./dist/esm/test/index.mjs",
-      "require": "./dist/test/index.js"
-    },
     "./gateway": {
       "import": "./dist/esm/gateway/index.mjs",
       "require": "./dist/gateway/index.js"
@@ -135,6 +131,34 @@
     "./client-builder": {
       "import": "./dist/esm/client-builder.mjs",
       "require": "./dist/client-builder.js"
+    },
+    "./manifest": {
+      "import": "./dist/esm/manifest.mjs",
+      "require": "./dist/manifest.js"
+    },
+    "./mappersmith": {
+      "import": "./dist/esm/mappersmith.mjs",
+      "require": "./dist/mappersmith.js"
+    },
+    "./method-descriptor": {
+      "import": "./dist/esm/method-descriptor.mjs",
+      "require": "./dist/method-descriptor.js"
+    },
+    "./request": {
+      "import": "./dist/esm/request.mjs",
+      "require": "./dist/request.js"
+    },
+    "./response": {
+      "import": "./dist/esm/response.mjs",
+      "require": "./dist/response.js"
+    },
+    "./test": {
+      "import": "./dist/esm/test/index.mjs",
+      "require": "./dist/test/index.js"
+    },
+    "./version": {
+      "import": "./dist/esm/version.mjs",
+      "require": "./dist/version.js"
     }
   },
   "scripts": {
