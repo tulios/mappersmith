@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.43.4
+
+### Patch Changes
+
+- 7356e30: Expose deep imports for backwards compatibility
+
 ## 2.43.3
 
 ### Patch Changes
