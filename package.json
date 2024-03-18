@@ -262,7 +262,7 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.1",
     "tsup": "^8.0.2",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.2",
     "wait-on": "^7.0.1",
     "webpack": "^5.90.3",
     "whatwg-fetch": "^3.6.20"
