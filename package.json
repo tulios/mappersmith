@@ -240,7 +240,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "faux-jax-tulios": "^5.0.9",
     "jasmine": "^5.1.0",
     "jasmine-core": "^5.1.2",
