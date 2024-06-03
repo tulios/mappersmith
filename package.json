@@ -234,7 +234,7 @@
     "core-js": "^3.36.1",
     "cross-env": "^7.0.3",
     "esbuild-plugin-file-path-extensions": "^2.0.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.4.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
