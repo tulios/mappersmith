@@ -1752,10 +1752,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chiragrupani/karma-chromium-edge-launcher@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "@chiragrupani/karma-chromium-edge-launcher@npm:2.3.1"
-  checksum: 7c6d36000460cfe7632a8747e87ff6875797667dd1f2117dd46b80de45bddc312a4ad0da4914dcbe43c7c88a3f271298c16e29ea7e96143e84af5335fe97d996
+"@chiragrupani/karma-chromium-edge-launcher@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "@chiragrupani/karma-chromium-edge-launcher@npm:2.4.1"
+  checksum: 9d47326d1140486f844086f16582ff4ba51fac4f2951fb911f2d858e2ad58b9385c94295414bb37b7d4613dee091f56c766704afef602e022a94ddc7ce261e4b
   languageName: node
   linkType: hard
 
@@ -8230,7 +8230,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.24.1"
     "@babel/register": "npm:^7.23.7"
     "@changesets/cli": "npm:^2.27.1"
-    "@chiragrupani/karma-chromium-edge-launcher": "npm:^2.3.1"
+    "@chiragrupani/karma-chromium-edge-launcher": "npm:^2.4.1"
     "@types/jest": "npm:^29.5.12"
     "@types/karma": "npm:^6.3.4"
     "@types/node": "npm:^20.12.7"
