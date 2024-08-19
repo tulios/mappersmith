@@ -257,7 +257,7 @@
     "multer": "^1.4.5-lts.1",
     "node-fetch": "<3.0.0",
     "prettier": "^3.2.5",
-    "puppeteer": "^22.11.0",
+    "puppeteer": "^23.1.0",
     "regenerator-runtime": "^0.14.0",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.1",
