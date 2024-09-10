@@ -41,7 +41,7 @@ describe('integration', () => {
       })
 
       it('should call the callbacks', (done) => {
-        const Client = forge(createManifest(params.host))
+        const Client = forge(createManifest(params.host), gateway)
         Client.Book.all().then(() => {
           expect(gatewayConfigs.onRequestWillStart).toHaveBeenCalledWith(jasmine.any(Object))
           expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledWith(jasmine.any(Object))
@@ -126,14 +126,17 @@ describe('integration', () => {
 
     describe('with raw binary', () => {
       it('GET /api/binary.pdf', (done) => {
-        const Client = forge({
-          host: params.host,
-          resources: {
-            Binary: {
-              get: { path: '/api/binary.pdf', binary: true },
+        const Client = forge(
+          {
+            host: params.host,
+            resources: {
+              Binary: {
+                get: { path: '/api/binary.pdf', binary: true },
+              },
             },
           },
-        })
+          gateway
+        )
         Client.Binary.get()
           .then((response) => {
             expect(response.status()).toEqual(200)
@@ -149,14 +152,17 @@ describe('integration', () => {
 
     describe('on network errors', () => {
       it('returns the original error', (done) => {
-        const Client = forge({
-          host: INVALID_ADDRESS,
-          resources: {
-            PlainText: {
-              get: { path: '/api/plain-text' },
+        const Client = forge(
+          {
+            host: INVALID_ADDRESS,
+            resources: {
+              PlainText: {
+                get: { path: '/api/plain-text' },
+              },
             },
           },
-        })
+          gateway
+        )
         Client.PlainText.get()
           .then((response) => {
             done.fail(`Expected this request to fail: ${errorMessage(response)}`)
@@ -171,17 +177,23 @@ describe('integration', () => {
 
     describe('aborting a request', () => {
       it('aborts the request', (done) => {
-        const Client = forge({
-          host: params.host,
-          resources: {
-            Timeout: {
-              get: { path: '/api/timeout.json' },
+        const Client = forge(
+          {
+            host: params.host,
+            resources: {
+              Timeout: {
+                get: { path: '/api/timeout.json' },
+              },
             },
           },
-        })
+          gateway
+        )
         const abortController = new AbortController()
         const request = Client.Timeout.get({ waitTime: 666, signal: abortController.signal })
-        abortController.abort()
+        // Fire the request, but abort after 1ms
+        setTimeout(() => {
+          abortController.abort()
+        }, 1)
         request
           .then((response) => {
             done.fail(`Expected this request to fail: ${errorMessage(response)}`)
@@ -196,6 +208,7 @@ describe('integration', () => {
   })
 
   describe('Fetch', () => {
+    const gateway = Fetch
     const params = { host: 'http://localhost:9090' }
 
     beforeAll(() => {
@@ -204,18 +217,24 @@ describe('integration', () => {
 
     describe('aborting a request', () => {
       it('aborts the request', (done) => {
-        const Client = forge({
-          host: params.host,
-          fetch,
-          resources: {
-            Timeout: {
-              get: { path: '/api/timeout.json' },
+        const Client = forge(
+          {
+            host: params.host,
+            fetch,
+            resources: {
+              Timeout: {
+                get: { path: '/api/timeout.json' },
+              },
             },
           },
-        })
+          gateway
+        )
         const abortController = new AbortController()
         const request = Client.Timeout.get({ waitTime: 666, signal: abortController.signal })
-        abortController.abort()
+        // Fire the request, but abort after 1ms
+        setTimeout(() => {
+          abortController.abort()
+        }, 1)
         request
           .then((response) => {
             done.fail(`Expected this request to fail: ${errorMessage(response)}`)
