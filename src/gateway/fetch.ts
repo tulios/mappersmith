@@ -37,7 +37,7 @@ export class Fetch extends Gateway {
     this.performRequest('delete')
   }
 
-  performRequest(method: Method) {
+  performRequest(requestMethod: Method) {
     const fetch = configs.fetch
 
     if (!fetch) {
@@ -47,7 +47,7 @@ export class Fetch extends Gateway {
     }
 
     const customHeaders: Record<string, string> = {}
-    const body = this.prepareBody(method, customHeaders) as BodyInit
+    const body = this.prepareBody(requestMethod, customHeaders) as BodyInit
     const auth = this.request.auth()
 
     if (auth) {
@@ -57,8 +57,9 @@ export class Fetch extends Gateway {
     }
 
     const headers = assign(customHeaders, this.request.headers())
-    const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
-    const init: RequestInit = assign({ method: requestMethod, headers, body }, this.options().Fetch)
+    const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
+    const signal = this.request.signal()
+    const init: RequestInit = assign({ method, headers, body, signal }, this.options().Fetch)
     const timeout = this.request.timeout()
 
     let timer: ReturnType<typeof setTimeout> | null = null
