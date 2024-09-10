@@ -38,6 +38,7 @@ export interface RequestParams {
   readonly path?: string
   readonly params?: Params
   readonly timeout?: number
+  readonly signal?: AbortSignal
   [param: string]: object | Primitive | undefined | null | NestedParam | NestedParamArray
 }
 

@@ -49,6 +49,7 @@ export class Request {
       key !== this.methodDescriptor.authAttr &&
       key !== this.methodDescriptor.timeoutAttr &&
       key !== this.methodDescriptor.hostAttr &&
+      key !== this.methodDescriptor.signalAttr &&
       key !== this.methodDescriptor.pathAttr
     )
   }
@@ -238,15 +239,19 @@ export class Request {
   }
 
   public body() {
-    return this.requestParams[this.methodDescriptor.bodyAttr] as Body
+    return this.requestParams[this.methodDescriptor.bodyAttr] as Body | undefined
   }
 
   public auth() {
-    return this.requestParams[this.methodDescriptor.authAttr] as Auth
+    return this.requestParams[this.methodDescriptor.authAttr] as Auth | undefined
   }
 
   public timeout() {
-    return this.requestParams[this.methodDescriptor.timeoutAttr] as number
+    return this.requestParams[this.methodDescriptor.timeoutAttr] as number | undefined
+  }
+
+  public signal() {
+    return this.requestParams[this.methodDescriptor.signalAttr] as AbortSignal | undefined
   }
 
   /**
@@ -267,6 +272,7 @@ export class Request {
     const hostKey = this.methodDescriptor.hostAttr
     const timeoutKey = this.methodDescriptor.timeoutAttr
     const pathKey = this.methodDescriptor.pathAttr
+    const signalKey = this.methodDescriptor.signalAttr
 
     // Note: The result of merging an instance of RequestParams with instance of Params
     // is simply a RequestParams with even more [param: string]'s on it.
@@ -281,6 +287,7 @@ export class Request {
     extras.host && (requestParams[hostKey] = extras.host)
     extras.timeout && (requestParams[timeoutKey] = extras.timeout)
     extras.path && (requestParams[pathKey] = extras.path)
+    extras.signal && (requestParams[signalKey] = extras.signal)
 
     const nextContext = { ...this.requestContext, ...requestContext }
 

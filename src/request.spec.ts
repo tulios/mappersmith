@@ -177,6 +177,18 @@ describe('Request', () => {
       )
     })
 
+    it('ignores "special" params', async () => {
+      const abortController = new AbortController()
+      const request = new Request(methodDescriptor, {
+        ...requestParams,
+        timeout: 123,
+        signal: abortController.signal,
+      })
+      expect(request.path()).toEqual(
+        '/path?param=request-value&method-desc-param=method-desc-value&request-param=request-value'
+      )
+    })
+
     it('returns result of method descriptor path function', async () => {
       const methodDescriptor = new MethodDescriptor({
         ...methodDescriptorArgs,
@@ -769,6 +781,27 @@ describe('Request', () => {
     })
   })
 
+  describe('#signal', () => {
+    it('returns requestParams signal', async () => {
+      const abortController = new AbortController()
+      const params = { ...requestParams, signal: abortController.signal }
+      const request = new Request(methodDescriptor, params)
+      expect(request.signal()).toEqual(params.signal)
+    })
+
+    it('returns the configured signal param from params', () => {
+      const methodDescriptor = new MethodDescriptor({
+        ...methodDescriptorArgs,
+        signalAttr: 'differentSignalParam',
+      })
+      const abortController = new AbortController()
+      const request = new Request(methodDescriptor, {
+        differentSignalParam: abortController.signal,
+      })
+      expect(request.signal()).toEqual(abortController.signal)
+    })
+  })
+
   describe('#isBinary', () => {
     it('returns method descriptor binary value', async () => {
       const methodDescriptor = new MethodDescriptor({
@@ -782,6 +815,7 @@ describe('Request', () => {
 
   describe('#enhance', () => {
     it('returns a new request enhanced by current request', async () => {
+      const abortController = new AbortController()
       const request = new Request(methodDescriptor, requestParams)
       const extras = {
         auth: { 'enhanced-auth': 'enhanced-auth-value' },
@@ -790,6 +824,7 @@ describe('Request', () => {
         host: 'http://enhanced-host.com',
         params: { 'enhanced-param': 'enhanced-param-value' },
         timeout: 100,
+        signal: abortController.signal,
       }
       expect(request.enhance(extras)).toEqual(
         new Request(methodDescriptor, {
@@ -801,6 +836,7 @@ describe('Request', () => {
           host: extras.host,
           headers: { ...extras.headers, ...requestParams.headers },
           timeout: 100,
+          signal: abortController.signal,
         })
       )
     })
@@ -850,6 +886,16 @@ describe('Request', () => {
       expect(enhancedRequest.timeout()).toEqual(2000)
     })
 
+    it('creates a new request based on the current request replacing the signal', () => {
+      const abortController = new AbortController()
+      const abortController2 = new AbortController()
+      const request = new Request(methodDescriptor, { signal: abortController.signal })
+      const enhancedRequest = request.enhance({ signal: abortController2.signal })
+      expect(enhancedRequest).not.toEqual(request)
+      expect(enhancedRequest.signal()).toEqual(abortController2.signal)
+      expect(enhancedRequest.signal()).toEqual(abortController.signal)
+    })
+
     it('creates a new request based on the current request replacing the path', () => {
       const request = new Request({ ...methodDescriptor, params: {} })
       const enhancedRequest = request.enhance({ path: '/new-path' })
@@ -873,6 +919,13 @@ describe('Request', () => {
       const request = new Request(methodDescriptor, { timeout: 1000 })
       const enhancedRequest = request.enhance({})
       expect(enhancedRequest.timeout()).toEqual(1000)
+    })
+
+    it('does not remove the previously assigned "signal"', () => {
+      const abortController = new AbortController()
+      const request = new Request(methodDescriptor, { signal: abortController.signal })
+      const enhancedRequest = request.enhance({})
+      expect(enhancedRequest.signal()).toEqual(abortController.signal)
     })
 
     it('does not remove the previously assigned "host" if allowResourceHostOverride=true', () => {
@@ -943,6 +996,20 @@ describe('Request', () => {
         const enhancedRequest = request.enhance({ timeout: 2000 })
         expect(enhancedRequest).not.toEqual(request)
         expect(enhancedRequest.timeout()).toEqual(2000)
+      })
+    })
+
+    describe('for requests with a different "signal" key', () => {
+      it('creates a new request based on the current request replacing the custom "signal"', () => {
+        const abortController = new AbortController()
+        const methodDescriptor = new MethodDescriptor({
+          ...methodDescriptorArgs,
+          timeoutAttr: 'snowflake',
+        })
+        const request = new Request(methodDescriptor, { snowflake: 1000 })
+        const enhancedRequest = request.enhance({ signal: abortController.signal })
+        expect(enhancedRequest).not.toEqual(request)
+        expect(enhancedRequest.signal()).toEqual(abortController.signal)
       })
     })
 
