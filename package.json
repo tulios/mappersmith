@@ -264,7 +264,7 @@
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",
     "wait-on": "^7.0.1",
-    "webpack": "^5.92.0",
+    "webpack": "^5.94.0",
     "whatwg-fetch": "^3.6.20"
   },
   "packageManager": "yarn@4.4.1"
