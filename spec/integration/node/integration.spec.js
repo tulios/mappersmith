@@ -4,8 +4,10 @@ import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import md5 from 'js-md5'
 import integrationTestsForGateway from 'spec/integration/shared-examples'
+import fetch from 'node-fetch'
 
 import HTTP from 'src/gateway/http'
+import Fetch from 'src/gateway/fetch'
 import forge, { configs } from 'src/index'
 import createManifest from 'spec/integration/support/manifest'
 import { errorMessage, INVALID_ADDRESS } from 'spec/integration/support'
@@ -17,6 +19,10 @@ describe('integration', () => {
     const gateway = HTTP
     const params = { host: 'http://localhost:9090' }
     const keepAliveHelper = keepAlive(params.host, gateway)
+
+    beforeAll(() => {
+      configs.gateway = HTTP
+    })
 
     describe('event callbacks', () => {
       let gatewayConfigs = {}
@@ -120,7 +126,6 @@ describe('integration', () => {
 
     describe('with raw binary', () => {
       it('GET /api/binary.pdf', (done) => {
-        console.log('starting test 1')
         const Client = forge({
           host: params.host,
           resources: {
@@ -133,7 +138,6 @@ describe('integration', () => {
           .then((response) => {
             expect(response.status()).toEqual(200)
             expect(md5(response.data())).toEqual('7e8dfc5e83261f49206a7cd860ccae0a')
-            console.log('finishing test 1')
             done()
           })
           .catch((response) => {
@@ -160,6 +164,65 @@ describe('integration', () => {
           .catch((response) => {
             expect(response.status()).toEqual(400)
             expect(response.error()).toMatch(/ENOTFOUND/i)
+            done()
+          })
+      })
+    })
+
+    describe('aborting a request', () => {
+      it('aborts the request', (done) => {
+        const Client = forge({
+          host: params.host,
+          resources: {
+            Timeout: {
+              get: { path: '/api/timeout.json' },
+            },
+          },
+        })
+        const abortController = new AbortController()
+        const request = Client.Timeout.get({ waitTime: 666, signal: abortController.signal })
+        abortController.abort()
+        request
+          .then((response) => {
+            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+          })
+          .catch((response) => {
+            expect(response.status()).toEqual(400)
+            expect(response.error()).toMatch(/The operation was aborted/i)
+            done()
+          })
+      })
+    })
+  })
+
+  describe('Fetch', () => {
+    const params = { host: 'http://localhost:9090' }
+
+    beforeAll(() => {
+      configs.gateway = Fetch
+    })
+
+    describe('aborting a request', () => {
+      it('aborts the request', (done) => {
+        const Client = forge({
+          host: params.host,
+          fetch,
+          resources: {
+            Timeout: {
+              get: { path: '/api/timeout.json' },
+            },
+          },
+        })
+        const abortController = new AbortController()
+        const request = Client.Timeout.get({ waitTime: 666, signal: abortController.signal })
+        abortController.abort()
+        request
+          .then((response) => {
+            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+          })
+          .catch((response) => {
+            expect(response.status()).toEqual(400)
+            expect(response.error()).toMatch(/This operation was aborted/i)
             done()
           })
       })
