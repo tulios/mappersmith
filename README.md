@@ -17,6 +17,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
     - [Headers](#headers)
     - [Basic Auth](#basic-auth)
     - [Timeout](#timeout)
+    - [Abort Signal](#abort-signal)
     - [Alternative host](#alternative-host)
     - [Alternative path](#alternative-path)
     - [Binary data](#binary-data)
@@ -318,6 +319,34 @@ client.User.all({ maxWait: 500 })
 
 __NOTE__: A default timeout can be configured with the use of the [TimeoutMiddleware](#middleware-timeout), check the middleware section below for more information.
 __NOTE__: The `timeoutAttr` param can be set at manifest level.
+
+### <a name="abort-signal"></a> Abort Signal
+
+The AbortSignal interface represents a signal object that allows you to communicate with an asynchronous operation (such as a fetch request) and abort it if required via an AbortController object. All gateway APIs (Fetch, HTTP and XHR) support this interface via the `signal` parameter:
+
+```javascript
+const abortController = new AbortController()
+client.User.all({ signal: abortController.signal })
+// abort!
+abortController.abort()
+```
+
+If `signal` is not possible as a special parameter for your API you can configure it through the param `signalAttr`:
+
+```javascript
+// ...
+{
+  all: { path: '/users', signalAttr: 'abortSignal' }
+}
+// ...
+
+const abortController = new AbortController()
+client.User.all({ abortSignal: abortController.signal })
+// abort!
+abortController.abort()
+```
+
+__NOTE__: The `signalAttr` param can be set at manifest level.
 
 ### <a name="alternative-host"></a> Alternative host
 
@@ -1184,7 +1213,7 @@ describe('Feature', () => {
 
 ## <a name="gateways"></a> Gateways
 
-Mappersmith has a pluggable transport layer and it includes by default three gateways: xhr, http and fetch. Mappersmith will pick the correct gateway based on the environment you are running (nodejs or the browser).
+Mappersmith has a pluggable transport layer and it includes by default three gateways: xhr, http and fetch. Mappersmith will pick the correct gateway based on the environment you are running (nodejs, service worker or the browser).
 
 You can write your own gateway, take a look at [XHR](https://github.com/tulios/mappersmith/blob/master/src/gateway/xhr.js) for an example. To configure, import the `configs` object and assign the gateway option, like:
 

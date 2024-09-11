@@ -3,7 +3,11 @@ import { Manifest, GlobalConfigs } from './manifest'
 import type { GatewayConfiguration } from './gateway/types'
 import { Gateway } from './gateway/index'
 import Request from './request'
+import Response from './response'
 import { getManifest, getManifestWithResourceConf } from '../spec/ts-helper'
+import MockGateway from './gateway/mock'
+import { configs as defaultConfigs } from './index'
+import { mockRequest } from './test/index'
 
 describe('ClientBuilder', () => {
   let GatewayClassFactory: () => typeof Gateway
@@ -94,6 +98,49 @@ describe('ClientBuilder', () => {
     expect(request.host()).toEqual('http://example.org')
     expect(request.path()).toEqual('/blogs')
     expect(request.body()).toEqual('blog post')
+  })
+
+  it('accepts manifest level timeoutAttr', async () => {
+    mockRequest({
+      method: 'get',
+      url: 'http://example.org/users/1?timeout=123',
+      response: {
+        status: 200,
+        body: {
+          name: 'John Doe',
+        },
+      },
+    })
+
+    const GatewayClassFactory = () => MockGateway
+    const manifest = { ...getManifest(), timeoutAttr: 'customTimeout' }
+    const clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, defaultConfigs)
+    const client = clientBuilder.build()
+    await expect(client.User.byId({ id: 1, timeout: 123, customTimeout: 456 })).resolves.toEqual(
+      expect.any(Response)
+    )
+  })
+
+  it('accepts manifest level signalAttr', async () => {
+    mockRequest({
+      method: 'get',
+      url: 'http://example.org/users/1?signal=123',
+      response: {
+        status: 200,
+        body: {
+          name: 'John Doe',
+        },
+      },
+    })
+
+    const GatewayClassFactory = () => MockGateway
+    const manifest = { ...getManifest(), signalAttr: 'customSignal' }
+    const clientBuilder = new ClientBuilder(manifest, GatewayClassFactory, defaultConfigs)
+    const client = clientBuilder.build()
+    const abortController = new AbortController()
+    await expect(
+      client.User.byId({ id: 1, signal: 123, customSignal: abortController.signal })
+    ).resolves.toEqual(expect.any(Response))
   })
 
   describe('when a resource method is called', () => {

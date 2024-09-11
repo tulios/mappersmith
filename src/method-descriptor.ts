@@ -41,6 +41,7 @@ export interface MethodDescriptorParams {
  *   @param {String|Function} params.path
  *   @param {String} params.pathAttr. Default: 'path'
  *   @param {Object} params.queryParamAlias
+ *   @param {Number} params.signalAttr - signal attribute name. Default: 'signal'
  *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
 export class MethodDescriptor {

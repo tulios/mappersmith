@@ -22,18 +22,19 @@ export type ResourceTypeConstraint = {
 }
 
 export interface ManifestOptions<Resources extends ResourceTypeConstraint> {
-  host: string
   allowResourceHostOverride?: boolean
-  parameterEncoder?: ParameterEncoderFn
-  bodyAttr?: string
-  headersAttr?: string
   authAttr?: string
-  timeoutAttr?: string
-  hostAttr?: string
+  bodyAttr?: string
   clientId?: string
   gatewayConfigs?: Partial<GatewayConfiguration>
-  resources?: Resources
+  headersAttr?: string
+  host: string
+  hostAttr?: string
   middleware?: Middleware[]
+  parameterEncoder?: ParameterEncoderFn
+  resources?: Resources
+  signalAttr?: string
+  timeoutAttr?: string
   /**
    * @deprecated - use `middleware` instead
    */
@@ -56,36 +57,38 @@ type CreateMiddlewareParams = Partial<Omit<MiddlewareParams, 'resourceName' | 'r
  * @param {Object} globalConfigs
  */
 export class Manifest<Resources extends ResourceTypeConstraint> {
-  public host: string
   public allowResourceHostOverride: boolean
-  public parameterEncoder: ParameterEncoderFn
-  public bodyAttr?: string
-  public headersAttr?: string
   public authAttr?: string
-  public timeoutAttr?: string
-  public hostAttr?: string
+  public bodyAttr?: string
   public clientId: string | null
-  public gatewayConfigs: GatewayConfiguration
-  public resources: Resources
   public context: Context
+  public gatewayConfigs: GatewayConfiguration
+  public headersAttr?: string
+  public host: string
+  public hostAttr?: string
   public middleware: Middleware[]
+  public parameterEncoder: ParameterEncoderFn
+  public resources: Resources
+  public signalAttr?: string
+  public timeoutAttr?: string
 
   constructor(
     options: ManifestOptions<Resources>,
     { gatewayConfigs, middleware = [], context = {} }: GlobalConfigs
   ) {
-    this.host = options.host
     this.allowResourceHostOverride = options.allowResourceHostOverride || false
-    this.parameterEncoder = options.parameterEncoder || encodeURIComponent
-    this.bodyAttr = options.bodyAttr
-    this.headersAttr = options.headersAttr
     this.authAttr = options.authAttr
-    this.timeoutAttr = options.timeoutAttr
-    this.hostAttr = options.hostAttr
+    this.bodyAttr = options.bodyAttr
     this.clientId = options.clientId || null
-    this.gatewayConfigs = assign({}, gatewayConfigs, options.gatewayConfigs)
-    this.resources = options.resources || ({} as Resources)
     this.context = context
+    this.gatewayConfigs = assign({}, gatewayConfigs, options.gatewayConfigs)
+    this.headersAttr = options.headersAttr
+    this.host = options.host
+    this.hostAttr = options.hostAttr
+    this.parameterEncoder = options.parameterEncoder || encodeURIComponent
+    this.resources = options.resources || ({} as Resources)
+    this.signalAttr = options.signalAttr
+    this.timeoutAttr = options.timeoutAttr
 
     // TODO: deprecate obj.middlewares in favor of obj.middleware
     const clientMiddleware = options.middleware || options.middlewares || []
@@ -130,6 +133,7 @@ export class Manifest<Resources extends ResourceTypeConstraint> {
           authAttr: this.authAttr,
           timeoutAttr: this.timeoutAttr,
           hostAttr: this.hostAttr,
+          signalAttr: this.signalAttr,
         },
         definition
       )
