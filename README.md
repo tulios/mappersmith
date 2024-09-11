@@ -322,7 +322,7 @@ __NOTE__: The `timeoutAttr` param can be set at manifest level.
 
 ### <a name="abort-signal"></a> Abort Signal
 
-The AbortSignal interface represents a signal object that allows you to communicate with an asynchronous operation (such as a fetch request) and abort it if required via an AbortController object. All gateway APIs (Fetch, HTTP and XHR) support this interface via the `signal` parameter:
+The [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) interface represents a signal object that allows you to communicate with an asynchronous operation (such as a fetch request) and abort it if required via an AbortController object. All gateway APIs (Fetch, HTTP and XHR) support this interface via the `signal` parameter:
 
 ```javascript
 const abortController = new AbortController()
