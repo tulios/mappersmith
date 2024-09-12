@@ -746,6 +746,11 @@ describe('Request', () => {
       const request = new Request(methodDescriptor, { differentParam: 'abc123' })
       expect(request.body()).toEqual('abc123')
     })
+
+    it('can return undefined', () => {
+      const request = new Request(methodDescriptor, { ...requestParams, body: undefined })
+      expect(request.body()).toBeUndefined()
+    })
   })
 
   describe('#auth', () => {
@@ -763,6 +768,11 @@ describe('Request', () => {
       const request = new Request(methodDescriptor, { differentAuthParam: authData })
       expect(request.auth()).toEqual(authData)
     })
+
+    it('can return undefined', () => {
+      const request = new Request(methodDescriptor, { ...requestParams, auth: undefined })
+      expect(request.auth()).toBeUndefined()
+    })
   })
 
   describe('#timeout', () => {
@@ -778,6 +788,11 @@ describe('Request', () => {
       })
       const request = new Request(methodDescriptor, { differentTimeoutParam: 1000 })
       expect(request.timeout()).toEqual(1000)
+    })
+
+    it('can return undefined', () => {
+      const request = new Request(methodDescriptor, { ...requestParams, timeout: undefined })
+      expect(request.timeout()).toBeUndefined()
     })
   })
 
@@ -799,6 +814,11 @@ describe('Request', () => {
         differentSignalParam: abortController.signal,
       })
       expect(request.signal()).toEqual(abortController.signal)
+    })
+
+    it('can return undefined', () => {
+      const request = new Request(methodDescriptor, requestParams)
+      expect(request.signal()).toBeUndefined()
     })
   })
 
