@@ -26,6 +26,12 @@ describe('integration', () => {
       })
     })
 
+    describe('CSRF', () => {
+      integrationTestsForGateway(Fetch, { host: '/proxy' }, (gateway, params) => {
+        csrfSpec(forge(createManifest(params.host), gateway))
+      })
+    })
+
     describe('with raw binary', () => {
       it('GET /api/binary.pdf', (done) => {
         const Client = forge(createManifest(params.host), gateway)
@@ -100,11 +106,37 @@ describe('integration', () => {
           })
       })
     })
-  })
 
-  describe('CSRF', () => {
-    integrationTestsForGateway(Fetch, { host: '/proxy' }, (gateway, params) => {
-      csrfSpec(forge(createManifest(params.host), gateway))
+    describe('aborting a request', () => {
+      it('aborts the request', (done) => {
+        const Client = forge(
+          {
+            host: params.host,
+            fetch,
+            resources: {
+              Timeout: {
+                get: { path: '/api/timeout.json' },
+              },
+            },
+          },
+          gateway
+        )
+        const abortController = new AbortController()
+        const request = Client.Timeout.get({ waitTime: 666, signal: abortController.signal })
+        // Fire the request, but abort after 1ms
+        setTimeout(() => {
+          abortController.abort()
+        }, 1)
+        request
+          .then((response) => {
+            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+          })
+          .catch((response) => {
+            expect(response.status()).toEqual(400)
+            expect(response.error()).toMatch(/The operation was aborted/i)
+            done()
+          })
+      })
     })
   })
 })

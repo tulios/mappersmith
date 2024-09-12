@@ -39,14 +39,15 @@ export class HTTP extends Gateway {
     this.performRequest('delete')
   }
 
-  performRequest(method: Method) {
+  performRequest(requestMethod: Method) {
     const headers: Record<string, Primitive> = {}
     // FIXME: Deprecated API
     // eslint-disable-next-line n/no-deprecated-api
     const defaults = url.parse(this.request.url())
-    const requestMethod = this.shouldEmulateHTTP() ? 'post' : method
-    const body = this.prepareBody(method, headers)
+    const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
+    const body = this.prepareBody(requestMethod, headers)
     const timeout = this.request.timeout()
+    const signal = this.request.signal()
 
     this.canceled = false
 
@@ -61,9 +62,9 @@ export class HTTP extends Gateway {
 
     const handler = defaults.protocol === 'https:' ? https : http
 
-    const requestParams: HTTPRequestParams = assign(defaults, {
-      method: requestMethod,
-      headers: assign(headers, this.request.headers()),
+    const requestParams: http.RequestOptions = assign(defaults, {
+      method,
+      headers: assign(headers, this.request.headers() as http.OutgoingHttpHeaders),
     })
 
     const auth = this.request.auth()
@@ -85,6 +86,10 @@ export class HTTP extends Gateway {
 
     if (httpOptions.onRequestWillStart) {
       httpOptions.onRequestWillStart(requestParams)
+    }
+
+    if (signal) {
+      requestParams.signal = signal
     }
 
     const httpRequest = handler.request(requestParams, (httpResponse) =>

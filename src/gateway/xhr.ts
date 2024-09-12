@@ -22,6 +22,7 @@ export class XHR extends Gateway {
     this.setHeaders(xmlHttpRequest, {})
     this.configureTimeout(xmlHttpRequest)
     this.configureBinary(xmlHttpRequest)
+    this.configureAbort(xmlHttpRequest)
     xmlHttpRequest.send()
   }
 
@@ -31,6 +32,7 @@ export class XHR extends Gateway {
     this.setHeaders(xmlHttpRequest, {})
     this.configureTimeout(xmlHttpRequest)
     this.configureBinary(xmlHttpRequest)
+    this.configureAbort(xmlHttpRequest)
     xmlHttpRequest.send()
   }
 
@@ -77,6 +79,21 @@ export class XHR extends Gateway {
         const error = createTimeoutError(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
       }, timeout + 1)
+    }
+  }
+
+  configureAbort(xmlHttpRequest: XMLHttpRequest) {
+    const signal = this.request.signal()
+    if (signal) {
+      signal.addEventListener('abort', () => {
+        xmlHttpRequest.abort()
+      })
+      xmlHttpRequest.addEventListener('abort', () => {
+        this.dispatchClientError(
+          'The operation was aborted',
+          new Error('The operation was aborted')
+        )
+      })
     }
   }
 
@@ -128,6 +145,7 @@ export class XHR extends Gateway {
     this.setHeaders(xmlHttpRequest, customHeaders)
     this.configureTimeout(xmlHttpRequest)
     this.configureBinary(xmlHttpRequest)
+    this.configureAbort(xmlHttpRequest)
 
     xmlHttpRequest.send(body)
   }

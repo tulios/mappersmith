@@ -3,7 +3,6 @@ import type { Middleware } from './middleware/index'
 
 export interface MethodDescriptorParams {
   allowResourceHostOverride?: boolean
-  parameterEncoder?: ParameterEncoderFn
   authAttr?: string
   binary?: boolean
   bodyAttr?: string
@@ -14,10 +13,12 @@ export interface MethodDescriptorParams {
   method?: string
   middleware?: Array<Middleware>
   middlewares?: Array<Middleware>
+  parameterEncoder?: ParameterEncoderFn
   params?: Params
   path: string | ((args: RequestParams) => string)
   pathAttr?: string
   queryParamAlias?: Record<string, string>
+  signalAttr?: string
   timeoutAttr?: string
 }
 
@@ -40,11 +41,11 @@ export interface MethodDescriptorParams {
  *   @param {String|Function} params.path
  *   @param {String} params.pathAttr. Default: 'path'
  *   @param {Object} params.queryParamAlias
+ *   @param {Number} params.signalAttr - signal attribute name. Default: 'signal'
  *   @param {Number} params.timeoutAttr - timeout attribute name. Default: 'timeout'
  */
 export class MethodDescriptor {
   public readonly allowResourceHostOverride: boolean
-  public readonly parameterEncoder: ParameterEncoderFn
   public readonly authAttr: string
   public readonly binary: boolean
   public readonly bodyAttr: string
@@ -54,19 +55,21 @@ export class MethodDescriptor {
   public readonly hostAttr: string
   public readonly method: string
   public readonly middleware: Middleware[]
+  public readonly parameterEncoder: ParameterEncoderFn
   public readonly params?: RequestParams
   public readonly path: string | ((args: RequestParams) => string)
   public readonly pathAttr: string
   public readonly queryParamAlias: Record<string, string>
+  public readonly signalAttr: string
   public readonly timeoutAttr: string
 
   constructor(params: MethodDescriptorParams) {
     this.allowResourceHostOverride = params.allowResourceHostOverride || false
-    this.parameterEncoder = params.parameterEncoder || encodeURIComponent
     this.binary = params.binary || false
     this.headers = params.headers
     this.host = params.host
     this.method = params.method || 'get'
+    this.parameterEncoder = params.parameterEncoder || encodeURIComponent
     this.params = params.params
     this.path = params.path
     this.queryParamAlias = params.queryParamAlias || {}
@@ -76,6 +79,7 @@ export class MethodDescriptor {
     this.headersAttr = params.headersAttr || 'headers'
     this.hostAttr = params.hostAttr || 'host'
     this.pathAttr = params.pathAttr || 'path'
+    this.signalAttr = params.signalAttr || 'signal'
     this.timeoutAttr = params.timeoutAttr || 'timeout'
 
     const resourceMiddleware = params.middleware || params.middlewares || []
