@@ -1,0 +1,401 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mappersmith/test/lookupResponse should correctly handle m.anything() displaying that it matches ANYTHING 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+
+  ┌────────────────────┬──────────────────────────────────────────────────────────────────────┐
+  │  Outbound Request  │                                Value                                 │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Url                │ http://example.org/path                                              │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Method             │ get                                                                  │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Body               │ id=2                                                                 │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Headers            │ x-test=VALUE2                                                        │
+  └────────────────────┴──────────────────────────────────────────────────────────────────────┘
+
+Mock definitions installed:
+
+
+  ┌───────────────────────────────────────────────┬───────────────────────────────────────────────┐
+  │              Colors Explanation               │               Diff Explanation                │
+  ├───────────────────────────────────────────────┼───────────────────────────────────────────────┤
+  │                                               │                                               │
+  │ ● Exact match                                 │ Mock value matches the request value          │
+  │ ● Partial match (When URL and METHOD match)   │ Present in mock but not in request            │
+  │ ● Not matching                                │ Present in request but not in mock            │
+  │                                               │                                               │
+  └───────────────────────────────────────────────┴───────────────────────────────────────────────┘
+
+
+  ┌────────────────┬────────────┬─────────────────────────────────────────────────────────────────┐
+  │   users - 4    │   Match    │                           Value/Diff                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Url            │ Yes        │ http://example.org/path                                         │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Method         │ Yes        │ get                                                             │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Body           │ Yes        │ MATCHED_BY_FUNCTION                                             │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Headers        │ No         │ x-test=VALUE-2                                                  │
+  └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
+
+[Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should handle multiple mocks with large bodies and long URLs, including a partial match 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+
+  ┌────────────────────┬──────────────────────────────────────────────────────────────────────┐
+  │  Outbound Request  │                                Value                                 │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Url                │ http://example.org/path?query[id]=2                                  │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Method             │ get                                                                  │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Body               │ _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excepteur+ │
+  │                    │ quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occaecat+sunt │
+  │                    │ +commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+irure+occaecat+ │
+  │                    │ minim.                                                               │
+  │                    │ &address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balan │
+  │                    │ ce=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeC │
+  │                    │ olor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marq │
+  │                    │ uez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friend │
+  │                    │ s[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hel │
+  │                    │ lo,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-46 │
+  │                    │ 53-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longit │
+  │                    │ ude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=htt │
+  │                    │ p://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]= │
+  │                    │ pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=t │
+  │                    │ empor&tags[]=amet                                                    │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Headers            │ x-test=DIFFERENT-VALUE                                               │
+  └────────────────────┴──────────────────────────────────────────────────────────────────────┘
+
+Mock definitions installed:
+
+
+  ┌───────────────────────────────────────────────┬───────────────────────────────────────────────┐
+  │              Colors Explanation               │               Diff Explanation                │
+  ├───────────────────────────────────────────────┼───────────────────────────────────────────────┤
+  │                                               │                                               │
+  │ ● Exact match                                 │ Mock value matches the request value          │
+  │ ● Partial match (When URL and METHOD match)   │ Present in mock but not in request            │
+  │ ● Not matching                                │ Present in request but not in mock            │
+  │                                               │                                               │
+  └───────────────────────────────────────────────┴───────────────────────────────────────────────┘
+
+
+  ┌────────────────┬────────────┬─────────────────────────────────────────────────────────────────┐
+  │  My Client -   │   Match    │                           Value/Diff                            │
+  │     posts      │            │                                                                 │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Url            │ No         │ http://example.org/long/path/to/resource/with/many/segments?que │
+  │                │            │ ry[ipostId]=12345                                               │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Method         │ No         │ gepost                                                          │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Body           │ No         │ _id=66ec092d7189db5c15ea3f04&abount=Cupidatat+excepteur+do+exce │
+  │                │            │ pteur+quis+deserunt+n=Thisi+aliqua+nulla+ut+esse.+Non+ea+tvempo │
+  │                │            │ ry+occaecat+sunt+commodo.+Nisi+cillum+non+anim+autrge+laborum+p │
+  │                │            │ ariatur+irure+occaecat+minim.                                   │
+  │                │            │ &address=377y+Conduwith+Boulevard,+Franklin,+Alabama,+7940&age= │
+  │                │            │ 31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@water │
+  │                │            │ baby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&fr │
+  │                │            │ iends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=B │
+  │                │            │ lackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonal │
+  │                │            │ d&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unrea │
+  │                │            │ d+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&i │
+  │                │            │ sActive=true&latitude=26.758942&longitude=29.872733&name=Debora │
+  │                │            │ h+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x │
+  │                │            │ 32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[] │
+  │                │            │ =Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags │
+  │                │            │ []=amet                                                         │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Headers        │ No         │ content-type=application%2Fjson                                 │
+  └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────┬────────────┬─────────────────────────────────────────────────────────────────┐
+  │  My Client -   │   Match    │                           Value/Diff                            │
+  │    comments    │            │                                                                 │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Url            │ No         │ http://example.org/another/very/long/path/to/resource?query[ico │
+  │                │            │ mmentId]=267890                                                 │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Method         │ No         │ geput                                                           │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Body           │ No         │ _id=66ec092d7189db5c15ea3f045&about=Cupidatat+excepteur+do+exce │
+  │                │            │ pteur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+oc │
+  │                │            │ caecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur │
+  │                │            │ +irure+occaecat+minim.                                          │
+  │                │            │ &address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31& │
+  │                │            │ balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbab │
+  │                │            │ y.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&frien │
+  │                │            │ ds[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blac │
+  │                │            │ kburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&g │
+  │                │            │ ender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+m │
+  │                │            │ essages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isAc │
+  │                │            │ tive=true&latitude=26.758942&longitude=29.872733&name=Deborah+C │
+  │                │            │ antu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32& │
+  │                │            │ registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lo │
+  │                │            │ rem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]= │
+  │                │            │ amet                                                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Headers        │ No         │ content-type=application%2Fjson                                 │
+  └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────┬────────────┬─────────────────────────────────────────────────────────────────┐
+  │  My Client -   │   Match    │                           Value/Diff                            │
+  │     users      │            │                                                                 │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Url            │ No         │ http://example.org/path?query[id]=21                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Method         │ Yes        │ get                                                             │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Body           │ No         │ _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excep │
+  │                │            │ teur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occ │
+  │                │            │ aecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+ │
+  │                │            │ irure+occaecat+minim.                                           │
+  │                │            │ &address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31& │
+  │                │            │ balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbab │
+  │                │            │ y.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&frien │
+  │                │            │ ds[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blac │
+  │                │            │ kburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&g │
+  │                │            │ ender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+m │
+  │                │            │ essages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isAc │
+  │                │            │ tive=true&latitude=26.758942&longitude=29.872733&name=Deborah+C │
+  │                │            │ antu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32& │
+  │                │            │ registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lo │
+  │                │            │ rem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]= │
+  │                │            │ amet                                                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Headers        │ No         │ x-test=DIFFERENT-VALUE                                          │
+  └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────┬────────────┬─────────────────────────────────────────────────────────────────┐
+  │ My Named Mock  │   Match    │                           Value/Diff                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Url            │ No         │ http://example.org/path?query[id]=2                             │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Method         │ Yes        │ get                                                             │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Body           │ Yes        │ _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excep │
+  │                │            │ teur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occ │
+  │                │            │ aecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+ │
+  │                │            │ irure+occaecat+minim.                                           │
+  │                │            │ &address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31& │
+  │                │            │ balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbab │
+  │                │            │ y.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&frien │
+  │                │            │ ds[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blac │
+  │                │            │ kburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&g │
+  │                │            │ ender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+m │
+  │                │            │ essages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isAc │
+  │                │            │ tive=true&latitude=26.758942&longitude=29.872733&name=Deborah+C │
+  │                │            │ antu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32& │
+  │                │            │ registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lo │
+  │                │            │ rem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]= │
+  │                │            │ amet                                                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Headers        │ Yes        │ x-test=DIFFERENT-VALUE                                          │
+  └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
+
+[Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should log all existing mocks when there is a partial match 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+
+  ┌────────────────────┬──────────────────────────────────────────────────────────────────────┐
+  │  Outbound Request  │                                Value                                 │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Url                │ http://example.org/path                                              │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Method             │ get                                                                  │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Body               │ id=2                                                                 │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Headers            │ x-test=VALUE2                                                        │
+  └────────────────────┴──────────────────────────────────────────────────────────────────────┘
+
+Mock definitions installed:
+
+
+  ┌───────────────────────────────────────────────┬───────────────────────────────────────────────┐
+  │              Colors Explanation               │               Diff Explanation                │
+  ├───────────────────────────────────────────────┼───────────────────────────────────────────────┤
+  │                                               │                                               │
+  │ ● Exact match                                 │ Mock value matches the request value          │
+  │ ● Partial match (When URL and METHOD match)   │ Present in mock but not in request            │
+  │ ● Not matching                                │ Present in request but not in mock            │
+  │                                               │                                               │
+  └───────────────────────────────────────────────┴───────────────────────────────────────────────┘
+
+
+  ┌────────────────┬────────────┬─────────────────────────────────────────────────────────────────┐
+  │   users - 3    │   Match    │                           Value/Diff                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Url            │ Yes        │ http://example.org/path                                         │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Method         │ Yes        │ get                                                             │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Body           │ No         │ id=21                                                           │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Headers        │ No         │ x-test=VALUE2                                                   │
+  └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
+
+[Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should log all existing mocks when there is no match 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+
+  ┌────────────────────┬──────────────────────────────────────────────────────────────────────┐
+  │  Outbound Request  │                                Value                                 │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Url                │ http://example.org/path?query[parameter]=1&query[parameter2]=2       │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Method             │ get                                                                  │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Body               │ maybe_gql=query+{+user+{+id+}+}&id=1&parameter=1                     │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Headers            │ header1=value&header2=value2                                         │
+  └────────────────────┴──────────────────────────────────────────────────────────────────────┘
+
+Mock definitions installed:
+
+
+  ┌───────────────────────────────────────────────┬───────────────────────────────────────────────┐
+  │              Colors Explanation               │               Diff Explanation                │
+  ├───────────────────────────────────────────────┼───────────────────────────────────────────────┤
+  │                                               │                                               │
+  │ ● Exact match                                 │ Mock value matches the request value          │
+  │ ● Partial match (When URL and METHOD match)   │ Present in mock but not in request            │
+  │ ● Not matching                                │ Present in request but not in mock            │
+  │                                               │                                               │
+  └───────────────────────────────────────────────┴───────────────────────────────────────────────┘
+
+
+  ┌────────────────┬────────────┬─────────────────────────────────────────────────────────────────┐
+  │   users - 2    │   Match    │                           Value/Diff                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Url            │ No         │ http://example-1.org/no-path?query[parameter]=1&query[parameter │
+  │                │            │ 2]=2                                                            │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Method         │ No         │ gepost                                                          │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Body           │ Yes        │ maybe_gql=query+{+user+{+id+}+}&id=1&parameter=1                │
+  ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
+  │ Headers        │ Yes        │ header1=value&header2=value2                                    │
+  └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
+
+[Mappersmith Test] No match found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should output a clear message when there are no mocks installed 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+
+  ┌────────────────────┬──────────────────────────────────────────────────────────────────────┐
+  │  Outbound Request  │                                Value                                 │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Url                │ http://example.org/path?query[parameter]=1&query[parameter2]=2       │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Method             │ get                                                                  │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Body               │ maybe_gql=query+{+user+{+id+}+}&id=1&parameter=1                     │
+  ├────────────────────┼──────────────────────────────────────────────────────────────────────┤
+  │ Headers            │ header1=value&header2=value2                                         │
+  └────────────────────┴──────────────────────────────────────────────────────────────────────┘
+
+Mock definitions installed:
+
+
+  ┌───────────────────────────────────────────────┬───────────────────────────────────────────────┐
+  │              Colors Explanation               │               Diff Explanation                │
+  ├───────────────────────────────────────────────┼───────────────────────────────────────────────┤
+  │                                               │                                               │
+  │ ● Exact match                                 │ Mock value matches the request value          │
+  │ ● Partial match (When URL and METHOD match)   │ Present in mock but not in request            │
+  │ ● Not matching                                │ Present in request but not in mock            │
+  │                                               │                                               │
+  └───────────────────────────────────────────────┴───────────────────────────────────────────────┘
+
+NO MOCKS INSTALLED
+
+
+[Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith  
+"
+`;
