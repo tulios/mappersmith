@@ -196,7 +196,7 @@ ${matches.length ? createTableForMocks(matches) : 'NO MOCKS INSTALLED'}
  * @param {Request} request - The request object.
  * @return {string} The no mocks installed message.
  */
-const getNoMocksInstalledMessage = (request: Request) => {
+const noMocksInstalledMessage = (request: Request) => {
   const debugInfo = getDebugPrintMessage(request, [])
   return `
 
@@ -247,7 +247,7 @@ ${colors.yellow(`[Mappersmith Test] No exact match found but a partial match was
  */
 export const lookupResponse = (store: MockResource[]) => (request: Request) => {
   if (!store.length) {
-    throw new Error(getNoMocksInstalledMessage(request))
+    throw new Error(noMocksInstalledMessage(request))
   }
 
   const mocks = store.map((mockResource) => {
