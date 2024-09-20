@@ -92,7 +92,7 @@ MockRequest.prototype = {
       return {
         match: true,
         mockValue: MATCHED_AS_UNDEFINED_IN_MOCK,
-        value: MATCHED_AS_UNDEFINED_IN_MOCK,
+        requestValue: MATCHED_AS_UNDEFINED_IN_MOCK,
       }
     }
     if (this.bodyFunction) {
@@ -130,7 +130,7 @@ MockRequest.prototype = {
       return {
         match: true,
         mockValue: MATCHED_AS_UNDEFINED_IN_MOCK,
-        value: MATCHED_AS_UNDEFINED_IN_MOCK,
+        requestValue: MATCHED_AS_UNDEFINED_IN_MOCK,
       }
     if (this.headersFunction) {
       const match = this.headers(request.headers())

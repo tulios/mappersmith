@@ -226,6 +226,6 @@ describe('mappersmith/test/lookupResponse', () => {
       }
     )
 
-    expectToThrowErrorMatchingSnapshotWithoutAnsi(() => lookupResponse(request), true)
+    expectToThrowErrorMatchingSnapshotWithoutAnsi(() => lookupResponse(request))
   })
 })
