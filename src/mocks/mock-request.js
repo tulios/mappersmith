@@ -2,7 +2,7 @@ import MockAssert from './mock-assert'
 import Response from '../response'
 import { isPlainObject } from '../utils/index'
 import { clone } from '../utils/clone'
-import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
+import { sortedUrl, toSortedQueryString, filterKeys } from './mock-utils'
 
 /**
  * @param {number} id
@@ -10,14 +10,21 @@ import { sortedUrl, toSortedQueryString, isSubset } from './mock-utils'
  *   @param {string} props.method
  *   @param {string|function} props.url
  *   @param {string|function} props.body - request body
+ *   @param {string} props.mockName
  *   @param {object} props.response
  *     @param {string} props.response.body
  *     @param {object} props.response.headers
  *     @param {integer} props.response.status
  */
+
+const MATCHED_AS_UNDEFINED_IN_MOCK = 'MATCHED_AS_UNDEFINED_IN_MOCK'
+const MATCHED_BY_FUNCTION = 'MATCHED_BY_FUNCTION'
+const MISMATCH_BY_FUNCTION = 'MISMATCHED_BY_FUNCTION'
+
 function MockRequest(id, props) {
   this.id = id
 
+  this.mockName = props.mockName ? props.mockName : this.id
   this.method = props.method || 'get'
   this.urlFunction = typeof props.url === 'function'
   this.url = props.url
@@ -80,33 +87,100 @@ MockRequest.prototype = {
     return new MockAssert(this.calls)
   },
 
+  bodyMatchRequest(request) {
+    if (this.body === undefined) {
+      return {
+        match: true,
+        mockValue: MATCHED_AS_UNDEFINED_IN_MOCK,
+        requestValue: MATCHED_AS_UNDEFINED_IN_MOCK,
+      }
+    }
+    if (this.bodyFunction) {
+      const match = this.body(request.body())
+      const value = match ? MATCHED_BY_FUNCTION : MISMATCH_BY_FUNCTION
+      return { match, mockValue: value, requestValue: value }
+    }
+    const requestBodyAsString = toSortedQueryString(request.body())
+    const match = this.body === requestBodyAsString
+    return {
+      match,
+      mockValue: decodeURIComponent(this.body),
+      requestValue: decodeURIComponent(requestBodyAsString),
+    }
+  },
+
+  urlMatchRequest(request) {
+    if (this.urlFunction) {
+      const match = Boolean(this.url(request.url(), request.params()))
+      const value = match ? MATCHED_BY_FUNCTION : MISMATCH_BY_FUNCTION
+      return { match, mockValue: value, requestValue: value }
+    }
+    const requestUrlAsSortedString = sortedUrl(request.url())
+    const mockRequestUrlAsSortedString = sortedUrl(this.url)
+    const match = mockRequestUrlAsSortedString === requestUrlAsSortedString
+    return {
+      match,
+      mockValue: decodeURIComponent(mockRequestUrlAsSortedString),
+      requestValue: decodeURIComponent(requestUrlAsSortedString),
+    }
+  },
+
+  headersMatchRequest(request) {
+    if (!this.headers)
+      return {
+        match: true,
+        mockValue: MATCHED_AS_UNDEFINED_IN_MOCK,
+        requestValue: MATCHED_AS_UNDEFINED_IN_MOCK,
+      }
+    if (this.headersFunction) {
+      const match = this.headers(request.headers())
+      const value = match ? MATCHED_BY_FUNCTION : MISMATCH_BY_FUNCTION
+      return { match, mockValue: value, requestValue: value }
+    }
+    const filteredRequestHeaders = filterKeys(this.headersObject, request.headers())
+    const requestHeadersAsSortedString = toSortedQueryString(filteredRequestHeaders)
+    const mockRequestHeadersAsSortedString = toSortedQueryString(this.headersObject)
+    const match = requestHeadersAsSortedString === mockRequestHeadersAsSortedString
+
+    return {
+      match,
+      mockValue: mockRequestHeadersAsSortedString,
+      requestValue: requestHeadersAsSortedString,
+    }
+  },
+
+  methodMatchRequest(request) {
+    const requestMethod = request.method()
+    const match = this.method === requestMethod
+    return {
+      match,
+      mockValue: this.method,
+      requestValue: requestMethod,
+    }
+  },
+
+  getRequestMatching(request) {
+    const method = this.methodMatchRequest(request)
+    const url = this.urlMatchRequest(request)
+    const body = this.bodyMatchRequest(request)
+    const headers = this.headersMatchRequest(request)
+    return {
+      mockName: this.mockName,
+      isExactMatch: method.match && url.match && body.match && headers.match,
+      isPartialMatch: this.isPartialMatch(request),
+      method,
+      url,
+      body,
+      headers,
+    }
+  },
   /**
    * Checks if the request matches with the mock HTTP method, URL, headers and body
    *
    * @return {boolean}
    */
   isExactMatch(request) {
-    const bodyMatch = () => {
-      if (this.body === undefined) {
-        return true
-      }
-
-      return this.bodyFunction
-        ? this.body(request.body())
-        : this.body === toSortedQueryString(request.body())
-    }
-
-    const urlMatch = this.urlFunction
-      ? this.url(request.url(), request.params())
-      : sortedUrl(this.url) === sortedUrl(request.url())
-
-    const headerMatch =
-      !this.headers ||
-      (this.headersFunction
-        ? this.headers(request.headers())
-        : isSubset(this.headersObject, request.headers()))
-
-    return this.method === request.method() && urlMatch && bodyMatch() && headerMatch
+    return this.getRequestMatching(request).isExactMatch
   },
 
   /**
