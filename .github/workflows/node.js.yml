@@ -5,6 +5,7 @@ concurrency:
   group: 'node-js-${{ github.ref_name }}'
 
 on:
+  workflow_dispatch: # Allow manual trigger
   push:
     branches: [master]
   pull_request:
