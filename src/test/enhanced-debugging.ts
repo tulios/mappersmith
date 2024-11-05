@@ -1,9 +1,9 @@
 import { sortedUrl, toSortedQueryString } from '../mocks/mock-utils'
 import { Request } from '../request'
-import colors from '@colors/colors'
+import { colors } from './esm-wrappers/colors.js'
 import MockResource from '../mocks/mock-resource'
 import MockRequest from '../mocks/mock-request'
-import ttyTable from 'tty-table'
+import { ttyTable } from './esm-wrappers/tty-table.js'
 import * as Diff from 'diff'
 
 /**
@@ -16,7 +16,11 @@ export const diffString = (stringOne: string, stringTwo: string) => {
   const diff = Diff.diffChars(stringOne, stringTwo)
   return diff
     .map(function (part) {
-      return part.added ? part.value.bgGreen : part.removed ? part.value.bgRed : part.value.green
+      return part.added
+        ? colors.bgGreen(part.value)
+        : part.removed
+          ? colors.bgRed(part.value)
+          : colors.green(part.value)
     })
     .join('')
 }
@@ -174,7 +178,7 @@ Mappersmith matches a mock to an outgoing request by comparing the request's URL
 
 URL:     The URL is sorted and normalized before comparison.
 BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
-HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
          mock definition headers and then sorted and normalized before comparison.
 METHOD:  The method of the outgoing request is compared as is.
 ------------------------------------------------------------------------------------------------------------------
@@ -202,7 +206,7 @@ const noMocksInstalledMessage = (request: Request) => {
 
 ${debugInfo}
 
-${colors.red('[Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith')}  
+${colors.red('[Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith')}
 `
 }
 

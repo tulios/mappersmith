@@ -9,7 +9,7 @@ Mappersmith matches a mock to an outgoing request by comparing the request's URL
 
 URL:     The URL is sorted and normalized before comparison.
 BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
-HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
          mock definition headers and then sorted and normalized before comparison.
 METHOD:  The method of the outgoing request is compared as is.
 ------------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ Mappersmith matches a mock to an outgoing request by comparing the request's URL
 
 URL:     The URL is sorted and normalized before comparison.
 BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
-HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
          mock definition headers and then sorted and normalized before comparison.
 METHOD:  The method of the outgoing request is compared as is.
 ------------------------------------------------------------------------------------------------------------------
@@ -242,7 +242,7 @@ Mappersmith matches a mock to an outgoing request by comparing the request's URL
 
 URL:     The URL is sorted and normalized before comparison.
 BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
-HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
          mock definition headers and then sorted and normalized before comparison.
 METHOD:  The method of the outgoing request is compared as is.
 ------------------------------------------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ Mappersmith matches a mock to an outgoing request by comparing the request's URL
 
 URL:     The URL is sorted and normalized before comparison.
 BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
-HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
          mock definition headers and then sorted and normalized before comparison.
 METHOD:  The method of the outgoing request is compared as is.
 ------------------------------------------------------------------------------------------------------------------
@@ -361,7 +361,7 @@ Mappersmith matches a mock to an outgoing request by comparing the request's URL
 
 URL:     The URL is sorted and normalized before comparison.
 BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
-HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the 
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
          mock definition headers and then sorted and normalized before comparison.
 METHOD:  The method of the outgoing request is compared as is.
 ------------------------------------------------------------------------------------------------------------------
@@ -396,6 +396,6 @@ Mock definitions installed:
 NO MOCKS INSTALLED
 
 
-[Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith  
+[Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith
 "
 `;
