@@ -270,6 +270,7 @@
   },
   "packageManager": "yarn@4.4.1",
   "dependencies": {
+    "@colors/colors": "^1.6.0",
     "diff": "^7.0.0",
     "tty-table": "^4.2.3"
   }

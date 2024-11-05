@@ -1920,6 +1920,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@colors/colors@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@colors/colors@npm:1.6.0"
+  checksum: 10/66d00284a3a9a21e5e853b256942e17edbb295f4bd7b9aa7ef06bbb603568d5173eb41b0f64c1e51748bc29d382a23a67d99956e57e7431c64e47e74324182d9
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-support@npm:^0.8.0":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -8753,6 +8760,7 @@ __metadata:
     "@babel/register": "npm:^7.24.6"
     "@changesets/cli": "npm:^2.27.8"
     "@chiragrupani/karma-chromium-edge-launcher": "npm:^2.4.1"
+    "@colors/colors": "npm:^1.6.0"
     "@types/diff": "npm:^5.2.2"
     "@types/jest": "npm:^29.5.12"
     "@types/karma": "npm:^6.3.8"
