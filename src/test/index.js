@@ -3,12 +3,16 @@ import MockResource from '../mocks/mock-resource'
 import { Mock as MockGateway } from '../gateway/mock'
 import { configs } from '../index'
 import { toQueryString } from '../utils/index'
+import { lookupResponse as lookupResponseWithEnhancedDebugging } from './enhanced-debugging'
 export { requestFactory } from './request-factory'
 export { responseFactory } from './response-factory'
 
 let store = []
 let ids = 1
 let originalGateway = null
+const options = {
+  enhancedDebugging: false,
+}
 
 /**
  * High level abstraction, it works directly on your client mocking
@@ -45,7 +49,12 @@ export const mockRequest = (props) => {
 /**
  * Setup the test library
  */
-export const install = () => {
+export const install = (
+  { enhancedDebugging } = {
+    enhancedDebugging: false,
+  }
+) => {
+  options.enhancedDebugging = enhancedDebugging
   originalGateway = configs.gateway
   configs.gateway = MockGateway
 }
@@ -102,8 +111,8 @@ export const lookupResponseAsync = (request) => {
  * @throws Will throw an error if it doesn't find a mock to match the given request
  */
 export const lookupResponse = (request) => {
+  if (options.enhancedDebugging) return lookupResponseWithEnhancedDebugging(store, options)(request)
   const mocks = store.map((mock) => mock.toMockRequest())
-
   const exactMatch = mocks.filter((mock) => mock.isExactMatch(request)).pop()
 
   if (exactMatch) {
