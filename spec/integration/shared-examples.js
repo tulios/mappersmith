@@ -1,6 +1,6 @@
-import createManifest from 'spec/integration/support/manifest'
-import apiResponses from 'spec/integration/support/responses'
-import { errorMessage } from 'spec/integration/support'
+import { createManifest } from './support/manifest.js'
+import apiResponses from './support/responses.js'
+import { errorMessage } from './support/index.js'
 
 import forge, { configs } from 'src/index'
 import {
@@ -14,7 +14,7 @@ import {
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 import RetryMiddleware from 'src/middlewares/retry/v2'
 
-export default function IntegrationTestsForGateway(gateway, params, extraTests) {
+export function integrationTestsForGateway(gateway, params, extraTests) {
   let successLogBuffer, errorLogBuffer, previousGateway, Client
 
   beforeEach(() => {
