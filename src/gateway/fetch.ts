@@ -6,6 +6,15 @@ import { assign, btoa } from '../utils/index'
 import { createTimeoutError } from './timeout-error'
 import type { Method } from './types'
 
+function mergeAbortSignals(signalA: AbortSignal, signalB: AbortSignal | undefined): AbortSignal {
+  const controller = new AbortController()
+
+  signalA.addEventListener('abort', () => controller.abort(), { once: true })
+  signalB?.addEventListener('abort', () => controller.abort(), { once: true })
+
+  return controller.signal
+}
+
 /**
  * Gateway which uses the "fetch" implementation configured in "configs.fetch".
  * By default "configs.fetch" will receive the global fetch, this gateway doesn't
@@ -58,15 +67,26 @@ export class Fetch extends Gateway {
 
     const headers = assign(customHeaders, this.request.headers())
     const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
-    const signal = this.request.signal()
+    const userSignal = this.request.signal()
+
+    // Since 1) node fetch requires timeout to be handled via abort controller and 2) we support an external user signal, we need to merge them:
+    const abortController = new AbortController()
+    let signal: AbortSignal
+    if (userSignal) {
+      signal = mergeAbortSignals(abortController.signal, userSignal)
+    } else {
+      signal = abortController.signal
+    }
+
     const init: RequestInit = assign({ method, headers, body, signal }, this.options().Fetch)
+
     const timeout = this.request.timeout()
 
     let timer: ReturnType<typeof setTimeout> | null = null
     let canceled = false
-
     if (timeout) {
       timer = setTimeout(() => {
+        abortController.abort()
         canceled = true
         const error = createTimeoutError(`Timeout (${timeout}ms)`)
         this.dispatchClientError(error.message, error)
@@ -78,8 +98,6 @@ export class Fetch extends Gateway {
         if (canceled) {
           return
         }
-
-        timer && clearTimeout(timer)
 
         let responseData: Promise<ArrayBuffer> | Promise<string> | Promise<Buffer>
         if (this.request.isBinary()) {
@@ -103,8 +121,10 @@ export class Fetch extends Gateway {
           return
         }
 
-        timer && clearTimeout(timer)
         this.dispatchClientError(error.message, error)
+      })
+      .finally(() => {
+        timer && clearTimeout(timer)
       })
   }
 

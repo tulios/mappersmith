@@ -4,7 +4,7 @@ import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import md5 from 'js-md5'
 import integrationTestsForGateway from 'spec/integration/shared-examples'
-import fetch from 'node-fetch'
+import nodeFetch from 'node-fetch'
 
 import HTTP from 'src/gateway/http'
 import Fetch from 'src/gateway/fetch'
@@ -216,11 +216,11 @@ describe('integration', () => {
     })
 
     describe('aborting a request', () => {
-      it('aborts the request', (done) => {
+      it('aborts the request on user signal', (done) => {
         const Client = forge(
           {
             host: params.host,
-            fetch,
+            fetch: nodeFetch,
             resources: {
               Timeout: {
                 get: { path: '/api/timeout.json' },
@@ -242,6 +242,32 @@ describe('integration', () => {
           .catch((response) => {
             expect(response.status()).toEqual(400)
             expect(response.error()).toMatch(/This operation was aborted/i)
+            done()
+          })
+      })
+
+      it('aborts the request after specified timeout', (done) => {
+        const Client = forge(
+          {
+            host: params.host,
+            fetch: nodeFetch,
+            resources: {
+              Timeout: {
+                get: { path: '/api/timeout.json' },
+              },
+            },
+          },
+          gateway
+        )
+        const request = Client.Timeout.get({ timeout: 100, waitTime: 666 })
+
+        request
+          .then((response) => {
+            done.fail(`Expected this request to fail: ${errorMessage(response)}`)
+          })
+          .catch((response) => {
+            expect(response.status()).toEqual(400)
+            expect(response.error()).toMatch(/Timeout \(100ms\)/i)
             done()
           })
       })
