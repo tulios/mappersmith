@@ -1,18 +1,18 @@
-import { Agent as HttpAgent } from 'http'
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { Agent: HttpAgent } = require('http')
 
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
-import md5 from 'js-md5'
-import integrationTestsForGateway from 'spec/integration/shared-examples'
-import nodeFetch from 'node-fetch'
+require('core-js/stable/index.js')
+require('regenerator-runtime/runtime.js')
+const md5 = require('js-md5')
+const { integrationTestsForGateway } = require('../shared-examples.js')
+const nodeFetch = require('node-fetch')
 
-import HTTP from 'src/gateway/http'
-import Fetch from 'src/gateway/fetch'
-import forge, { configs } from 'src/index'
-import createManifest from 'spec/integration/support/manifest'
-import { errorMessage, INVALID_ADDRESS } from 'spec/integration/support'
-
-import keepAlive from './support/keep-alive'
+const { HTTP } = require('../../../src/gateway/http.ts')
+const { Fetch } = require('../../../src/gateway/fetch.ts')
+const { default: forge, configs } = require('../../../src/index.ts')
+const { createManifest } = require('../support/manifest.js')
+const { errorMessage, INVALID_ADDRESS } = require('../support/index.js')
+const { keepAlive } = require('./support/keep-alive.js')
 
 describe('integration', () => {
   describe('HTTP', () => {

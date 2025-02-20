@@ -1,8 +1,8 @@
-import createManifest from 'spec/integration/support/manifest'
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { createManifest } = require('../../support/manifest.js')
+const { default: forge } = require('../../../../src/index.ts')
 
-import forge from 'src/index'
-
-export default function keepAlive(host, gateway) {
+export function keepAlive(host, gateway) {
   return {
     verifySockets: (count, socketsReference) => {
       const socketOrigins = Object.keys(socketsReference)

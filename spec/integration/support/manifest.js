@@ -1,8 +1,8 @@
-import LogMiddleware from 'src/middlewares/log'
-import CsrfMiddleware from 'src/middlewares/csrf'
+import LogMiddleware from '../../../src/middleware/log.ts'
+import CsrfMiddleware from '../../../src/middleware/csrf.ts'
 const Csrf = CsrfMiddleware('csrfToken', 'x-csrf-token')
 
-export default function createManifest(host = null, middlewares = []) {
+export function createManifest(host = null, middlewares = []) {
   return {
     host,
     resources: {

@@ -1,10 +1,10 @@
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+import 'core-js/stable/index.js'
+import 'regenerator-runtime/runtime.js'
 import 'whatwg-fetch'
 import md5 from 'js-md5'
 
-import integrationTestsForGateway from 'spec/integration/shared-examples'
-import createManifest from 'spec/integration/support/manifest'
+import { integrationTestsForGateway } from 'spec/integration/shared-examples'
+import { createManifest } from 'spec/integration/support/manifest'
 import { errorMessage, INVALID_ADDRESS } from 'spec/integration/support'
 
 import XHR from 'src/gateway/xhr'
