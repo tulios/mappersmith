@@ -7,7 +7,6 @@ import { getManifest } from 'spec/ts-helper'
  * where it runs `src/index` and sets configs.gateway:
  * `defaultGateway = require('./gateway/xhr').default`
  */
-// @typescript-eslint/no-unused-vars
 import * as _thisIsFishy from 'spec/helper'
 
 describe('when global middleware is present', () => {
