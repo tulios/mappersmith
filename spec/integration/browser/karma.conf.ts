@@ -15,7 +15,13 @@ const webpackConfig: webpack.Configuration = {
 const conf = (config: karma.Config) => {
   process.env['CHROME_BIN'] = executablePath()
   const configuration: karma.ConfigOptions = {
-    browsers: process.platform === 'win32' ? ['EdgeHeadless'] : ['ChromeHeadless'],
+    browsers: process.platform === 'win32' ? ['EdgeHeadless'] : ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox'],
+      },
+    },
     frameworks: ['jasmine', 'webpack'],
     reporters: ['spec'],
     plugins: [

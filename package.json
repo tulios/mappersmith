@@ -218,7 +218,7 @@
     "@changesets/cli": "^2.27.8",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.4.1",
     "@types/jest": "^29.5.12",
-    "@types/karma": "^6.3.8",
+    "@types/karma": "^6.3.9",
     "@types/node": "^22.5.4",
     "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
