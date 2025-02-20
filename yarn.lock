@@ -3013,13 +3013,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/karma@npm:^6.3.8":
-  version: 6.3.8
-  resolution: "@types/karma@npm:6.3.8"
+"@types/karma@npm:^6.3.9":
+  version: 6.3.9
+  resolution: "@types/karma@npm:6.3.9"
   dependencies:
     "@types/node": "npm:*"
     log4js: "npm:^6.4.1"
-  checksum: 10/d516cd4473ec13abb65dc1e5bbd337e35d9ab9e78861f18f4e3ee1267e5b7bb2fce53421a21553bfd8d183a301a9d8c3ae2776652c2535257c036612a5c81b68
+  checksum: 10/137a81a1ec64b32fa71de23839a6aa0a8f5df01a28433338005ddc46d9aeb05ff4bd9b5c227ff69d48a9ea81276d1a227c09a1ff06e52fc96f9343b3ad6d17b1
   languageName: node
   linkType: hard
 
@@ -8650,7 +8650,7 @@ __metadata:
     "@changesets/cli": "npm:^2.27.8"
     "@chiragrupani/karma-chromium-edge-launcher": "npm:^2.4.1"
     "@types/jest": "npm:^29.5.12"
-    "@types/karma": "npm:^6.3.8"
+    "@types/karma": "npm:^6.3.9"
     "@types/node": "npm:^22.5.4"
     "@types/webpack": "npm:^5.28.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.6.0"
