@@ -80,7 +80,9 @@ describe('ClientBuilder middleware', () => {
 
     const client2 = createClient()
     await client2.User.byId({ id: 1 })
-    expect(middleware).toHaveBeenLastCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
+    expect(middleware).toHaveBeenLastCalledWith(
+      expect.objectContaining({ context: { foo: 'bar' } })
+    )
     expect(middleware).toHaveBeenCalledTimes(2)
 
     setContext({ foo: 'baz' })

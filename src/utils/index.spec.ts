@@ -90,7 +90,6 @@ describe('utils', () => {
     let responseHeaders: string
 
     beforeEach(() => {
-       
       responseHeaders =
         'X-RateLimit-Remaining: 57\
   \r\nLast-Modified: Mon, 09 Nov 2015 19:06:15 GMT\
@@ -100,7 +99,6 @@ describe('utils', () => {
   \r\nX-RateLimit-Reset: 1447102379\
   \r\nX-RateLimit-Limit: 60\
   '
-       
     })
 
     it('returns an object with all headers with lowercase keys', () => {
