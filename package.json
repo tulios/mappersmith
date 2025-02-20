@@ -217,6 +217,7 @@
     "@babel/register": "^7.24.6",
     "@changesets/cli": "^2.27.8",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.4.1",
+    "@types/diff": "^5.2.2",
     "@types/jest": "^29.5.12",
     "@types/karma": "^6.3.9",
     "@types/node": "^22.5.4",
@@ -267,5 +268,10 @@
     "webpack": "^5.94.0",
     "whatwg-fetch": "^3.6.20"
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.4.1",
+  "dependencies": {
+    "@colors/colors": "^1.6.0",
+    "diff": "^7.0.0",
+    "tty-table": "^4.2.3"
+  }
 }

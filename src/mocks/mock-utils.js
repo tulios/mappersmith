@@ -51,6 +51,13 @@ export function isSubset(A, B) {
   return toSortedQueryString(A) === toSortedQueryString(filteredB)
 }
 
+export function filterKeys(A, B) {
+  // Make B only contain the non-nullish keys it has in in common with A
+  const keysFromA = validKeys(A)
+  const filteredB = filterByPredicate(B, (keyFromB) => keysFromA.includes(keyFromB))
+  return filteredB
+}
+
 /**
  * Sort the query params on a URL based on the 'key=value' string value.
  * E.g. /example?b=2&a=1 will become /example?a=1&b=2
