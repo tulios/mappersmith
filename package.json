@@ -192,6 +192,7 @@
     "url": "https://github.com/tulios/mappersmith.git"
   },
   "keywords": [
+    "test",
     "rest",
     "client",
     "rest-client",
