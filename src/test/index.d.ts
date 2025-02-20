@@ -27,10 +27,17 @@ export interface MockClient<ResourcesType, ResourceName extends keyof ResourcesT
   assertObjectAsync(): Promise<MockAssert>
 }
 
+export interface InstallOptions {
+  /**
+   * Whether to enable enhanced debugging.
+   */
+  enhancedDebugging?: boolean
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function lookupResponseAsync(req: any): Promise<any>
 export function clear(): void
-export function install(): void
+export function install(installOptions?: InstallOptions): void
 export function uninstall(): void
 export function unusedMocks(): number
 export function mockClient<
