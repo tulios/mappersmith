@@ -1,6 +1,5 @@
 import { errorMessage } from 'spec/integration/support'
 import apiResponses from 'spec/integration/support/responses'
-import { jasmine } from 'jasmine'
 
 const fileUploadSpec = (Client) => {
   it('accepts FormData', (done) => {
@@ -17,6 +16,7 @@ const fileUploadSpec = (Client) => {
     Client.Pictures.upload({ body: formData })
       .then((response) => {
         expect(response.headers()).toEqual(
+          // eslint-disable-next-line no-undef
           jasmine.objectContaining({
             'x-api-response': 'apiPicturesUpload',
             'x-api-files': expectedFileOutputOnTheServer,
