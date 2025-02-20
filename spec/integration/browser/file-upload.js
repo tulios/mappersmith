@@ -1,5 +1,6 @@
 import { errorMessage } from 'spec/integration/support'
 import apiResponses from 'spec/integration/support/responses'
+import { jasmine } from 'jasmine'
 
 const fileUploadSpec = (Client) => {
   it('accepts FormData', (done) => {

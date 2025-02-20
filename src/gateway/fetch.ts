@@ -56,7 +56,7 @@ export class Fetch extends Gateway {
     }
 
     const customHeaders: Record<string, string> = {}
-    const body = this.prepareBody(requestMethod, customHeaders) as BodyInit
+    const body = this.prepareBody(requestMethod, customHeaders)
     const auth = this.request.auth()
 
     if (auth) {
@@ -78,7 +78,7 @@ export class Fetch extends Gateway {
       signal = abortController.signal
     }
 
-    const init: RequestInit = assign({ method, headers, body, signal }, this.options().Fetch)
+    const init = assign({ method, headers, body, signal }, this.options().Fetch)
 
     const timeout = this.request.timeout()
 

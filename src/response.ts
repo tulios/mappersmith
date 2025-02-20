@@ -26,7 +26,7 @@ export class Response<DataType extends ParsedJSON = ParsedJSON> {
   public readonly responseStatus: number
   public readonly responseData: string | null
   public readonly responseHeaders: Headers
-  // eslint-disable-next-line no-use-before-define
+
   public readonly errors: Array<Error | string>
   public timeElapsed: number | null
 
@@ -111,7 +111,7 @@ export class Response<DataType extends ParsedJSON = ParsedJSON> {
     if (this.isContentTypeJSON() && this.responseData !== null) {
       try {
         return JSON.parse(this.responseData) as T
-      } catch (e) {} // eslint-disable-line no-empty
+      } catch (_e) {} // eslint-disable-line no-empty
     }
 
     return this.responseData as unknown as T

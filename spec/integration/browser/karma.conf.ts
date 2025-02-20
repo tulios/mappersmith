@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 import productionWebpackConfig from '../../../webpack.conf'
 import { executablePath } from 'puppeteer'
 import * as karma from 'karma'

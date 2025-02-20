@@ -43,7 +43,7 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
       .then((response) => {
         expect(response.status()).toEqual(200)
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({ 'x-api-response': 'apiBooks' })
+          expect.objectContaining({ 'x-api-response': 'apiBooks' })
         )
         expect(response.data()).toEqual(apiResponses.apiBooks)
         done()
@@ -58,7 +58,7 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
       .then((response) => {
         expect(response.status()).toEqual(200)
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             'x-api-response': 'apiBooksById',
             'x-param-id': '1',
           })
@@ -76,7 +76,7 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
       .then((response) => {
         expect(response.status()).toEqual(200)
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({ 'x-api-response': 'apiPlainText' })
+          expect.objectContaining({ 'x-api-response': 'apiPlainText' })
         )
         expect(response.data()).toEqual(apiResponses.apiPlainText)
         done()
@@ -92,7 +92,7 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
       .then((response) => {
         expect(response.status()).toEqual(200)
         expect(response.headers()).toEqual(
-          jasmine.objectContaining({
+          expect.objectContaining({
             'x-api-response': 'apiPicturesCreate',
             'x-param-category': 'sports',
             'x-raw-body': 'payload=test&foo=bar',
@@ -118,7 +118,7 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
         .then((response) => {
           expect(response.status()).toEqual(200)
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'x-api-response': 'apiPicturesAdd',
               'x-param-category': 'sports',
               'x-raw-body': JSON.stringify({ name: 'test2' }),
@@ -142,7 +142,7 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
         .catch((response) => {
           expect(response.status()).toEqual(500)
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({ 'x-api-response': 'apiFailure' })
+            expect.objectContaining({ 'x-api-response': 'apiFailure' })
           )
           expect(response.data()).toEqual(apiResponses.apiFailure)
           done()
@@ -156,10 +156,10 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
         .then((response) => {
           expect(response.status()).toEqual(200)
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({ 'x-api-response': 'apiSecure' })
+            expect.objectContaining({ 'x-api-response': 'apiSecure' })
           )
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({ 'x-header-authorization': 'Basic Ym9iOmJvYg==' })
+            expect.objectContaining({ 'x-header-authorization': 'Basic Ym9iOmJvYg==' })
           )
           expect(response.data()).toEqual(apiResponses.apiSecure)
           done()
@@ -223,7 +223,7 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
         .then((response) => {
           expect(response.status()).toEqual(200)
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'x-api-response': 'apiPicturesAdd',
               'x-param-category': 'sports',
               'x-raw-body': JSON.stringify({ name: 'test2' }),
@@ -287,10 +287,10 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
       Client.Failure.onOdd({ cache: Date.now() })
         .then((response) => {
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'x-api-response': 'apiFailOnOdd',
               'x-mappersmith-retry-count': 1,
-              'x-mappersmith-retry-time': jasmine.any(Number),
+              'x-mappersmith-retry-time': expect.any(Number),
             })
           )
           done()
@@ -307,10 +307,10 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
         })
         .catch((response) => {
           expect(response.headers()).toEqual(
-            jasmine.objectContaining({
+            expect.objectContaining({
               'x-api-response': 'apiFailure',
               'x-mappersmith-retry-count': 3,
-              'x-mappersmith-retry-time': jasmine.any(Number),
+              'x-mappersmith-retry-time': expect.any(Number),
             })
           )
           done()

@@ -19,7 +19,8 @@
     "resolveJsonModule": true,
 
     "typeRoots": ["./typings", "./node_modules/@types"],
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "lib": ["esnext", "dom"]
   },
   "include": ["spec/**/*", "src/**/*"],
   "exclude": ["node_modules"]

@@ -1,15 +1,15 @@
 import type { Primitive, NestedParam, Hash, NestedParamArray } from '../types'
+import type Process from 'node:process'
 
-let _process: NodeJS.Process,
+let _process: typeof Process,
   getNanoSeconds: (() => number) | undefined,
   loadTime: number | undefined
 
 try {
-  // eslint-disable-next-line no-eval
   _process = eval(
     'typeof __TEST_WEB__ === "undefined" && typeof process === "object" ? process : undefined'
   )
-} catch (e) {} // eslint-disable-line no-empty
+} catch (_e) {} // eslint-disable-line no-empty
 
 const hasProcessHrtime = () => {
   return typeof _process !== 'undefined' && _process !== null && _process.hrtime

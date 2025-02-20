@@ -42,7 +42,6 @@ export class HTTP extends Gateway {
   performRequest(requestMethod: Method) {
     const headers: Record<string, Primitive> = {}
     // FIXME: Deprecated API
-    // eslint-disable-next-line n/no-deprecated-api
     const defaults = url.parse(this.request.url())
     const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
     const body = this.prepareBody(requestMethod, headers)

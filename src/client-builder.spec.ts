@@ -167,7 +167,7 @@ describe('ClientBuilder', () => {
   describe('when manifest is not defined', () => {
     it('raises error', () => {
       // @ts-expect-error Must override TS warning:
-      expect(() => new ClientBuilder()).toThrowError('[Mappersmith] invalid manifest (undefined)')
+      expect(() => new ClientBuilder()).toThrow('[Mappersmith] invalid manifest (undefined)')
     })
   })
 
@@ -175,7 +175,7 @@ describe('ClientBuilder', () => {
     it('raises error', () => {
       const manifest = getManifest()
       // @ts-expect-error Must override TS warning:
-      expect(() => new ClientBuilder(manifest, null)).toThrowError(
+      expect(() => new ClientBuilder(manifest, null)).toThrow(
         '[Mappersmith] gateway class not configured (configs.gateway)'
       )
     })
@@ -187,7 +187,7 @@ describe('ClientBuilder', () => {
       const badConfig = { ...configs }
       // @ts-expect-error Must override TS warning:
       delete badConfig['Promise']
-      expect(() => new ClientBuilder(manifest, GatewayClassFactory, badConfig)).toThrowError(
+      expect(() => new ClientBuilder(manifest, GatewayClassFactory, badConfig)).toThrow(
         '[Mappersmith] Promise not configured (configs.Promise)'
       )
     })
@@ -203,7 +203,7 @@ describe('ClientBuilder', () => {
           gatewayClass as unknown as typeof GatewayClassFactory,
           configs
         ).build()
-      ).toThrowError('[Mappersmith] path is undefined for resource "User" method "all"')
+      ).toThrow('[Mappersmith] path is undefined for resource "User" method "all"')
     })
 
     it('does not raise error for empty string', () => {
@@ -214,7 +214,7 @@ describe('ClientBuilder', () => {
           gatewayClass as unknown as typeof GatewayClassFactory,
           configs
         ).build()
-      ).not.toThrowError()
+      ).not.toThrow()
     })
   })
 

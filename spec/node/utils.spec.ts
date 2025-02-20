@@ -19,6 +19,7 @@ describe('#performanceNow', () => {
     expect(Math.abs(performanceNow() - performanceNow()) < 0.01).toEqual(true)
   })
 
+  // eslint-disable-next-line jest/expect-expect
   it('shows that at least 990 ms has passed after a timeout of 1 second', (done) => {
     const a = performanceNow()
     setTimeout(() => {
@@ -31,6 +32,7 @@ describe('#performanceNow', () => {
     }, 1000)
   })
 
+  // eslint-disable-next-line jest/expect-expect
   it('shows that not more than 1020 ms has passed after a timeout of 1 second', (done) => {
     const a = performanceNow()
     setTimeout(() => {

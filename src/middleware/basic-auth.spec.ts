@@ -34,7 +34,7 @@ describe('Middleware / BasicAuth', () => {
   it('changing the request params does not mutate the configuration', async () => {
     const request = requestFactory({ host: 'example.com', path: '/', method: 'get' })
     const newRequest = await middleware.prepareRequest?.(() => Promise.resolve(request), abort)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+     
     newRequest!.requestParams!.auth!.password = 'foo'
     expect(authData.password).toEqual('bob')
   })

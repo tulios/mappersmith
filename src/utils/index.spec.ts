@@ -90,7 +90,7 @@ describe('utils', () => {
     let responseHeaders: string
 
     beforeEach(() => {
-      /* eslint-disable */
+       
       responseHeaders =
         'X-RateLimit-Remaining: 57\
   \r\nLast-Modified: Mon, 09 Nov 2015 19:06:15 GMT\
@@ -100,7 +100,7 @@ describe('utils', () => {
   \r\nX-RateLimit-Reset: 1447102379\
   \r\nX-RateLimit-Limit: 60\
   '
-      /* eslint-enable */
+       
     })
 
     it('returns an object with all headers with lowercase keys', () => {
@@ -170,7 +170,7 @@ describe('utils', () => {
     })
 
     it('cannot encode non-ASCII input', () => {
-      expect(() => btoa('✈')).toThrowError(
+      expect(() => btoa('✈')).toThrow(
         "[Mappersmith] 'btoa' failed: The string to be encoded contains characters outside of the Latin1 range."
       )
     })
