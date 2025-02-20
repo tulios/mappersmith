@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { Agent: HttpAgent } = require('http')
 
 require('core-js/stable/index.js')
@@ -12,7 +13,6 @@ const { default: forge, configs } = require('../../../src/index.ts')
 const { createManifest } = require('../support/manifest.js')
 const { errorMessage, INVALID_ADDRESS } = require('../support/index.js')
 const { keepAlive } = require('./support/keep-alive.js')
-import { jasmine } from 'jasmine'
 
 describe('integration', () => {
   describe('HTTP', () => {
@@ -43,12 +43,12 @@ describe('integration', () => {
       it('should call the callbacks', (done) => {
         const Client = forge(createManifest(params.host), gateway)
         Client.Book.all().then(() => {
-          expect(gatewayConfigs.onRequestWillStart).toHaveBeenCalledWith(expect.any(Object))
-          expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledWith(expect.any(Object))
-          expect(gatewayConfigs.onSocketLookup).toHaveBeenCalledWith(expect.any(Object))
-          expect(gatewayConfigs.onSocketConnect).toHaveBeenCalledWith(expect.any(Object))
-          expect(gatewayConfigs.onResponseReadable).toHaveBeenCalledWith(expect.any(Object))
-          expect(gatewayConfigs.onResponseEnd).toHaveBeenCalledWith(expect.any(Object))
+          expect(gatewayConfigs.onRequestWillStart).toHaveBeenCalledWith(jasmine.any(Object))
+          expect(gatewayConfigs.onRequestSocketAssigned).toHaveBeenCalledWith(jasmine.any(Object))
+          expect(gatewayConfigs.onSocketLookup).toHaveBeenCalledWith(jasmine.any(Object))
+          expect(gatewayConfigs.onSocketConnect).toHaveBeenCalledWith(jasmine.any(Object))
+          expect(gatewayConfigs.onResponseReadable).toHaveBeenCalledWith(jasmine.any(Object))
+          expect(gatewayConfigs.onResponseEnd).toHaveBeenCalledWith(jasmine.any(Object))
           done()
         })
       })
