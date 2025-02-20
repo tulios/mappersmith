@@ -215,7 +215,7 @@
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-typescript": "^7.24.7",
     "@babel/register": "^7.24.6",
-    "@changesets/cli": "^2.27.8",
+    "@changesets/cli": "^2.28.0",
     "@chiragrupani/karma-chromium-edge-launcher": "^2.4.1",
     "@types/jest": "^29.5.12",
     "@types/karma": "^6.3.9",
@@ -240,7 +240,7 @@
     "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-n": "^17.10.2",
     "eslint-plugin-promise": "^7.1.0",
-    "express": "^4.20.0",
+    "express": "^4.21.2",
     "faux-jax-tulios": "^5.0.9",
     "jasmine": "^5.3.0",
     "jasmine-core": "^5.3.0",
@@ -267,5 +267,5 @@
     "webpack": "^5.95.0",
     "whatwg-fetch": "^3.6.20"
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.6.0"
 }
