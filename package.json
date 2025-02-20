@@ -261,7 +261,7 @@
     "regenerator-runtime": "^0.14.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "tsup": "^8.2.4",
+    "tsup": "^8.3.6",
     "typescript": "<5.5.0",
     "wait-on": "^8.0.2",
     "webpack": "^5.98.0",
