@@ -65,7 +65,7 @@ export interface MiddlewareParams {
   readonly mockRequest?: boolean
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type DefaultPrivateProps = {}
 
 /**

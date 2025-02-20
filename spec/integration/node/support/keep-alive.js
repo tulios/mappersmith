@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { createManifest } = require('../../support/manifest.js')
 const { default: forge } = require('../../../../src/index.ts')
 

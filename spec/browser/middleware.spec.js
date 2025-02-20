@@ -64,7 +64,7 @@ describe('ClientBuilder middleware', () => {
     const client = forge(manifest)
 
     await client.User.byId({ id: 1 })
-    expect(middleware).toBeCalledWith(expect.objectContaining({ clientId: 'someClient' }))
+    expect(middleware).toHaveBeenCalledWith(expect.objectContaining({ clientId: 'someClient' }))
   })
 
   it('receives current context', async () => {
@@ -76,16 +76,18 @@ describe('ClientBuilder middleware', () => {
     setContext({ foo: 'bar' })
     await client.User.byId({ id: 1 })
 
-    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
+    expect(middleware).toHaveBeenCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
 
     const client2 = createClient()
     await client2.User.byId({ id: 1 })
-    expect(middleware).lastCalledWith(expect.objectContaining({ context: { foo: 'bar' } }))
+    expect(middleware).toHaveBeenLastCalledWith(
+      expect.objectContaining({ context: { foo: 'bar' } })
+    )
     expect(middleware).toHaveBeenCalledTimes(2)
 
     setContext({ foo: 'baz' })
     await client.User.byId({ id: 1 })
-    expect(middleware).toBeCalledWith(expect.objectContaining({ context: { foo: 'baz' } }))
+    expect(middleware).toHaveBeenCalledWith(expect.objectContaining({ context: { foo: 'baz' } }))
   })
 
   it('calls request and response phase', async () => {

@@ -16,6 +16,7 @@ const fileUploadSpec = (Client) => {
     Client.Pictures.upload({ body: formData })
       .then((response) => {
         expect(response.headers()).toEqual(
+          // eslint-disable-next-line no-undef
           jasmine.objectContaining({
             'x-api-response': 'apiPicturesUpload',
             'x-api-files': expectedFileOutputOnTheServer,

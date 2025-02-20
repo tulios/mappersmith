@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 const { Agent: HttpAgent } = require('http')
 
 require('core-js/stable/index.js')
@@ -61,6 +61,7 @@ describe('integration', () => {
           configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
         })
 
+        // eslint-disable-next-line jest/expect-expect
         it('does not reuse the socket and only attaches listeners once to the http agent sockets', (done) => {
           keepAliveHelper
             .callApiTwice()
@@ -95,6 +96,7 @@ describe('integration', () => {
           configs.gatewayConfigs.HTTP.configure = () => ({ agent: httpAgent })
         })
 
+        // eslint-disable-next-line jest/expect-expect
         it('reuses the socket, and only attaches listeners once to the reused socket', (done) => {
           keepAliveHelper
             .callApiTwice()

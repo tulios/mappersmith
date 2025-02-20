@@ -439,6 +439,7 @@ describe('Test lib / mock resources', () => {
   })
 
   describe('when using param matchers', () => {
+    // eslint-disable-next-line jest/expect-expect
     it('evaluates only params with matcher function, let others be', (done) => {
       mockClient(client)
         .resource('User')

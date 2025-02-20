@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { configs } from './mappersmith'
 import { XHR } from './gateway/xhr'
 import { HTTP } from './gateway/http'
@@ -10,11 +9,10 @@ let defaultGateway: typeof Gateway | null = null
 
 // Prevents webpack to load the nodejs process polyfill
 try {
-  // eslint-disable-next-line no-eval
   _process = eval(
     'typeof __TEST_SERVICE_WORKER__ === "undefined" && typeof process === "object" ? process : undefined'
   )
-} catch (e) {} // eslint-disable-line no-empty
+} catch (_e) {} // eslint-disable-line no-empty
 
 if (typeof XMLHttpRequest !== 'undefined') {
   // For browsers use XHR adapter

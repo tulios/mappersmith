@@ -418,7 +418,7 @@ describe('Request', () => {
           ...methodDescriptorArgs,
           path: '/api/example/{id}.json',
         })
-        expect(() => new Request(methodDescriptor).path()).toThrowError(
+        expect(() => new Request(methodDescriptor).path()).toThrow(
           '[Mappersmith] required parameter missing (id), "/api/example/{id}.json" cannot be resolved'
         )
       })
@@ -611,7 +611,7 @@ describe('Request', () => {
           path: () => ({}) as unknown as string,
         })
         const req = new Request(methodDesc)
-        expect(() => req.url()).toThrowError(
+        expect(() => req.url()).toThrow(
           '[Mappersmith] method descriptor function did not return a string, params={"param":"method-desc-value","method-desc-param":"method-desc-value"}'
         )
 
@@ -621,7 +621,7 @@ describe('Request', () => {
           path: () => null as unknown as string,
         })
         const req2 = new Request(methodDesc2)
-        expect(() => req2.url()).toThrowError(
+        expect(() => req2.url()).toThrow(
           '[Mappersmith] method descriptor function did not return a string, params={"param":"method-desc-value","method-desc-param":"method-desc-value"}'
         )
       })

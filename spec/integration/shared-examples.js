@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { createManifest } from './support/manifest.js'
 import apiResponses from './support/responses.js'
 import { errorMessage } from './support/index.js'

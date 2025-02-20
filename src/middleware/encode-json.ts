@@ -32,7 +32,7 @@ export const EncodeJsonMiddleware: Middleware = () => ({
           body: encodedBody,
         })
       }
-    } catch (e) {} // eslint-disable-line no-empty
+    } catch (_e) {} // eslint-disable-line no-empty
     return request
   },
 })
