@@ -5677,10 +5677,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "globals@npm:16.0.0"
-  checksum: 10/aa05d569af9c763d9982e6885f3ac6d21c84cd54c9a12eeace55b3334d0631128f189902d34ae2a924694311f92d700dbd3e8e62e8a9e1094a882f9f8897149a
+"globals@npm:^16.3.0":
+  version: 16.3.0
+  resolution: "globals@npm:16.3.0"
+  checksum: 10/accb0939d993a1c461df8d961ce9911a9a96120929e0a61057ae8e75b7df0a8bf8089da0f4e3a476db0211156416fbd26e222a56f74b389a140b34481c0a72b0
   languageName: node
   linkType: hard
 
@@ -7250,7 +7250,7 @@ __metadata:
     eslint-plugin-jest: "npm:^28.11.0"
     express: "npm:^4.21.2"
     faux-jax-tulios: "npm:^5.0.9"
-    globals: "npm:^16.0.0"
+    globals: "npm:^16.3.0"
     jasmine: "npm:^5.3.0"
     jasmine-core: "npm:^5.3.0"
     jest: "npm:^29.7.0"
