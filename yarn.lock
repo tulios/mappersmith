@@ -7249,7 +7249,7 @@ __metadata:
     regenerator-runtime: "npm:^0.14.1"
     ts-jest: "npm:^29.2.5"
     ts-node: "npm:^10.9.2"
-    tsup: "npm:^8.3.6"
+    tsup: "npm:^8.5.0"
     typescript: "npm:<5.5.0"
     typescript-eslint: "npm:^8.24.1"
     wait-on: "npm:^8.0.2"
@@ -9591,7 +9591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:^8.3.6":
+"tsup@npm:^8.5.0":
   version: 8.5.0
   resolution: "tsup@npm:8.5.0"
   dependencies:
