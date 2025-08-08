@@ -10,6 +10,7 @@ const retryConfigs: RetryMiddlewareOptions = {
   multiplier: 2, // exponential factor
   retries: 5, // max retries
   validateRetry: (response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
+  enableRetry: (request) => request.method() === 'get',
 }
 
 forge({

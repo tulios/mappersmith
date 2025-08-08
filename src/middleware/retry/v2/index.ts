@@ -1,6 +1,5 @@
 import type { Middleware, ResponseGetter } from '../../index'
 import { configs } from '../../../index'
-import { assign } from '../../../utils/index'
 import { Response } from '../../../response'
 import type { Request } from '../../../request'
 
@@ -13,6 +12,7 @@ export interface RetryMiddlewareOptions {
   readonly multiplier: number
   readonly retries: number
   validateRetry(response: Response): boolean
+  enableRetry(response: Request): boolean
 }
 
 export const defaultRetryConfigs: RetryMiddlewareOptions = {
@@ -24,12 +24,12 @@ export const defaultRetryConfigs: RetryMiddlewareOptions = {
   multiplier: 2, // exponential factor
   retries: 5, // max retries
   validateRetry: (response: Response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
+  enableRetry: (request: Request) => request.method() === 'get',
 }
 
-type RetryMiddlewareType = Middleware<{
-  enableRetry: boolean
-  inboundRequest: Request
-}>
+export type RetryMiddlewareProps = { enableRetry: boolean; inboundRequest: Request }
+
+type RetryMiddlewareType = Middleware<RetryMiddlewareProps>
 
 /**
  * This middleware will automatically retry GET requests up to the configured amount of
@@ -57,18 +57,13 @@ export const RetryMiddleware = (
   customConfigs: Partial<RetryMiddlewareOptions> = {}
 ): RetryMiddlewareType =>
   function RetryMiddleware() {
+    const retryConfigs = { ...defaultRetryConfigs, ...customConfigs }
+
     return {
-      request(request) {
-        this.enableRetry = request.method() === 'get'
-        this.inboundRequest = request
-        return request
-      },
+      response(next, _renew, request) {
+        const enableRetry = retryConfigs.enableRetry(request)
 
-      response(next) {
-        const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
-        const inboundRequest = this.inboundRequest
-
-        if (!this.enableRetry) {
+        if (!enableRetry) {
           return next()
         }
 
@@ -76,7 +71,7 @@ export const RetryMiddleware = (
           return next()
         }
 
-        if (!inboundRequest) {
+        if (!request) {
           return next()
         }
 
@@ -86,7 +81,7 @@ export const RetryMiddleware = (
             resolve,
             reject,
             next,
-            inboundRequest
+            request
           )(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
         })
       },
@@ -140,6 +135,8 @@ const retriableRequest: RetriableRequestFn = (resolve, reject, next, request) =>
       .catch((response) => {
         if (shouldRetry && retryConfigs.validateRetry(response)) {
           scheduleRequest()
+        } else if (shouldRetry && isRetriableNetworkError(response.error())) {
+          scheduleRequest()
         } else {
           try {
             reject(
@@ -177,7 +174,7 @@ const retriableRequest: RetriableRequestFn = (resolve, reject, next, request) =>
  */
 export const calculateExponentialRetryTime = (
   retryTime: number,
-  retryConfigs: RetryMiddlewareOptions
+  retryConfigs: Pick<RetryMiddlewareOptions, 'factor' | 'multiplier' | 'maxRetryTimeInSecs'>
 ) =>
   Math.min(
     randomFromRetryTime(retryTime, retryConfigs.factor) * retryConfigs.multiplier,
@@ -206,3 +203,29 @@ const enhancedResponse = (
       [headerRetryTime]: retryTime,
     },
   })
+
+// List of network error codes that should be retried
+const RETRIABLE_NETWORK_ERRORS = [
+  'EAI_AGAIN',
+  'ECONNABORTED',
+  'ECONNREFUSED',
+  'ECONNRESET',
+  'EHOSTDOWN',
+  'EHOSTUNREACH',
+  'ENOTFOUND',
+  'EPIPE',
+  'ETIMEDOUT',
+]
+
+/**
+ * Determines if an error is a retriable network error.
+ *
+ * @param {Error & { code?: string }} err - The error object to check
+ * @returns {boolean} True if the error code is in the list of retriable network errors
+ *
+ * @example
+ *   const err = Object.assign(new Error('socket hangup'), { code: 'ECONNRESET' });
+ *   isRetriableNetworkError(err); // true
+ */
+const isRetriableNetworkError = (err: (Error & { code?: string }) | null) =>
+  err && err.code && RETRIABLE_NETWORK_ERRORS.includes(err.code)

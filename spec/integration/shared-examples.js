@@ -14,6 +14,7 @@ import {
 
 import EncodeJsonMiddleware from 'src/middlewares/encode-json'
 import RetryMiddleware from 'src/middlewares/retry/v2'
+import { responseFactory } from '../../src/test/response-factory'
 
 export function integrationTestsForGateway(gateway, params, extraTests) {
   let successLogBuffer, errorLogBuffer, previousGateway, Client
@@ -321,9 +322,13 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
     describe('a response earlier in the middleware chain throws', () => {
       beforeEach(() => {
         const BrokenMiddleware = () => ({
-          response: (next) =>
+          response: (next, _renew, request) =>
             next().then(() => {
-              throw new Error('💣')
+              throw responseFactory({
+                request,
+                status: 400,
+                errors: [new Error('💣')],
+              })
             }),
         })
         Client = forge(
