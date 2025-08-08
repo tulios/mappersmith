@@ -265,5 +265,5 @@
     "webpack": "^5.98.0",
     "whatwg-fetch": "^3.6.20"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.9.2"
 }
