@@ -42,11 +42,8 @@ let middlewareInstance = RetryMiddlewareV2(retryConfigs)()
 
 export default function RetryMiddleware() {
   return {
-    request(request) {
-      return middlewareInstance.request(request)
-    },
-    response(next) {
-      return middlewareInstance.response(next)
+    response(next, renew, request) {
+      return middlewareInstance.response(next, renew, request)
     },
   }
 }

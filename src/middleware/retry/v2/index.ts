@@ -1,6 +1,5 @@
 import type { Middleware, ResponseGetter } from '../../index'
 import { configs } from '../../../index'
-import { assign } from '../../../utils/index'
 import { Response } from '../../../response'
 import type { Request } from '../../../request'
 
@@ -13,6 +12,7 @@ export interface RetryMiddlewareOptions {
   readonly multiplier: number
   readonly retries: number
   validateRetry(response: Response): boolean
+  enableRetry(response: Request): boolean
 }
 
 export const defaultRetryConfigs: RetryMiddlewareOptions = {
@@ -24,6 +24,7 @@ export const defaultRetryConfigs: RetryMiddlewareOptions = {
   multiplier: 2, // exponential factor
   retries: 5, // max retries
   validateRetry: (response: Response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
+  enableRetry: (request: Request) => request.method() === 'get',
 }
 
 export type RetryMiddlewareProps = { enableRetry: boolean; inboundRequest: Request }
@@ -56,18 +57,13 @@ export const RetryMiddleware = (
   customConfigs: Partial<RetryMiddlewareOptions> = {}
 ): RetryMiddlewareType =>
   function RetryMiddleware() {
+    const retryConfigs = { ...defaultRetryConfigs, ...customConfigs }
+
     return {
-      request(request) {
-        this.enableRetry = request.method() === 'get'
-        this.inboundRequest = request
-        return request
-      },
+      response(next, _renew, request) {
+        const enableRetry = retryConfigs.enableRetry(request)
 
-      response(next) {
-        const retryConfigs = assign({}, defaultRetryConfigs, customConfigs)
-        const inboundRequest = this.inboundRequest
-
-        if (!this.enableRetry) {
+        if (!enableRetry) {
           return next()
         }
 
@@ -75,7 +71,7 @@ export const RetryMiddleware = (
           return next()
         }
 
-        if (!inboundRequest) {
+        if (!request) {
           return next()
         }
 
@@ -85,7 +81,7 @@ export const RetryMiddleware = (
             resolve,
             reject,
             next,
-            inboundRequest
+            request
           )(randomFromRetryTime(retryTime, retryConfigs.factor), 0, retryConfigs)
         })
       },

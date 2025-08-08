@@ -2,10 +2,11 @@
 
 import Request from '../../../../src/request'
 import Response from '../../../../src/response'
-import MethodDescriptor from '../../../../src/method-descriptor'
 import type { MiddlewareDescriptor } from '../../../../src/middleware'
 import { beforeAll, describe, it, expect, jest } from '@jest/globals'
 import type { RetryMiddlewareProps } from '../../../../src/middleware/retry/v2/index'
+import { requestFactory } from '../../../../src/test/request-factory'
+import { responseFactory } from '../../../../src/test/response-factory'
 
 export function retryMiddlewareExamples(
   middleware: Partial<MiddlewareDescriptor & RetryMiddlewareProps>,
@@ -14,16 +15,24 @@ export function retryMiddlewareExamples(
   headerRetryTime: string
 ) {
   const newRequest = (method: string) =>
-    new Request(new MethodDescriptor({ host: 'example.com', path: '/', method }), {})
+    requestFactory({
+      host: 'example.com',
+      path: '/',
+      method,
+    })
 
   const newResponse = (
     request: Request,
     responseStatus = 200,
     responseData = '',
     responseHeaders = {}
-  ) => {
-    return new Response(request, responseStatus, responseData, responseHeaders)
-  }
+  ) =>
+    responseFactory({
+      request,
+      status: responseStatus,
+      data: responseData,
+      headers: responseHeaders,
+    })
 
   beforeAll(() => {
     jest.useRealTimers()
@@ -33,12 +42,7 @@ export function retryMiddlewareExamples(
     for (const methodName of ['post', 'put', 'delete', 'patch']) {
       it(`resolves the promise without retries for ${methodName.toUpperCase()}`, (done) => {
         const request = newRequest(methodName)
-        const nextReq = middleware.request?.(request) as Request | undefined
-        if (!nextReq) {
-          done(new Error('Request should not be undefined'))
-          return
-        }
-        const response = newResponse(nextReq)
+        const response = newResponse(request)
 
         middleware
           .response?.(
@@ -60,12 +64,7 @@ export function retryMiddlewareExamples(
   describe('when the call succeeds', () => {
     it('resolves the promise without retries', (done) => {
       const request = newRequest('get')
-      const nextReq = middleware.request?.(request) as Request | undefined
-      if (!nextReq) {
-        done(new Error('Request should not be undefined'))
-        return
-      }
-      const response = newResponse(nextReq)
+      const response = newResponse(request)
 
       middleware
         .response?.(
@@ -85,12 +84,8 @@ export function retryMiddlewareExamples(
   describe('when the call succeeds within the configured number of retries', () => {
     it('resolves the promise adding the number of retries as a header', (done) => {
       const request = newRequest('get')
-      const nextReq = middleware.request?.(request) as Request | undefined
-      if (!nextReq) {
-        done(new Error('Request should not be undefined'))
-        return
-      }
-      const response = newResponse(nextReq, 500)
+      const response = newResponse(request, 500)
+
       let callsCount = 0
 
       const next = () => {
@@ -114,12 +109,8 @@ export function retryMiddlewareExamples(
   describe('when the call fails after the configured number of retries', () => {
     it('rejects the promise adding the number of retries as a header', (done) => {
       const request = newRequest('get')
-      const nextReq = middleware.request?.(request) as Request | undefined
-      if (!nextReq) {
-        done(new Error('Request should not be undefined'))
-        return
-      }
-      const response = newResponse(nextReq, 500)
+      const response = newResponse(request, 500)
+
       const next = () => Promise.reject(response)
 
       middleware
@@ -135,12 +126,7 @@ export function retryMiddlewareExamples(
   describe('when the call fails and the retry validation fails', () => {
     it('rejects the promise with a retryCount header of zero', (done) => {
       const request = newRequest('get')
-      const nextReq = middleware.request?.(request) as Request | undefined
-      if (!nextReq) {
-        done(new Error('Request should not be undefined'))
-        return
-      }
-      const response = newResponse(nextReq, 401)
+      const response = newResponse(request, 401)
       const next = () => Promise.reject(response)
 
       middleware
