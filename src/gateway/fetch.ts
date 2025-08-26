@@ -56,7 +56,7 @@ export class Fetch extends Gateway {
     }
 
     const customHeaders: Record<string, string> = {}
-    const body = this.prepareBody(requestMethod, customHeaders)
+    const body = this.prepareBody(requestMethod.toUpperCase(), customHeaders)
     const auth = this.request.auth()
 
     if (auth) {
@@ -66,7 +66,7 @@ export class Fetch extends Gateway {
     }
 
     const headers = assign(customHeaders, this.request.headers())
-    const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
+    const method = this.shouldEmulateHTTP() ? 'POST' : requestMethod.toUpperCase()
     const userSignal = this.request.signal()
 
     // Since 1) node fetch requires timeout to be handled via abort controller and 2) we support an external user signal, we need to merge them:
