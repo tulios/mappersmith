@@ -1,6 +1,9 @@
-import * as url from 'url'
-import * as http from 'http'
-import * as https from 'https'
+// Using default imports instead of namespace imports, because namespace imports
+// would create an object with new references to the module's original exports,
+// thus ignoring any patches done to the modules by end users
+import url from 'url'
+import http from 'http'
+import https from 'https'
 
 import { assign } from '../utils/index'
 import { Gateway } from './gateway'
