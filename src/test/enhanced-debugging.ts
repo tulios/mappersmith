@@ -1,10 +1,33 @@
 import { sortedUrl, toSortedQueryString } from '../mocks/mock-utils'
 import { Request } from '../request'
-import { colors } from './esm-wrappers/colors.js'
+const colors = {
+  green: (s: string) => `\x1b[32m${s}\x1b[39m`,
+  red: (s: string) => `\x1b[31m${s}\x1b[39m`,
+  yellow: (s: string) => `\x1b[33m${s}\x1b[39m`,
+  bgGreen: (s: string) => `\x1b[42m${s}\x1b[49m`,
+  bgRed: (s: string) => `\x1b[41m${s}\x1b[49m`,
+}
 import MockResource from '../mocks/mock-resource'
 import MockRequest from '../mocks/mock-request'
-import { ttyTable } from './esm-wrappers/tty-table.js'
-import * as Diff from 'diff'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let ttyTable: ((...args: any[]) => { render(): string }) | null = null
+let Diff: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  diffChars: (...args: any[]) => Array<{ value: string; added?: boolean; removed?: boolean }>
+} | null = null
+
+try {
+  ttyTable = eval('require')('tty-table')
+} catch {
+  // optional peer dependency — plain text fallback used when not installed
+}
+
+try {
+  Diff = eval('require')('diff')
+} catch {
+  // optional peer dependency — plain text fallback used when not installed
+}
 
 /**
  *
@@ -13,6 +36,9 @@ import * as Diff from 'diff'
  * @returns {string[]}
  */
 export const diffString = (stringOne: string, stringTwo: string) => {
+  if (!Diff) {
+    return `${colors.red(stringOne)} → ${colors.green(stringTwo)}`
+  }
   const diff = Diff.diffChars(stringOne, stringTwo)
   return diff
     .map(function (part) {
@@ -57,6 +83,29 @@ const sortMatches = (matches: MockMatchResult[]): MockMatchResult[] => {
  * @return {string} The rendered table as a string.
  */
 const createTableForMocks = (matches: MockMatchResult[]) => {
+  if (!ttyTable) {
+    return sortMatches(matches)
+      .map((match) => {
+        const indicator = match.isExactMatch
+          ? colors.green('✓')
+          : match.isPartialMatch
+            ? colors.yellow('~')
+            : colors.red('✗')
+        const row = (label: string, { match: m, mockValue, requestValue }: ColumnValue) => {
+          const value = mockValue !== requestValue ? diffString(requestValue, mockValue) : mockValue
+          return `  ${bold(label.padEnd(8))} ${m ? colors.green('Yes') : colors.red('No ')}  ${m ? colors.green(value) : colors.red(value)}`
+        }
+        return [
+          `${indicator} ${bold(match.mockName)}`,
+          row('Url', match.url),
+          row('Method', match.method),
+          row('Body', match.body),
+          row('Headers', match.headers),
+        ].join('\n')
+      })
+      .join('\n\n')
+  }
+
   const tables = sortMatches(matches).map((match) => {
     const header = [
       {
@@ -110,6 +159,15 @@ const bold = (text: string) => `\x1b[1m${text}\x1b[22m`
  * @return {string} The rendered table as a string.
  */
 const createTableForRequest = (request: Request) => {
+  if (!ttyTable) {
+    return [
+      `  ${bold('Url'.padEnd(8))} ${decodeURIComponent(sortedUrl(request.url()))}`,
+      `  ${'Method'.padEnd(8)} ${request.method()}`,
+      `  ${'Body'.padEnd(8)} ${decodeURIComponent(toSortedQueryString(request.body()))}`,
+      `  ${'Headers'.padEnd(8)} ${decodeURIComponent(toSortedQueryString(request.headers()))}`,
+    ].join('\n')
+  }
+
   const header = [
     { value: 'Outbound Request', width: 20, color: 'white', align: 'left' },
     { value: 'Value', width: 70, color: 'white', align: 'left' },
@@ -136,22 +194,17 @@ const createTableForRequest = (request: Request) => {
  * @return {string} The rendered table as a string.
  */
 const createColorExplanationTable = () => {
+  const text1 = `${colors.green('●')} Exact match\n${colors.yellow('●')} Partial match (When URL and METHOD match)\n${colors.red('●')} Not matching`
+  const text2 = `${colors.green('Mock value matches the request value')}\n${colors.bgGreen('Present in mock but not in request')}\n${colors.bgRed('Present in request but not in mock')}`
+
+  if (!ttyTable) {
+    return `${text1}\n\n${text2}`
+  }
+
   const header = [
     { value: 'Colors Explanation', width: 50, headerColor: 'white', align: 'left' },
     { value: 'Diff Explanation', width: 50, headerColor: 'white', align: 'left' },
   ]
-
-  const text1 = `
-${colors.green('●')} Exact match
-${colors.yellow('●')} Partial match (When URL and METHOD match)
-${colors.red('●')} Not matching
-`
-
-  const text2 = `
-${colors.green('Mock value matches the request value')}
-${colors.bgGreen('Present in mock but not in request')}
-${colors.bgRed('Present in request but not in mock')}
-`
 
   const rows = [[text1, text2]]
 
