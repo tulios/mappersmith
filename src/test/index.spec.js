@@ -1,3 +1,5 @@
+/* eslint-disable jest/expect-expect */
+
 import { lookupResponse, mockClient, clear, install, m } from './index'
 import { MethodDescriptor } from '../method-descriptor'
 import { Request } from '../request'
