@@ -2,7 +2,7 @@ name: Node.js CI
 
 concurrency:
   cancel-in-progress: true
-  group: "node-js-${{ github.ref_name }}"
+  group: 'node-js-${{ github.ref_name }}'
 
 on:
   push:
