@@ -1,13 +1,8 @@
 /* eslint-disable jest/expect-expect */
 
-// Simulate peer deps not being installed so these tests cover the plain-text fallback path.
-// See enhanced-debugging-with-deps.spec.ts for the rich-output (deps installed) snapshots.
-jest.mock('diff', () => {
-  throw new Error('Optional peer dependency "diff" is not installed')
-})
-jest.mock('tty-table', () => {
-  throw new Error('Optional peer dependency "tty-table" is not installed')
-})
+// These tests run with the optional peer dependencies (diff, tty-table) installed.
+// They document and snapshot the rich debug output (coloured tables with character-level diffs).
+// See index.spec.js for the plain-text fallback snapshots (peer deps absent).
 
 import { lookupResponse, mockClient, clear, install, m } from './index'
 import { MethodDescriptor } from '../method-descriptor'
@@ -15,9 +10,7 @@ import { Request } from '../request'
 import randomJsonData from './data/random-json-data.json'
 import { forge } from '../index'
 
-const stripAnsi = (str) => {
-  // Regular expression to match ANSI escape codes
-  // This removes all the color codes and other special codes
+const stripAnsi = (str: string) => {
   // eslint-disable-next-line no-control-regex
   const ansiRegex = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g
   return str.replace(ansiRegex, '')
@@ -25,51 +18,26 @@ const stripAnsi = (str) => {
 
 const LOG_TO_CONSOLE = false
 
-const expectToThrowErrorMatchingSnapshotWithoutAnsi = (fn, logToConsole = LOG_TO_CONSOLE) => {
+const expectToThrowErrorMatchingSnapshotWithoutAnsi = (
+  fn: () => void,
+  logToConsole = LOG_TO_CONSOLE
+) => {
   try {
     fn()
     throw new Error('Expected function to throw an error, but it did not.')
   } catch (error) {
     if (logToConsole) console.log(error)
-    const cleanedError = stripAnsi(error.message)
+    const cleanedError = stripAnsi((error as Error).message)
     expect(cleanedError).toMatchSnapshot()
   }
 }
 
-describe('mappersmith/test/lookupResponse', () => {
+describe('mappersmith/test/lookupResponse (with peer deps installed)', () => {
   beforeEach(() => {
     clear()
     // Set this to a fixed value so that the tables are always the same width
     process.stdout.columns = 100
     install({ enhancedDebugging: true })
-  })
-
-  it('should match when request is exact match', () => {
-    const method = 'GET'
-    const host = 'http://example.org'
-    const path = '/path'
-    const body = { id: 1 }
-    const responseBody = { id: 'my-id' }
-    const headers = { 'X-TEST': 'VALUE' }
-    const query = { id: 1 }
-
-    mockClient(forge({ host, resources: { users: { get: { path, method } } } }))
-      .resource('users')
-      .method('get')
-      .with({ body, headers, query })
-      .response(responseBody)
-      .status(200)
-
-    const request = new Request(new MethodDescriptor({ method, host, path }), {
-      body,
-      headers,
-      query,
-    })
-
-    expect(() => lookupResponse(request)).not.toThrow()
-
-    const response = lookupResponse(request)
-    expect(response.responseData).toEqual(JSON.stringify(responseBody))
   })
 
   it('should output a clear message when there are no mocks installed', () => {
