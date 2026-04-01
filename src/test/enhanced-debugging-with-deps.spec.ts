@@ -37,7 +37,7 @@ describe('mappersmith/test/lookupResponse (with peer deps installed)', () => {
     clear()
     // Set this to a fixed value so that the tables are always the same width
     process.stdout.columns = 100
-    install({ enhancedDebugging: true })
+    install({ richMockErrors: true })
   })
 
   it('should output a clear message when there are no mocks installed', () => {

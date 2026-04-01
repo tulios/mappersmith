@@ -11,7 +11,7 @@ let store = []
 let ids = 1
 let originalGateway = null
 const options = {
-  enhancedDebugging: false,
+  richMockErrors: false,
 }
 
 /**
@@ -49,12 +49,8 @@ export const mockRequest = (props) => {
 /**
  * Setup the test library
  */
-export const install = (
-  { enhancedDebugging } = {
-    enhancedDebugging: false,
-  }
-) => {
-  options.enhancedDebugging = enhancedDebugging
+export const install = ({ richMockErrors } = {}) => {
+  options.richMockErrors = richMockErrors != null ? richMockErrors : configs.test.richMockErrors
   originalGateway = configs.gateway
   configs.gateway = MockGateway
 }
@@ -111,7 +107,7 @@ export const lookupResponseAsync = (request) => {
  * @throws Will throw an error if it doesn't find a mock to match the given request
  */
 export const lookupResponse = (request) => {
-  if (options.enhancedDebugging) return lookupResponseWithEnhancedDebugging(store, options)(request)
+  if (options.richMockErrors) return lookupResponseWithEnhancedDebugging(store, options)(request)
   const mocks = store.map((mock) => mock.toMockRequest())
   const exactMatch = mocks.filter((mock) => mock.isExactMatch(request)).pop()
 

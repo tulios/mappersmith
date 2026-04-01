@@ -44,7 +44,7 @@ describe('mappersmith/test/lookupResponse', () => {
     clear()
     // Set this to a fixed value so that the tables are always the same width
     process.stdout.columns = 100
-    install({ enhancedDebugging: true })
+    install({ richMockErrors: true })
   })
 
   it('should match when request is exact match', () => {

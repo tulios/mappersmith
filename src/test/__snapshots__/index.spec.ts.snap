@@ -36,6 +36,8 @@ Present in request but not in mock
   Body     Yes  MATCHED_BY_FUNCTION
   Headers  No   x-test=VALUE2 → x-test=VALUE-2
 
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
 
 [Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
 "
@@ -101,6 +103,8 @@ Present in request but not in mock
 &address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longitude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]=amet
   Headers  Yes  x-test=DIFFERENT-VALUE
 
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
 
 [Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
 "
@@ -141,6 +145,8 @@ Present in request but not in mock
   Method   Yes  get
   Body     No   id=2 → id=1
   Headers  No   x-test=VALUE2 → x-test=VALUE
+
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
 
 
 [Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
@@ -183,6 +189,8 @@ Present in request but not in mock
   Body     Yes  maybe_gql=query+{+user+{+id+}+}&id=1&parameter=1
   Headers  Yes  header1=value&header2=value2
 
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
 
 [Mappersmith Test] No match found, check your mock definitions, debug information available above.
 "
@@ -219,6 +227,8 @@ Present in mock but not in request
 Present in request but not in mock
 
 NO MOCKS INSTALLED
+
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
 
 
 [Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith

@@ -46,6 +46,7 @@ __Mappersmith__ is a lightweight rest client for node.js and the browser. It cre
       - [Timeout](#middleware-timeout)
     - [Middleware legacy notes](#middleware-legacy-notes)
   - [Testing Mappersmith](#testing-mappersmith)
+    - [Enhanced Debugging](#enhanced-debugging)
   - [Gateways](#gateways)
   - [TypeScript](#typescript)
 - [Development](#development)
@@ -1210,6 +1211,42 @@ describe('Feature', () => {
   })
 })
 ```
+
+### <a name="enhanced-debugging"></a> Enhanced Debugging
+
+When `install` is called with `richMockErrors: true`, mappersmith will print a detailed debug table on mock mismatches showing the outgoing request and all installed mocks ranked by how closely they matched.
+
+```javascript
+import { install, uninstall } from 'mappersmith/test'
+
+beforeEach(() => install({ richMockErrors: true }))
+afterEach(() => uninstall())
+```
+
+Alternatively, enable it globally via `configs` so you don't need to pass it to every `install` call:
+
+```javascript
+import { configs } from 'mappersmith'
+
+configs.test.richMockErrors = true
+```
+
+When set globally, `install()` will use it as the default. You can still override it per-call with `install({ richMockErrors: false })`.
+
+By default the output uses plain-text formatting. For a richer experience with bordered tables and character-level diffs, install these optional peer dependencies:
+
+```sh
+npm install --save-dev diff tty-table
+# or
+yarn add --dev diff tty-table
+```
+
+| Package | What it adds |
+|---|---|
+| [`diff`](https://www.npmjs.com/package/diff) | Character-level highlighting of differences between the mock value and the request value |
+| [`tty-table`](https://www.npmjs.com/package/tty-table) | Bordered, column-aligned tables with colour-coded borders (green = exact match, yellow = partial match, red = no match) |
+
+Both packages are entirely optional — mappersmith will automatically use them if present and fall back to plain text if not.
 
 ## <a name="gateways"></a> Gateways
 

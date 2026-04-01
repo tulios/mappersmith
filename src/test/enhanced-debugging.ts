@@ -244,6 +244,7 @@ Mock definitions installed:
 ${createColorExplanationTable()}
 
 ${matches.length ? createTableForMocks(matches) : 'NO MOCKS INSTALLED'}
+${!ttyTable || !Diff ? '\nNOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging' : ''}
 `
   return message
 }

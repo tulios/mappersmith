@@ -29,6 +29,7 @@ describe('ClientBuilder', () => {
       gatewayConfigs: {
         Fetch: { config: 'configs' },
       } as unknown as GatewayConfiguration,
+      test: {},
     }
   })
 
@@ -80,6 +81,7 @@ describe('ClientBuilder', () => {
       gatewayConfigs: {
         Fetch: { config: 'configs' },
       } as unknown as GatewayConfiguration,
+      test: {},
     }
 
     GatewayClassFactory = () => gatewayClass

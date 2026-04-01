@@ -53,6 +53,7 @@ Mock definitions installed:
   └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
 
 
+
 [Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
 "
 `;
@@ -225,6 +226,7 @@ Mock definitions installed:
   └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
 
 
+
 [Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
 "
 `;
@@ -280,6 +282,7 @@ Mock definitions installed:
   ├────────────────┼────────────┼─────────────────────────────────────────────────────────────────┤
   │ Headers        │ No         │ x-test=VALUE2                                                   │
   └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
+
 
 
 [Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
@@ -340,6 +343,7 @@ Mock definitions installed:
   └────────────────┴────────────┴─────────────────────────────────────────────────────────────────┘
 
 
+
 [Mappersmith Test] No match found, check your mock definitions, debug information available above.
 "
 `;
@@ -384,6 +388,7 @@ Mock definitions installed:
   └───────────────────────────────────────────────┴───────────────────────────────────────────────┘
 
 NO MOCKS INSTALLED
+
 
 
 [Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith

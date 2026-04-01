@@ -13,6 +13,9 @@ export interface GlobalConfigs {
   gateway: typeof Gateway | null
   gatewayConfigs: GatewayConfiguration
   maxMiddlewareStackExecutionAllowed: number
+  test: {
+    richMockErrors?: boolean
+  }
 }
 
 export type ResourceTypeConstraint = {

@@ -111,6 +111,15 @@ export const configs: GlobalConfigs = {
       credentials: 'omit',
     },
   },
+  test: {
+    /**
+     * Enables improved mock output with bordered tables and character-level diffs when a mock
+     * is not matched. Requires optional peer dependencies "diff" and "tty-table" for the richest
+     * output, but falls back gracefully to plain-text when they are not installed.
+     * @default false
+     */
+    richMockErrors: false,
+  },
 }
 
 /**

@@ -31,9 +31,11 @@ export interface MockClient<ResourcesType, ResourceName extends keyof ResourcesT
 
 export interface InstallOptions {
   /**
-   * Whether to enable enhanced debugging.
+   * Enables improved mock output with bordered tables and character-level diffs when a mock
+   * is not matched. If not specified, falls back to the global `configs.test.richMockErrors` value.
+   * Requires optional peer dependencies "diff" and "tty-table" for the richest output.
    */
-  enhancedDebugging?: boolean
+  richMockErrors?: boolean
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
