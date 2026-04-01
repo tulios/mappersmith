@@ -15,7 +15,7 @@ import { Request } from '../request'
 import randomJsonData from './data/random-json-data.json'
 import { forge } from '../index'
 
-const stripAnsi = (str) => {
+const stripAnsi = (str: string) => {
   // Regular expression to match ANSI escape codes
   // This removes all the color codes and other special codes
   // eslint-disable-next-line no-control-regex
@@ -25,13 +25,16 @@ const stripAnsi = (str) => {
 
 const LOG_TO_CONSOLE = false
 
-const expectToThrowErrorMatchingSnapshotWithoutAnsi = (fn, logToConsole = LOG_TO_CONSOLE) => {
+const expectToThrowErrorMatchingSnapshotWithoutAnsi = (
+  fn: () => void,
+  logToConsole = LOG_TO_CONSOLE
+) => {
   try {
     fn()
     throw new Error('Expected function to throw an error, but it did not.')
   } catch (error) {
     if (logToConsole) console.log(error)
-    const cleanedError = stripAnsi(error.message)
+    const cleanedError = stripAnsi((error as Error).message)
     expect(cleanedError).toMatchSnapshot()
   }
 }
