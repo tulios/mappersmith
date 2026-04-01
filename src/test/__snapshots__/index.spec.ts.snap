@@ -1,0 +1,236 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mappersmith/test/lookupResponse should correctly handle m.anything() displaying that it matches ANYTHING 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+  Url      http://example.org/path
+  Method   get
+  Body     id=2
+  Headers  x-test=VALUE2
+
+Mock definitions installed:
+
+● Exact match
+● Partial match (When URL and METHOD match)
+● Not matching
+
+Mock value matches the request value
+Present in mock but not in request
+Present in request but not in mock
+
+~ users - 4
+  Url      Yes  http://example.org/path
+  Method   Yes  get
+  Body     Yes  MATCHED_BY_FUNCTION
+  Headers  No   x-test=VALUE2 → x-test=VALUE-2
+
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
+
+[Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should handle multiple mocks with large bodies and long URLs, including a partial match 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+  Url      http://example.org/path?query[id]=2
+  Method   get
+  Body     _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excepteur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occaecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+irure+occaecat+minim.
+&address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longitude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]=amet
+  Headers  x-test=DIFFERENT-VALUE
+
+Mock definitions installed:
+
+● Exact match
+● Partial match (When URL and METHOD match)
+● Not matching
+
+Mock value matches the request value
+Present in mock but not in request
+Present in request but not in mock
+
+✗ My Client - posts
+  Url      No   http://example.org/path?query[id]=2 → http://example.org/long/path/to/resource/with/many/segments?query[postId]=12345
+  Method   No   get → post
+  Body     No   _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excepteur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occaecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+irure+occaecat+minim.
+&address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longitude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]=amet → content=This+is+a+very+large+body+with+lots+of+content...
+  Headers  No    → content-type=application%2Fjson
+
+✗ My Client - comments
+  Url      No   http://example.org/path?query[id]=2 → http://example.org/another/very/long/path/to/resource?query[commentId]=67890
+  Method   No   get → put
+  Body     No   _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excepteur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occaecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+irure+occaecat+minim.
+&address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longitude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]=amet → _id=66ec092d7189db5c15ea3f05&about=Cupidatat+excepteur+do+excepteur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occaecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+irure+occaecat+minim.
+&address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longitude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]=amet
+  Headers  No    → content-type=application%2Fjson
+
+✗ My Client - users
+  Url      No   http://example.org/path?query[id]=2 → http://example.org/path?query[id]=1
+  Method   Yes  get
+  Body     No   _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excepteur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occaecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+irure+occaecat+minim.
+&address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longitude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]=amet → id=1
+  Headers  No   x-test=DIFFERENT-VALUE → x-test=VALUE
+
+~ My Named Mock
+  Url      No   http://example.org/path?query[id]=2 → http://example.org/path
+  Method   Yes  get
+  Body     Yes  _id=66ec092d7189db5c15ea3f04&about=Cupidatat+excepteur+do+excepteur+quis+deserunt+nisi+aliqua+nulla+ut+esse.+Non+ea+tempor+occaecat+sunt+commodo.+Nisi+cillum+non+anim+aute+laborum+pariatur+irure+occaecat+minim.
+&address=377+Conduit+Boulevard,+Franklin,+Alabama,+7940&age=31&balance=$1,349.22&company=WATERBABY&email=deborahcantu@waterbaby.com&eyeColor=green&favoriteFruit=banana&friends[][id]=0&friends[][name]=Marquez+Langley&friends[][id]=1&friends[][name]=Blackburn+Oconnor&friends[][id]=2&friends[][name]=Tameka+Mcdonald&gender=female&greeting=Hello,+Deborah+Cantu!+You+have+1+unread+messages.&guid=3f6091f3-a629-4653-913f-eb797bede6e9&index=6&isActive=true&latitude=26.758942&longitude=29.872733&name=Deborah+Cantu&phone=+1+(951)+590-3102&picture=http://placehold.it/32x32&registered=2014-10-31T02:57:12+-01:00&tags[]=pariatur&tags[]=Lorem&tags[]=tempor&tags[]=ut&tags[]=veniam&tags[]=tempor&tags[]=amet
+  Headers  Yes  x-test=DIFFERENT-VALUE
+
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
+
+[Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should log all existing mocks when there is a partial match 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+  Url      http://example.org/path
+  Method   get
+  Body     id=2
+  Headers  x-test=VALUE2
+
+Mock definitions installed:
+
+● Exact match
+● Partial match (When URL and METHOD match)
+● Not matching
+
+Mock value matches the request value
+Present in mock but not in request
+Present in request but not in mock
+
+~ users - 3
+  Url      Yes  http://example.org/path
+  Method   Yes  get
+  Body     No   id=2 → id=1
+  Headers  No   x-test=VALUE2 → x-test=VALUE
+
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
+
+[Mappersmith Test] No exact match found but a partial match was found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should log all existing mocks when there is no match 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+  Url      http://example.org/path?query[parameter]=1&query[parameter2]=2
+  Method   get
+  Body     maybe_gql=query+{+user+{+id+}+}&id=1&parameter=1
+  Headers  header1=value&header2=value2
+
+Mock definitions installed:
+
+● Exact match
+● Partial match (When URL and METHOD match)
+● Not matching
+
+Mock value matches the request value
+Present in mock but not in request
+Present in request but not in mock
+
+✗ users - 2
+  Url      No   http://example.org/path?query[parameter]=1&query[parameter2]=2 → http://example-1.org/no-path?query[parameter]=1&query[parameter2]=2
+  Method   No   get → post
+  Body     Yes  maybe_gql=query+{+user+{+id+}+}&id=1&parameter=1
+  Headers  Yes  header1=value&header2=value2
+
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
+
+[Mappersmith Test] No match found, check your mock definitions, debug information available above.
+"
+`;
+
+exports[`mappersmith/test/lookupResponse should output a clear message when there are no mocks installed 1`] = `
+"
+
+
+------------------------------------------------------------------------------------------------------------------
+Mappersmith matches a mock to an outgoing request by comparing the request's URL, METHOD, BODY and HEADERS.
+
+URL:     The URL is sorted and normalized before comparison.
+BODY:    The BODY is sorted and normalized in the form of a query-string before comparison.
+HEADERS: The headers of the outgoing request is stripped of any headers that are not present in the
+         mock definition headers and then sorted and normalized before comparison.
+METHOD:  The method of the outgoing request is compared as is.
+------------------------------------------------------------------------------------------------------------------
+
+Request:
+  Url      http://example.org/path?query[parameter]=1&query[parameter2]=2
+  Method   get
+  Body     maybe_gql=query+{+user+{+id+}+}&id=1&parameter=1
+  Headers  header1=value&header2=value2
+
+Mock definitions installed:
+
+● Exact match
+● Partial match (When URL and METHOD match)
+● Not matching
+
+Mock value matches the request value
+Present in mock but not in request
+Present in request but not in mock
+
+NO MOCKS INSTALLED
+
+NOTE: Install optional peer dependencies for richer output: "diff" (character-level diffs) and "tty-table" (formatted tables). See https://github.com/tulios/mappersmith#enhanced-debugging
+
+
+[Mappersmith Test] There are no mocks installed, please refer to the documentation: https://github.com/tulios/mappersmith?tab=readme-ov-file#-testing-mappersmith
+"
+`;

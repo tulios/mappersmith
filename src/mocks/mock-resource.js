@@ -16,6 +16,7 @@ function MockResource(id, client) {
   this.id = id
   this.manifest = client._manifest
   this.resourceName = null
+  this.mockName = null
   this.methodName = null
   this.requestParams = {}
   this.responseData = null
@@ -35,6 +36,32 @@ MockResource.prototype = {
   resource(resourceName) {
     this.resourceName = resourceName
     return this
+  },
+
+  /**
+   * Names you mock instance for debugging purposes.
+   * @return {MockResource}
+   */
+  named(mockName) {
+    this.mockName = mockName
+    return this
+  },
+
+  /**
+   * Creates a name for the mock based on the client id and the resource name.
+   * @returns {String}
+   */
+  getName() {
+    const { mockName, manifest, resourceName, id } = this
+    const { clientId } = manifest || {}
+    if (mockName) return mockName
+
+    const resourcePart = resourceName || id
+    if (clientId) {
+      return `${clientId} - ${resourcePart}`
+    }
+
+    return resourceName ? `${resourceName} - ${id}` : id
   },
 
   /**
@@ -115,6 +142,7 @@ MockResource.prototype = {
 
     if (!this.mockRequest) {
       this.mockRequest = new MockRequest(this.id, {
+        mockName: this.getName(),
         method: finalRequest.method(),
         url: this.generateUrlMatcher(finalRequest),
         body: finalRequest.body(),

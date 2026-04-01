@@ -1,5 +1,6 @@
 import type { Client } from '../client-builder'
 import { Request } from '../request'
+import { Response } from '../response'
 import type { Headers, Params } from '../types'
 export { requestFactory, RequestFactoryArgs } from './request-factory'
 export { responseFactory, ResponseFactoryArgs } from './response-factory'
@@ -15,6 +16,7 @@ export type StatusHandler = (request: Request, mock: MockAssert) => void
 export type ResponseHandler = (request: Request, mock: MockAssert) => void
 
 export interface MockClient<ResourcesType, ResourceName extends keyof ResourcesType> {
+  named(mockName: string): this
   resource<ResourceName extends keyof ResourcesType>(
     name: ResourceName
   ): MockClient<ResourcesType, ResourceName>
@@ -27,10 +29,20 @@ export interface MockClient<ResourcesType, ResourceName extends keyof ResourcesT
   assertObjectAsync(): Promise<MockAssert>
 }
 
+export interface InstallOptions {
+  /**
+   * Enables improved mock output with bordered tables and character-level diffs when a mock
+   * is not matched. If not specified, falls back to the global `configs.test.richMockErrors` value.
+   * Requires optional peer dependencies "diff" and "tty-table" for the richest output.
+   */
+  richMockErrors?: boolean
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function lookupResponseAsync(req: any): Promise<any>
+export function lookupResponse(req: Request): Response
 export function clear(): void
-export function install(): void
+export function install(installOptions?: InstallOptions): void
 export function uninstall(): void
 export function unusedMocks(): number
 export function mockClient<
