@@ -1,5 +1,6 @@
 import { sortedUrl, toSortedQueryString } from '../mocks/mock-utils'
 import { Request } from '../request'
+import { createRequire } from 'module'
 const colors = {
   green: (s: string) => `\x1b[32m${s}\x1b[39m`,
   red: (s: string) => `\x1b[31m${s}\x1b[39m`,
@@ -17,14 +18,17 @@ let Diff: {
   diffChars: (...args: any[]) => Array<{ value: string; added?: boolean; removed?: boolean }>
 } | null = null
 
+// Resolve optional peer deps from the consuming project's working directory:
+const requireFromCwd = createRequire(process.cwd() + '/package.json')
+
 try {
-  ttyTable = eval('require')('tty-table')
+  ttyTable = requireFromCwd('tty-table')
 } catch {
   // optional peer dependency — plain text fallback used when not installed
 }
 
 try {
-  Diff = eval('require')('diff')
+  Diff = requireFromCwd('diff')
 } catch {
   // optional peer dependency — plain text fallback used when not installed
 }
