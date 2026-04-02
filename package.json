@@ -231,7 +231,7 @@
     "cookie-parser": "^1.4.6",
     "copyfiles": "^2.4.1",
     "core-js": "^3.38.1",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.1.0",
     "diff": "^8.0.4",
     "esbuild-plugin-file-path-extensions": "^2.1.2",
     "eslint": "^9.20.1",
