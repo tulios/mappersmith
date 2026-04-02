@@ -3899,7 +3899,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:^1.19.0, body-parser@npm:^1.20.3":
+"body-parser@npm:^1.19.0":
   version: 1.20.4
   resolution: "body-parser@npm:1.20.4"
   dependencies:
@@ -3919,7 +3919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:^2.2.1":
+"body-parser@npm:^2.2.1, body-parser@npm:^2.2.2":
   version: 2.2.2
   resolution: "body-parser@npm:2.2.2"
   dependencies:
@@ -8036,7 +8036,7 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     babel-loader: "npm:^9.1.3"
     babel-plugin-minify-replace: "npm:^0.5.0"
-    body-parser: "npm:^1.20.3"
+    body-parser: "npm:^2.2.2"
     browser-resolve: "npm:^2.0.0"
     concurrently: "npm:^9.0.0"
     cookie-parser: "npm:^1.4.6"
