@@ -17,6 +17,6 @@ sed 's/\/dist\//\//g' dist/package.json > dist/package-temp.json && mv dist/pack
 sed '/"private": true/d' dist/package.json > dist/package-temp.json && mv dist/package-temp.json dist/package.json
 
 cd dist
-npm publish --dry-run
+#npm publish --dry-run
 echo "Done!"
 cd ..

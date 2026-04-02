@@ -5,7 +5,7 @@ inputs:
   node-version:
     description: 'Node.js version'
     required: false
-    default: '18'
+    default: '24'
   path:
     description: 'Path to the directory containing the package.json file'
     required: false
