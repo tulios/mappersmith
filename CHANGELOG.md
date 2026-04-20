@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.47.1
+
+### Patch Changes
+
+- 621b3ee: Increase range of optional peer deps
+
 ## 2.47.0
 
 ### Minor Changes
