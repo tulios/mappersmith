@@ -3613,13 +3613,13 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.12.1":
-  version: 1.14.0
-  resolution: "axios@npm:1.14.0"
+  version: 1.15.1
+  resolution: "axios@npm:1.15.1"
   dependencies:
     follow-redirects: "npm:^1.15.11"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10/c3444e9e3da1714916e4ddd7cda05bb41a5d5d80e3e27b099a116439684c63f2280c88503d1acd65841698b63af0b542b4d5780454e28fd0aed2d783ef90943e
+  checksum: 10/bfa286e29d1866695426b45c9a25ef21975669e500a8511a01e2fe5b9c4f734906701266d214b562dc525e463bae2bbba24c8e9e10c214f0d4f4c669e9372a7f
   languageName: node
   linkType: hard
 
