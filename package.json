@@ -241,7 +241,7 @@
     "faux-jax-tulios": "^5.0.9",
     "globals": "^16.4.0",
     "jasmine": "^5.3.0",
-    "jasmine-core": "^5.3.0",
+    "jasmine-core": "^6.1.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "js-md5": "^0.8.3",
