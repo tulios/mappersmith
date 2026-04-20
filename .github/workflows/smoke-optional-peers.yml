@@ -1,0 +1,45 @@
+name: Smoke Test Optional Peer Deps
+
+concurrency:
+  cancel-in-progress: true
+  group: 'smoke-optional-peers-${{ github.ref_name }}'
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  smoke-optional-peers:
+    name: Optional Peer Deps (diff=${{ matrix.diff_version }}, tty-table=${{ matrix.tty_table_version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - diff_version: "^7.0.0"
+            tty_table_version: "^5.0.0"
+          - diff_version: "^8.0.0"
+            tty_table_version: "^5.0.0"
+          - diff_version: "^9.0.0"
+            tty_table_version: "^5.0.0"
+          - diff_version: "^9.0.0"
+            tty_table_version: "^4.0.0"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: mappersmith
+
+      - uses: ./mappersmith/.github/actions/setup-smoke-test
+
+      - name: Install optional peer deps
+        run: |
+          cd mappersmith-consumer
+          yarn workspace @mappersmith-consumer/peer-deps add diff@"${{ matrix.diff_version }}" tty-table@"${{ matrix.tty_table_version }}"
+        shell: bash
+
+      - name: Test peer-deps
+        run: |
+          cd mappersmith-consumer
+          yarn workspace @mappersmith-consumer/peer-deps test
+        shell: bash
