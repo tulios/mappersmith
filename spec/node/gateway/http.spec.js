@@ -323,6 +323,115 @@ describe('Gateway / HTTP', () => {
     })
   })
 
+  describe('URL parsing', () => {
+    beforeEach(() => {
+      methodDescriptor.method = 'get'
+    })
+
+    it('correctly parses an HTTPS URL', (done) => {
+      methodDescriptor = new MethodDescriptor({
+        host: 'https://secure.example.org',
+        path: '/api/resource',
+      })
+
+      const configure = jest.fn()
+      configs.gatewayConfigs.HTTP.configure = configure
+
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+        expect(configure).toHaveBeenCalledWith(
+          expect.objectContaining({
+            protocol: 'https:',
+            hostname: 'secure.example.org',
+            path: '/api/resource',
+          })
+        )
+      })
+    })
+
+    it('correctly parses a URL with a port', (done) => {
+      methodDescriptor = new MethodDescriptor({
+        host: 'http://example.org:8080',
+        path: '/api/resource',
+      })
+
+      const configure = jest.fn()
+      configs.gatewayConfigs.HTTP.configure = configure
+
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+        expect(configure).toHaveBeenCalledWith(
+          expect.objectContaining({
+            hostname: 'example.org',
+            port: '8080',
+            path: '/api/resource',
+          })
+        )
+      })
+    })
+
+    it('correctly parses a URL with query strings', (done) => {
+      methodDescriptor = new MethodDescriptor({
+        host: 'http://example.org',
+        path: '/api/resource',
+      })
+      requestParams = { page: 1, per_page: 10 }
+
+      const configure = jest.fn()
+      configs.gatewayConfigs.HTTP.configure = configure
+
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+        expect(configure).toHaveBeenCalledWith(
+          expect.objectContaining({
+            hostname: 'example.org',
+            path: '/api/resource?page=1&per_page=10',
+          })
+        )
+      })
+    })
+
+    it('omits port when not specified', (done) => {
+      const configure = jest.fn()
+      configs.gatewayConfigs.HTTP.configure = configure
+
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+        expect(configure).toHaveBeenCalledWith(
+          expect.objectContaining({
+            hostname: 'example.org',
+            port: undefined,
+          })
+        )
+      })
+    })
+
+    it('preserves auth credentials embedded in the URL', (done) => {
+      methodDescriptor = new MethodDescriptor({
+        host: 'http://user:secret@example.org',
+        path: '/api/resource',
+      })
+
+      const configure = jest.fn()
+      configs.gatewayConfigs.HTTP.configure = configure
+
+      respondWith(httpResponse)
+      assertSuccess()(done, (response) => {
+        expect(response.status()).toEqual(200)
+        expect(configure).toHaveBeenCalledWith(
+          expect.objectContaining({
+            auth: 'user:secret',
+            hostname: 'example.org',
+          })
+        )
+      })
+    })
+  })
+
   describe('with option "configure"', () => {
     it('calls the callback with request params', (done) => {
       methodDescriptor.method = 'get'

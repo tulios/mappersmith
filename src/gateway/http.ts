@@ -44,11 +44,21 @@ export class HTTP extends Gateway {
   performRequest(requestMethod: Method) {
     const headers: Record<string, Primitive> = {}
     const parsedUrl = new URL(this.request.url())
-    const defaults = {
+    const defaults: {
+      protocol: string
+      hostname: string
+      port: string | undefined
+      path: string
+      auth?: string
+    } = {
       protocol: parsedUrl.protocol,
       hostname: parsedUrl.hostname,
       port: parsedUrl.port || undefined,
       path: parsedUrl.pathname + parsedUrl.search,
+    }
+
+    if (parsedUrl.username || parsedUrl.password) {
+      defaults.auth = `${decodeURIComponent(parsedUrl.username)}:${decodeURIComponent(parsedUrl.password)}`
     }
     const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
     const body = this.prepareBody(requestMethod, headers)
