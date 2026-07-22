@@ -1,7 +1,6 @@
 // Using default imports instead of namespace imports, because namespace imports
 // would create an object with new references to the module's original exports,
 // thus ignoring any patches done to the modules by end users
-import url from 'url'
 import http from 'http'
 import https from 'https'
 
@@ -44,8 +43,23 @@ export class HTTP extends Gateway {
 
   performRequest(requestMethod: Method) {
     const headers: Record<string, Primitive> = {}
-    // FIXME: Deprecated API
-    const defaults = url.parse(this.request.url())
+    const parsedUrl = new URL(this.request.url())
+    const defaults: {
+      protocol: string
+      hostname: string
+      port: string | undefined
+      path: string
+      auth?: string
+    } = {
+      protocol: parsedUrl.protocol,
+      hostname: parsedUrl.hostname,
+      port: parsedUrl.port || undefined,
+      path: parsedUrl.pathname + parsedUrl.search,
+    }
+
+    if (parsedUrl.username || parsedUrl.password) {
+      defaults.auth = `${decodeURIComponent(parsedUrl.username)}:${decodeURIComponent(parsedUrl.password)}`
+    }
     const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
     const body = this.prepareBody(requestMethod, headers)
     const timeout = this.request.timeout()
