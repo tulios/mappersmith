@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.47.2
+
+### Patch Changes
+
+- 8098018: Move away from deprecated Node.js `url.parse` API
+
 ## 2.47.1
 
 ### Patch Changes
