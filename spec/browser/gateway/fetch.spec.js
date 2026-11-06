@@ -3,6 +3,7 @@ import fauxJax from 'faux-jax-tulios'
 import { configs } from 'src/index'
 import Fetch from 'src/gateway/fetch'
 import MethodDescriptor from 'src/method-descriptor'
+import Request from 'src/request'
 import { btoa, assign } from 'src/utils'
 
 import { createGatewayAsserts, respondWith } from 'spec/helper'
@@ -43,7 +44,7 @@ describe('Gateway / Fetch', () => {
     configs.gatewayConfigs = originalConfigs
   })
 
-  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
+  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head', 'query']) {
     describe(`#${methodName}`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -59,6 +60,16 @@ describe('Gateway / Fetch', () => {
             expect.objectContaining({ 'content-type': 'application/json' })
           )
           expect(response.timeElapsed).not.toBeNull()
+        })
+      })
+
+      it('sends the method in uppercase', (done) => {
+        respondWith(httpResponse, (fauxJaxRequest) => {
+          expect(fauxJaxRequest.requestMethod).toEqual(methodName.toUpperCase())
+        })
+
+        assertSuccess()(done, (response) => {
+          expect(response.status()).toEqual(200)
         })
       })
 
@@ -102,7 +113,7 @@ describe('Gateway / Fetch', () => {
     })
   }
 
-  for (const methodName of ['post', 'put', 'delete', 'patch']) {
+  for (const methodName of ['post', 'put', 'delete', 'patch', 'query']) {
     describe(`#${methodName} with body`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -197,7 +208,7 @@ describe('Gateway / Fetch', () => {
     })
   }
 
-  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
+  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head', 'query']) {
     describe(`#${methodName} with request.auth() configured`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -225,4 +236,32 @@ describe('Gateway / Fetch', () => {
       })
     })
   }
+
+  describe('method case', () => {
+    let originalFetch
+
+    beforeEach(() => {
+      originalFetch = configs.fetch
+    })
+
+    afterEach(() => {
+      configs.fetch = originalFetch
+    })
+
+    for (const methodName of ['patch', 'query']) {
+      it(`passes "${methodName}" to fetch in uppercase`, async () => {
+        configs.fetch = jest.fn(() => Promise.resolve(new Response('{}', { status: 200 })))
+        methodDescriptor.method = methodName
+
+        const request = new Request(methodDescriptor, requestParams)
+        const gatewayConfigs = assign({}, configs.gatewayConfigs, { emulateHTTP: false })
+        await new Fetch(request, gatewayConfigs).call()
+
+        expect(configs.fetch).toHaveBeenCalledWith(
+          expect.any(String),
+          expect.objectContaining({ method: methodName.toUpperCase() })
+        )
+      })
+    }
+  })
 })

@@ -46,6 +46,10 @@ export class Fetch extends Gateway {
     this.performRequest('delete')
   }
 
+  query() {
+    this.performRequest('query')
+  }
+
   performRequest(requestMethod: Method) {
     const fetch = configs.fetch
 
@@ -66,7 +70,9 @@ export class Fetch extends Gateway {
     }
 
     const headers = assign(customHeaders, this.request.headers())
-    const method = this.shouldEmulateHTTP() ? 'post' : requestMethod
+    // fetch only normalizes the case of DELETE, GET, HEAD, OPTIONS, POST and PUT,
+    // other methods (e.g. PATCH, QUERY) are sent exactly as given
+    const method = (this.shouldEmulateHTTP() ? 'post' : requestMethod).toUpperCase()
     const userSignal = this.request.signal()
 
     // Since 1) node fetch requires timeout to be handled via abort controller and 2) we support an external user signal, we need to merge them:
