@@ -49,6 +49,10 @@ export class Gateway {
     throw new Error('Not implemented')
   }
 
+  public query() {
+    throw new Error('Not implemented')
+  }
+
   options() {
     return this.configs
   }

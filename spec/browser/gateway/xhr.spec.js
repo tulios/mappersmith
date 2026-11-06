@@ -43,7 +43,7 @@ describe('Gateway / XHR', () => {
     configs.gatewayConfigs = originalConfigs
   })
 
-  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
+  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head', 'query']) {
     describe(`#${methodName}`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -59,6 +59,16 @@ describe('Gateway / XHR', () => {
             expect.objectContaining({ 'content-type': 'application/json' })
           )
           expect(response.timeElapsed).not.toBeNull()
+        })
+      })
+
+      it('sends the method in uppercase', (done) => {
+        respondWith(httpResponse, (fauxJaxRequest) => {
+          expect(fauxJaxRequest.requestMethod).toEqual(methodName.toUpperCase())
+        })
+
+        assertSuccess()(done, (response) => {
+          expect(response.status()).toEqual(200)
         })
       })
 
@@ -102,7 +112,7 @@ describe('Gateway / XHR', () => {
     })
   }
 
-  for (const methodName of ['post', 'put', 'delete', 'patch']) {
+  for (const methodName of ['post', 'put', 'delete', 'patch', 'query']) {
     describe(`#${methodName} with body`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -197,7 +207,7 @@ describe('Gateway / XHR', () => {
     })
   }
 
-  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head']) {
+  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'head', 'query']) {
     describe(`#${methodName} with request.auth() configured`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName

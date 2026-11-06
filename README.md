@@ -146,6 +146,9 @@ const client = forge({
       // There are no restrictions for dynamic segments and HTTP methods
       addComment: { method: 'put', path: '/blogs/{id}/comment' },
 
+      // QUERY is a safe and idempotent method that sends the query in the request body
+      search: { method: 'query', path: '/blogs/search' },
+
       // `queryParamAlias` will map parameter names to their alias when
       // constructing the query string
       bySubject: { path: '/blogs', queryParamAlias: { subjectId: 'subject_id' } },
@@ -219,7 +222,7 @@ client.Blog.all({ subjectId: 10 }) // https://my.api.com/blogs?subject_id=10
 
 ### <a name="body"></a> Body
 
-To send values in the request body (usually for POST, PUT or PATCH methods) you will use the special parameter `body`:
+To send values in the request body (usually for POST, PUT, PATCH or QUERY methods) you will use the special parameter `body`:
 
 ```javascript
 client.Blog.create({
