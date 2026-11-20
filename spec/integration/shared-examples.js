@@ -108,7 +108,55 @@ export function integrationTestsForGateway(gateway, params, extraTests) {
       })
   })
 
+  it('QUERY /api/search', (done) => {
+    Client.Search.query({ body: { term: 'mappersmith', limit: 10 } })
+      .then((response) => {
+        expect(response.status()).toEqual(200)
+        expect(response.headers()).toEqual(
+          jasmine.objectContaining({
+            'x-api-response': 'apiSearch',
+            'x-method': 'QUERY',
+            'x-raw-body': 'term=mappersmith&limit=10',
+          })
+        )
+        // XHR in browsers sends the charset as "UTF-8"
+        expect(response.header('x-api-content-type').toLowerCase()).toEqual(
+          'application/x-www-form-urlencoded;charset=utf-8'
+        )
+        expect(response.data()).toEqual(apiResponses.apiSearch)
+        done()
+      })
+      .catch((response) => {
+        done.fail(`test failed with promise error: ${errorMessage(response)}`)
+      })
+  })
+
   describe('with custom Content-Type', () => {
+    it('QUERY /api/search', (done) => {
+      const params = {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ term: 'mappersmith', limit: 10 }),
+      }
+
+      Client.Search.query(params)
+        .then((response) => {
+          expect(response.status()).toEqual(200)
+          expect(response.headers()).toEqual(
+            jasmine.objectContaining({
+              'x-api-response': 'apiSearch',
+              'x-method': 'QUERY',
+              'x-api-content-type': 'application/json',
+              'x-raw-body': JSON.stringify({ term: 'mappersmith', limit: 10 }),
+            })
+          )
+          expect(response.data()).toEqual(apiResponses.apiSearch)
+          done()
+        })
+        .catch((response) => {
+          done.fail(`test failed with promise error: ${errorMessage(response)}`)
+        })
+    })
+
     it('PUT /api/pictures/{category}', (done) => {
       const params = {
         category: 'sports',

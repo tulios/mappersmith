@@ -6,7 +6,7 @@ import { isTimeoutError } from './timeout-error'
 import type { GatewayConfiguration } from './types'
 import type { Primitive } from '../types'
 
-const REGEXP_EMULATE_HTTP = /^(delete|put|patch)/i
+const REGEXP_EMULATE_HTTP = /^(delete|put|patch|query)/i
 
 export class Gateway {
   public request: Request

@@ -34,8 +34,9 @@ export const configs: GlobalConfigs = {
   gateway: null,
   gatewayConfigs: {
     /**
-     * Setting this option will fake PUT, PATCH and DELETE requests with a HTTP POST. It will
-     * add "_method" and "X-HTTP-Method-Override" with the original requested method
+     * Setting this option will fake PUT, PATCH, DELETE and QUERY requests with a HTTP POST. It
+     * will add "_method" and "X-HTTP-Method-Override" with the original requested method. The
+     * server must support method overrides, this is not a fallback for rejected requests
      * @default false
      */
     emulateHTTP: false,

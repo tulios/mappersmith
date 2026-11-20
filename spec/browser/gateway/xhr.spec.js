@@ -164,7 +164,7 @@ describe('Gateway / XHR', () => {
     })
   }
 
-  for (const methodName of ['put', 'delete', 'patch']) {
+  for (const methodName of ['put', 'delete', 'patch', 'query']) {
     describe(`#${methodName} emulating HTTP method`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName

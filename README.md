@@ -253,6 +253,43 @@ client.Blog.create({
 __NOTE__: It's possible to post body as JSON, check the [EncodeJsonMiddleware](#middleware-encode-json) below for more information
 __NOTE__: The `bodyAttr` param can be set at manifest level.
 
+#### QUERY requests
+
+A server must reject a `QUERY` request when the body has no media type, or when the media type does not match the body. Make sure every `QUERY` request declares a content type that matches its body:
+
+- A plain object body is form encoded and receives `Content-Type: application/x-www-form-urlencoded;charset=utf-8` automatically.
+- A raw body, such as a string, is sent as is. Declare its content type with the `headers` param.
+
+To send the query as JSON, use the [EncodeJsonMiddleware](#middleware-encode-json), which encodes plain objects and sets `Content-Type: application/json;charset=utf-8`:
+
+```javascript
+import { EncodeJsonMiddleware } from 'mappersmith/middleware'
+
+const client = forge({
+  host: 'https://my.api.com',
+  middleware: [ EncodeJsonMiddleware ],
+  resources: {
+    Blog: {
+      search: { method: 'query', path: '/blogs/search' }
+    }
+  }
+})
+
+client.Blog.search({ body: { tags: ['party'], limit: 10 } })
+// => QUERY /blogs/search
+// => body: {"tags":["party"],"limit":10}
+// => header: "Content-Type=application/json;charset=utf-8"
+```
+
+Or encode the body yourself and declare the content type:
+
+```javascript
+client.Blog.search({
+  body: JSON.stringify({ tags: ['party'], limit: 10 }),
+  headers: { 'Content-Type': 'application/json' }
+})
+```
+
 ### <a name="headers"></a> Headers
 
 To define headers in the method call use the parameter `headers`:
@@ -838,7 +875,7 @@ const client = forge({
 
 #### <a name="middleware-retry"></a> Retry
 
-This middleware will automatically retry GET requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default on requests with response statuses >= 500 will be retried.
+This middleware will automatically retry GET and QUERY requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default on requests with response statuses >= 500 will be retried.
 
 It's possible to configure the header names and parameters used in the calculation by providing a configuration object when creating the middleware.
 
@@ -1263,6 +1300,17 @@ configs.gateway = MyGateway
 ```
 
 It's possible to globally configure your gateway through the option `gatewayConfigs`.
+
+#### Emulating HTTP methods
+
+Set `emulateHTTP` to send `PUT`, `PATCH`, `DELETE` and `QUERY` requests as `POST`. Mappersmith adds the original method to the `X-HTTP-Method-Override` header and, for plain object bodies, to the `_method` body param:
+
+```javascript
+import { configs } from 'mappersmith'
+configs.gatewayConfigs.emulateHTTP = true
+```
+
+The server must support these method overrides. Mappersmith does not fall back to `POST` after the server rejects a request, it sends `POST` for every request with these methods while the option is enabled.
 
 ### HTTP
 

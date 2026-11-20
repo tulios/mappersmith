@@ -8,7 +8,9 @@ import {
   responseFactory,
   uninstall,
 } from '../../../../../src/test/index'
-import forge from '../../../../../src/mappersmith'
+import forge, { configs } from '../../../../../src/mappersmith'
+import Gateway from '../../../../../src/gateway/gateway'
+import MappersmithResponse from '../../../../../src/response'
 import type {
   MiddlewareDescriptor,
   ResponseGetter,
@@ -148,6 +150,54 @@ describe('RetryMiddleware', () => {
         expect(response.header(headerRetryCount)).toEqual(0)
         expect(response.header(headerRetryTime)).toEqual(expect.any(Number))
       })
+    })
+  })
+
+  describe('when the method is QUERY', () => {
+    const sentRequests: Request[] = []
+    let originalGateway: typeof configs.gateway
+
+    class FailTwiceGateway extends Gateway {
+      query() {
+        sentRequests.push(this.request)
+        const status = sentRequests.length < 3 ? 500 : 200
+        this.dispatchResponse(new MappersmithResponse(this.request, status, '{}', {}))
+      }
+    }
+
+    beforeEach(() => {
+      sentRequests.length = 0
+      originalGateway = configs.gateway
+      configs.gateway = FailTwiceGateway
+    })
+
+    afterEach(() => {
+      configs.gateway = originalGateway
+    })
+
+    it('retries and resends the same body and headers', async () => {
+      const queryClient = forge({
+        host: 'http://example.com',
+        clientId: 'queryClient',
+        resources: {
+          Search: { query: { path: '/search', method: 'query' } },
+        },
+        middleware: [RetryMiddleware({ retries, headerRetryCount, initialRetryTimeInSecs: 0.01 })],
+      })
+
+      const response = await queryClient.Search.query({
+        body: { term: 'mappersmith' },
+        headers: { 'x-trace-id': 'abc' },
+      })
+
+      expect(response.status()).toEqual(200)
+      expect(response.header(headerRetryCount)).toEqual(2)
+      expect(sentRequests).toHaveLength(3)
+      for (const sentRequest of sentRequests) {
+        expect(sentRequest.method()).toEqual('query')
+        expect(sentRequest.body()).toEqual({ term: 'mappersmith' })
+        expect(sentRequest.header('x-trace-id')).toEqual('abc')
+      }
     })
   })
 

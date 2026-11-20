@@ -18,6 +18,9 @@ export function createManifest(host = null, middlewares = []) {
         create: { method: 'post', path: '/api/pictures/{category}' },
         add: { method: 'put', path: '/api/pictures/{category}' },
       },
+      Search: {
+        query: { method: 'query', path: '/api/search' },
+      },
       Failure: {
         get: { path: '/api/failure.json' },
         onOdd: { path: '/api/fail-on-odd.json' },
