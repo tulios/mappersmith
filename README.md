@@ -257,7 +257,7 @@ __NOTE__: The `bodyAttr` param can be set at manifest level.
 
 A server must reject a `QUERY` request when the body has no media type, or when the media type does not match the body. Make sure every `QUERY` request declares a content type that matches its body:
 
-- A plain object body is form encoded and receives `Content-Type: application/x-www-form-urlencoded;charset=utf-8` automatically.
+- A non-empty plain object body is form encoded and receives `Content-Type: application/x-www-form-urlencoded;charset=utf-8` automatically. A plain object with no keys, or with only `null` and `undefined` values, encodes to an empty body and receives no content type.
 - A raw body, such as a string, is sent as is. Declare its content type with the `headers` param.
 
 To send the query as JSON, use the [EncodeJsonMiddleware](#middleware-encode-json), which encodes plain objects and sets `Content-Type: application/json;charset=utf-8`:
@@ -876,6 +876,8 @@ const client = forge({
 #### <a name="middleware-retry"></a> Retry
 
 This middleware will automatically retry GET and QUERY requests up to the configured amount of retries using a randomization function that grows exponentially. The retry count and the time used will be included as a header in the response. By default on requests with response statuses >= 500 will be retried.
+
+`QUERY` requests with a stream body (a `ReadableStream` or a Node.js stream) are not retried, because the first attempt consumes the stream.
 
 It's possible to configure the header names and parameters used in the calculation by providing a configuration object when creating the middleware.
 

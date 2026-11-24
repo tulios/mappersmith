@@ -17,6 +17,13 @@ export interface RetryMiddlewareOptions {
 
 const RETRYABLE_METHODS = new Set(['get', 'query'])
 
+// The first attempt consumes a stream body, so a retry would send it empty
+const isStreamBody = (body: unknown) =>
+  (typeof ReadableStream !== 'undefined' && body instanceof ReadableStream) ||
+  (typeof body === 'object' &&
+    body !== null &&
+    typeof (body as { pipe?: unknown }).pipe === 'function')
+
 export const defaultRetryConfigs: RetryMiddlewareOptions = {
   headerRetryCount: 'X-Mappersmith-Retry-Count',
   headerRetryTime: 'X-Mappersmith-Retry-Time',
@@ -26,7 +33,8 @@ export const defaultRetryConfigs: RetryMiddlewareOptions = {
   multiplier: 2, // exponential factor
   retries: 5, // max retries
   validateRetry: (response: Response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
-  enableRetry: (request: Request) => RETRYABLE_METHODS.has(request.method()),
+  enableRetry: (request: Request) =>
+    RETRYABLE_METHODS.has(request.method()) && !isStreamBody(request.body()),
 }
 
 export type RetryMiddlewareProps = { enableRetry: boolean; inboundRequest: Request }
