@@ -45,7 +45,7 @@ describe('Gateway / Fetch', () => {
     expect(configs.gateway).toBe(Fetch)
   })
 
-  for (const methodName of ['get', 'post', 'put', 'delete', 'patch']) {
+  for (const methodName of ['get', 'post', 'put', 'delete', 'patch', 'query']) {
     describe(`#${methodName}`, () => {
       beforeEach(() => {
         methodDescriptor.method = methodName
@@ -62,6 +62,16 @@ describe('Gateway / Fetch', () => {
             expect.objectContaining({ 'content-type': 'application/json' })
           )
           expect(response.timeElapsed).not.toBeNull()
+        })
+      })
+
+      it('sends the method in uppercase', (done) => {
+        respondWith(httpResponse, (fauxJaxRequest) => {
+          expect(fauxJaxRequest.requestMethod).toEqual(methodName.toUpperCase())
+        })
+
+        assertSuccess()(done, (response) => {
+          expect(response.status()).toEqual(200)
         })
       })
 

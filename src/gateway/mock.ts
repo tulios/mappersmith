@@ -26,6 +26,10 @@ export class Mock extends Gateway {
     this.callMock()
   }
 
+  query() {
+    this.callMock()
+  }
+
   callMock() {
     return lookupResponseAsync(this.request)
       .then((response) => this.dispatchResponse(response))

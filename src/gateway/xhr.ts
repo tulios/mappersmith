@@ -52,6 +52,10 @@ export class XHR extends Gateway {
     this.performRequest('delete')
   }
 
+  query() {
+    this.performRequest('query')
+  }
+
   configureBinary(xmlHttpRequest: XMLHttpRequest) {
     if (this.request.isBinary()) {
       xmlHttpRequest.responseType = 'blob'

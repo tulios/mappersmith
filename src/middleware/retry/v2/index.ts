@@ -15,6 +15,15 @@ export interface RetryMiddlewareOptions {
   enableRetry(response: Request): boolean
 }
 
+const RETRYABLE_METHODS = new Set(['get', 'query'])
+
+// The first attempt consumes a stream body, so a retry would send it empty
+const isStreamBody = (body: unknown) =>
+  (typeof ReadableStream !== 'undefined' && body instanceof ReadableStream) ||
+  (typeof body === 'object' &&
+    body !== null &&
+    typeof (body as { pipe?: unknown }).pipe === 'function')
+
 export const defaultRetryConfigs: RetryMiddlewareOptions = {
   headerRetryCount: 'X-Mappersmith-Retry-Count',
   headerRetryTime: 'X-Mappersmith-Retry-Time',
@@ -24,7 +33,8 @@ export const defaultRetryConfigs: RetryMiddlewareOptions = {
   multiplier: 2, // exponential factor
   retries: 5, // max retries
   validateRetry: (response: Response) => response.responseStatus >= 500, // a function that returns true if the request should be retried
-  enableRetry: (request: Request) => request.method() === 'get',
+  enableRetry: (request: Request) =>
+    RETRYABLE_METHODS.has(request.method()) && !isStreamBody(request.body()),
 }
 
 export type RetryMiddlewareProps = { enableRetry: boolean; inboundRequest: Request }
@@ -32,7 +42,7 @@ export type RetryMiddlewareProps = { enableRetry: boolean; inboundRequest: Reque
 type RetryMiddlewareType = Middleware<RetryMiddlewareProps>
 
 /**
- * This middleware will automatically retry GET requests up to the configured amount of
+ * This middleware will automatically retry GET and QUERY requests up to the configured amount of
  * retries using a randomization function that grows exponentially. The retry count and
  * the time used will be included as a header in the response.
  *

@@ -41,6 +41,10 @@ export class HTTP extends Gateway {
     this.performRequest('delete')
   }
 
+  query() {
+    this.performRequest('query')
+  }
+
   performRequest(requestMethod: Method) {
     const headers: Record<string, Primitive> = {}
     const parsedUrl = new URL(this.request.url())

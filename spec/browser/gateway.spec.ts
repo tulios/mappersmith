@@ -26,7 +26,7 @@ describe('Gateway', () => {
   })
 
   describe('#shouldEmulateHTTP', () => {
-    describe('when "delete", "put" or "patch" and emulateHTTP=true', () => {
+    describe('when "delete", "put", "patch" or "query" and emulateHTTP=true', () => {
       beforeEach(() => {
         configs.gatewayConfigs.emulateHTTP = true
       })
@@ -44,6 +44,12 @@ describe('Gateway', () => {
         expect(
           new Gateway(
             requestFactory({ method: 'patch' }),
+            configs.gatewayConfigs
+          ).shouldEmulateHTTP()
+        ).toEqual(true)
+        expect(
+          new Gateway(
+            requestFactory({ method: 'query' }),
             configs.gatewayConfigs
           ).shouldEmulateHTTP()
         ).toEqual(true)
@@ -86,6 +92,12 @@ describe('Gateway', () => {
         expect(
           new Gateway(
             requestFactory({ method: 'patch' }),
+            configs.gatewayConfigs
+          ).shouldEmulateHTTP()
+        ).toEqual(false)
+        expect(
+          new Gateway(
+            requestFactory({ method: 'query' }),
             configs.gatewayConfigs
           ).shouldEmulateHTTP()
         ).toEqual(false)

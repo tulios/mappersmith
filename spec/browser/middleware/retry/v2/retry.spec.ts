@@ -8,7 +8,9 @@ import {
   responseFactory,
   uninstall,
 } from '../../../../../src/test/index'
-import forge from '../../../../../src/mappersmith'
+import forge, { configs } from '../../../../../src/mappersmith'
+import Gateway from '../../../../../src/gateway/gateway'
+import MappersmithResponse from '../../../../../src/response'
 import type {
   MiddlewareDescriptor,
   ResponseGetter,
@@ -20,8 +22,12 @@ import { jest } from '@jest/globals'
 import RetryMiddleware, {
   RetryMiddlewareOptions,
   calculateExponentialRetryTime,
+  defaultRetryConfigs,
 } from '../../../../../src/middleware/retry/v2/index'
 import { retryMiddlewareExamples } from '../shared-examples'
+import { Readable } from 'stream'
+import { ReadableStream as NodeReadableStream } from 'stream/web'
+import type { Body } from '../../../../../src/types'
 
 describe('RetryMiddleware', () => {
   const retries = 3
@@ -151,6 +157,54 @@ describe('RetryMiddleware', () => {
     })
   })
 
+  describe('when the method is QUERY', () => {
+    const sentRequests: Request[] = []
+    let originalGateway: typeof configs.gateway
+
+    class FailTwiceGateway extends Gateway {
+      query() {
+        sentRequests.push(this.request)
+        const status = sentRequests.length < 3 ? 500 : 200
+        this.dispatchResponse(new MappersmithResponse(this.request, status, '{}', {}))
+      }
+    }
+
+    beforeEach(() => {
+      sentRequests.length = 0
+      originalGateway = configs.gateway
+      configs.gateway = FailTwiceGateway
+    })
+
+    afterEach(() => {
+      configs.gateway = originalGateway
+    })
+
+    it('retries and resends the same body and headers', async () => {
+      const queryClient = forge({
+        host: 'http://example.com',
+        clientId: 'queryClient',
+        resources: {
+          Search: { query: { path: '/search', method: 'query' } },
+        },
+        middleware: [RetryMiddleware({ retries, headerRetryCount, initialRetryTimeInSecs: 0.01 })],
+      })
+
+      const response = await queryClient.Search.query({
+        body: { term: 'mappersmith' },
+        headers: { 'x-trace-id': 'abc' },
+      })
+
+      expect(response.status()).toEqual(200)
+      expect(response.header(headerRetryCount)).toEqual(2)
+      expect(sentRequests).toHaveLength(3)
+      for (const sentRequest of sentRequests) {
+        expect(sentRequest.method()).toEqual('query')
+        expect(sentRequest.body()).toEqual({ term: 'mappersmith' })
+        expect(sentRequest.header('x-trace-id')).toEqual('abc')
+      }
+    })
+  })
+
   describe('when the call succeeds within the configured number of retries', () => {
     it('resolves the promise adding the number of retries as a header', async () => {
       expect.assertions(2)
@@ -255,6 +309,45 @@ describe('RetryMiddleware', () => {
           expect(response.status()).toEqual(400)
         })
     })
+  })
+})
+
+describe('defaultRetryConfigs.enableRetry', () => {
+  const { enableRetry } = defaultRetryConfigs
+  const newRequest = (method: string, body?: unknown) =>
+    requestFactory({ method, body: body as Body })
+
+  it('enables retries for GET and QUERY', () => {
+    expect(enableRetry(newRequest('get'))).toEqual(true)
+    expect(enableRetry(newRequest('query', { term: 'mappersmith' }))).toEqual(true)
+    expect(enableRetry(newRequest('query', 'term=mappersmith'))).toEqual(true)
+  })
+
+  it('disables retries for other methods', () => {
+    for (const method of ['head', 'post', 'put', 'patch', 'delete']) {
+      expect(enableRetry(newRequest(method))).toEqual(false)
+    }
+  })
+
+  describe('with a ReadableStream body', () => {
+    const originalReadableStream = globalThis.ReadableStream
+
+    // jsdom does not expose ReadableStream, browsers and Node.js do
+    beforeEach(() => {
+      globalThis.ReadableStream = NodeReadableStream as typeof ReadableStream
+    })
+
+    afterEach(() => {
+      globalThis.ReadableStream = originalReadableStream
+    })
+
+    it('disables retries for QUERY', () => {
+      expect(enableRetry(newRequest('query', new ReadableStream()))).toEqual(false)
+    })
+  })
+
+  it('disables retries for QUERY with a Node.js stream body', () => {
+    expect(enableRetry(newRequest('query', Readable.from(['term=mappersmith'])))).toEqual(false)
   })
 })
 

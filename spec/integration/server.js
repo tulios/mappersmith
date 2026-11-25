@@ -79,6 +79,18 @@ app.put('/api/pictures/:category', function (req, res) {
   res.send(responses.apiPicturesAdd)
 })
 
+app.all('/api/search', function (req, res, next) {
+  if (req.method !== 'QUERY') {
+    return next()
+  }
+
+  res.set({ 'X-Api-Response': 'apiSearch' })
+  res.set({ 'X-Method': req.method })
+  res.set({ 'X-Api-Content-Type': req.headers['content-type'] })
+  res.set({ 'X-Raw-Body': req.rawBody })
+  res.send(responses.apiSearch)
+})
+
 app.get('/api/failure.json', function (req, res) {
   res.set({ 'X-Api-Response': 'apiFailure' })
   res.status(500)

@@ -37,6 +37,10 @@ module.exports = {
     created: true,
   },
 
+  apiSearch: {
+    results: [{ id: 1, title: 'Lorem ipsum dolor sit amet' }],
+  },
+
   apiFailure: {
     errorMessage: 'something went bad',
   },

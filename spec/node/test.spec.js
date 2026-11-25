@@ -8,6 +8,7 @@ const github = forge({
     Endpoint: {
       withParam: { path: '/param/:id' },
       withBody: { method: 'POST', path: '/body' },
+      withQueryMethod: { method: 'QUERY', path: '/search' },
       withNothingSpecial: { path: '/nothing' },
     },
   },
@@ -58,6 +59,22 @@ describe('#mockClient', () => {
       const response = await github.Endpoint.withParam({ id: 123 })
 
       expect(response.data()).toHaveProperty('id', 123)
+    })
+
+    test('for the QUERY method', async () => {
+      mockClient(github)
+        .resource('Endpoint')
+        .method('withQueryMethod')
+        .with({
+          body: m.anything(),
+        })
+        .response((request) => request.body())
+        .assertObject()
+
+      const response = await github.Endpoint.withQueryMethod({ body: { term: 'mappersmith' } })
+
+      expect(response.request().method()).toEqual('query')
+      expect(response.data()).toEqual({ term: 'mappersmith' })
     })
   })
 })
