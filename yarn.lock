@@ -6836,7 +6836,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jasmine-core@npm:^5.3.0, jasmine-core@npm:~5.13.0":
+"jasmine-core@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "jasmine-core@npm:7.0.2"
+  checksum: 10/5dd6ea610884ba297c07c6d7f92fadcc923d7f53c037e5d45aad04ec5e8489d88748789d5ddfb610022d9d8aa94647308946bd0e1de2e287fb944185b5bff96a
+  languageName: node
+  linkType: hard
+
+"jasmine-core@npm:~5.13.0":
   version: 5.13.0
   resolution: "jasmine-core@npm:5.13.0"
   checksum: 10/7c88618b1aa442da9db60d1ca960073c8582d9cf4ac89543609015a25ab90437d65c8eb63c84edd72a4059056c96a8ca579e1eadbb7addf9cbe0c18110f8fa2f
@@ -7843,7 +7850,7 @@ __metadata:
     faux-jax-tulios: "npm:^5.0.9"
     globals: "npm:^16.4.0"
     jasmine: "npm:^5.3.0"
-    jasmine-core: "npm:^5.3.0"
+    jasmine-core: "npm:^7.0.2"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
     js-md5: "npm:^0.8.3"
